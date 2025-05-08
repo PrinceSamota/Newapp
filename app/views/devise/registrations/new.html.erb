@@ -1,0 +1,66 @@
+
+<div class="relative min-h-screen">
+  <div class="absolute inset-0 -z-10">
+    <img
+      src="<%= asset_path('home4.jpg') %>"
+      alt="Background"
+      class="w-full h-full object-cover"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </div>
+
+  <header class="relative z-10">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center w-full">
+        <div class="flex-shrink-0 text-xl font-bold text-blue-200">
+     
+        </div>
+        <div class="space-x-4">
+          <% if user_signed_in? %>
+            <span class="text-gray-400">Hi, <%= current_user.email %></span>
+            <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "px-4 py-2 text-white cursor-pointer transition font-bold", form: { class: "inline" } %>
+          <% else %>
+            <%= link_to "Login", new_user_session_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold" %>
+            <%= link_to "Sign Up", new_user_registration_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </header>
+  
+  <div class="relative z-10 flex justify-center items-center min-h-[calc(100vh-4rem)] px-4">
+  <div class="bg-white bg-opacity-90 p-8 rounded-xl shadow-lg w-full max-w-md">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h2>
+
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+      <%= render "devise/shared/error_messages", resource: resource %>
+
+      <div class="mb-4">
+        <%= f.label :email, class: "block text-gray-700 font-semibold mb-2" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :password, class: "block text-gray-700 font-semibold mb-2" %>
+        <% if @minimum_password_length %>
+          <em class="text-sm text-gray-500">(<%= @minimum_password_length %> characters minimum)</em>
+        <% end %>
+        <%= f.password_field :password, autocomplete: "new-password", class: "w-full mt-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :password_confirmation, class: "block text-gray-700 font-semibold mb-2" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.submit "Sign up", class: "w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold transition" %>
+      </div>
+    <% end %>
+
+    <div class="text-center text-sm text-gray-600">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+</div>

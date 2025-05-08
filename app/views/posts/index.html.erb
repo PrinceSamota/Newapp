@@ -1,0 +1,34 @@
+<div class="relative min-h-screen">
+  <div class="absolute inset-0 -z-10">
+    <img
+      src="<%= asset_path('home4.jpg') %>"
+      alt="Background"
+      class="w-full h-full object-cover"
+      loading="eager"
+      fetchpriority="high"
+    />
+  </div>
+
+  <header class="relative z-10">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center w-full">
+        <div class="flex-shrink-0 text-xl font-bold text-blue-200">
+     
+        </div>
+        <div class="space-x-4">
+          <% if user_signed_in? %>
+            <span class="text-gray-400">Hi, <%= current_user.email %></span>
+            <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "px-4 py-2 text-white cursor-pointer transition font-bold", form: { class: "inline" } %>
+          <% else %>
+            <%= link_to "Login", new_user_session_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold" %>
+            <%= link_to "Sign Up", new_user_registration_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="relative z-10 flex justify-center items-center h-[calc(100vh-4rem)]">
+    <h1 class="text-white text-4xl font-bold">Welcome to my page!</h1>
+  </div>
+</div>
