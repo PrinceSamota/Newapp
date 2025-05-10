@@ -1,0 +1,13 @@
+<h1>Article Numbers</h1>
+
+<% if @data.present? %>
+  <ul>
+    <% @data.each do |article| %>
+      <li><%= article %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No "Article No" column found or no data present.</p>
+<% end %>
+
+<%= link_to "Upload Another File", root_path %>

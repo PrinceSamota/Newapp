@@ -1,0 +1,47 @@
+<header class="relative z-10 bg-white shadow-lg">
+<div class="mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="flex justify-between h-16 items-center w-full">
+    <div class="flex-shrink-0 text-xl font-bold ">
+    <% if user_signed_in? %>
+    <%= link_to "Home", root_path, class: "px-4 py-2 cursor-pointer transition font-bold", form: { class: "inline" } %>
+  <% else %>
+  <% end %>
+    </div>
+    <div class="space-x-4">
+      <% if user_signed_in? %>
+        <span class="text-gray-400">Hi, <%= current_user.email %></span>
+        <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "px-4 py-2  cursor-pointer transition font-bold", form: { class: "inline" } %>
+      <% else %>
+        <%= link_to "Login", new_user_session_path, class: "px-4 py-2  cursor-pointer transition font-bold" %>
+        <%= link_to "Sign Up", new_user_registration_path, class: "px-4 py-2  cursor-pointer transition font-bold" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+</header>
+<h1 class="text-3xl font-bold text-gray-800 mb-8 mt-4">Available Stock</h1>
+
+<% @availabilities.each do |category, records| %>
+  <div class="mb-10">
+    <h2 class="text-xl font-semibold text-gray-700 mb-4 border-b pb-2"><%= category %></h2>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow">
+        <thead>
+          <tr class="bg-gray-100 text-left text-gray-600 uppercase text-sm tracking-wider">
+            <th class="py-3 px-4 border-b">Variable</th>
+            <th class="py-3 px-4 border-b">Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% records.each_with_index do |record, i| %>
+            <tr class="<%= i.even? ? 'bg-white' : 'bg-gray-50' %>">
+              <td class="py-3 px-4 border-b"><%= record.variable %></td>
+              <td class="py-3 px-4 border-b"><%= record.value %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% end %>
