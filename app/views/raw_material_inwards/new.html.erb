@@ -1,0 +1,47 @@
+<div class="bg-white p-8 rounded-lg shadow-md max-w-full mx-auto mt-2">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">New Raw Material Inward</h2>
+
+  <%= form_with model: @raw_material_inward, url: raw_material_inwards_path, local: true do |form| %>
+    <div class="space-y-6">
+      <div class="flex items-center gap-6">
+        <div class="w-full">
+          <%= form.label :supplier_name, "Supplier Name", class: "text-sm font-medium text-gray-700" %>
+          <%= form.text_field :supplier_name, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+
+        <div class="w-full">
+          <%= form.label :receiving_date, "Receiving Date", class: "text-sm font-medium text-gray-700" %>
+          <%= form.date_field :receiving_date, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="w-full">
+          <%= form.label :sku_id, "SKU ID", class: "text-sm font-medium text-gray-700" %>
+          <%= form.text_field :sku_id, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+
+        <div class="w-full">
+          <%= form.label :item_name, "Item Name", class: "text-sm font-medium text-gray-700" %>
+          <%= form.text_field :item_name, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="w-full">
+          <%= form.label :receiving_quantity, "Receiving Quantity", class: "text-sm font-medium text-gray-700" %>
+          <%= form.number_field :receiving_quantity, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+
+        <div class="w-full">
+          <%= form.label :purchase_price, "Purchase Price", class: "text-sm font-medium text-gray-700" %>
+          <%= form.text_field :purchase_price, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 flex justify-center">
+    <%= form.submit "Create", class: " w-64 hover:bg-gray-100 px-6 py-2 rounded-full text-black font-bold transition cursor-pointer border-2 border-gray-400" %>
+  </div>
+  <% end %>
+</div>

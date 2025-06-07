@@ -1,82 +1,368 @@
-<div class="relative min-h-screen">
-  <div class="absolute inset-0 -z-10">
-    <img
-      src="<%= asset_path('home4.jpg') %>"
-      alt="Background"
-      class="w-full h-full object-cover"
-      loading="eager"
-      fetchpriority="high"
-    />
+<div class="relative min-h-screen ">
+  <!-- Body (if needed) -->
+  <div class="p-6 text-center text-gray-700">
+  <div class="flex items-center justify-between mb-4">
+  <!-- Centered Heading -->
+  <div class="flex-1 text-center">
+   
   </div>
 
-  <header class="relative z-10">
-    <div class="mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center w-full">
-        <div class="flex-shrink-0 text-xl font-bold text-blue-200">
-        <% if user_signed_in? %>
-        <%= link_to "availability", new_availability_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold", form: { class: "inline" } %>
-      <% else %>
-      <% end %>
+  <!-- Right Aligned Buttons -->
+  <div class="flex flex-wrap gap-3 justify-end mt-4">
+  <%#= link_to 'Go to BOM Master', boms_path, class: "inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition" %>
+<%= link_to new_bom_path, class: "hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2" do %> <i class="fa-solid fa-plus"></i> Add BOM <% end %>
+<%= link_to new_raw_material_inward_path, class: "hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2" do %> <i class="fa-solid fa-plus"></i> Add Raw Material <% end %>
+<%# <button onclick="toggleRawMaterialModal(true)" class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2">  Add Raw Material </button> %>
+  <button onclick="toggleModal(true)" class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" ><i class="fa-solid fa-upload"></i> Upload File</button>
+  <button onclick="toggleItemMasterModal(true)" class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add Item Master</button>
+</div>
+</div>
+  </div>
+
+  <!-- Add Item Master Modal -->
+  <div id="itemMasterModal" class="absolute top-20 right-5 z-50 hidden bg-white border border-gray-300 rounded-lg shadow-lg p-6 w-full max-w-4xl">
+  <div class="bg-white border border-gray-300 rounded-xl shadow-2xl w-full max-w-5xl overflow-y-auto max-h-[90vh] p-6 relative">
+
+    <!-- Close Button -->
+    <button onclick="toggleItemMasterModal(false)" class="absolute top-4 right-5 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Add Item Master</h2>
+
+    <%= form_with model: ItemMaster.new, url: item_masters_path, data: { turbo: false }, remote: true do |f| %>
+
+      <!-- Section: Basic Information -->
+      <div class="grid grid-cols-2 gap-6">
+        <div>
+          <%= f.label :item_name, "Item Name", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :item_name, class: "border rounded-md px-3 py-2 w-full" %>
         </div>
-        <div class="space-x-4">
-          <% if user_signed_in? %>
-            <span class="text-gray-400">Hi, <%= current_user.email %></span>
-            <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "px-4 py-2 text-white cursor-pointer transition font-bold", form: { class: "inline" } %>
-          <% else %>
-            <%= link_to "Login", new_user_session_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold" %>
-            <%= link_to "Sign Up", new_user_registration_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold" %>
-          <% end %>
+
+        <div>
+          <%= f.label :unit_of_measurement, "Unit of Measurement", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :unit_of_measurement, class: "border rounded-md px-3 py-2 w-full" %>
         </div>
+
+        <div>
+          <%= f.label :item_category, "Item Category", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :item_category, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :opening_stock, "Opening Stock", class: "text-sm font-medium text-gray-700" %>
+          <%= f.number_field :opening_stock, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+      </div>
+
+      <!-- Section: Pricing -->
+      <div class="grid grid-cols-2 gap-6 mt-6">
+        <div>
+          <%= f.label :purchase_price, "Purchase Price", class: "text-sm font-medium text-gray-700" %>
+          <%= f.number_field :purchase_price, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :sale_price, "Sale Price", class: "text-sm font-medium text-gray-700" %>
+          <%= f.number_field :sale_price, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :minimum_stock_level, "Minimum Stock Level", class: "text-sm font-medium text-gray-700" %>
+          <%= f.number_field :minimum_stock_level, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :article_no, "Article Number", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :article_no, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+      </div>
+
+      <!-- Section: Other Attributes -->
+      <div class="grid grid-cols-2 gap-6 mt-6">
+        <div>
+          <%= f.label :loop_color, "Loop Color", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :loop_color, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :client, "Client", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :client, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :profile, "Profile", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :profile, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :start_serial_no, "Start Serial No", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :start_serial_no, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :end_serial_no, "End Serial No", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :end_serial_no, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+        <%= f.label :status, "Status", class: "text-sm font-medium text-gray-700" %>
+        <%= f.select :status, [["True", true], ["False", false]], {}, class: "border rounded-md px-3 py-2 w-full" %>
+      </div>
+      </div>
+
+      <!-- Section: Dates -->
+      <div class="grid grid-cols-2 gap-6 mt-6">
+        <div>
+          <%= f.label :manufacturing_date, "Manufacturing Date", class: "text-sm font-medium text-gray-700" %>
+          <%= f.date_field :manufacturing_date, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :dispatch_date, "Dispatch Date", class: "text-sm font-medium text-gray-700" %>
+          <%= f.date_field :dispatch_date, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :delivery_date, "Delivery Date", class: "text-sm font-medium text-gray-700" %>
+          <%= f.date_field :delivery_date, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+      </div>
+
+      <!-- Section: Misc -->
+      <div class="grid grid-cols-2 gap-6 mt-6">
+        <div>
+          <%= f.label :invoice_no, "Invoice No", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :invoice_no, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :fuse, "Fuse", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :fuse, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :tracking_no, "Tracking No", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :tracking_no, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+
+        <div>
+          <%= f.label :current_status, "Current Status", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :current_status, class: "border rounded-md px-3 py-2 w-full" %>
+        </div>
+      </div>
+
+      <!-- Checkbox Section -->
+      <div class="grid grid-cols-2 gap-4 mt-6">
+        <div class="flex items-center space-x-2">
+          <%= f.check_box :is_bOM %>
+          <%= f.label :is_bOM, "Is BOM?", class: "text-sm text-gray-700" %>
+        </div>
+
+      </div>
+
+      <!-- Submit -->
+      <div class="mt-8">
+        <%= f.submit "Save", class: "w-full px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>
+
+<!-- Add Raw Material Modal -->
+<div id="RawMaterialModal" class="absolute top-20 right-5 z-50 hidden bg-white border border-gray-300 rounded-lg shadow-lg p-6 w-full max-w-4xl">
+<div class="bg-white border border-gray-300 rounded-xl shadow-2xl w-full max-w-5xl overflow-y-auto max-h-[90vh] p-6 relative">
+
+  <!-- Close Button -->
+  <button onclick="toggleRawMaterialModal(false)" class="absolute top-4 right-5 text-gray-500 hover:text-red-600 text-2xl font-bold">&times;</button>
+
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">New Raw Material Inward</h2>
+
+  <%= form_with model: @raw_material_inward, url: raw_material_inwards_path, local: true do |form| %>
+    <div class="grid grid-cols-2 gap-6">  
+      <div>
+        <%= form.label :supplier_name, "Supplier Name", class: "text-sm font-medium text-gray-700" %>
+        <%= form.text_field :supplier_name, class: "border rounded-md px-3 py-2 w-full" %>
+      </div>
+  
+      <div>
+        <%= form.label :receiving_date, "Receiving Date", class: "text-sm font-medium text-gray-700" %>
+        <%= form.date_field :receiving_date, class: "border rounded-md px-3 py-2 w-full" %>
+      </div>
+  
+      <div>
+        <%= form.label :sku_id, "SKU ID", class: "text-sm font-medium text-gray-700" %>
+        <%= form.text_field :sku_id, class: "border rounded-md px-3 py-2 w-full" %>
+      </div>
+  
+      <div>
+        <%= form.label :item_name, "Item Name", class: "text-sm font-medium text-gray-700" %>
+        <%= form.text_field :item_name, class: "border rounded-md px-3 py-2 w-full" %>
+      </div>
+  
+      <div>
+        <%= form.label :receiving_quantity, "Receiving Quantity", class: "text-sm font-medium text-gray-700" %>
+        <%= form.number_field :receiving_quantity, class: "border rounded-md px-3 py-2 w-full" %>
+      </div>
+  
+      <div>
+        <%= form.label :purchase_price, "Purchase Price", class: "text-sm font-medium text-gray-700" %>
+        <%= form.text_field :purchase_price, class: "border rounded-md px-3 py-2 w-full" %>
       </div>
     </div>
-  </header>
-
   
-  <div class="relative z-10 flex justify-center items-center min-h-[calc(100vh-4rem)] px-4">
-  <div class="bg-white bg-opacity-90 p-8 rounded-xl shadow-lg w-full max-w-md">
-  <div class="max-w-md mx-auto">
-  <% if current_user %>
-    <%= form_with model: UploadedFile.new, url: uploads_path, local: true, multipart: true, html: { id: "file-upload-form" } do |form| %>
-      <div class="mb-4">
-        <%= form.file_field :file, id: "fileInput", class: "hidden" %>
-
-        <div class="flex items-center space-x-4">
-          <label for="fileInput" class="px-4 py-2 bg-gray-200 text-gray-700 rounded cursor-pointer hover:bg-gray-300">
-            Choose file
-          </label>
-          <span id="fileName" class="text-gray-600 text-sm">No file chosen</span>
-        </div>
-      </div>
-
-      <div>
-        <%= form.submit "Upload", class: "w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded" %>
-      </div>
-    <% end %>
-  <% else %>
-    <div class="text-center border border-gray-300 rounded p-6 bg-white shadow-md">
-      <p class="text-gray-700 mb-4">Please log in to upload a file.</p>
-      <%= link_to "Log In", new_user_session_path, class: "inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded" %>
+    <div class="mt-8">
+      <%= form.submit "Create", class: "w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow transition" %>
     </div>
   <% end %>
 </div>
 </div>
-</div>
-<% if @data.present? %>
-  <h2>Excel Contents</h2>
-  <table border="1">
-    <% @data.each do |row| %>
-      <tr>
-        <% row.each do |cell| %>
-          <td><%= cell %></td>
+  <!-- Upload Modal -->
+  <div id="uploadModal" class="absolute top-20 right-5 z-50 hidden bg-white border border-gray-300 rounded-lg shadow-lg p-6 w-full max-w-md">
+    <div class="bg-white w-full max-w-md rounded-xl p-6 shadow-lg relative">
+
+      <!-- Close Button -->
+      <button onclick="toggleModal(false)" class="absolute top-2 right-3 text-gray-600 hover:text-red-500 text-xl font-bold">&times;</button>
+
+      <% @data ||= [] %>
+      <% @decoded_result ||= {} %>
+
+      <% if current_user %>
+        <!-- File Upload Form -->
+        <%= form_with model: UploadedFile.new, url: uploads_path, local: true, multipart: true, html: { id: "file-upload-form" } do |form| %>
+          <div class="mb-4">
+            <%= form.file_field :file, id: "fileInput", class: "hidden" %>
+            <div class="flex items-center space-x-4">
+              <label for="fileInput" class="px-4 py-2 bg-gray-200 text-gray-700 rounded cursor-pointer hover:bg-gray-300">
+                Choose file
+              </label>
+              <span id="fileName" class="text-gray-600 text-sm">No file chosen</span>
+            </div>
+          </div>
+          <div>
+            <%= form.submit "Upload", class: "w-full hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" %>
+          </div>
         <% end %>
-      </tr>
-    <% end %>
-  </table>
-<% end %>
 
+        <hr class="border-t border-gray-300 my-6" />
+
+        <!-- Manual Decode Form -->
+        <%= form_with url: manual_decode_path, method: :post, local: true do |f| %>
+          <div class="mb-4">
+            <%= f.label :article_number, "Enter Article Number:", class: "block text-gray-700 font-medium mb-1" %>
+            <%= f.text_field :article_number, value: @article_number, required: true,
+                  class: "w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500",
+                  placeholder: "e.g. 000123456" %>
+          </div>
+          <div>
+            <%= f.submit "Decode", class: "w-full hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="p-6 pt-0 overflow-x-auto">
+  <h2 class="text-xl font-semibold mb-4">Item Masters</h2>
+  <% if @item_masters.present? %>
+    <table class="min-w-[1000px] w-full text-[15px] border-separate border-spacing-y-1">
+      <thead class="bg-gray-200">
+        <tr>
+          <% ["Item Name", "Unit", "Category", "Opening Stock", "Purchase Price", "Sale Price", "Min Stock", "Is BOM", "Article No", "Loop Color", "Client", "Status", "Profile", "Start Serial", "End Serial", "Invoice", "Fuse", "SKU", "Tracking", "Current Status", "Mfg Date", "Dispatch Date", "Delivery Date"].each do |header| %>
+            <th class="px-4 py-3 text-center border-b border-gray-300 whitespace-nowrap"><%= header %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <% @item_masters.each_with_index do |item, index| %>
+          <tr class="<%= index.even? ? 'bg-white' : 'bg-gray-50' %> shadow-sm rounded">
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.item_name %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.unit_of_measurement %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.item_category %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.opening_stock %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.purchase_price %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.sale_price %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.minimum_stock_level %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.is_bOM ? "Yes" : "No" %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.article_no %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.loop_color %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.client %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.status %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.profile %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.start_serial_no %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.end_serial_no %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.invoice_no %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.fuse %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.sku_id %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.tracking_no %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.current_status %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.manufacturing_date %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.dispatch_date %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.delivery_date %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-600">No item masters available yet.</p>
+  <% end %>
 </div>
 
+
+  <!-- Optional: Show Decoded or Excel Data -->
+  <div class="p-6">
+    <% if @data.present? %>
+      <h2 class="text-xl font-semibold mb-2">Excel Contents</h2>
+      <table class="w-full table-auto border-collapse border border-gray-300 text-sm">
+        <% @data.each do |row| %>
+          <tr>
+            <% row.each do |cell| %>
+              <td class="border border-gray-300 px-2 py-1"><%= cell %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+
+    <% if @decoded_result.present? %>
+      <h3 class="text-xl font-semibold mt-6 mb-2">Decoded Result</h3>
+      <table class="w-full table-auto border-collapse border border-gray-300 text-sm">
+        <% @decoded_result.each do |key, value| %>
+          <tr>
+            <td class="border border-gray-300 px-2 py-1 font-medium"><%= key.to_s.humanize %></td>
+            <td class="border border-gray-300 px-2 py-1"><%= value %></td>
+          </tr>
+        <% end %>
+      </table>
+    <% end %>
+  </div>
+</div>
+
+<!-- JS for Modal & File Name -->
 <script>
+    function toggleItemMasterModal(show) {
+      const modal = document.getElementById("itemMasterModal");
+      if (modal) {
+        modal.classList.toggle("hidden", !show);
+        modal.classList.toggle("flex", show);
+      }
+    }
+
+    function toggleRawMaterialModal(show) {
+      const modal = document.getElementById("RawMaterialModal");
+      if (modal) {
+        modal.classList.toggle("hidden", !show);
+        modal.classList.toggle("flex", show);
+      }
+    }
+
+  function toggleModal(show) {
+    const modal = document.getElementById("uploadModal");
+    if (modal) {
+      modal.classList.toggle("hidden", !show);
+      modal.classList.toggle("flex", show);
+    }
+  }
+
   document.addEventListener("turbo:load", function () {
     const fileInput = document.getElementById("fileInput");
     const fileName = document.getElementById("fileName");

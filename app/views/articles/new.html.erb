@@ -1,0 +1,22 @@
+<%= form_with url: decode_article_path, method: :post, local: true do |f| %>
+    <%= f.label :article_number, "Enter Article Number" %>
+    <%= f.text_field :article_number, value: @article_number %>
+    <%= f.submit "Decode" %>
+  <% end %>
+  
+  <% if @decoded_result.present? %>
+    <h2>Decoded Information:</h2>
+    <table>
+      <% @decoded_result.each do |key, value| %>
+        <tr>
+          <td><%= key.to_s.humanize %></td>
+          <td><%= value.presence || "-" %></td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <% if @article_number.present? %>
+      <p>No result found for <strong><%= @article_number %></strong>.</p>
+    <% end %>
+  <% end %>
+  

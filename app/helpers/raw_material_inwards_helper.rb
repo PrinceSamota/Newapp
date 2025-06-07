@@ -1,0 +1,2 @@
+module RawMaterialInwardsHelper
+end

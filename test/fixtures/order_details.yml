@@ -1,0 +1,57 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  order: one
+  sheet_name: MyString
+  article_no: MyString
+  service: MyString
+  type: 
+  suspension: MyString
+  voltage: MyString
+  length: MyString
+  kelvin: MyString
+  cover: MyString
+  watt: MyString
+  stripe_set: MyString
+  profile: MyString
+  output_count: MyString
+  output_voltage: MyString
+  outputs_count: MyString
+  wiring_map: MyString
+  loop_color: MyString
+  client: MyString
+  status: MyString
+  profile2: MyString
+  start_serial_no: MyString
+  end_serial_no: MyString
+  invoice_no: MyString
+  fuse: MyString
+  sku_no: MyString
+
+two:
+  order: two
+  sheet_name: MyString
+  article_no: MyString
+  service: MyString
+  type: 
+  suspension: MyString
+  voltage: MyString
+  length: MyString
+  kelvin: MyString
+  cover: MyString
+  watt: MyString
+  stripe_set: MyString
+  profile: MyString
+  output_count: MyString
+  output_voltage: MyString
+  outputs_count: MyString
+  wiring_map: MyString
+  loop_color: MyString
+  client: MyString
+  status: MyString
+  profile2: MyString
+  start_serial_no: MyString
+  end_serial_no: MyString
+  invoice_no: MyString
+  fuse: MyString
+  sku_no: MyString

@@ -1,0 +1,22 @@
+<table class="min-w-full bg-white border border-gray-300 rounded-lg shadow">
+  <thead>
+    <tr class="bg-gray-100 text-left">
+      <th class="px-4 py-2 border">Item Master ID</th>
+      <th class="px-4 py-2 border">Finished Good SKU</th>
+      <th class="px-4 py-2 border">Unit</th>
+      <th class="px-4 py-2 border">Quantity</th>
+      <th class="px-4 py-2 border">Created At</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% boms.each do |bom| %>
+      <tr>
+        <td class="border px-4 py-2"><%= bom.item_master_id %></td>
+        <td class="border px-4 py-2"><%= bom.finished_good_sku %></td>
+        <td class="border px-4 py-2"><%= bom.unit %></td>
+        <td class="border px-4 py-2"><%= bom.quantity %></td>
+        <td class="border px-4 py-2"><%= bom.created_at.strftime("%d %b %Y %H:%M") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

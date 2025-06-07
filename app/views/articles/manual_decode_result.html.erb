@@ -1,0 +1,53 @@
+<header class="relative z-10 bg-white shadow-lg">
+  <div class="mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16 items-center w-full">
+      <div class="flex-shrink-0 text-xl font-bold">
+        <% if user_signed_in? %>
+          <%= link_to "Home", root_path, class: "px-4 py-2 transition font-bold" %>
+        <% end %>
+      </div>
+      <div class="space-x-4">
+        <% if user_signed_in? %>
+          <span class="text-gray-400">Hi, <%= current_user.email %></span>
+          <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "px-4 py-2 transition font-bold", form: { class: "inline" } %>
+        <% else %>
+          <%= link_to "Login", new_user_session_path, class: "px-4 py-2 transition font-bold" %>
+          <%= link_to "Sign Up", new_user_registration_path, class: "px-4 py-2 transition font-bold" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto mt-10 px-4 sm:px-6 lg:px-8">
+  <p class="mb-4 text-gray-600"><strong>Article Number:</strong> <%= article_number %></p>
+
+  <% if decoded.present? %>
+    <div class="overflow-x-auto shadow border rounded-lg w-full max-w-full bg-white">
+      <table class="min-w-full table-auto text-sm text-left text-gray-800">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 border border-gray-300">Attribute</th>
+            <th class="px-4 py-2 border border-gray-300">Value</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          <% decoded.each do |key, value| %>
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2 border border-gray-300 font-medium"><%= key.to_s.humanize %></td>
+              <td class="px-4 py-2 border border-gray-300"><%= value.presence || "-" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% else %>
+    <div class="bg-yellow-50 text-yellow-800 p-4 rounded border border-yellow-200 mt-4">
+      No decoded result found.
+    </div>
+  <% end %>
+
+  <div class="mt-6">
+    <%= link_to "Decode Another", manual_decode_path, class: "inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition" %>
+  </div>
+</main>

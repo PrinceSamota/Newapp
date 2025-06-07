@@ -1,24 +1,4 @@
-<header class="relative z-10 bg-white shadow-lg">
-<div class="mx-auto px-4 sm:px-6 lg:px-8">
-  <div class="flex justify-between h-16 items-center w-full">
-    <div class="flex-shrink-0 text-xl font-bold ">
-    <% if user_signed_in? %>
-    <%= link_to "Home", root_path, class: "px-4 py-2  cursor-pointer transition font-bold", form: { class: "inline" } %>
-  <% else %>
-  <% end %>
-    </div>
-    <div class="space-x-4">
-      <% if user_signed_in? %>
-        <span class="text-gray-400">Hi, <%= current_user.email %></span>
-        <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "px-4 py-2  cursor-pointer transition font-bold", form: { class: "inline" } %>
-      <% else %>
-        <%= link_to "Login", new_user_session_path, class: "px-4 py-2  cursor-pointer transition font-bold" %>
-        <%= link_to "Sign Up", new_user_registration_path, class: "px-4 py-2  cursor-pointer transition font-bold" %>
-      <% end %>
-    </div>
-  </div>
-</div>
-</header>
+
 <h1 class="text-2xl font-bold mb-4 mt-4">Order: <%= @order.name %></h1>
 
 <h2 class="text-xl font-semibold mb-2">Items</h2>
@@ -43,12 +23,24 @@
         <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Output <br/>Voltage</th>
         <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Outputs</th>
         <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Wiring <br/>Length</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Loop</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Client</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Status</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Profile</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Start Serial No</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">End Serial No</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Invoice No</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Fuse</th>
+        <th class="px-2 border border-gray-300 py-2 whitespace-nowrap">Sku NO</th>
       </tr>
     </thead>
 
     <tbody class="divide-y divide-gray-200">
-      <% @decoded_items.each do |item| %>
+      
+        <% @decoded_items.each do |item| %>
+         
         <tr class="hover:bg-gray-50">
+       
           <td class="px-2 border border-gray-300 py-2"><%= item[:sheet_name] %></td>
           <td class="px-2 border border-gray-300 py-2"><%= item[:article_no] %></td>
           <td class="px-2 border border-gray-300 py-2"><%= item[:service] || "-" %></td>
@@ -65,8 +57,18 @@
           <td class="px-2 border border-gray-300 py-2"><%= item[:output_voltage] || "-" %></td>
           <td class="px-2 border border-gray-300 py-2"><%= item[:outputs_count] || "-" %></td>
           <td class="px-2 border border-gray-300 py-2"><%= item[:wiring_map] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:loop_color] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:client] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:status] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:profile2] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:start_serial_no] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:end_serial_no] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:invoice_no] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:fuse] || "-" %></td>
+          <td class="px-2 border border-gray-300 py-2"><%= item[:sku_no] || "-" %></td>
         </tr>
-      <% end %>
+        
+     <% end %>
     </tbody>
   </table>
 </div>

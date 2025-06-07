@@ -1,0 +1,2 @@
+class RawMaterialInward < ApplicationRecord
+end
