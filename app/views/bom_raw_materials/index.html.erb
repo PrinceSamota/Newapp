@@ -1,0 +1,20 @@
+<h2 class="text-xl font-bold mt-10 mb-4">All Raw Materials</h2>
+
+<table class="table-auto w-full border">
+  <thead>
+    <tr class="bg-gray-200">
+      <th class="px-4 py-2 border">BOM ID</th>
+      <th class="px-4 py-2 border">Raw Material SKU</th>
+      <th class="px-4 py-2 border">Quantity</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @bom_raw_materials.each do |rm| %>
+      <tr class="hover:bg-gray-100">
+        <td class="border px-4 py-2"><%= rm.bom_id %></td>
+        <td class="border px-4 py-2"><%= rm.raw_material_sku %></td>
+        <td class="border px-4 py-2"><%= rm.quantity %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

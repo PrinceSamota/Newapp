@@ -1,0 +1,160 @@
+<div class="bg-white p-8 rounded-lg shadow-md max-w-full mx-auto mt-2">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">New BOM</h2>
+
+  <%= form_with model: @bom, local: true do |f| %>
+    <div class="space-y-6">
+      
+      <div class="flex items-center gap-6">
+        <div class="w-full">
+          <%= f.label :item_master_id, "Select Finished Good", class: "text-sm font-medium text-gray-700" %>
+          <%= f.collection_select :item_master_id, @item_masters, :id, :item_name, prompt: "Choose Item", class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+
+        <div class="w-full">
+          <%= f.label :finished_good, "Finished Good SKU", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :finished_good, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="w-full">
+          <%= f.label :quantity, "Quantity", class: "text-sm font-medium text-gray-700" %>
+          <%= f.number_field :quantity, value: 1, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+
+        <div class="w-full">
+          <%= f.label :unit, "Unit", class: "text-sm font-medium text-gray-700" %>
+          <%= f.text_field :unit, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8 flex justify-center">
+      <%= f.submit "Create BOM", class: "w-64 hover:bg-gray-100 px-6 py-2 rounded-full text-black font-bold transition cursor-pointer border-2 border-gray-400" %>
+    </div>
+  <% end %>
+</div>
+
+
+<div class="p-6 pt-0">
+  <h2 class="text-xl font-semibold mb-4">Created BOMs</h2>
+
+  <% if @boms.present? %>
+    <table class="w-full text-[15px] border-separate border-spacing-y-1">
+      <thead class="bg-gray-200">
+        <tr>
+          <% ["Item Master ID", "Finished Good SKU", "Unit", "Quantity", "Actions"].each do |header| %>
+            <th class="px-4 py-3 text-center border-b border-gray-300 whitespace-nowrap"><%= header %></th>
+          <% end %>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @boms.each_with_index do |bom, index| %>
+          <tr class="<%= index.even? ? 'bg-white' : 'bg-gray-50' %> shadow-sm rounded">
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.item_master_id %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.finished_good %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.unit %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.quantity %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center space-x-2">
+              <button 
+                onclick="openRawMaterialModal(<%= bom.id %>)"
+                class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2">
+                  <i class="fa-solid fa-plus"></i> Add Raw Material
+              </button>
+<% if bom.bom_raw_materials.any? %>
+              <button 
+                onclick="toggleRawMaterials(<%= bom.id %>)"
+                class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2">
+                  <i class="fa-solid fa-eye"></i>Show/Hide
+              </button>
+              <% else %>
+              <% end %>
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan="5" >
+              <turbo-frame id="bom_<%= bom.id %>_raw_materials" class="hidden transition-all duration-300">
+                <% if bom.bom_raw_materials.any? %>
+                  <table class="w-full text-sm border mt-2 mb-2 border-black">
+                    <thead class="bg-gray-100">
+                      <tr>
+                        <th class="px-3 py-2 text-left border-b border-gray-200">SKU</th>
+                        <th class="px-3 py-2 text-left border-b border-gray-200">Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% bom.bom_raw_materials.each do |rm| %>
+                        <tr class="bg-white">
+                          <td class="px-3 py-2 border-b border-gray-100"><%= rm.raw_material_sku %></td>
+                          <td class="px-3 py-2 border-b border-gray-100"><%= rm.quantity %></td>
+                        </tr>
+                      <% end %>
+                    </tbody>
+                  </table>
+                <% else %>
+                  <p class="text-sm text-gray-500 italic">No raw materials added yet.</p>
+                <% end %>
+              </turbo-frame>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-600">No BOM records found.</p>
+  <% end %>
+</div>
+
+
+
+<!-- Add Raw Material Modal -->
+<div id="rawMaterialModal" class="hidden fixed top-20 left-0 right-0 mx-auto w-full max-w-xl z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-6">
+  <button onclick="toggleRawMaterialModal(false)" class="absolute top-3 right-4 text-2xl font-bold text-gray-600 hover:text-red-600">&times;</button>
+
+  <h2 class="text-xl font-semibold mb-4 text-gray-800">Add Raw Material</h2>
+
+  <%= form_with url: bom_raw_materials_path, method: :post, data: { turbo: false }, html: { id: "raw-material-form" } do |f| %>
+    <%= hidden_field_tag :bom_id, nil, id: "modal_bom_id" %>
+
+    <div class="mb-4">
+      <%= f.label :raw_material_sku, "Raw Material SKU", class: "block text-gray-700 font-medium mb-1" %>
+      <%= f.text_field :raw_material_sku, class: "w-full border border-gray-300 rounded px-3 py-2" %>
+    </div>
+
+    <div class="mb-4">
+      <%= f.label :quantity, "Quantity", class: "block text-gray-700 font-medium mb-1" %>
+      <%= f.number_field :quantity, class: "w-full border border-gray-300 rounded px-3 py-2" %>
+    </div>
+
+    <div>
+      <%= f.submit "Save", class: "w-full hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" %>
+    </div>
+  <% end %>
+</div>
+
+
+<script>
+  function toggleRawMaterialModal(show) {
+    const modal = document.getElementById("rawMaterialModal");
+    if (modal) {
+      modal.classList.toggle("hidden", !show);
+    }
+  }
+
+  function openRawMaterialModal(bomId) {
+    const input = document.getElementById("modal_bom_id");
+    if (input) input.value = bomId;
+    toggleRawMaterialModal(true);
+  }
+  function toggleRawMaterials(bomId) {
+    const frame = document.getElementById(`bom_${bomId}_raw_materials`);
+    if (frame.classList.contains("hidden")) {
+      frame.classList.remove("hidden");
+    } else {
+      frame.classList.add("hidden");
+    }
+  }
+  
+</script>

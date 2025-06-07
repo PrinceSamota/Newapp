@@ -1,0 +1,64 @@
+<h1 class="text-2xl font-bold mb-4 text-gray-800">Item Master Details</h1>
+
+<div class="overflow-x-auto">
+  <table class="min-w-full divide-y divide-gray-300 border rounded-lg text-sm">
+    <thead class="bg-gray-800 text-white">
+      <tr>
+        <th class="px-4 py-2">Item Name</th>
+        <th class="px-4 py-2">Unit</th>
+        <th class="px-4 py-2">Category</th>
+        <th class="px-4 py-2">Opening Stock</th>
+        <th class="px-4 py-2">Purchase Price</th>
+        <th class="px-4 py-2">Sale Price</th>
+        <th class="px-4 py-2">Min Stock</th>
+        <th class="px-4 py-2">Is BOM</th>
+        <th class="px-4 py-2">Article No</th>
+        <th class="px-4 py-2">Loop Color</th>
+        <th class="px-4 py-2">Client</th>
+        <th class="px-4 py-2">Status</th>
+        <th class="px-4 py-2">Profile</th>
+        <th class="px-4 py-2">Start Serial</th>
+        <th class="px-4 py-2">End Serial</th>
+        <th class="px-4 py-2">Invoice</th>
+        <th class="px-4 py-2">Fuse</th>
+        <th class="px-4 py-2">SKU</th>
+        <th class="px-4 py-2">Tracking</th>
+        <th class="px-4 py-2">Current Status</th>
+        <th class="px-4 py-2">Mfg Date</th>
+        <th class="px-4 py-2">Dispatch Date</th>
+        <th class="px-4 py-2">Delivery Date</th>
+        <th class="px-4 py-2">Created At</th>
+        <th class="px-4 py-2">Updated At</th>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+      <tr class="hover:bg-gray-50">
+        <td class="px-4 py-2"><%= @item_master.item_name %></td>
+        <td class="px-4 py-2"><%= @item_master.unit_of_measurement %></td>
+        <td class="px-4 py-2"><%= @item_master.item_category %></td>
+        <td class="px-4 py-2"><%= @item_master.opening_stock %></td>
+        <td class="px-4 py-2"><%= @item_master.purchase_price %></td>
+        <td class="px-4 py-2"><%= @item_master.sale_price %></td>
+        <td class="px-4 py-2"><%= @item_master.minimum_stock_level %></td>
+        <td class="px-4 py-2"><%= @item_master.is_bOM ? "Yes" : "No" %></td>
+        <td class="px-4 py-2"><%= @item_master.article_no %></td>
+        <td class="px-4 py-2"><%= @item_master.loop_color %></td>
+        <td class="px-4 py-2"><%= @item_master.client %></td>
+        <td class="px-4 py-2"><%= @item_master.status ? "Active" : "Inactive" %></td>
+        <td class="px-4 py-2"><%= @item_master.profile %></td>
+        <td class="px-4 py-2"><%= @item_master.start_serial_no %></td>
+        <td class="px-4 py-2"><%= @item_master.end_serial_no %></td>
+        <td class="px-4 py-2"><%= @item_master.invoice_no %></td>
+        <td class="px-4 py-2"><%= @item_master.fuse %></td>
+        <td class="px-4 py-2"><%= @item_master.sku_no %></td>
+        <td class="px-4 py-2"><%= @item_master.tracking_no %></td>
+        <td class="px-4 py-2"><%= @item_master.current_status %></td>
+        <td class="px-4 py-2"><%= @item_master.manufacturing_date %></td>
+        <td class="px-4 py-2"><%= @item_master.dispatch_date %></td>
+        <td class="px-4 py-2"><%= @item_master.delivery_date %></td>
+        <td class="px-4 py-2"><%= @item_master.created_at.strftime('%d %b %Y') %></td>
+        <td class="px-4 py-2"><%= @item_master.updated_at.strftime('%d %b %Y') %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

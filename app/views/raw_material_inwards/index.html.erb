@@ -1,0 +1,30 @@
+<div class="p-6 pt-0">
+  <h2 class="text-xl font-semibold mb-4">All Raw Material Inwards</h2>
+
+  <% if @raw_material_inwards.present? %>
+    <table class="w-full text-[15px] border-separate border-spacing-y-1">
+      <thead class="bg-gray-200">
+        <tr>
+          <% ["Supplier Name", "Receiving Date", "SKU ID", "Item Name", "Quantity", "Purchase Price"].each do |header| %>
+            <th class="px-4 py-3 text-center border-b border-gray-300 whitespace-nowrap"><%= header %></th>
+          <% end %>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @raw_material_inwards.each_with_index do |inward, index| %>
+          <tr class="<%= index.even? ? 'bg-white' : 'bg-gray-50' %> shadow-sm rounded">
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.supplier_name %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.receiving_date %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.sku_id %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.item_name %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.receiving_quantity %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.purchase_price %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-600">No raw material inward records found.</p>
+  <% end %>
+</div>

@@ -10,25 +10,6 @@
     />
   </div>
 
-  <header class="relative z-10">
-    <div class="mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center w-full">
-        <div class="flex-shrink-0 text-xl font-bold text-blue-200">
-     
-        </div>
-        <div class="space-x-4">
-          <% if user_signed_in? %>
-            <span class="text-gray-400">Hi, <%= current_user.email %></span>
-            <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "px-4 py-2 text-white cursor-pointer transition font-bold", form: { class: "inline" } %>
-          <% else %>
-            <%= link_to "Login", new_user_session_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold" %>
-            <%= link_to "Sign Up", new_user_registration_path, class: "px-4 py-2 text-white cursor-pointer transition font-bold" %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </header>
-  
   <div class="relative z-10 flex justify-center items-center min-h-[calc(100vh-4rem)] px-4">
   <div class="bg-white bg-opacity-90 p-8 rounded-xl shadow-lg w-full max-w-md">
     <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Sign Up</h2>
