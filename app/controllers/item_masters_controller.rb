@@ -17,7 +17,13 @@ class ItemMastersController < ApplicationController
         end
       end
       
-  
+      def decode_article
+        article_number = params[:article_number]
+      
+        decoded = ArticleDecoder.new(article_number).decode
+      
+        render json: decoded
+      end
     private
   
     def item_master_params

@@ -12,6 +12,7 @@
   <%#= link_to 'Go to BOM Master', boms_path, class: "inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition" %>
 <%= link_to new_bom_path, class: "hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2" do %> <i class="fa-solid fa-plus"></i> Add BOM <% end %>
 <%= link_to new_raw_material_inward_path, class: "hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2" do %> <i class="fa-solid fa-plus"></i> Add Raw Material <% end %>
+  <%= link_to raw_material_inwards_path, class: "hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2" do %> <i class="fa-solid fa-eye"></i> View Raw Material <% end %>
 <%# <button onclick="toggleRawMaterialModal(true)" class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2">  Add Raw Material </button> %>
   <button onclick="toggleModal(true)" class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" ><i class="fa-solid fa-upload"></i> Upload File</button>
   <button onclick="toggleItemMasterModal(true)" class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2"><i class="fa-solid fa-plus"></i> Add Item Master</button>
@@ -29,9 +30,54 @@
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Add Item Master</h2>
 
     <%= form_with model: ItemMaster.new, url: item_masters_path, data: { turbo: false }, remote: true do |f| %>
+<div>
+  <label for="article_number">Article Number</label>
+ <%= f.label :article_number, "Article Number", class: "block font-medium" %>
+    <%= f.text_field :article_number, class: "w-full border px-3 py-2", id: "article_number_input" %>
+    <button type="button"
+    id="decode_button"
+    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+Decode
+</button>
+</div>
 
       <!-- Section: Basic Information -->
       <div class="grid grid-cols-2 gap-6">
+      <div class="mb-4">
+      <%= f.label :cover, "Cover", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :cover, id: "cover_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+    
+    <div class="mb-4">
+      <%= f.label :kelvin, "Kelvin", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :kelvin, id: "kelvin_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+    
+    <div class="mb-4">
+      <%= f.label :length, "Length", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :length, id: "length_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+    
+    <div class="mb-4">
+      <%= f.label :service, "Service", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :service, id: "service_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+    
+    <div class="mb-4">
+      <%= f.label :suspension, "Suspension", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :suspension, id: "suspension_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+    
+    <div class="mb-4">
+      <%= f.label :type, "Type", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :type, id: "type_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+    
+    <div class="mb-4">
+      <%= f.label :voltage, "Voltage", class: "block text-sm font-medium text-gray-700" %>
+      <%= f.text_field :voltage, id: "voltage_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    </div>
+
         <div>
           <%= f.label :item_name, "Item Name", class: "text-sm font-medium text-gray-700" %>
           <%= f.text_field :item_name, class: "border rounded-md px-3 py-2 w-full" %>
@@ -373,4 +419,74 @@
       });
     }
   });
+
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  const decodeButton = document.getElementById("decode_button");
+  const articleInput = document.getElementById("article_number_input");
+
+  if (!decodeButton || !articleInput) {
+    console.warn("Decode button or article input not found");
+    return;
+  }
+
+  decodeButton.addEventListener("click", function () {
+    const articleNumber = articleInput.value;
+
+    fetch("/item_masters/decode_article", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
+      },
+      body: JSON.stringify({ article_number: articleNumber })
+    })
+      .then(response => response.json())
+      .then(data => {
+                  const coverField = document.getElementById("cover_field");
+        if (coverField) coverField.value = data.cover || "";
+
+        const kelvinField = document.getElementById("kelvin_field");
+        if (kelvinField) kelvinField.value = data.kelvin || "";
+
+        const lengthField = document.getElementById("length_field");
+        if (lengthField) lengthField.value = data.length || "";
+
+        const serviceField = document.getElementById("service_field");
+        if (serviceField) serviceField.value = data.service || "";
+
+        const suspensionField = document.getElementById("suspension_field");
+        if (suspensionField) suspensionField.value = data.suspension || "";
+
+        const typeField = document.getElementById("type_field");
+        if (typeField) typeField.value = data.type || "";
+
+        const voltageField = document.getElementById("voltage_field");
+        if (voltageField) voltageField.value = data.voltage || "";
+
+        const nameField = document.querySelector('input[name="item_master[item_name]"]');
+        if (nameField) nameField.value = data.item_name || "";
+
+        const unitField = document.querySelector('input[name="item_master[unit_of_measurement]"]');
+        if (unitField) unitField.value = data.unit_of_measurement || "";
+
+        const categoryField = document.querySelector('input[name="item_master[item_category]"]');
+        if (categoryField) categoryField.value = data.item_category || "";
+
+        const clientField = document.querySelector('input[name="item_master[client]"]');
+        if (clientField) clientField.value = data.client || "";
+
+
+
+        console.log(data);
+      })
+      .catch(error => {
+        console.error("Error decoding:", error);
+        alert("Decoding failed. Please check article number.");
+      });
+  });
+});
+
 </script>
