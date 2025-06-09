@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   resources :boms, only: [:index, :new, :create]
   get 'item_masters/:id/details', to: 'item_masters#details'
+  post 'manual_decode', to: 'articles#manual_decode'
+post 'item_masters/decode_article', to: 'item_masters#decode_article'
   resources :bom_raw_materials
   resources :raw_material_inwards
   resources :orders, only: [:show]

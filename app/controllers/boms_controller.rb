@@ -15,13 +15,9 @@ class BomsController < ApplicationController
   def create
     @bom = Bom.new(bom_params)
     if @bom.save
-      @boms = Bom.order(created_at: :desc)
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to new_bom_path, notice: "BOM created successfully." }
-      end
+      redirect_to new_bom_path, notice: "BOM created successfully."
     else
-      @item_masters = ItemMaster.all
+      @item_masters = ItemMaster.where(is_bOM: true)
       @boms = Bom.order(created_at: :desc)
       render :new, status: :unprocessable_entity
     end
