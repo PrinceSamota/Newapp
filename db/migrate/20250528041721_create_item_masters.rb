@@ -21,6 +21,13 @@ class CreateItemMasters < ActiveRecord::Migration[7.2]
       t.string :sku_id
       t.string :tracking_no
       t.string :current_status
+      t.string :item_type
+      t.string :suspension
+      t.string :voltage
+      t.string :length
+      t.string :kelvin
+      t.string :cover
+      t.string :watt
       t.date :manufacturing_date
       t.date :dispatch_date
       t.date :delivery_date

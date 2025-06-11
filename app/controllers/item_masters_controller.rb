@@ -32,7 +32,7 @@ class ItemMastersController < ApplicationController
         :purchase_price, :sale_price, :minimum_stock_level, :is_bOM,
         :article_no, :loop_color, :client, :status, :profile, :start_serial_no,
         :end_serial_no, :invoice_no, :fuse, :tracking_no,
-        :current_status, :manufacturing_date, :dispatch_date, :delivery_date
+        :current_status, :item_type, :suspension, :voltage, :length, :kelvin, :cover, :watt, :manufacturing_date, :dispatch_date, :delivery_date
       )
     end
   end
