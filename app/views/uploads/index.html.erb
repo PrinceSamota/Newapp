@@ -31,53 +31,56 @@
 
     <%= form_with model: ItemMaster.new, url: item_masters_path, data: { turbo: false }, remote: true do |f| %>
 <div>
-  <label for="article_number">Article Number</label>
  <%= f.label :article_number, "Article Number", class: "block font-medium" %>
     <%= f.text_field :article_number, class: "w-full border px-3 py-2", id: "article_number_input" %>
     <button type="button"
     id="decode_button"
-    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+    class=" px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2 flex items-center gap-2 mt-2 mb-8">
 Decode
 </button>
 </div>
 
       <!-- Section: Basic Information -->
       <div class="grid grid-cols-2 gap-6">
-      <div class="mb-4">
-      <%= f.label :cover, "Cover", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :cover, id: "cover_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+      <div>
+      <%= f.label :cover, "Cover", class: " text-sm font-medium text-gray-700" %>
+      <%= f.text_field :cover, id: "cover_field", class: "border rounded-md px-3 py-2 w-full" %>
     </div>
     
-    <div class="mb-4">
-      <%= f.label :kelvin, "Kelvin", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :kelvin, id: "kelvin_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    <div>
+      <%= f.label :kelvin, "Kelvin", class: " text-sm font-medium text-gray-700" %>
+      <%= f.text_field :kelvin, id: "kelvin_field", class: "border rounded-md px-3 py-2 w-full" %>
     </div>
     
-    <div class="mb-4">
-      <%= f.label :length, "Length", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :length, id: "length_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    <div>
+      <%= f.label :length, "Length", class: " text-sm font-medium text-gray-700" %>
+      <%= f.text_field :length, id: "length_field", class: "border rounded-md px-3 py-2 w-full" %>
     </div>
     
-    <div class="mb-4">
-      <%= f.label :service, "Service", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :service, id: "service_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    <div>
+      <%= f.label :service, "Service", class: " text-sm font-medium text-gray-700" %>
+      <%= f.text_field :service, id: "service_field", class: "border rounded-md px-3 py-2 w-full" %>
     </div>
     
-    <div class="mb-4">
-      <%= f.label :suspension, "Suspension", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :suspension, id: "suspension_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    <div>
+      <%= f.label :suspension, "Suspension", class: " text-sm font-medium text-gray-700" %>
+      <%= f.text_field :suspension, id: "suspension_field", class: "border rounded-md px-3 py-2 w-full" %>
     </div>
     
-    <div class="mb-4">
-      <%= f.label :type, "Type", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :type, id: "type_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    <div>
+      <%= f.label :item_type, "Type", class: " text-sm font-medium text-gray-700" %>
+      <%= f.text_field :item_type, id: "type_field", class: "border rounded-md px-3 py-2 w-full" %>
     </div>
     
-    <div class="mb-4">
-      <%= f.label :voltage, "Voltage", class: "block text-sm font-medium text-gray-700" %>
-      <%= f.text_field :voltage, id: "voltage_field", class: "mt-1 block w-full rounded-md border-gray-300 shadow-sm" %>
+    <div>
+      <%= f.label :voltage, "Voltage", class: " text-sm font-medium text-gray-700" %>
+      <%= f.text_field :voltage, id: "voltage_field", class: "border rounded-md px-3 py-2 w-full" %>
     </div>
 
+    <div>
+    <%= f.label :watt, "Watt", class: " text-sm font-medium text-gray-700" %>
+    <%= f.text_field :watt, id: "watt_field", class: "border rounded-md px-3 py-2 w-full" %>
+  </div>
         <div>
           <%= f.label :item_name, "Item Name", class: "text-sm font-medium text-gray-700" %>
           <%= f.text_field :item_name, class: "border rounded-md px-3 py-2 w-full" %>
@@ -313,7 +316,7 @@ Decode
     <table class="min-w-[1000px] w-full text-[15px] border-separate border-spacing-y-1">
       <thead class="bg-gray-200">
         <tr>
-          <% ["Item Name", "Unit", "Category", "Opening Stock", "Purchase Price", "Sale Price", "Min Stock", "Is BOM", "Article No", "Loop Color", "Client", "Status", "Profile", "Start Serial", "End Serial", "Invoice", "Fuse", "SKU", "Tracking", "Current Status", "Mfg Date", "Dispatch Date", "Delivery Date"].each do |header| %>
+          <% ["Item Name", "Unit", "Category", "Opening Stock", "Purchase Price", "Sale Price", "Min Stock", "Is BOM", "Article No", "Loop Color", "Client", "Status", "Profile", "Start Serial", "End Serial", "Invoice", "Fuse", "SKU", "Tracking", "Current Status", "Type", "Suspension",  "Voltage", "Length", "Kelvin", "Cover", "Watt", "Mfg Date", "Dispatch Date", "Delivery Date"].each do |header| %>
             <th class="px-4 py-3 text-center border-b border-gray-300 whitespace-nowrap"><%= header %></th>
           <% end %>
         </tr>
@@ -341,6 +344,13 @@ Decode
             <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.sku_id %></td>
             <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.tracking_no %></td>
             <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.current_status %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.item_type %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.suspension %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.voltage %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.length %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.kelvin %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.cover %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.watt %></td>
             <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.manufacturing_date %></td>
             <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.dispatch_date %></td>
             <td class="px-4 py-3 border-b border-gray-200 text-center"><%= item.delivery_date %></td>
@@ -477,6 +487,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const clientField = document.querySelector('input[name="item_master[client]"]');
         if (clientField) clientField.value = data.client || "";
+
+        const wattField = document.querySelector('input[name="item_master[watt]"]');
+        if (wattField) wattField.value = data.watt || "";
 
 
 
