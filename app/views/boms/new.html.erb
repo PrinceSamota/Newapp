@@ -3,18 +3,35 @@
 
   <%= form_with model: @bom, local: true do |f| %>
     <div class="space-y-6">
-      
       <div class="flex items-center gap-6">
+        <!-- Item Master Dropdown -->
         <div class="w-full">
-          <%= f.label :item_master_id, "Select Finished Good", class: "text-sm font-medium text-gray-700" %>
-          <%= f.collection_select :item_master_id, @item_masters, :id, :item_name, prompt: "Choose Item", class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+          <%= f.label :item_master_id, "Select Item Master", class: "text-sm font-medium text-gray-700" %>
+          <select name="bom[item_master_id]" id="item_master_select"
+                  class="w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1">
+            <option value="">Choose Item</option>
+            <% @item_masters.each do |item| %>
+              <option value="<%= item.id %>"><%= item.item_name %></option>
+            <% end %>
+          </select>
         </div>
 
+        <!-- SKU ID Dropdown -->
         <div class="w-full">
-          <%= f.label :finished_good, "Finished Good SKU", class: "text-sm font-medium text-gray-700" %>
-          <%= f.text_field :finished_good, class: "w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1" %>
+          <%= f.label :sku_id, "Select SKU ID", class: "text-sm font-medium text-gray-700" %>
+          <select name="bom[sku_id]" id="sku_id_select"
+                  class="w-full border-b-2 border-gray-300 focus:outline-none focus:border-blue-600 py-1">
+            <option value="">Choose SKU</option>
+            <% @item_masters.each do |item| %>
+              <option value="<%= item.sku_id %>" data-item-id="<%= item.id %>"><%= item.sku_id %></option>
+            <% end %>
+          </select>
         </div>
       </div>
+
+      <%= tag.script id: "item_masters_json", type: "application/json" do %>
+        <%= raw @item_masters.to_json(only: [:id, :sku_id]) %>
+      <% end %>
 
       <div class="flex items-center gap-6">
         <div class="w-full">
@@ -35,7 +52,6 @@
   <% end %>
 </div>
 
-
 <div class="p-6 pt-0">
   <h2 class="text-xl font-semibold mb-4">Created BOMs</h2>
 
@@ -43,7 +59,7 @@
     <table class="w-full text-[15px] border-separate border-spacing-y-1">
       <thead class="bg-gray-200">
         <tr>
-          <% ["Item Master ID", "Finished Good SKU", "Unit", "Quantity", "Actions"].each do |header| %>
+          <% ["Item Master ID", "SKU ID", "Unit", "Quantity", "Actions"].each do |header| %>
             <th class="px-4 py-3 text-center border-b border-gray-300 whitespace-nowrap"><%= header %></th>
           <% end %>
         </tr>
@@ -52,29 +68,59 @@
       <tbody>
         <% @boms.each_with_index do |bom, index| %>
           <tr class="<%= index.even? ? 'bg-white' : 'bg-gray-50' %> shadow-sm rounded">
-            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.item_master_id %></td>
-            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.finished_good %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.item_master.item_name %></td>
+            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.sku_id %></td>
             <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.unit %></td>
             <td class="px-4 py-3 border-b border-gray-200 text-center"><%= bom.quantity %></td>
             <td class="px-4 py-3 border-b border-gray-200 text-center space-x-2">
               <button 
-                onclick="openRawMaterialModal(<%= bom.id %>)"
+                onclick="toggleInlineForm(<%= bom.id %>)"
                 class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2">
                   <i class="fa-solid fa-plus"></i> Add Raw Material
               </button>
-<% if bom.bom_raw_materials.any? %>
-              <button 
-                onclick="toggleRawMaterials(<%= bom.id %>)"
-                class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2">
-                  <i class="fa-solid fa-eye"></i>Show/Hide
-              </button>
-              <% else %>
+
+              <% if bom.bom_raw_materials.any? %>
+                <button 
+                  onclick="toggleRawMaterials(<%= bom.id %>)"
+                  class="hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2">
+                    <i class="fa-solid fa-eye"></i> Show/Hide
+                </button>
               <% end %>
             </td>
           </tr>
 
+          <!-- Inline Add Raw Material Form -->
+          <tr id="inline_form_<%= bom.id %>" class="hidden bg-gray-50">
+            <td colspan="5" class="px-4 py-3">
+              <%= form_with url: bom_raw_materials_path, method: :post, data: { turbo: false } do |f| %>
+                <%= hidden_field_tag :bom_id, bom.id %>
+                <div class="flex items-center gap-4">
+                  <div class="w-full">
+                    <label for="item_master_id" class="block text-sm font-medium text-gray-700">Item Master</label>
+                    <select name="item_master_id" class="w-full border border-gray-300 rounded px-3 py-2">
+                      <option value="">Choose an Item</option>
+                      <% @item_masters.each do |item| %>
+                        <option value="<%= item.id %>"><%= item.item_name %> (<%= item.sku_id %>)</option>
+                      <% end %>
+                    </select>
+                  </div>
+
+                  <div class="w-1/3">
+                    <label for="quantity" class="block text-sm font-medium text-gray-700">Quantity</label>
+                    <%= f.number_field :quantity, class: "w-full border border-gray-300 rounded px-3 py-2" %>
+                  </div>
+
+                  <div class="mt-6">
+                    <%= f.submit "Save", class: "hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" %>
+                  </div>
+                </div>
+              <% end %>
+            </td>
+          </tr>
+
+          <!-- Raw Material Table Section -->
           <tr>
-            <td colspan="5" >
+            <td colspan="5">
               <turbo-frame id="bom_<%= bom.id %>_raw_materials" class="hidden transition-all duration-300">
                 <% if bom.bom_raw_materials.any? %>
                   <table class="w-full text-sm border mt-2 mb-2 border-black">
@@ -87,7 +133,7 @@
                     <tbody>
                       <% bom.bom_raw_materials.each do |rm| %>
                         <tr class="bg-white">
-                          <td class="px-3 py-2 border-b border-gray-100"><%= rm.raw_material_sku %></td>
+                          <td class="px-3 py-2 border-b border-gray-100"><%= rm.item_master.item_name %></td>
                           <td class="px-3 py-2 border-b border-gray-100"><%= rm.quantity %></td>
                         </tr>
                       <% end %>
@@ -107,47 +153,7 @@
   <% end %>
 </div>
 
-
-
-<!-- Add Raw Material Modal -->
-<div id="rawMaterialModal" class="hidden fixed top-20 left-0 right-0 mx-auto w-full max-w-xl z-50 bg-white border border-gray-300 rounded-lg shadow-lg p-6">
-  <button onclick="toggleRawMaterialModal(false)" class="absolute top-3 right-4 text-2xl font-bold text-gray-600 hover:text-red-600">&times;</button>
-
-  <h2 class="text-xl font-semibold mb-4 text-gray-800">Add Raw Material</h2>
-
-  <%= form_with url: bom_raw_materials_path, method: :post, data: { turbo: false }, html: { id: "raw-material-form" } do |f| %>
-    <%= hidden_field_tag :bom_id, nil, id: "modal_bom_id" %>
-
-    <div class="mb-4">
-      <%= f.label :raw_material_sku, "Raw Material SKU", class: "block text-gray-700 font-medium mb-1" %>
-      <%= f.text_field :raw_material_sku, class: "w-full border border-gray-300 rounded px-3 py-2" %>
-    </div>
-
-    <div class="mb-4">
-      <%= f.label :quantity, "Quantity", class: "block text-gray-700 font-medium mb-1" %>
-      <%= f.number_field :quantity, class: "w-full border border-gray-300 rounded px-3 py-2" %>
-    </div>
-
-    <div>
-      <%= f.submit "Save", class: "w-full hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" %>
-    </div>
-  <% end %>
-</div>
-
-
 <script>
-  function toggleRawMaterialModal(show) {
-    const modal = document.getElementById("rawMaterialModal");
-    if (modal) {
-      modal.classList.toggle("hidden", !show);
-    }
-  }
-
-  function openRawMaterialModal(bomId) {
-    const input = document.getElementById("modal_bom_id");
-    if (input) input.value = bomId;
-    toggleRawMaterialModal(true);
-  }
   function toggleRawMaterials(bomId) {
     const frame = document.getElementById(`bom_${bomId}_raw_materials`);
     if (frame.classList.contains("hidden")) {
@@ -156,5 +162,56 @@
       frame.classList.add("hidden");
     }
   }
-  
+
+  function toggleInlineForm(bomId) {
+    const row = document.getElementById(`inline_form_${bomId}`);
+    if (row) {
+      row.classList.toggle("hidden");
+    }
+  }
+
+  function setupSyncDropdowns() {
+    const jsonElement = document.getElementById("item_masters_json");
+    if (!jsonElement) return;
+
+    const itemMasters = JSON.parse(jsonElement.textContent);
+    const itemSelect = document.getElementById("item_master_select");
+    const skuSelect = document.getElementById("sku_id_select");
+
+    if (!itemSelect || !skuSelect) return;
+
+    function syncByItemId(id) {
+      const item = itemMasters.find(i => i.id === parseInt(id));
+      if (item) {
+        for (const option of skuSelect.options) {
+          option.selected = option.value === item.sku_id;
+        }
+      }
+    }
+
+    function syncBySkuId(skuId) {
+      const item = itemMasters.find(i => i.sku_id === skuId);
+      if (item) {
+        for (const option of itemSelect.options) {
+          option.selected = option.value === item.id.toString();
+        }
+      }
+    }
+
+    itemSelect.addEventListener("change", function () {
+      if (this.value !== "") {
+        syncByItemId(this.value);
+      }
+    });
+
+    skuSelect.addEventListener("change", function () {
+      if (this.value !== "") {
+        syncBySkuId(this.value);
+      }
+    });
+  }
+
+  document.addEventListener("turbo:load", function () {
+    setupSyncDropdowns();
+  });
 </script>

@@ -8,6 +8,9 @@ post 'item_masters/decode_article', to: 'item_masters#decode_article'
   resources :orders, only: [:show]
   resources :availabilities, only: [:new, :create, :index]
   resources :item_masters, only: [:create, :show]
+  resources :organizations
+  resources :measurements, only: [:new, :create, :index]
+  resources :categories, only: [:new, :create, :index]
   root 'uploads#index'
   resources :uploads, only: [:index, :create, :show]
   post 'decode_article', to: 'articles#decode'

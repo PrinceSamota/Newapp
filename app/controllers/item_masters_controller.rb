@@ -5,7 +5,7 @@ class ItemMastersController < ApplicationController
       
       def create
         @item_master = ItemMaster.new(item_master_params)
-      
+        @item_master.org_id = current_user.org_id 
         respond_to do |format|
           if @item_master.save
             format.html { redirect_to root_path, notice: "Item Master successfully created." }
@@ -28,11 +28,8 @@ class ItemMastersController < ApplicationController
   
     def item_master_params
       params.require(:item_master).permit(
-        :item_name, :unit_of_measurement, :item_category, :opening_stock,
-        :purchase_price, :sale_price, :minimum_stock_level, :is_bOM,
-        :article_no, :loop_color, :client, :status, :profile, :start_serial_no,
-        :end_serial_no, :invoice_no, :fuse, :tracking_no,
-        :current_status, :item_type, :suspension, :voltage, :length, :kelvin, :cover, :watt, :manufacturing_date, :dispatch_date, :delivery_date
+        :item_name, :opening_stock,
+        :purchase_price, :sale_price, :is_bOM, :minimum_stock_level, :category_id, :measurement_id, :org_id
       )
     end
   end

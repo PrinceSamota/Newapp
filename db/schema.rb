@@ -50,7 +50,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
 
   create_table "bom_raw_materials", force: :cascade do |t|
     t.integer "bom_id", null: false
-    t.string "raw_material_sku"
+    t.string "item_master_id"
     t.integer "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -60,47 +60,37 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
   create_table "boms", force: :cascade do |t|
     t.string "bom_number"
     t.integer "item_master_id", null: false
-    t.string "finished_good"
+    t.string "sku_id"
     t.integer "quantity"
     t.string "unit"
+    t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["item_master_id"], name: "index_boms_on_item_master_id"
   end
 
+  create_table "categories", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "item_masters", force: :cascade do |t|
     t.string "item_name"
-    t.string "unit_of_measurement"
-    t.string "item_category"
     t.integer "opening_stock"
     t.integer "purchase_price"
     t.integer "sale_price"
-    t.integer "minimum_stock_level"
     t.boolean "is_bOM"
-    t.string "article_no"
-    t.string "loop_color"
-    t.string "client"
-    t.boolean "status"
-    t.string "profile"
-    t.string "start_serial_no"
-    t.string "end_serial_no"
-    t.string "invoice_no"
-    t.string "fuse"
     t.string "sku_id"
-    t.string "tracking_no"
-    t.string "current_status"
-    t.string "item_type"
-    t.string "suspension"
-    t.string "voltage"
-    t.string "length"
-    t.string "kelvin"
-    t.string "cover"
-    t.string "watt"
-    t.date "manufacturing_date"
-    t.date "dispatch_date"
-    t.date "delivery_date"
+    t.integer "minimum_stock_level"
+    t.integer "category_id"
+    t.integer "measurement_id"
+    t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_item_masters_on_category_id"
+    t.index ["measurement_id"], name: "index_item_masters_on_measurement_id"
   end
 
   create_table "items", force: :cascade do |t|
@@ -120,6 +110,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
     t.string "tracking_no"
     t.string "sku_no"
     t.index ["order_id"], name: "index_items_on_order_id"
+  end
+
+  create_table "measurements", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "order_details", force: :cascade do |t|
@@ -185,6 +182,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
     t.string "sku_no"
   end
 
+  create_table "organizations", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.string "description"
@@ -212,6 +215,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
+    t.string "name"
+    t.integer "org_id"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -225,6 +230,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bom_raw_materials", "boms"
   add_foreign_key "boms", "item_masters"
+  add_foreign_key "item_masters", "categories"
+  add_foreign_key "item_masters", "measurements"
   add_foreign_key "items", "orders"
   add_foreign_key "order_details", "orders"
+  add_foreign_key "users", "organizations", column: "org_id"
 end

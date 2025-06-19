@@ -1,0 +1,9 @@
+<h1>Measurements</h1>
+
+<%= link_to "New Measurement", new_measurement_path %>
+
+<ul>
+  <% @measurements.each do |measurement| %>
+    <li><%= measurement.name %></li>
+  <% end %>
+</ul>

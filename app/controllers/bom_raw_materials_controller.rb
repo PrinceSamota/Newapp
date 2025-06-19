@@ -15,6 +15,6 @@
       private
     
       def raw_material_params
-        params.permit(:bom_id, :raw_material_sku, :quantity)
+        params.permit(:bom_id, :item_master_id, :quantity)
       end
     end
