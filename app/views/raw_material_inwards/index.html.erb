@@ -1,29 +1,80 @@
-<div class="p-6 pt-0">
+<!-- Raw Material Inward Form -->
+<div class="bg-white p-8 rounded-2xl shadow-lg max-w-full mx-auto mt-6 overflow-auto">
+  <%= form_with model: @raw_material_inward, url: raw_material_inwards_path, local: true do |form| %>
+    <div class="flex flex-col lg:flex-row lg:items-end gap-6">
+      <!-- Supplier Name -->
+      <div class="flex-1 min-w-[200px]">
+        <%= form.label :supplier_name, "Supplier Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.text_field :supplier_name, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+      </div>
+
+      <!-- Receiving Date -->
+      <div class="flex-1 min-w-[200px]">
+        <%= form.label :receiving_date, "Receiving Date", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.date_field :receiving_date, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+      </div>
+
+      <!-- SKU ID -->
+      <div class="flex-1 min-w-[200px]">
+        <%= form.label :sku_id, "SKU ID", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.text_field :sku_id, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+      </div>
+
+      <!-- Item Name -->
+      <div class="flex-1 min-w-[200px]">
+        <%= form.label :item_name, "Item Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.text_field :item_name, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+      </div>
+
+      <!-- Quantity -->
+      <div class="flex-1 min-w-[150px]">
+        <%= form.label :receiving_quantity, "Receiving Quantity", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.number_field :receiving_quantity, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+      </div>
+
+      <!-- Purchase Price -->
+      <div class="flex-1 min-w-[150px]">
+        <%= form.label :purchase_price, "Purchase Price", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.text_field :purchase_price, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+      </div>
+
+      <!-- Submit -->
+      <div class="mt-1 lg:mt-0">
+        <%= form.submit "Create",
+              class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition text-sm whitespace-nowrap cursor-pointer" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- Raw Material Inwards Table -->
+<div class="p-6 pt-12">
   <h2 class="text-xl font-semibold mb-4">All Raw Material Inwards</h2>
 
   <% if @raw_material_inwards.present? %>
-    <table class="w-full text-[15px] border-separate border-spacing-y-1">
-      <thead class="bg-gray-200">
-        <tr>
-          <% ["Supplier Name", "Receiving Date", "SKU ID", "Item Name", "Quantity", "Purchase Price"].each do |header| %>
-            <th class="px-4 py-3 text-center border-b border-gray-300 whitespace-nowrap"><%= header %></th>
-          <% end %>
-        </tr>
-      </thead>
-
-      <tbody>
-        <% @raw_material_inwards.each_with_index do |inward, index| %>
-          <tr class="<%= index.even? ? 'bg-white' : 'bg-gray-50' %> shadow-sm rounded">
-            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.supplier_name %></td>
-            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.receiving_date %></td>
-            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.sku_id %></td>
-            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.item_name %></td>
-            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.receiving_quantity %></td>
-            <td class="px-4 py-3 border-b border-gray-200 text-center"><%= inward.purchase_price %></td>
+    <div class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
+      <table class="min-w-full text-sm">
+        <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+          <tr>
+            <% ["Supplier Name", "Receiving Date", "SKU ID", "Item Name", "Quantity", "Purchase Price"].each_with_index do |header, index| %>
+              <th class="px-6 py-3 text-center border-r border-gray-300 <%= 'last:border-r-0' if index == 5 %>"><%= header %></th>
+            <% end %>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody class="bg-white">
+          <% @raw_material_inwards.each_with_index do |inward, index| %>
+            <tr class="border-b border-gray-200 <%= index.even? ? '' : 'bg-gray-50' %>">
+              <td class="px-6 py-3 text-center border-r border-gray-200"><%= inward.supplier_name %></td>
+              <td class="px-6 py-3 text-center border-r border-gray-200"><%= inward.receiving_date %></td>
+              <td class="px-6 py-3 text-center border-r border-gray-200"><%= inward.sku_id %></td>
+              <td class="px-6 py-3 text-center border-r border-gray-200"><%= inward.item_name %></td>
+              <td class="px-6 py-3 text-center border-r border-gray-200"><%= inward.receiving_quantity %></td>
+              <td class="px-6 py-3 text-center"><%= inward.purchase_price %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   <% else %>
     <p class="text-gray-600">No raw material inward records found.</p>
   <% end %>

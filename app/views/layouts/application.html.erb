@@ -25,61 +25,17 @@
 
 
   <!-- Main Layout (fills remaining screen height after header) -->
-  <div class="flex flex-row h-screen overflow-hidden bg-[#e5e1dc] ">
-  <!-- Sidebar -->
-  <div class="bg-white w-64 transition-all duration-300 ease-in-out overflow-hidden flex flex-col border-r-1 border-gray-200">
-    <div class="mt-6 space-y-4 px-4">
-    <div class="flex items-center gap-4 transition-colors duration-200 text-black hover:text-black rounded-md p-2 w-full ml-2">
-          <a href="/" class="text-2xl font-extrabold text-black  transition">
-            L-Care
-          </a>
-        </div>
+  <div class="flex flex-col h-screen bg-[#e5e1dc]">
 
-      <%= link_to uploads_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
-        <i class="fa-regular fa-file"></i>
-        <span class="sidebar-label">Item Master</span>
-      <% end %>
-
-      <%= link_to new_raw_material_inward_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
-        <i class="fa-solid fa-plus text-lg"></i>
-        <span class="sidebar-label">Add Raw Material</span>
-      <% end %>
-
-      <%= link_to raw_material_inwards_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
-        <i class="fa-solid fa-eye text-lg"></i>
-        <span class="sidebar-label">View Raw Material</span>
-      <% end %>
-
-      <%= link_to new_bom_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
-        <i class="fa-solid fa-plus text-lg"></i>
-        <span class="sidebar-label">BOM</span>
-      <% end %>
-      <%= link_to new_organization_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
-        <i class="fa-solid fa-plus text-lg"></i>
-        <span class="sidebar-label">Organization</span>
-      <% end %>
-    <%= link_to new_category_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
-        <i class="fa-solid fa-plus text-lg"></i>
-        <span class="sidebar-label">Category</span>
-      <% end %>
-       <%= link_to new_measurement_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
-        <i class="fa-solid fa-plus text-lg"></i>
-        <span class="sidebar-label">Measurement</span>
-      <% end %>
-      
-    </div>
-  </div>
-
-    <!-- Main Content -->
-    <main class="flex-1 overflow-auto bg-[#f9fafb] ">
-    <header class="bg-white text-white h-18 border-b-1 border-gray-200">
+  <!-- Header (always on top) -->
+  <header class="bg-white text-white h-18 border-b border-gray-200">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between items-center h-18">
         <!-- Logo -->
         <div class="flex items-center">
-
+          <!-- Add logo if needed -->
         </div>
-       
+
         <!-- Right Navigation -->
         <div class="flex items-center space-x-4">
           <% if user_signed_in? %>
@@ -90,16 +46,43 @@
           <% else %>
             <%= link_to "Login", new_user_session_path,
                   class: " px-4 py-1 text-black font-bold transition cursor-pointer" %>
-            <%= link_to "Sign Up", new_user_registration_path,
-                  class: " px-4 py-1 text-black font-bold transition cursor-pointer" %>
           <% end %>
         </div>
       </div>
     </div>
   </header>
+
+  <!-- Body: Sidebar + Main Content -->
+  <div class="flex flex-1 overflow-hidden">
+    
+    <% if user_signed_in? %>
+      <!-- Sidebar -->
+      <div class="bg-white w-64 transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200">
+        <div class="mt-6 space-y-4 px-4">
+          <%= link_to uploads_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
+            <i class="fa-regular fa-file"></i>
+            <span class="font-bold">Item Master</span>
+          <% end %>
+
+          <%= link_to new_raw_material_inward_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
+            <i class="fa-solid fa-plus"></i>
+            <span class="font-bold">Raw Material</span>
+          <% end %>
+
+          <%= link_to new_bom_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
+            <i class="fa-solid fa-plus"></i>
+            <span class="font-bold">Bill of Material</span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <!-- Main content area -->
+    <main class="flex-1 overflow-auto bg-[#f9fafb] p-4">
       <%= yield %>
     </main>
+
   </div>
-</body>
+</div>
 
 </html>
