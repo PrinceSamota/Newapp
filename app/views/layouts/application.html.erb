@@ -18,42 +18,93 @@
       <%= stylesheet_link_tag "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" %>
   </head>
 
-  <body>
+  <body class="bg-gray-100">
   <p class="notice"><%#= notice %></p>
-       <p class="alert"><%#= alert %></p>
-       <!-- Header -->
-       <header class="shadow-md bg-gray-100 text-white">
-         <div class=" mx-auto px-4 sm:px-6 lg:px-8">
-           <div class="flex justify-between items-center h-16">
-     
-             <!-- Logo -->
-             <div class="flex items-center">
-               <a href="/" class="text-2xl font-extrabold text-black hover:text-white transition">
-                 L-Care
-               </a>
-             </div>
-     
-             <!-- Right Navigation -->
-             <div class="flex items-center space-x-4">
-               <% if user_signed_in? %>
-                 <span class="text-gray-500">Hi, <%= current_user.email %></span>
-     
-                
-     
-                 <!-- Logout -->
-                 <%= button_to "Logout", destroy_user_session_path, method: :delete,
-                       class: " hover:bg-gray-300 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2",
-                       form: { class: "inline" } %>
-               <% else %>
-                 <%= link_to "Login", new_user_session_path,
-                       class: "hover:bg-gray-300 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" %>
-                 <%= link_to "Sign Up", new_user_registration_path,
-                       class: "hover:bg-gray-300 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" %>
-               <% end %>
-             </div>
-           </div>
-         </div>
-       </header>
-    <%= yield %>
-  </body>
+  <p class="alert"><%#= alert %></p>
+
+
+
+  <!-- Main Layout (fills remaining screen height after header) -->
+  <div class="flex flex-row h-screen overflow-hidden bg-[#e5e1dc] ">
+  <!-- Sidebar -->
+  <div class="bg-white w-64 transition-all duration-300 ease-in-out overflow-hidden flex flex-col border-r-1 border-gray-200">
+    <div class="mt-6 space-y-4 px-4">
+    <div class="flex items-center gap-4 transition-colors duration-200 text-black hover:text-black rounded-md p-2 w-full ml-2">
+          <a href="/" class="text-2xl font-extrabold text-black  transition">
+            L-Care
+          </a>
+        </div>
+
+      <%= link_to uploads_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
+        <i class="fa-regular fa-file"></i>
+        <span class="sidebar-label">Item Master</span>
+      <% end %>
+
+      <%= link_to new_raw_material_inward_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
+        <i class="fa-solid fa-plus text-lg"></i>
+        <span class="sidebar-label">Add Raw Material</span>
+      <% end %>
+
+      <%= link_to raw_material_inwards_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
+        <i class="fa-solid fa-eye text-lg"></i>
+        <span class="sidebar-label">View Raw Material</span>
+      <% end %>
+
+      <%= link_to new_bom_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
+        <i class="fa-solid fa-plus text-lg"></i>
+        <span class="sidebar-label">BOM</span>
+      <% end %>
+      <%= link_to new_organization_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
+        <i class="fa-solid fa-plus text-lg"></i>
+        <span class="sidebar-label">Organization</span>
+      <% end %>
+    <%= link_to new_category_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
+        <i class="fa-solid fa-plus text-lg"></i>
+        <span class="sidebar-label">Category</span>
+      <% end %>
+       <%= link_to new_measurement_path, class: "flex items-center gap-4 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md p-2 w-full cursor-pointer" do %>
+        <i class="fa-solid fa-plus text-lg"></i>
+        <span class="sidebar-label">Measurement</span>
+      <% end %>
+      
+    </div>
+  </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto bg-[#f9fafb] ">
+    <header class="bg-white text-white h-18 border-b-1 border-gray-200">
+    <div class="mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-18">
+        <!-- Logo -->
+        <div class="flex items-center">
+      <%= link_to "Org", new_organization_path,
+                  class: " px-4 py-1 text-black font-bold transition cursor-pointer" %>
+                     <%= link_to "Measurement", new_measurement_path,
+                  class: " px-4 py-1 text-black font-bold transition cursor-pointer" %>
+                     <%= link_to "Category", new_category_path,
+                  class: " px-4 py-1 text-black font-bold transition cursor-pointer" %>
+        </div>
+       
+        <!-- Right Navigation -->
+        <div class="flex items-center space-x-4">
+          <% if user_signed_in? %>
+            <span class="text-gray-500">Hi, <%= current_user.name %></span>
+            <%= button_to "Logout", destroy_user_session_path, method: :delete,
+                  class: "hover:bg-gray-300 px-4 py-1 text-black font-bold transition cursor-pointer ",
+                  form: { class: "inline" } %>
+          <% else %>
+            <%= link_to "Login", new_user_session_path,
+                  class: " px-4 py-1 text-black font-bold transition cursor-pointer" %>
+            <%= link_to "Sign Up", new_user_registration_path,
+                  class: " px-4 py-1 text-black font-bold transition cursor-pointer" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </header>
+      <%= yield %>
+    </main>
+  </div>
+</body>
+
 </html>

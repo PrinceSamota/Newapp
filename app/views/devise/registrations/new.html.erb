@@ -18,9 +18,19 @@
       <%= render "devise/shared/error_messages", resource: resource %>
 
       <div class="mb-4">
+      <%= f.label :name, class: "block text-gray-700 font-semibold mb-2" %>
+      <%= f.text_field :name, autofocus: true,  class: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+
+      <div class="mb-4">
         <%= f.label :email, class: "block text-gray-700 font-semibold mb-2" %>
         <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" %>
       </div>
+
+    <div>
+      <%= f.label :org_id, "Organization" %>
+      <%= f.collection_select :org_id, Organization.all, :id, :name, prompt: "Select Organization" %>
+    </div>
 
       <div class="mb-4">
         <%= f.label :password, class: "block text-gray-700 font-semibold mb-2" %>

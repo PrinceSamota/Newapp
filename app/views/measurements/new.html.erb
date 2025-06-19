@@ -1,0 +1,12 @@
+<h1>New Measurement</h1>
+
+<%= form_with model: @measurement, local: true do |form| %>
+  <div>
+    <%= form.label :name %><br>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.submit "Create Measurement" %>
+  </div>
+<% end %>
