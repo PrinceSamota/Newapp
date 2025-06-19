@@ -6,11 +6,14 @@
     <button type="button" onclick="document.getElementById('newCategoryForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
   </div>
 
+  <% if current_user.present? %>
   <%= select_tag "item_master[category_id]",
     options_from_collection_for_select(Category.where(org_id: current_user.org_id), :id, :name, selected_category_id),
     include_blank: "Select Category",
     class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
-
+<% else %>
+  <p class="text-red-500 text-sm">Please log in to select category.</p>
+<% end %>
   <!-- Add category input -->
   <div id="newCategoryForm" class="mt-2 <%= 'hidden' unless show_form %>">
     <div class="flex gap-2">

@@ -1,4 +1,5 @@
 class UploadsController < ApplicationController
+  before_action :authenticate_user!
   def index
     @decoded_result = nil
     @article_number = nil
