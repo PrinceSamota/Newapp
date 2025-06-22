@@ -1,0 +1,71 @@
+<div class="flex justify-between items-center mb-4">
+  <%= link_to root_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 border border-gray-300" do %>
+    <i class="fa-solid fa-arrow-left"></i>
+    <span class="font-bold">Back</span>
+  <% end %>
+
+  <%= link_to new_bill_of_material_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 border border-gray-300" do %>
+    <i class="fa-solid fa-plus"></i>
+    <span class="font-bold">BOM</span>
+  <% end %>
+</div>
+
+<div class="p-6 max-w-full mx-auto bg-white shadow-md rounded-md">
+  <h1 class="text-2xl font-bold mb-6">All Bills of Material</h1>
+
+  <% if @bill_of_materials.any? %>
+    <table class="w-full border border-gray-300 text-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border px-4 py-2 text-left">BOM Number</th>
+          <th class="border px-4 py-2 text-left">BOM Name</th>
+          <th class="border px-4 py-2 text-left">Finished Good</th>
+          <th class="border px-4 py-2 text-left">Raw Materials</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @bill_of_materials.each do |bom| %>
+          <tr class="border-b hover:bg-gray-50">
+            <td class="border px-4 py-2 align-top"><%= bom.bom_number %></td>
+            <td class="border px-4 py-2 align-top"><%= bom.name %></td>
+
+            <!-- Finished Good Info -->
+            <td class="border px-4 py-2 align-top">
+              <% if bom.finished_good.present? %>
+                <div><strong>SKU:</strong> <%= bom.finished_good.sku_id %></div>
+                <div><strong>Item:</strong> <%= bom.finished_good.item_name %></div>
+                <div><strong>Qty:</strong> <%= bom.finished_good.quantity %> <%= bom.finished_good.unit %></div>
+                <div><strong>Unit:</strong> <%= bom.finished_good.unit %> </div>
+              <% else %>
+                <span class="text-gray-500 italic">N/A</span>
+              <% end %>
+            </td>
+
+            <!-- Raw Materials List -->
+            <td class="border px-4 py-2 align-top">
+              <% if bom.bom_raw_material_items.any? %>
+                <ul class="list-disc pl-4">
+                  <% bom.bom_raw_material_items.each do |rm| %>
+                    <li>
+                      <strong>SKU:</strong> <%= rm.sku_id %>,
+                      <strong>Item:</strong> <%= rm.item_name %>,
+                      <strong>Qty:</strong> <%= rm.quantity %> ,
+                      <strong>Unit:</strong> <%= rm.unit %> 
+                    </li>
+                  <% end %>
+                </ul>
+              <% else %>
+                <span class="text-gray-500 italic">No Raw Materials</span>
+              <% end %>
+            </td>
+
+            <!-- Actions -->
+         
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-gray-500 italic">No BOMs found.</p>
+  <% end %>
+</div>

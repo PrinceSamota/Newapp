@@ -1,0 +1,33 @@
+<div class="flex justify-between items-center mb-4">
+  <%= link_to root_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 border border-gray-300" do %>
+    <i class="fa-solid fa-arrow-left"></i>
+    <span class="font-bold">Back</span>
+  <% end %>
+
+  <%= link_to new_raw_material_stock_batch_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-32 border border-gray-300" do %>
+    <i class="fa-solid fa-plus"></i>
+    <span class="font-bold">RMI Stock</span>
+  <% end %>
+</div>
+
+<table class="w-full text-sm border border-gray-200 rounded-lg shadow-sm mb-6">
+  <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
+    <tr>
+      <th class="px-4 py-3 text-left border-r border-gray-300">Supplier Name</th>
+      <th class="px-4 py-3 text-left border-r border-gray-300">Receiving Date</th>
+      <th class="px-4 py-3 text-left">Invoice Number</th>
+    </tr>
+  </thead>
+  <tbody>
+   <% @batches.each do |batch| %>
+    <tr class="bg-white">
+      <td class="px-4 py-3 border-t border-r border-gray-200"><%= batch.supplier_name.presence || "N/A" %></td>
+      <td class="px-4 py-3 border-t border-r border-gray-200">
+        <%= batch.receiving_date.present? ? batch.receiving_date.strftime('%d-%m-%Y') : "N/A" %>
+      </td>
+      <td class="px-4 py-3 border-t border-gray-200"><%= batch.supplier_invoice_number.presence || "N/A" %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+

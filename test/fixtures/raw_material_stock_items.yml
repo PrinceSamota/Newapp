@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  raw_material_stock_batch: one
+  item_name: MyString
+  sku_id: MyString
+  receiving_quantity: 1
+  purchase_price: 9.99
+
+two:
+  raw_material_stock_batch: two
+  item_name: MyString
+  sku_id: MyString
+  receiving_quantity: 1
+  purchase_price: 9.99

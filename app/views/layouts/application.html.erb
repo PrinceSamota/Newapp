@@ -60,17 +60,15 @@
       <div class="bg-white w-64 transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200">
         <div class="mt-6 space-y-4 px-4">
           <%= link_to uploads_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
-            <i class="fa-regular fa-file"></i>
             <span class="font-bold">Item Master</span>
           <% end %>
 
-          <%= link_to new_raw_material_inward_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
-            <i class="fa-solid fa-plus"></i>
-            <span class="font-bold">Raw Material</span>
-          <% end %>
 
-          <%= link_to new_bom_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
-            <i class="fa-solid fa-plus"></i>
+        <%= link_to new_raw_material_stock_batch_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
+             <span class="font-bold">Raw Material Inward Stock</span>
+              <% end %>
+
+          <%= link_to new_bill_of_material_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
             <span class="font-bold">Bill of Material</span>
           <% end %>
         </div>

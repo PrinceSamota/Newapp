@@ -1,6 +1,7 @@
 class ItemMaster < ApplicationRecord
   has_many :boms, dependent: :destroy
-  has_many :bom_raw_materials, dependent: :destroy
+  has_many :bom_raw_material_items, dependent: :destroy
+  has_many :raw_material_stock_items
   belongs_to :category
   belongs_to :measurement
   before_create :generate_sku_id
