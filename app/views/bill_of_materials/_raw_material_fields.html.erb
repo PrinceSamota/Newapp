@@ -1,0 +1,21 @@
+<div class="raw-material-row grid grid-cols-4 gap-6 items-center bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+  <div>
+    <%= f.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.select :sku_id, options_for_select(item_masters.map { |item| [item.sku_id, item.sku_id] }), { include_blank: "Choose SKU" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.select :item_name, options_for_select(item_masters.map { |item| [item.item_name, item.item_name] }), { include_blank: "Choose Item" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.number_field :quantity, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+  </div>
+
+  <div>
+    <%= f.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.text_field :unit, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+  </div>
+</div>

@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :bill_of_materials
+  resources :raw_material_stock_batches, only: [:new, :create, :index]
   resources :boms, only: [:index, :new, :create]
   get 'item_masters/:id/details', to: 'item_masters#details'
   post 'manual_decode', to: 'articles#manual_decode'

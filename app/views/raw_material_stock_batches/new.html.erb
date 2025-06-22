@@ -1,0 +1,171 @@
+<%= link_to root_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 rounded border border-gray-300" do %>
+    <i class="fa-solid fa-arrow-left"></i>
+      <span class="font-bold">Back</span>
+    <% end %>
+<%= form_with model: @batch, local: true do |form| %>
+    <div class="max-w-8xl mx-auto bg-white p-8 rounded-2xl shadow-xl space-y-8 mt-10">
+  
+      <!-- Header -->
+      <h2 class="text-2xl font-semibold text-gray-800">Raw Material Inward Stock Management</h2>
+  
+      <!-- Supplier Info Section (Top) -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Supplier Name</label>
+          <%= form.text_field :supplier_name, placeholder: "Enter supplier name", class: "mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+        </div>
+  
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Receiving Date</label>
+          <%= form.date_field :receiving_date, class: "mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+        </div>
+  
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Supplier Invoice No.</label>
+          <%= form.text_field :supplier_invoice_number, placeholder: "Enter invoice number", class: "mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+        </div>
+      </div>
+  
+      <!-- Divider -->
+      <div class="border-t border-gray-300"></div>
+  
+      <!-- Dynamic Items (Start Below Supplier Info) -->
+      <div id="items" class="space-y-4">
+        <h3 class="text-lg font-semibold text-gray-800">Items</h3>
+        <%= form.fields_for :raw_material_stock_items, @batch.raw_material_stock_items.build do |item_form| %>
+            <div class="item-fields">
+              <%= render 'item_fields', f: item_form %>
+            </div>
+          <% end %>
+      </div>
+  
+      <!-- Add Item Button -->
+      <div class="pt-2">
+        <button type="button" id="add-item" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md">
+          + Add Item
+        </button>
+      </div>
+      <div class="text-right text-lg font-semibold text-gray-800 mt-4">
+  Total Price: ₹ <span id="total-only-price">0.00</span>
+</div>
+
+  
+      <!-- Submit Button -->
+      <div class="pt-6">
+        <%= form.submit "Submit", class: "w-32 relative left-[94%] bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl text-lg" %>
+      </div>
+    </div>
+  <% end %>
+  
+  
+  
+<!-- JS Template for adding new items -->
+<div id="item-template" style="display: none;">
+  <div class="item-fields grid grid-cols-6 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm">
+
+    <!-- SKU ID Dropdown -->
+    <div class="col-span-2">
+      <label class="text-xs font-medium text-gray-700 block mb-1">SKU ID</label>
+      <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][sku_id]"
+              class="sku-id-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
+        <option value="">Choose SKU</option>
+        <% @item_masters.each do |item| %>
+          <option value="<%= item.sku_id %>"><%= item.sku_id %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <!-- Item Name Dropdown -->
+<div class="col-span-2">
+  <label class="text-xs font-medium text-gray-700 block mb-1">Item Name</label>
+  <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][item_name]"
+          class="item-name-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
+    <option value="">Choose Item</option>
+    <% @item_masters.each do |item| %>
+      <option value="<%= item.item_name %>"><%= item.item_name %></option>
+    <% end %>
+  </select>
+</div>
+
+    <!-- Quantity Input -->
+    <div class="col-span-1">
+      <label class="text-xs font-medium text-gray-700 block mb-1">Quantity</label>
+      <input type="number"
+             name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][receiving_quantity]"
+             placeholder="Qty"
+             class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+    <!-- Price Input -->
+    <div class="col-span-1">
+      <label class="text-xs font-medium text-gray-700 block mb-1">Price</label>
+      <input type="number" step="0.01"
+             name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][purchase_price]"
+             placeholder="₹"
+             class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+    </div>
+
+
+  </div>
+</div>
+
+  
+<script>
+  document.addEventListener("turbo:load", function () {
+    if (window.rawMaterialStockFormInitialized) return;
+    window.rawMaterialStockFormInitialized = true;
+
+    const itemsContainer = document.getElementById("items");
+    const addItemBtn = document.getElementById("add-item");
+    const template = document.getElementById("item-template")?.innerHTML;
+
+    // Use item-fields inside #items to get correct index
+    let index = itemsContainer.querySelectorAll(".item-fields").length;
+
+    // Function: Calculate total of all prices
+    function calculatePriceTotal() {
+      let total = 0;
+      const priceInputs = itemsContainer.querySelectorAll("input[name*='[purchase_price]']");
+
+      priceInputs.forEach(input => {
+        const value = parseFloat(input.value || 0);
+        if (!isNaN(value)) {
+          total += value;
+        }
+      });
+
+      document.getElementById("total-only-price").innerText = total.toFixed(2);
+    }
+
+    // Function: Reattach event listener to price inputs
+    function attachListenersToPriceFields() {
+      const priceInputs = itemsContainer.querySelectorAll("input[name*='[purchase_price]']");
+      priceInputs.forEach(input => {
+        input.removeEventListener("input", calculatePriceTotal); // Prevent duplicate listeners
+        input.addEventListener("input", calculatePriceTotal);
+      });
+    }
+
+    // Function: Add a new item
+    function handleAddItem() {
+      const newItemHTML = template.replace(/INDEX/g, index);
+      itemsContainer.insertAdjacentHTML("beforeend", newItemHTML); // No wrapper div
+      index++;
+      attachListenersToPriceFields();
+      calculatePriceTotal();
+    }
+
+    if (addItemBtn && template) {
+      addItemBtn.addEventListener("click", handleAddItem);
+    }
+
+    // Initial setup
+    attachListenersToPriceFields();
+    calculatePriceTotal();
+  });
+
+  document.addEventListener("turbo:before-cache", function () {
+    // Reset initialization flag for Turbo to work correctly
+    window.rawMaterialStockFormInitialized = false;
+  });
+</script>

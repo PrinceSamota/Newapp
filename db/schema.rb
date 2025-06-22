@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_21_092031) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -48,6 +48,24 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "bill_of_materials", force: :cascade do |t|
+    t.string "name"
+    t.string "bom_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "bom_raw_material_items", force: :cascade do |t|
+    t.integer "bill_of_material_id", null: false
+    t.string "item_name"
+    t.integer "quantity"
+    t.string "sku_id"
+    t.integer "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bill_of_material_id"], name: "index_bom_raw_material_items_on_bill_of_material_id"
+  end
+
   create_table "bom_raw_materials", force: :cascade do |t|
     t.integer "bom_id", null: false
     t.string "item_master_id"
@@ -74,6 +92,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
     t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "finished_goods", force: :cascade do |t|
+    t.integer "bill_of_material_id", null: false
+    t.string "item_name"
+    t.integer "quantity"
+    t.string "sku_id"
+    t.integer "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bill_of_material_id"], name: "index_finished_goods_on_bill_of_material_id"
   end
 
   create_table "item_masters", force: :cascade do |t|
@@ -195,6 +224,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "raw_material_inward_batches", force: :cascade do |t|
+    t.string "supplier_name"
+    t.date "receiving_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "raw_material_inwards", force: :cascade do |t|
     t.string "supplier_name"
     t.date "receiving_date"
@@ -204,6 +240,26 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
     t.float "purchase_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "raw_material_stock_batches", force: :cascade do |t|
+    t.string "supplier_name"
+    t.date "receiving_date"
+    t.string "supplier_invoice_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "raw_material_stock_items", force: :cascade do |t|
+    t.integer "raw_material_stock_batch_id", null: false
+    t.string "item_name"
+    t.string "sku_id"
+    t.integer "receiving_quantity"
+    t.decimal "purchase_price"
+    t.integer "item_master_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["raw_material_stock_batch_id"], name: "index_raw_material_stock_items_on_raw_material_stock_batch_id"
   end
 
   create_table "uploaded_files", force: :cascade do |t|
@@ -228,11 +284,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_224758) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "bom_raw_material_items", "bill_of_materials"
   add_foreign_key "bom_raw_materials", "boms"
   add_foreign_key "boms", "item_masters"
+  add_foreign_key "finished_goods", "bill_of_materials"
   add_foreign_key "item_masters", "categories"
   add_foreign_key "item_masters", "measurements"
   add_foreign_key "items", "orders"
   add_foreign_key "order_details", "orders"
+  add_foreign_key "raw_material_stock_items", "raw_material_stock_batches"
   add_foreign_key "users", "organizations", column: "org_id"
 end
