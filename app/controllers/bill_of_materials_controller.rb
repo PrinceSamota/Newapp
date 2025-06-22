@@ -3,7 +3,7 @@ class BillOfMaterialsController < ApplicationController
     @bill_of_material = BillOfMaterial.new
     @bill_of_material.build_finished_good
     @bill_of_material.bom_raw_material_items.build
-    @item_masters = ItemMaster.where(is_bom: true) # Only BOM items
+    @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) # Only BOM items
   end
 
   def create
