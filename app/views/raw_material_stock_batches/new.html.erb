@@ -61,9 +61,9 @@
   
 <!-- JS Template for adding new items -->
 <div id="item-template" style="display: none;">
-  <div class="item-fields grid grid-cols-6 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm">
+  <div class="item-fields grid grid-cols-7 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm">
 
-    <!-- SKU ID Dropdown -->
+    <!-- SKU ID Dropdown (col-span-2) -->
     <div class="col-span-2">
       <label class="text-xs font-medium text-gray-700 block mb-1">SKU ID</label>
       <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][sku_id]"
@@ -75,19 +75,19 @@
       </select>
     </div>
 
-    <!-- Item Name Dropdown -->
-<div class="col-span-2">
-  <label class="text-xs font-medium text-gray-700 block mb-1">Item Name</label>
-  <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][item_name]"
-          class="item-name-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
-    <option value="">Choose Item</option>
-    <% @item_masters.each do |item| %>
-      <option value="<%= item.item_name %>"><%= item.item_name %></option>
-    <% end %>
-  </select>
-</div>
+    <!-- Item Name Dropdown (col-span-2) -->
+    <div class="col-span-2">
+      <label class="text-xs font-medium text-gray-700 block mb-1">Item Name</label>
+      <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][item_name]"
+              class="item-name-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
+        <option value="">Choose Item</option>
+        <% @item_masters.each do |item| %>
+          <option value="<%= item.item_name %>"><%= item.item_name %></option>
+        <% end %>
+      </select>
+    </div>
 
-    <!-- Quantity Input -->
+    <!-- Quantity Input (col-span-1) -->
     <div class="col-span-1">
       <label class="text-xs font-medium text-gray-700 block mb-1">Quantity</label>
       <input type="number"
@@ -96,8 +96,8 @@
              class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
-    <!-- Price Input -->
-    <div class="col-span-1">
+    <!-- Price Input (col-span-1) -->
+    <div class="col-span-1 w-[130%]">
       <label class="text-xs font-medium text-gray-700 block mb-1">Price</label>
       <input type="number" step="0.01"
              name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][purchase_price]"
@@ -105,67 +105,129 @@
              class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
+    <!-- Total for Row (col-span-1) -->
+    <div class="col-span-1 text-right">
+      <label class="text-xs font-medium text-gray-700 block mb-1">Total</label>
+      <div class="text-sm font-semibold text-gray-800">
+        ₹ <span class="row-total-price">0.00</span>
+      </div>
+    </div>
 
   </div>
 </div>
+</div>
 
-  
 <script>
   document.addEventListener("turbo:load", function () {
+    // Prevent re-initialization
     if (window.rawMaterialStockFormInitialized) return;
     window.rawMaterialStockFormInitialized = true;
 
     const itemsContainer = document.getElementById("items");
     const addItemBtn = document.getElementById("add-item");
     const template = document.getElementById("item-template")?.innerHTML;
+    const itemDataEl = document.getElementById("item_masters_json");
+    const itemMasters = itemDataEl ? JSON.parse(itemDataEl.textContent) : [];
 
-    // Use item-fields inside #items to get correct index
-    let index = itemsContainer.querySelectorAll(".item-fields").length;
+    let index = itemsContainer?.querySelectorAll(".item-fields").length || 0;
 
-    // Function: Calculate total of all prices
-    function calculatePriceTotal() {
-      let total = 0;
-      const priceInputs = itemsContainer.querySelectorAll("input[name*='[purchase_price]']");
+    // 🔁 Sync SKU <-> Item Name
+    function attachSkuItemSync(row) {
+        const skuSelect = row.querySelector(".sku-id-dropdown, .sku-select");
+        const itemNameSelect = row.querySelector(".item-name-dropdown, .item-name-select");
 
-      priceInputs.forEach(input => {
-        const value = parseFloat(input.value || 0);
-        if (!isNaN(value)) {
-          total += value;
+      if (!skuSelect || !itemNameSelect) return;
+
+      skuSelect.addEventListener("change", () => {
+        const sku = skuSelect.value;
+        const match = itemMasters.find(item => item.sku_id === sku);
+        if (match) {
+          itemNameSelect.value = match.item_name;
         }
       });
 
-      document.getElementById("total-only-price").innerText = total.toFixed(2);
-    }
-
-    // Function: Reattach event listener to price inputs
-    function attachListenersToPriceFields() {
-      const priceInputs = itemsContainer.querySelectorAll("input[name*='[purchase_price]']");
-      priceInputs.forEach(input => {
-        input.removeEventListener("input", calculatePriceTotal); // Prevent duplicate listeners
-        input.addEventListener("input", calculatePriceTotal);
+      itemNameSelect.addEventListener("change", () => {
+        const name = itemNameSelect.value;
+        const match = itemMasters.find(item => item.item_name === name);
+        if (match) {
+          skuSelect.value = match.sku_id;
+        }
       });
     }
 
-    // Function: Add a new item
-    function handleAddItem() {
-      const newItemHTML = template.replace(/INDEX/g, index);
-      itemsContainer.insertAdjacentHTML("beforeend", newItemHTML); // No wrapper div
-      index++;
-      attachListenersToPriceFields();
-      calculatePriceTotal();
+    // 🔢 Calculate Grand Total and Row-wise Totals
+    function calculatePriceTotal() {
+      let grandTotal = 0;
+      const itemRows = itemsContainer.querySelectorAll(".item-fields");
+
+      itemRows.forEach(row => {
+        const qtyInput = row.querySelector("input[name*='[receiving_quantity]']");
+        const priceInput = row.querySelector("input[name*='[purchase_price]']");
+        const rowTotalSpan = row.querySelector(".row-total-price");
+
+        const qty = parseFloat(qtyInput?.value || 0);
+        const price = parseFloat(priceInput?.value || 0);
+        const rowTotal = qty * price;
+
+        if (rowTotalSpan) {
+          rowTotalSpan.textContent = rowTotal.toFixed(2);
+        }
+
+        if (!isNaN(rowTotal)) grandTotal += rowTotal;
+      });
+
+      const totalDisplay = document.getElementById("total-only-price");
+      if (totalDisplay) {
+        totalDisplay.innerText = grandTotal.toFixed(2);
+      }
     }
 
-    if (addItemBtn && template) {
+    // 🔄 Attach listeners for quantity and price fields
+    function attachListenersToPriceFields() {
+      const itemRows = itemsContainer.querySelectorAll(".item-fields");
+
+      itemRows.forEach(row => {
+        const qtyInput = row.querySelector("input[name*='[receiving_quantity]']");
+        const priceInput = row.querySelector("input[name*='[purchase_price]']");
+
+        if (qtyInput) {
+          qtyInput.removeEventListener("input", calculatePriceTotal);
+          qtyInput.addEventListener("input", calculatePriceTotal);
+        }
+
+        if (priceInput) {
+          priceInput.removeEventListener("input", calculatePriceTotal);
+          priceInput.addEventListener("input", calculatePriceTotal);
+        }
+      });
+    }
+
+    // ➕ Add new item row
+    function handleAddItem() {
+      const newItemHTML = template.replace(/INDEX/g, index);
+      itemsContainer.insertAdjacentHTML("beforeend", newItemHTML);
+      const newRow = itemsContainer.querySelectorAll(".item-fields")[index];
+
+      attachSkuItemSync(newRow);
+      attachListenersToPriceFields();
+      calculatePriceTotal();
+      index++;
+    }
+
+    // ➕ Button click to add item
+    if (addItemBtn && template && itemsContainer) {
       addItemBtn.addEventListener("click", handleAddItem);
     }
 
-    // Initial setup
+    // 📌 Initial Setup
+    itemsContainer.querySelectorAll(".item-fields").forEach(attachSkuItemSync);
     attachListenersToPriceFields();
     calculatePriceTotal();
   });
 
+  // 🔄 Reset flag before Turbo cache to allow re-initialization
   document.addEventListener("turbo:before-cache", function () {
-    // Reset initialization flag for Turbo to work correctly
     window.rawMaterialStockFormInitialized = false;
   });
 </script>
+

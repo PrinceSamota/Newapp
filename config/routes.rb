@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
-  resources :bill_of_materials
+  resources :bill_of_materials do
+    member do
+      get :clone
+    end
+  end
+  
   resources :raw_material_stock_batches, only: [:new, :create, :index]
   resources :boms, only: [:index, :new, :create]
   get 'item_masters/:id/details', to: 'item_masters#details'
