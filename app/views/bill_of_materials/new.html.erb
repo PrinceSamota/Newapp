@@ -12,7 +12,7 @@
       <!-- BOM Name -->
       <div>
         <label class="block text-sm font-medium text-gray-700">Bill of Material Name</label>
-        <%= f.text_field :name, placeholder: "Enter BOM Name", class: "mt-1 w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+        <%= f.text_field :name, placeholder: "Enter BOM Name", id: "bom-name", class: "mt-1 w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
       </div>
   
       <!-- Finished Good Section (Styled to Match Raw Material UI) -->
@@ -24,12 +24,12 @@
             
             <div>
               <%= fg.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
-              <%= fg.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }), { include_blank: "Choose SKU" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+              <%= fg.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }, fg.object.sku_id), { include_blank: "Choose SKU" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
             </div>
       
             <div>
               <%= fg.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
-              <%= fg.select :item_name, options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }), { include_blank: "Choose Item" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+             <%= fg.select :item_name, options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, fg.object.item_name), { include_blank: "Choose Item" }, id: "finished-good-item-name", class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
             </div>
       
             <div>
@@ -133,5 +133,18 @@
 
   document.addEventListener("turbo:before-cache", function () {
     window.bomRawMaterialFormInitialized = false;
+  });
+  document.addEventListener("turbo:load", () => {
+    const itemNameSelect = document.getElementById("finished-good-item-name");
+    const bomNameField = document.getElementById("bom-name");
+
+    if (itemNameSelect && bomNameField) {
+      itemNameSelect.addEventListener("change", function () {
+        const selectedValue = this.value;
+        if (selectedValue) {
+          bomNameField.value = selectedValue;
+        }
+      });
+    }
   });
 </script>

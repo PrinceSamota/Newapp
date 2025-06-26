@@ -1,42 +1,52 @@
-<!-- Dynamic Row -->
-<div class="grid grid-cols-6 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm item-row">
+<%= content_tag :script, id: "item_masters_json", type: "application/json" do %>
+    <%= raw @item_masters.to_json(only: [:id, :sku_id, :item_name]) %>
+  <% end %>
   
-  <!-- SKU ID Dropdown -->
-  <div class="col-span-2">
-    <%= f.label :sku_id, "SKU ID", class: "block text-xs font-medium text-gray-600 mb-1" %>
-    <%= f.select :sku_id,
-      options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }),
-      { include_blank: "Choose SKU" },
-      class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+  <!-- Dynamic Row -->
+  <div class="grid grid-cols-7 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm item-row">
+    
+    <!-- SKU ID Dropdown -->
+    <div class="col-span-2">
+      <%= f.label :sku_id, "SKU ID", class: "block text-xs font-medium text-gray-600 mb-1" %>
+      <%= f.select :sku_id,
+        options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }),
+        { include_blank: "Choose SKU" },
+        class: "sku-select w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+  
+    <!-- Item Name Dropdown -->
+    <div class="col-span-2">
+      <%= f.label :item_name, "Item Name", class: "block text-xs font-medium text-gray-600 mb-1" %>
+      <%= f.select :item_name,
+        options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }),
+        { include_blank: "Choose Item" },
+        class: "item-name-select w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+  
+    <!-- Quantity -->
+    <div class="col-span-1">
+      <%= f.label :receiving_quantity, "Quantity", class: "block text-xs font-medium text-gray-600 mb-1" %>
+      <%= f.number_field :receiving_quantity,
+        step: :any,
+        placeholder: "Qty",
+        class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+  
+    <!-- Price -->
+    <div class="col-span-1 w-[130%]">
+      <%= f.label :purchase_price, "Price (₹)", class: "block text-xs font-medium text-gray-600 mb-1" %>
+      <%= f.number_field :purchase_price,
+        step: :any,
+        placeholder: "₹",
+        class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
+  
+    <!-- Total for Row -->
+    <div class="col-span-1 text-right">
+      <label class="text-xs font-medium text-gray-700 block mb-1">Total</label>
+      <div class="text-sm font-semibold text-gray-800">
+        ₹ <span class="row-total-price">0.00</span>
+      </div>
+    </div>
   </div>
-
-  <!-- Item Name Dropdown -->
-  <div class="col-span-2">
-    <%= f.label :item_name, "Item Name", class: "block text-xs font-medium text-gray-600 mb-1" %>
-    <%= f.select :item_name,
-      options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }),
-      { include_blank: "Choose Item" },
-      class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-  </div>
-
-  <!-- Quantity Input -->
-  <div class="col-span-1">
-    <%= f.label :receiving_quantity, "Quantity", class: "block text-xs font-medium text-gray-600 mb-1" %>
-    <%= f.number_field :receiving_quantity,
-      step: :any,
-      placeholder: "Qty",
-      class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-  </div>
-
-  <!-- Price Input -->
-  <div class="col-span-1">
-    <%= f.label :purchase_price, "Price (₹)", class: "block text-xs font-medium text-gray-600 mb-1" %>
-    <%= f.number_field :purchase_price,
-      step: :any,
-      placeholder: "₹",
-      class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-  </div>
-
-  <!-- Remove Button or Spacer -->
-
-</div>
+  

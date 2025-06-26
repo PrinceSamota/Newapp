@@ -178,9 +178,12 @@
 
             <% if @item_masters.present? %>
               <div class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
-                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200">
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 h-16">
                   <div class="flex items-center space-x-2">
                   Item Master
+                  </div>
+                  <div class="flex items-center gap-2 pt-4">
+                  <input type="text" id="itemSearch" onkeyup="filterItems()" placeholder="Search by item name, category, or measurement..." class="w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring focus:ring-blue-200">
                   </div>
                   <div>   <div class="flex items-center gap-2">
                   <button onclick="toggleItemMasterModal(true)" class="flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer ">
@@ -199,7 +202,7 @@
                   <table class="min-w-full divide-y divide-gray-200 text-sm">
                   <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
                   <tr>
-                    <% ["Item Name", "Measurement", "Category", "Opening Stock", "Purchase Price", "Sale Price", "Minimum Stock Level", "Is BOM", "SKU", "Action"].each_with_index do |header, index| %>
+                    <% ["Item Name", "Measurement", "Category", "Stock", "Purchase Price", "Sale Price", "Minimum Stock Level", "Is BOM", "SKU", "Action"].each_with_index do |header, index| %>
                       <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 9 %>">
                         <%= header %>
                       </th>
@@ -220,7 +223,6 @@
                           <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sku_id %></td>
                           <td class="px-6 py-4 whitespace-nowrap flex gap-2">
                             <button class="text-gray-600 cursor-pointer hover:text-gray-700 "><i class="fa fa-pen-to-square"></i></button>
-                            <button class="text-gray-600 cursor-pointer hover:text-gray-700"><i class="fa fa-trash"></i></button>
                           </td>
                         </tr>
                       <% end %>
@@ -391,5 +393,18 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 });
+ function filterItems() {
+    const input = document.getElementById("itemSearch");
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll("tbody tr");
 
+    rows.forEach((row) => {
+      const itemName = row.children[0]?.innerText.toLowerCase();
+      const category = row.children[2]?.innerText.toLowerCase();
+      const measurement = row.children[1]?.innerText.toLowerCase();
+
+      const match = itemName.includes(filter) || category.includes(filter) || measurement.includes(filter);
+      row.style.display = match ? "" : "none";
+    });
+  }
 </script>
