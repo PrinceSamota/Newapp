@@ -1,0 +1,16 @@
+<template id="item-template">
+  <div class="item-row mb-2 bg-gray-100  mt-2 rounded shadow-sm">
+    <%=
+      render(
+        "item_fields",
+        f: ActionView::Helpers::FormBuilder.new(
+          "production_order[production_order_items_attributes][TEMPLATE]",
+          ProductionOrderItem.new,
+          self,
+          {}
+        ),
+        item_masters: item_masters
+      )
+    %>
+  </div>
+</template>

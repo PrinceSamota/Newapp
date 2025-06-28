@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  production_order: one
+  sku_id: MyString
+  item_name: MyString
+  current_stock: 1
+  quantity: 1.5
+  bom: MyString
+
+two:
+  production_order: two
+  sku_id: MyString
+  item_name: MyString
+  current_stock: 1
+  quantity: 1.5
+  bom: MyString

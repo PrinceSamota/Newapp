@@ -4,9 +4,13 @@ Rails.application.routes.draw do
       get :clone
     end
   end
-  
+  resources :production_orders
+
+
   resources :raw_material_stock_batches, only: [:new, :create, :index]
   resources :boms, only: [:index, :new, :create]
+get "/check_bom", to: "item_masters#check_bom"
+get "/check_bom_usage", to: "item_masters#check_bom_usage"
   get 'item_masters/:id/details', to: 'item_masters#details'
   post 'manual_decode', to: 'articles#manual_decode'
 post 'item_masters/decode_article', to: 'item_masters#decode_article'

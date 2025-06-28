@@ -1,0 +1,124 @@
+<%= tag.script type: "application/json", id: "item-master-mapping-data" do %>
+    <%= raw item_masters.map { |item| { sku_id: item.sku_id, item_name: item.item_name } }.to_json %>
+  <% end %>
+<div class="production-order-row relative grid grid-cols-5 gap-4 items-end bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+
+  <!-- SKU ID -->
+  <div>
+    <%= f.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.select :sku_id,
+      options_for_select(item_masters.map { |item| [item.sku_id, item.sku_id] }, f.object.sku_id),
+      { include_blank: "Choose SKU" },
+      class: "sku-id-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+  </div>
+
+  <!-- Item Name -->
+  <div>
+    <%= f.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.select :item_name,
+      options_for_select(item_masters.map { |item| [item.item_name, item.item_name] }, f.object.item_name),
+      { include_blank: "Choose Item" },
+      class: "item-name-select w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+  </div>
+
+  <!-- Current Stock -->
+  <div>
+    <%= f.label :current_stock, "Current Stock", class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.number_field :current_stock,
+      class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+  </div>
+
+  <!-- Quantity -->
+  <div>
+    <%= f.label :quantity, "Quantity", class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.number_field :quantity,
+      class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+  </div>
+
+  <!-- BOM -->
+  <div>
+    <%= f.label :bom, "BOM", class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <div class="flex items-center gap-2">
+      <!-- This will show BOM field if exists, else show Create BOM link -->
+      <div class="bom-input-wrapper w-full">
+        <%= f.text_field :bom,
+          class: "bom-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",
+          readonly: true %>
+      </div>
+      <a href="/bill_of_materials/new"
+      target="_blank"
+      class="create-bom-btn hidden flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer text-sm font-medium border border-gray-300 shadow-sm">
+        <i class="fa-solid fa-plus text-lg"></i> Create BOM
+   </a>
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener("turbo:load", () => {
+  const mappingData = JSON.parse(document.getElementById("item-master-mapping-data").textContent || "[]");
+
+  const skuToItem = {};
+  const itemToSku = {};
+  mappingData.forEach(item => {
+    skuToItem[item.sku_id] = item.item_name;
+    itemToSku[item.item_name] = item.sku_id;
+  });
+
+  document.body.addEventListener("change", (e) => {
+    const target = e.target;
+
+    // Find the .grid parent row
+    const row = target.closest(".grid");
+    if (!row) return;
+
+    // Auto-fill Item Name when SKU changes
+    if (target.classList.contains("sku-id-field")) {
+      const sku = target.value;
+      const itemSelect = row.querySelector(".item-name-select");
+
+      if (skuToItem[sku]) {
+        itemSelect.value = skuToItem[sku];
+      }
+      checkBOMUsage(row);
+    }
+
+    // Auto-fill SKU when Item Name changes
+    if (target.classList.contains("item-name-select")) {
+      const itemName = target.value;
+      const skuSelect = row.querySelector(".sku-id-field");
+
+      if (itemToSku[itemName]) {
+        skuSelect.value = itemToSku[itemName];
+      }
+      checkBOMUsage(row);
+    }
+  });
+  function checkBOMUsage(row) {
+    const skuField = row.querySelector(".sku-id-field");
+    const bomFieldWrapper = row.querySelector(".bom-input-wrapper");
+    const bomField = row.querySelector(".bom-field");
+    const createLink = row.querySelector(".create-bom-btn");
+  
+    const sku = skuField.value;
+  
+    if (sku) {
+      fetch(`/check_bom_usage?sku_id=${sku}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.used) {
+            bomField.value = data.bom_names.join(", ");
+            bomFieldWrapper.classList.remove("hidden");
+            createLink.classList.add("hidden");
+          } else {
+            bomField.value = "";
+            bomFieldWrapper.classList.add("hidden");
+            createLink.classList.remove("hidden");
+          }
+        })
+        .catch(err => {
+          console.error("BOM check failed:", err);
+        });
+    }
+  }
+});
+</script>

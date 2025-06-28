@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_21_092031) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_27_042249) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -224,6 +224,24 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_21_092031) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "production_order_items", force: :cascade do |t|
+    t.integer "production_order_id", null: false
+    t.string "sku_id"
+    t.string "item_name"
+    t.integer "current_stock"
+    t.float "quantity"
+    t.string "bom"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["production_order_id"], name: "index_production_order_items_on_production_order_id"
+  end
+
+  create_table "production_orders", force: :cascade do |t|
+    t.string "pid"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "raw_material_inward_batches", force: :cascade do |t|
     t.string "supplier_name"
     t.date "receiving_date"
@@ -292,6 +310,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_21_092031) do
   add_foreign_key "item_masters", "measurements"
   add_foreign_key "items", "orders"
   add_foreign_key "order_details", "orders"
+  add_foreign_key "production_order_items", "production_orders"
   add_foreign_key "raw_material_stock_items", "raw_material_stock_batches"
   add_foreign_key "users", "organizations", column: "org_id"
 end

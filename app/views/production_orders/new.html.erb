@@ -1,0 +1,52 @@
+<%= link_to root_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 rounded border border-gray-300" do %>
+  <i class="fa-solid fa-arrow-left"></i>
+    <span class="font-bold">Back</span>
+  <% end %>
+  <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mt-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-bold">Create Production Order</h2>
+
+  </div>
+
+  <%= form_with model: @production_order, local: true do |f| %>
+    <div id="items">
+      <%= f.fields_for :production_order_items do |item_form| %>
+        <%= render "item_fields", f: item_form, item_masters: @item_masters %>
+      <% end %>
+    </div>
+
+    <!-- Add Button -->
+    <div>
+      <button
+        type="button"
+        id="add-item"
+        class="bg-green-500 text-white px-4 py-2 rounded mt-4 shadow hover:bg-green-600"
+      >
+        <i class="fa-solid fa-plus mr-1"></i> Add new row
+      </button>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="mt-6 text-right">
+      <%= f.submit "Order", class: "bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 shadow" %>
+    </div>
+  <% end %>
+
+  <%= render "item_fields_template", item_masters: @item_masters %>
+</div>
+
+<!-- Add Item Template Script -->
+<script>
+  document.addEventListener("turbo:load", () => {
+    const addItemBtn = document.getElementById("add-item");
+    if (addItemBtn && !addItemBtn.dataset.listenerAttached) {
+      addItemBtn.dataset.listenerAttached = "true"; // prevent multiple attachments
+
+      addItemBtn.addEventListener("click", () => {
+        const template = document.getElementById("item-template").innerHTML;
+        const container = document.getElementById("items");
+        container.insertAdjacentHTML("beforeend", template.replace(/TEMPLATE/g, new Date().getTime()));
+      });
+    }
+  });
+</script>
