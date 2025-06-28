@@ -13,7 +13,16 @@
 <div class="overflow-x-auto bg-white shadow-md rounded-md">
 <div class="flex items-center justify-between px-6 pt-4 pb-4">
 <h1 class="text-2xl font-bold">All Bills of Material</h1>
+<!-- Search Input -->
+<div data-controller="bom-search">
+<input
+  type="text"
+  id="bomSearchInput"
+  placeholder="Search by BOM Number or Name"
+  class="border border-gray-300 rounded-md px-3 py-2 text-sm w-full focus:ring-blue-500 focus:border-blue-500"
+/>
 
+</div>
 <%= link_to new_bill_of_material_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300" do %>
   <i class="fa-solid fa-plus"></i>
   <span class="font-semibold">Add BOM</span>
@@ -30,9 +39,9 @@
           <% end %>
         </tr>
       </thead>
-      <tbody class="bg-white divide-y divide-gray-200">
+      <tbody class="bg-white divide-y divide-gray-200" id="bomTableBody">
         <% @bill_of_materials.each do |bom| %>
-          <tr class="hover:bg-gray-50">
+          <tr class="hover:bg-gray-50" data-bom-number="<%= bom.bom_number.downcase %>" data-bom-name="<%= bom.name.downcase %>">
             <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200"><%= bom.bom_number %></td>
             <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200"><%= bom.name %></td>
 
@@ -72,3 +81,21 @@
     <p class="text-gray-500 italic px-6 py-4">No BOMs found.</p>
   <% end %>
 </div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("bomSearchInput");
+    const tableRows = document.querySelectorAll("#bomTableBody tr");
+
+    searchInput.addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+
+      tableRows.forEach(row => {
+        const bomNumber = row.dataset.bomNumber || "";
+        const bomName = row.dataset.bomName || "";
+        const isMatch = bomNumber.includes(query) || bomName.includes(query);
+
+        row.style.display = isMatch ? "" : "none";
+      });
+    });
+  });
+</script>
