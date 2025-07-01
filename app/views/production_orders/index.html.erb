@@ -34,7 +34,8 @@
         <tr>
           <th class="px-4 py-3 text-left border-r border-gray-300">PID</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">BOM Number</th>
-          <th class="px-4 py-3 text-left">Finished Good</th>
+          <th class="px-4 py-3 text-left border-r border-gray-300">Finished Good</th>
+          <th class="px-4 py-3 text-left">Stage</th>
         </tr>
       </thead>
       <tbody id="production-orders-table" class="bg-white divide-y divide-gray-100">
@@ -44,7 +45,10 @@
             <tr class="hover:bg-gray-50">
               <td class="px-4 py-3 border-r border-gray-300"><%= order.pid %></td>
               <td class="px-4 py-3 border-r border-gray-300"><%= bom_number %></td>
-              <td class="px-4 py-3"><%= finished_good || "Not Found" %></td>
+              <td class="px-4 py-3 border-r border-gray-300"><%= finished_good || "Not Found" %></td>
+              <td class="px-4 py-3 ">
+              <%= order.production_order_items.first&.stage || "No Item" %>
+            </td>
             </tr>
           <% end %>
         <% end %>

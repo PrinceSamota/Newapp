@@ -16,36 +16,35 @@
       </div>
   
       <!-- Finished Good Section (Styled to Match Raw Material UI) -->
-      <div class=" bg-blue-50 p-6 rounded-2xl shadow-md border border-gray-200 mt-8">
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Finished Good</h3>
-        
-        <%= f.fields_for :finished_good do |fg| %>
-          <div class="grid grid-cols-4 gap-6 items-center bg-white border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
-            
-            <div>
-              <%= fg.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
-              <%= fg.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }, fg.object.sku_id), { include_blank: "Choose SKU" }, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-            </div>
+      <div class="bg-blue-50 p-6 rounded-2xl shadow-md border border-gray-200 mt-8">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Finished Good</h3>
       
-            <div>
-              <%= fg.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
-             <%= fg.select :item_name, options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, fg.object.item_name), { include_blank: "Choose Item" }, id: "finished-good-item-name", class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-            </div>
-      
-            <div>
-              <%= fg.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
-              <%= fg.number_field :quantity, value: 1, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-            </div>
-      
-            <div>
-              <%= fg.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
-              <%= fg.text_field :unit, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-            </div>
-      
+      <%= f.fields_for :finished_good do |fg| %>
+        <div class="grid grid-cols-4 gap-6 items-center bg-white border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
+          
+          <div>
+            <%= fg.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
+            <%= fg.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }, fg.object.sku_id), { include_blank: "Choose SKU" }, id: "finished-good-sku-id", class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
           </div>
-        <% end %>
-      </div>
-  
+    
+          <div>
+            <%= fg.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
+            <%= fg.select :item_name, options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, fg.object.item_name), { include_blank: "Choose Item" }, id: "finished-good-item-name", class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+          </div>
+    
+          <div>
+            <%= fg.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
+            <%= fg.number_field :quantity, value: 1, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+          </div>
+    
+          <div>
+            <%= fg.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
+            <%= fg.text_field :unit, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+          </div>
+          
+        </div>
+      <% end %>
+    </div>
       <!-- Raw Materials Section -->
       <div class="bg-green-50 p-6 rounded-xl shadow-sm">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Raw Materials</h3>
@@ -90,14 +89,16 @@
     const form = document.querySelector("form");
 
     let index = container.querySelectorAll(".raw-material-row").length;
-
     function addRow() {
       if (!template) return;
       const html = template.replace(/NEW_INDEX/g, index);
       container.insertAdjacentHTML("beforeend", html);
+      
+      const newRow = container.querySelectorAll(".raw-material-row")[index];
+      attachAutoFillEvents(newRow); // ✅ attach auto-fill to new row
+    
       index++;
     }
-
     function removeRow(event) {
       if (event.target.classList.contains("remove-raw-material")) {
         const row = event.target.closest(".raw-material-row");
@@ -147,4 +148,72 @@
       });
     }
   });
+  document.addEventListener("turbo:load", function () {
+    const skuSelect = document.getElementById("finished-good-sku-id");
+    const itemNameSelect = document.getElementById("finished-good-item-name");
+
+    const itemMap = {
+      <% @item_masters.each do |item| %>
+        "<%= item.sku_id %>": "<%= j item.item_name %>",
+      <% end %>
+    };
+
+    const reverseMap = {
+      <% @item_masters.each do |item| %>
+        "<%= j item.item_name %>": "<%= item.sku_id %>",
+      <% end %>
+    };
+    skuSelect.addEventListener("change", function () {
+      const selectedSku = this.value;
+      if (itemMap[selectedSku]) {
+        itemNameSelect.value = itemMap[selectedSku];
+    
+        // 🔁 Manually trigger change event for itemNameSelect
+        itemNameSelect.dispatchEvent(new Event('change'));
+      }
+    });
+
+    itemNameSelect.addEventListener("change", function () {
+      const selectedItem = this.value;
+      if (reverseMap[selectedItem]) {
+        skuSelect.value = reverseMap[selectedItem];
+      }
+    });
+  });
+
+
+  
+  function attachAutoFillEvents(row) {
+  const skuSelect = row.querySelector(".sku-id-field");
+  const itemNameSelect = row.querySelector(".item-name-select");
+
+  if (!skuSelect || !itemNameSelect) return;
+
+  const itemMap = {
+    <% @item_masters.each do |item| %>
+      "<%= item.sku_id %>": "<%= j item.item_name %>",
+    <% end %>
+  };
+
+  const reverseMap = {
+    <% @item_masters.each do |item| %>
+      "<%= j item.item_name %>": "<%= item.sku_id %>",
+    <% end %>
+  };
+
+  skuSelect.addEventListener("change", function () {
+    const selectedSku = this.value;
+    if (itemMap[selectedSku]) {
+      itemNameSelect.value = itemMap[selectedSku];
+    }
+  });
+
+  itemNameSelect.addEventListener("change", function () {
+    const selectedItem = this.value;
+    if (reverseMap[selectedItem]) {
+      skuSelect.value = reverseMap[selectedItem];
+    }
+  });
+}
+
 </script>

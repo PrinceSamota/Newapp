@@ -1,7 +1,7 @@
 <%= tag.script type: "application/json", id: "item-master-mapping-data" do %>
     <%= raw item_masters.map { |item| { sku_id: item.sku_id, item_name: item.item_name } }.to_json %>
   <% end %>
-<div class="production-order-row relative grid grid-cols-5 gap-4 items-end bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+<div class="production-order-row relative grid grid-cols-6 gap-4 items-end bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
 
   <!-- SKU ID -->
   <div>
@@ -52,6 +52,13 @@
    </a>
     </div>
   </div>
+  <div>
+  <%= f.label :stage, "Stage", class: "text-xs font-medium text-gray-700 block mb-1" %>
+  <%= f.select :stage,
+    options_for_select(["Pending", "Complete"], f.object.stage || "Pending"),
+    {},
+    class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+</div>
 </div>
 <script>
 document.addEventListener("turbo:load", () => {
