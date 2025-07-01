@@ -229,6 +229,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_27_042249) do
     t.string "sku_id"
     t.string "item_name"
     t.integer "current_stock"
+    t.string "stage"
     t.float "quantity"
     t.string "bom"
     t.datetime "created_at", null: false
