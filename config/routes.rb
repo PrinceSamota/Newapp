@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :dispatches
   resources :bill_of_materials do
     member do
       get :clone
@@ -6,6 +7,10 @@ Rails.application.routes.draw do
   end
   resources :production_orders
 
+get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'
+get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
+# config/routes.rb
+get 'bill_of_materials/:sku_id/:item_name/bom_details', to: 'bill_of_materials#bom_details', as: :bill_of_material_bom_details
 
   resources :raw_material_stock_batches, only: [:new, :create, :index]
   resources :boms, only: [:index, :new, :create]

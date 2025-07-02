@@ -5,7 +5,6 @@ class CreateProductionOrderItems < ActiveRecord::Migration[7.2]
       t.string :sku_id
       t.string :item_name
       t.integer :current_stock
-      t.string :stage
       t.float :quantity
       t.string :bom
 

@@ -1,4 +1,4 @@
-<%= link_to root_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 border border-gray-300" do %>
+<%= link_to bill_of_materials_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 border border-gray-300" do %>
     <i class="fa-solid fa-arrow-left"></i>
     <span class="font-bold">Back</span>
   <% end %>
@@ -39,7 +39,7 @@
     
           <div>
             <%= fg.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
-            <%= fg.text_field :unit, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+            <%= fg.text_field :unit, class: "unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
           </div>
           
         </div>
@@ -89,16 +89,38 @@
     const form = document.querySelector("form");
 
     let index = container.querySelectorAll(".raw-material-row").length;
+
+    // Mappings for SKU ↔ Item and Unit
+    const skuToItem = {
+      <% @item_masters.each do |item| %>
+        "<%= item.sku_id %>": "<%= j item.item_name %>",
+      <% end %>
+    };
+    const itemToSku = {
+      <% @item_masters.each do |item| %>
+        "<%= j item.item_name %>": "<%= item.sku_id %>",
+      <% end %>
+    };
+    const skuToUnit = {
+      <% @item_masters.each do |item| %>
+        "<%= item.sku_id %>": "<%= j item.measurement&.name || '' %>",
+      <% end %>
+    };
+    const itemToUnit = {
+      <% @item_masters.each do |item| %>
+        "<%= j item.item_name %>": "<%= item.measurement&.name || '' %>",
+      <% end %>
+    };
+
     function addRow() {
       if (!template) return;
       const html = template.replace(/NEW_INDEX/g, index);
       container.insertAdjacentHTML("beforeend", html);
-      
       const newRow = container.querySelectorAll(".raw-material-row")[index];
-      attachAutoFillEvents(newRow); // ✅ attach auto-fill to new row
-    
+      attachAutoFillEvents(newRow);
       index++;
     }
+
     function removeRow(event) {
       if (event.target.classList.contains("remove-raw-material")) {
         const row = event.target.closest(".raw-material-row");
@@ -123,97 +145,69 @@
       });
     }
 
-    addButton.addEventListener("click", addRow);
-    container.addEventListener("click", removeRow);
+    function attachAutoFillEvents(row) {
+      const skuSelect = row.querySelector(".sku-id-field");
+      const itemSelect = row.querySelector(".item-name-select");
+      const unitField = row.querySelector(".unit-field");
 
+      if (skuSelect) {
+        skuSelect.addEventListener("change", () => {
+          const sku = skuSelect.value;
+          if (skuToItem[sku]) itemSelect.value = skuToItem[sku];
+          if (skuToUnit[sku]) unitField.value = skuToUnit[sku];
+        });
+      }
+
+      if (itemSelect) {
+        itemSelect.addEventListener("change", () => {
+          const itemName = itemSelect.value;
+          if (itemToSku[itemName]) skuSelect.value = itemToSku[itemName];
+          if (itemToUnit[itemName]) unitField.value = itemToUnit[itemName];
+        });
+      }
+    }
+
+    addButton?.addEventListener("click", addRow);
+    container?.addEventListener("click", removeRow);
     form?.addEventListener("submit", () => {
       removeTemplatePlaceholders();
       normalizeFieldNames();
     });
-  });
 
-  document.addEventListener("turbo:before-cache", function () {
-    window.bomRawMaterialFormInitialized = false;
-  });
-  document.addEventListener("turbo:load", () => {
-    const itemNameSelect = document.getElementById("finished-good-item-name");
+    // Initial rows
+    container?.querySelectorAll(".raw-material-row").forEach(row => attachAutoFillEvents(row));
+
+    // Finished Good - auto-fill
+    const fgSku = document.getElementById("finished-good-sku-id");
+    const fgItem = document.getElementById("finished-good-item-name");
+    const fgUnit = document.querySelector(".unit-field");
+
+    if (fgSku && fgItem) {
+      fgSku.addEventListener("change", () => {
+        const sku = fgSku.value;
+        if (skuToItem[sku]) fgItem.value = skuToItem[sku];
+        if (skuToUnit[sku] && fgUnit) fgUnit.value = skuToUnit[sku];
+        fgItem.dispatchEvent(new Event('change'));
+      });
+
+      fgItem.addEventListener("change", () => {
+        const item = fgItem.value;
+        if (itemToSku[item]) fgSku.value = itemToSku[item];
+        if (itemToUnit[item] && fgUnit) fgUnit.value = itemToUnit[item];
+      });
+    }
+
+    // Auto-fill BOM Name from FG Item Name
     const bomNameField = document.getElementById("bom-name");
-
-    if (itemNameSelect && bomNameField) {
-      itemNameSelect.addEventListener("change", function () {
-        const selectedValue = this.value;
-        if (selectedValue) {
-          bomNameField.value = selectedValue;
-        }
+    if (fgItem && bomNameField) {
+      fgItem.addEventListener("change", () => {
+        const value = fgItem.value;
+        if (value) bomNameField.value = value;
       });
     }
   });
-  document.addEventListener("turbo:load", function () {
-    const skuSelect = document.getElementById("finished-good-sku-id");
-    const itemNameSelect = document.getElementById("finished-good-item-name");
 
-    const itemMap = {
-      <% @item_masters.each do |item| %>
-        "<%= item.sku_id %>": "<%= j item.item_name %>",
-      <% end %>
-    };
-
-    const reverseMap = {
-      <% @item_masters.each do |item| %>
-        "<%= j item.item_name %>": "<%= item.sku_id %>",
-      <% end %>
-    };
-    skuSelect.addEventListener("change", function () {
-      const selectedSku = this.value;
-      if (itemMap[selectedSku]) {
-        itemNameSelect.value = itemMap[selectedSku];
-    
-        // 🔁 Manually trigger change event for itemNameSelect
-        itemNameSelect.dispatchEvent(new Event('change'));
-      }
-    });
-
-    itemNameSelect.addEventListener("change", function () {
-      const selectedItem = this.value;
-      if (reverseMap[selectedItem]) {
-        skuSelect.value = reverseMap[selectedItem];
-      }
-    });
+  document.addEventListener("turbo:before-cache", () => {
+    window.bomRawMaterialFormInitialized = false;
   });
-
-
-  
-  function attachAutoFillEvents(row) {
-  const skuSelect = row.querySelector(".sku-id-field");
-  const itemNameSelect = row.querySelector(".item-name-select");
-
-  if (!skuSelect || !itemNameSelect) return;
-
-  const itemMap = {
-    <% @item_masters.each do |item| %>
-      "<%= item.sku_id %>": "<%= j item.item_name %>",
-    <% end %>
-  };
-
-  const reverseMap = {
-    <% @item_masters.each do |item| %>
-      "<%= j item.item_name %>": "<%= item.sku_id %>",
-    <% end %>
-  };
-
-  skuSelect.addEventListener("change", function () {
-    const selectedSku = this.value;
-    if (itemMap[selectedSku]) {
-      itemNameSelect.value = itemMap[selectedSku];
-    }
-  });
-
-  itemNameSelect.addEventListener("change", function () {
-    const selectedItem = this.value;
-    if (reverseMap[selectedItem]) {
-      skuSelect.value = reverseMap[selectedItem];
-    }
-  });
-}
-
 </script>

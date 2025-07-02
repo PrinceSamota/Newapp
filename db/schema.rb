@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_27_042249) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_02_022155) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -60,7 +60,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_27_042249) do
     t.string "item_name"
     t.integer "quantity"
     t.string "sku_id"
-    t.integer "unit"
+    t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["bill_of_material_id"], name: "index_bom_raw_material_items_on_bill_of_material_id"
@@ -94,12 +94,24 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_27_042249) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "dispatches", force: :cascade do |t|
+    t.string "order_no"
+    t.integer "quantity"
+    t.string "client"
+    t.string "mode_of_shipment"
+    t.date "dispatch_date"
+    t.date "delivery_date"
+    t.string "courier_company"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "finished_goods", force: :cascade do |t|
     t.integer "bill_of_material_id", null: false
     t.string "item_name"
     t.integer "quantity"
     t.string "sku_id"
-    t.integer "unit"
+    t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["bill_of_material_id"], name: "index_finished_goods_on_bill_of_material_id"
@@ -229,7 +241,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_27_042249) do
     t.string "sku_id"
     t.string "item_name"
     t.integer "current_stock"
-    t.string "stage"
     t.float "quantity"
     t.string "bom"
     t.datetime "created_at", null: false
