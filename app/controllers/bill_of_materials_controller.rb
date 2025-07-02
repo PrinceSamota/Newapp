@@ -19,7 +19,9 @@ class BillOfMaterialsController < ApplicationController
   def index
     @bill_of_materials = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).order(created_at: :desc)
   end
-
+  def show
+    @bill_of_material = BillOfMaterial.find(params[:id])
+  end
   def clone
     original_bom = BillOfMaterial.find(params[:id])
     @bill_of_material = original_bom.dup
@@ -29,6 +31,47 @@ class BillOfMaterialsController < ApplicationController
     @item_masters = ItemMaster.all  # ✅ Ensure this is present
     render :new
   end
+
+  def find_by_sku
+    sku_id = params[:sku_id]
+    item_name = params[:item_name]
+  
+    bom = BillOfMaterial
+            .includes(:bom_raw_material_items)
+            .joins(:finished_good)
+            .find_by(finished_goods: { sku_id: sku_id, item_name: item_name })
+  
+    if bom
+      render json: {
+        bom_name: bom.name,
+        finished_good: bom.finished_good,
+        raw_materials: bom.bom_raw_material_items.map { |rm| {
+          item_name: rm.item_name,
+          sku_id: rm.sku_id,
+          quantity: rm.quantity,
+          unit: rm.unit
+        } }
+      }
+    else
+      render json: { error: "No BOM found" }, status: :not_found
+    end
+  end
+    def bom_details
+      sku_id = params[:sku_id]
+      item_name = params[:item_name]
+
+      @bom = BillOfMaterial
+        .joins(:finished_good)
+        .includes(:bom_raw_material_items)
+        .find_by(finished_goods: { sku_id: sku_id, item_name: item_name })
+
+      if @bom.nil?
+        redirect_to production_orders_path, alert: "No BOM found for this Finished Good"
+      else
+        render 'production_orders/bom_details'  # ✅ correct path
+      end
+    end
+  
   private
 
   def bom_params

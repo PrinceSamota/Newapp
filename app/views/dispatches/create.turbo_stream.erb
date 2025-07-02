@@ -1,0 +1,2 @@
+<%= turbo_stream.prepend "dispatches_list", partial: "dispatches/dispatch", locals: { dispatch: @dispatch } %>
+<%= turbo_stream.update "modal", "" %> <!-- close the modal -->

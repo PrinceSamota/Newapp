@@ -5,7 +5,7 @@ class CreateFinishedGoods < ActiveRecord::Migration[7.2]
       t.string :item_name
       t.integer :quantity
       t.string :sku_id
-      t.integer :unit
+      t.string :unit
 
       t.timestamps
     end

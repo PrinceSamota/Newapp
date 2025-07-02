@@ -26,8 +26,8 @@ class ItemMastersController < ApplicationController
       end
       def check_bom_usage
         item = ItemMaster.find_by(sku_id: params[:sku_id])
-        boms = BillOfMaterial.joins(:bom_raw_material_items)
-                             .where(bom_raw_material_items: { sku_id: item.sku_id })
+        boms = BillOfMaterial.joins(:finished_good)
+                             .where(finished_good: { sku_id: item.sku_id })
     
         render json: {
           used: boms.exists?,

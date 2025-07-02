@@ -1,0 +1,60 @@
+
+<%= link_to production_orders_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 rounded border border-gray-300" do %>
+    <i class="fa-solid fa-arrow-left"></i>
+      <span class="font-bold">Back</span>
+    <% end %>
+<% if @bom.present? %>
+  <!-- Finished Goods Section -->
+  <div class="mb-6 mt-6">
+    <h2 class="text-md font-semibold text-gray-700 mb-2">Finished Goods</h2>
+    <table class="min-w-full divide-y divide-gray-200 text-sm border border-gray-300 shadow rounded-lg">
+      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+        <tr>
+          <% ["#", "SKU ID", "Item Name","Quantity", "Unit"].each_with_index do |header, index| %>
+            <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 4 %>">
+              <%= header %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200 text-black font-medium">
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-3 border-r border-gray-200">1</td>
+          <td class="px-6 py-3 border-r border-gray-200"><%= @bom.finished_good.sku_id %></td>
+          <td class="px-6 py-3 border-r border-gray-200"><%= @bom.finished_good.item_name %></td>
+          <td class="px-6 py-3 border-r border-gray-200"><%= @bom.finished_good.quantity %></td>
+          <td class="px-6 py-3 border-r border-gray-200"><%= @bom.finished_good.unit %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Raw Materials Section -->
+  <div class="mt-12">
+    <h2 class="text-md font-semibold text-gray-700 mb-2">Raw Materials</h2>
+    <table class="min-w-full divide-y divide-gray-200 text-sm border border-gray-300 shadow-xl rounded-lg">
+      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+        <tr>
+          <% ["#", "SKU ID", "Item Name", "Quantity", "Unit"].each_with_index do |header, index| %>
+            <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 4 %>">
+              <%= header %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200 text-black font-medium">
+        <% @bom.bom_raw_material_items.each_with_index do |rm, index| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-3 border-r border-gray-200"><%= index + 1 %></td>
+            <td class="px-6 py-3 border-r border-gray-200"><%= rm.sku_id %></td>
+            <td class="px-6 py-3 border-r border-gray-200"><%= rm.item_name %></td>
+            <td class="px-6 py-3 border-r border-gray-200"><%= rm.quantity %></td>
+            <td class="px-6 py-3 border-r border-gray-200"><%= rm.unit %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="text-red-600 mt-4">No BOM found.</div>
+<% end %>

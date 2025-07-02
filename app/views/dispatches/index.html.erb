@@ -1,0 +1,112 @@
+<div class="max-w-full mx-auto mt-10 relative">
+  <!-- Header Section with Search and Button -->
+  <div class="flex items-center justify-between mb-6">
+    <!-- Left: Heading -->
+    <h1 class="text-2xl font-bold">Dispatch Management</h1>
+
+    <!-- Right: Search + Button -->
+
+
+      <!-- Add Dispatch Button -->
+      <button
+        id="open-modal-btn"
+        class="flex items-center gap-2 text-black hover:bg-gray-200 rounded-md px-4 py-2 border border-gray-300 font-bold"
+      >
+      <i class="fa-solid fa-plus"></i> New Dispatch
+      </button>
+  
+  </div>
+
+  <!-- Dispatches Table -->
+  <div class="overflow-x-auto border border-gray-300 shadow-xl rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
+        <tr>
+          <% ["Order No", "Client", "Quantity", "Mode of shipment", "Dispatch Date", "Delivery Date", "Courier Company"].each_with_index do |header, index| %>
+            <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 6 %>">
+              <%= header %>
+            </th>
+          <% end %>
+        </tr>
+      </thead>
+
+      <tbody id="dispatches_list" class="bg-white divide-y divide-gray-200">
+        <%= render @dispatches %>
+      </tbody>
+    </table>
+  </div>
+  <!-- Slide-in Modal -->
+  <turbo-frame id="modal">
+    <!-- filled via Turbo Stream -->
+  </turbo-frame>
+</div>
+
+
+<script>
+  function closeModal() {
+    const modalFrame = document.getElementById("modal");
+    const slideInDiv = modalFrame.querySelector(".slide-in");
+
+    if (slideInDiv) {
+      slideInDiv.classList.remove("slide-in");
+      slideInDiv.classList.add("slide-out");
+
+      setTimeout(() => {
+        if (modalFrame) modalFrame.innerHTML = "";
+      }, 300); // match animation time
+    } else {
+      if (modalFrame) modalFrame.innerHTML = "";
+    }
+  }
+
+  document.addEventListener("turbo:load", () => {
+    const modalFrame = document.getElementById("modal");
+    if (modalFrame) modalFrame.innerHTML = "";
+
+    const openModalBtn = document.getElementById("open-modal-btn");
+    if (openModalBtn) {
+      openModalBtn.addEventListener("click", () => {
+        fetch("<%= new_dispatch_path %>", {
+          headers: { Accept: "text/vnd.turbo-stream.html" }
+        })
+        .then(response => response.text())
+        .then(html => Turbo.renderStreamMessage(html));
+      });
+    }
+  });
+</script>
+
+<style>
+  @keyframes slideIn {
+    to {
+      transform: translateX(0%);
+    }
+  }
+
+  @keyframes slideOut {
+    to {
+      transform: translateX(100%);
+    }
+  }
+
+  .slide-in {
+    position: absolute;
+    top: 10%;
+    right: 3%;
+    height: 60%;
+    width: 800px;
+    background-color: white;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+    transform: translateX(100%);
+    animation: slideIn 0.3s forwards;
+    z-index: 50;
+    padding: 20px;
+    border: 1px solid white;
+    border-radius: 8px;
+  }
+
+  .slide-out {
+    animation: slideOut 0.3s forwards;
+    
+  }
+</style>
