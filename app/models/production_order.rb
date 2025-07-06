@@ -3,7 +3,8 @@ class ProductionOrder < ApplicationRecord
     accepts_nested_attributes_for :production_order_items, allow_destroy: true
   
     before_create :generate_pid
-  
+    validates :production_order_items, presence: true
+    validates_associated :production_order_items
     private
   
     def generate_pid

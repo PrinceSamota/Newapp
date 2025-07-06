@@ -1,20 +1,26 @@
-
-    <div class="bg-white  rounded-lg shadow border border-gray-300 mt-6">
+<div class="pl-6 pr-6">
+    <div class="bg-white  rounded-lg shadow-md border border-gray-200 mt-6">
   <!-- Header + Search + Add in one row -->
   <div class="flex flex-col md:flex-row justify-between items-center gap-3 mb-4 p-6 h-14">
     
     <!-- Title -->
     <h2 class="text-xl font-semibold w-full md:w-1/7 text-center md:text-left mt-4">
-      Production Orders
+      Production Order
     </h2>
 
     <!-- Search Input -->
-    <input
-      type="text"
-      id="search-input"
-      placeholder="Search by PID, BOM, or Finished Good..."
-      class="border border-gray-300 px-4 py-2 rounded w-full md:w-1/3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 mt-4"
-    />
+    <div class="relative  md:w-1/6 mt-4">
+  <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </span>
+  <input
+    type="text"
+    id="search-input"
+    placeholder="PID, BOM or Finished Good..."
+    class="border border-gray-300 pl-10 pr-4 py-2 rounded w-full text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+  />
+</div>
+
 
     <!-- Add Button -->
     <%= link_to new_production_order_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300 mt-4" do %>
@@ -62,6 +68,7 @@
       <!-- BOM details will be loaded here -->
     </div>
   </div>
+</div>
 </div>
 <!-- JS for Search -->
 <!-- JS for Search and BOM Fetch -->

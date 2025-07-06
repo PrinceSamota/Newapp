@@ -2,6 +2,28 @@
     <i class="fa-solid fa-arrow-left"></i>
       <span class="font-bold">Back</span>
     <% end %>
+<% if @batch.errors.any? %>
+  <div id="error-alert" class="fixed top-5 right-5 w-80 z-50 p-4 bg-red-100 border border-red-300 text-red-700 rounded-md shadow-lg transition-all duration-300">
+    <!-- ❌ Close Button -->
+    <button type="button" onclick="document.getElementById('error-alert').remove();" 
+      class="absolute top-2 right-2 text-red-600 hover:text-red-800 text-xl leading-none focus:outline-none">
+      &times;
+    </button>
+
+    <!-- Error Header -->
+    <h3 class="font-semibold mb-2 text-sm">
+      <%= pluralize(@batch.errors.count, "error") %> prevented this batch from being saved:
+    </h3>
+
+    <!-- Error List -->
+    <ul class="list-disc pl-5 space-y-1 text-sm max-h-40 overflow-y-auto">
+      <% @batch.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <%= form_with model: @batch, local: true do |form| %>
     <div class="max-w-8xl mx-auto bg-white p-8 rounded-2xl shadow-xl space-y-8 mt-10">
   

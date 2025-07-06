@@ -55,38 +55,76 @@
   <!-- Body: Sidebar + Main Content -->
   <div class="flex flex-1 overflow-hidden">
     
-    <% if user_signed_in? %>
-      <!-- Sidebar -->
-      <div class="bg-white w-64 transition-all duration-300 ease-in-out flex flex-col border-r border-gray-200">
-        <div class="mt-6 space-y-4 px-4">
-          <%= link_to uploads_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
-            <span class="font-bold">Item Master</span>
-          <% end %>
+  <% if user_signed_in? %>
+  <!-- Sidebar -->
+  <div id="sidebar" class="bg-white w-64 fixed h-screen border-r border-gray-200 shadow-md transition-all duration-300 ease-in-out flex flex-col z-50">
+    <!-- Toggle Button -->
+    <div id="sidebarToggleWrapper" class="flex justify-end px-4 py-2 transition-all duration-300">
+  <button id="toggleSidebar" class="text-gray-600 hover:text-gray-800 focus:outline-none cursor-pointer">
+    <i class="fas fa-bars"></i>
+  </button>
+</div>
 
+    <!-- Links -->
+    <div class="space-y-2 px-4 mt-4">
+      <% sidebar_links = [
+        { name: "Item Master", path: uploads_path, icon: "fa-box" },
+        { name: "Raw Material Inward Stock", path: raw_material_stock_batches_path, icon: "fa-dolly" },
+        { name: "Bill of Material", path: bill_of_materials_path, icon: "fa-list-alt" },
+        { name: "Production Order", path: production_orders_path, icon: "fa-industry" },
+        { name: "Dispatch Management", path: dispatches_path, icon: "fa-truck" }
+      ] %>
 
-        <%= link_to raw_material_stock_batches_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
-             <span class="font-bold">Raw Material Inward Stock</span>
-              <% end %>
-
-          <%= link_to bill_of_materials_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
-            <span class="font-bold">Bill of Material</span>
-          <% end %>
-             <%= link_to production_orders_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
-            <span class="font-bold">Production Order</span>
-          <% end %>
-           <%= link_to dispatches_path, class: "flex items-center gap-4 text-black hover:bg-gray-200 rounded-md p-2 w-full" do %>
-            <span class="font-bold">Dispatch Management</span>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-
-    <!-- Main content area -->
-    <main class="flex-1 overflow-auto bg-[#f9fafb] p-4">
-      <%= yield %>
-    </main>
-
+      <% sidebar_links.each do |link| %>
+        <% active = current_page?(link[:path]) ? "bg-blue-100 text-blue-700 font-semibold" : "text-black" %>
+        <%= link_to link[:path], class: "flex items-center gap-4 rounded-md p-2 w-full hover:bg-gray-200 transition #{active}" do %>
+          <i class="fas <%= link[:icon] %> w-5 text-center"></i>
+          <span class="sidebar-label"><%= link[:name] %></span>
+        <% end %>
+      <% end %>
+    </div>
   </div>
+<% end %>
+
+  
+    <!-- Main content area -->
+    <main id="mainContent" class="flex-1 overflow-auto bg-[#f9fafb] p-4 ml-64 transition-all duration-300">
+    <%= yield %>
+  </main>
+  </div>
+            
 </div>
 
 </html>
+<script>
+  document.addEventListener("turbo:load", function () {
+    const sidebar = document.getElementById("sidebar");
+    const toggleBtn = document.getElementById("toggleSidebar");
+    const mainContent = document.getElementById("mainContent");
+    const toggleWrapper = document.getElementById("sidebarToggleWrapper");
+
+    toggleBtn.addEventListener("click", () => {
+      const isCollapsed = sidebar.classList.contains("w-16");
+
+      if (isCollapsed) {
+        // Expand sidebar
+        sidebar.classList.remove("w-16");
+        sidebar.classList.add("w-64");
+        mainContent.classList.remove("ml-16");
+        mainContent.classList.add("ml-64");
+        toggleWrapper.classList.remove("justify-center");
+        toggleWrapper.classList.add("justify-end");
+        document.querySelectorAll(".sidebar-label").forEach(el => el.classList.remove("hidden"));
+      } else {
+        // Collapse sidebar
+        sidebar.classList.remove("w-64");
+        sidebar.classList.add("w-16");
+        mainContent.classList.remove("ml-64");
+        mainContent.classList.add("ml-16");
+        toggleWrapper.classList.remove("justify-end");
+        toggleWrapper.classList.add("justify-center");
+        document.querySelectorAll(".sidebar-label").forEach(el => el.classList.add("hidden"));
+      }
+    });
+  });
+</script>

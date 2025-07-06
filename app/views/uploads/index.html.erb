@@ -1,7 +1,7 @@
 <div class="relative min-h-screen ">
 
             <!-- Body (if needed) -->
-            <div class="p-6 text-center text-gray-700">
+            <div class=" text-center text-gray-700">
             <div class="flex items-center justify-between mb-4">
             <!-- Add Item Master Modal -->
           <div id="itemMasterModal" class="absolute top-20 right-5 z-50 hidden bg-white border border-gray-200 rounded-2xl shadow-2xl p-6 w-full max-w-3xl transition-all duration-300">
@@ -174,19 +174,30 @@
               </div>
             </div>
 
-            <div class="p-6 pt-0">
+            <div class="p-5">
 
             <% if @item_masters.present? %>
               <div class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
-                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 h-16">
-                  <div class="flex items-center space-x-2">
+                <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 h-20">
+                  <div class="flex items-center space-x-2 font-semibold text-xl">
                   Item Master
                   </div>
-                  <div class="flex items-center gap-2 pt-4">
-                  <input type="text" id="itemSearch" onkeyup="filterItems()" placeholder="Search by item name, category, or measurement..." class="w-full px-4 py-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring focus:ring-blue-200">
+                  <div class="flex items-center gap-2 pt-4 mb-4">
+                  <div class="relative mb:w-1/3">
+                    <span class="absolute top-1/2 left-0 pl-3 transform -translate-y-1/2 text-gray-500">
+                      <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input
+                      type="text"
+                      id="itemSearch"
+                      onkeyup="filterItems()"
+                      placeholder="Item name, Category or Measurement..."
+                      class="w-full pl-10 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+                    />
                   </div>
+                </div>
                   <div>   <div class="flex items-center gap-2">
-                  <button onclick="toggleItemMasterModal(true)" class="flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer ">
+                  <button onclick="toggleItemMasterModal(true)" class="flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-400 font-bold">
                     <i class="fa-solid fa-plus text-lg"></i>
                     <span class="sidebar-label">Add Item</span>
                   </button>
