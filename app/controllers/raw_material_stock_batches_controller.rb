@@ -1,4 +1,5 @@
 class RawMaterialStockBatchesController < ApplicationController
+  before_action :set_item_masters, only: [:new, :create]
   def new
     @batch = RawMaterialStockBatch.new
     @batch.raw_material_stock_items.build 
@@ -22,6 +23,11 @@ class RawMaterialStockBatchesController < ApplicationController
 
   private
 
+  def set_item_masters
+    @item_masters = ItemMaster.all
+  end
+
+  
   def batch_params
     params.require(:raw_material_stock_batch).permit(
       :supplier_name, :receiving_date, :supplier_invoice_number,

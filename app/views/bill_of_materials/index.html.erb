@@ -1,4 +1,4 @@
-<div class="flex justify-between items-center mb-4">
+<div class="flex justify-between items-center mb-4 ">
   <!-- Back Button -->
 
 
@@ -7,19 +7,23 @@
 </div>
 
 <!-- BOM Table -->
-<div class="overflow-x-auto bg-white shadow-md rounded-md">
+<div class="pl-6 pr-6">
+<div class="overflow-x-auto bg-white shadow-md rounded-lg border border-gray-200">
 <div class="flex items-center justify-between px-6 pt-4 pb-4">
-<h1 class="text-2xl font-bold">All Bills of Material</h1>
+<h1 class="text-2xl font-bold">Bill of Material</h1>
 <!-- Search Input -->
-<div data-controller="bom-search">
-<input
-  type="text"
-  id="bomSearchInput"
-  placeholder="Search by BOM Number or Name"
-  class="border border-gray-300 rounded-md px-3 py-2 text-sm w-full focus:ring-blue-500 focus:border-blue-500"
-/>
-
+<div data-controller="bom-search" class="relative ">
+  <span class="absolute top-1/2 left-0 pl-3 transform -translate-y-1/2 text-gray-500">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </span>
+  <input
+    type="text"
+    id="bomSearchInput"
+    placeholder="BOM Number or Name"
+    class="border border-gray-300 rounded-md px-3 py-2 text-sm w-full pl-10 focus:ring-blue-500 focus:border-blue-500"
+  />
 </div>
+
 <%= link_to new_bill_of_material_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300" do %>
   <i class="fa-solid fa-plus"></i>
   <span class="font-semibold">Add BOM</span>
@@ -77,6 +81,7 @@
   <% else %>
     <p class="text-gray-500 italic px-6 py-4">No BOMs found.</p>
   <% end %>
+</div>
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {

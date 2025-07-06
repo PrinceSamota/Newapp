@@ -1,6 +1,6 @@
 class Dispatch < ApplicationRecord
     before_create :generate_order_no
-
+    belongs_to :client, optional: true
   private
 
   def generate_order_no

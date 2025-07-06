@@ -11,7 +11,7 @@ class ProductionOrdersController < ApplicationController
       redirect_to production_orders_path, notice: "Production order created successfully."
     else
       @item_masters = ItemMaster.where(is_bOM: true)
-      render :new
+      render :new, status: :unprocessable_entity  
     end
   end
   def index

@@ -24,6 +24,6 @@ class DispatchesController < ApplicationController
   private
 
   def dispatch_params
-    params.require(:dispatch).permit(:quantity, :client, :mode_of_shipment, :dispatch_date, :delivery_date, :courier_company)
+    params.require(:dispatch).permit(:quantity,  :client_id, :mode_of_shipment, :dispatch_date, :delivery_date, :courier_company)
   end
 end

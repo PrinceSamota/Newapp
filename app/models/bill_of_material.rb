@@ -6,9 +6,20 @@ class BillOfMaterial < ApplicationRecord
     accepts_nested_attributes_for :bom_raw_material_items, allow_destroy: true
   
     before_create :generate_bom_number
+    validates :name, presence: true, uniqueness: { case_sensitive: false, }
+
+    validate :must_have_at_least_one_raw_material
   
     def generate_bom_number
       last_number = BillOfMaterial.maximum(:id).to_i + 1
       self.bom_number = "BOM#{last_number.to_s.rjust(5, '0')}"
     end
+
+  private
+
+  def must_have_at_least_one_raw_material
+    if bom_raw_material_items.reject(&:marked_for_destruction?).empty?
+      errors.add(:base, "At least one raw material is required")
+    end
+  end
   end
