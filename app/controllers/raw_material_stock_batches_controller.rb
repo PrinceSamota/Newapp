@@ -10,6 +10,13 @@ class RawMaterialStockBatchesController < ApplicationController
     @batch = RawMaterialStockBatch.new(batch_params)
   
     if @batch.save
+      @batch.raw_material_stock_items.each do |stock_item|
+        item = ItemMaster.find_by(sku_id: stock_item.sku_id)
+        if item
+          item.opening_stock = item.opening_stock.to_i + stock_item.receiving_quantity.to_i
+          item.save
+        end
+      end
       redirect_to raw_material_stock_batches_path, notice: "Raw material batch created successfully."
     else
       render :new, status: :unprocessable_entity

@@ -1,6 +1,13 @@
 <%= tag.script type: "application/json", id: "item-master-mapping-data" do %>
-    <%= raw item_masters.map { |item| { sku_id: item.sku_id, item_name: item.item_name } }.to_json %>
-  <% end %>
+  <%= raw item_masters.map { |item|
+    {
+      sku_id: item.sku_id,
+      item_name: item.item_name,
+      opening_stock: item.opening_stock
+    }
+  }.to_json %>
+<% end %>
+
 <div class="production-order-row relative grid grid-cols-5 gap-4 items-end bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
 
   <!-- SKU ID -->
@@ -60,48 +67,70 @@ document.addEventListener("turbo:load", () => {
 
   const skuToItem = {};
   const itemToSku = {};
+  const skuToStock = {};
+  const itemToStock = {};
+
+  // Setup mappings
   mappingData.forEach(item => {
     skuToItem[item.sku_id] = item.item_name;
     itemToSku[item.item_name] = item.sku_id;
+
+    skuToStock[item.sku_id] = item.opening_stock;
+    itemToStock[item.item_name] = item.opening_stock;
   });
 
   document.body.addEventListener("change", (e) => {
     const target = e.target;
 
-    // Find the .grid parent row
+    // Find the parent row
     const row = target.closest(".grid");
     if (!row) return;
 
-    // Auto-fill Item Name when SKU changes
-    if (target.classList.contains("sku-id-field")) {
-      const sku = target.value;
-      const itemSelect = row.querySelector(".item-name-select");
+    const skuSelect = row.querySelector(".sku-id-field");
+    const itemSelect = row.querySelector(".item-name-select");
+    const stockField = row.querySelector("input[name*='current_stock']");
 
-      if (skuToItem[sku]) {
-        itemSelect.value = skuToItem[sku];
+    // When SKU is selected
+    if (target.classList.contains("sku-id-field")) {
+      const sku = skuSelect.value;
+      const itemName = skuToItem[sku];
+
+      if (itemName) {
+        itemSelect.value = itemName;
       }
+
+      if (stockField && skuToStock[sku] !== undefined) {
+        stockField.value = skuToStock[sku];
+      }
+
       checkBOMUsage(row);
     }
 
-    // Auto-fill SKU when Item Name changes
+    // When Item Name is selected
     if (target.classList.contains("item-name-select")) {
-      const itemName = target.value;
-      const skuSelect = row.querySelector(".sku-id-field");
+      const itemName = itemSelect.value;
+      const sku = itemToSku[itemName];
 
-      if (itemToSku[itemName]) {
-        skuSelect.value = itemToSku[itemName];
+      if (sku) {
+        skuSelect.value = sku;
       }
+
+      if (stockField && itemToStock[itemName] !== undefined) {
+        stockField.value = itemToStock[itemName];
+      }
+
       checkBOMUsage(row);
     }
   });
+
   function checkBOMUsage(row) {
     const skuField = row.querySelector(".sku-id-field");
     const bomFieldWrapper = row.querySelector(".bom-input-wrapper");
     const bomField = row.querySelector(".bom-field");
     const createLink = row.querySelector(".create-bom-btn");
-  
+
     const sku = skuField.value;
-  
+
     if (sku) {
       fetch(`/check_bom_usage?sku_id=${sku}`)
         .then(res => res.json())
