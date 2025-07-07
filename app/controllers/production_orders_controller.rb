@@ -8,6 +8,13 @@ class ProductionOrdersController < ApplicationController
   def create
     @production_order = ProductionOrder.new(production_order_params)
     if @production_order.save
+      @production_order.production_order_items.each do |item|
+        item_master = ItemMaster.find_by(sku_id: item.sku_id)
+        if item_master
+          item_master.opening_stock = item_master.opening_stock.to_i - item.quantity.to_i
+          item_master.save
+        end
+      end
       redirect_to production_orders_path, notice: "Production order created successfully."
     else
       @item_masters = ItemMaster.where(is_bOM: true)

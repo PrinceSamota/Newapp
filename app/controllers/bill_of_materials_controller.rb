@@ -9,13 +9,33 @@ class BillOfMaterialsController < ApplicationController
 
   def create
     @bill_of_material = BillOfMaterial.new(bom_params)
+  
     if @bill_of_material.save
+      fg = @bill_of_material.finished_good
+      if fg.present?
+        fg_item = ItemMaster.find_by(sku_id: fg.sku_id)
+        if fg_item
+          fg_item.opening_stock = fg_item.opening_stock.to_i + fg.quantity.to_i
+          fg_item.save
+        end
+      end
+  
+
+      @bill_of_material.bom_raw_material_items.each do |rm|
+        rm_item = ItemMaster.find_by(sku_id: rm.sku_id)
+        if rm_item
+          rm_item.opening_stock = rm_item.opening_stock.to_i - rm.quantity.to_i
+          rm_item.save
+        end
+      end
+  
       redirect_to bill_of_materials_path, notice: "BOM created successfully"
     else
       @item_masters = ItemMaster.where(is_bom: true)
       render :new, status: :unprocessable_entity
     end
   end
+  
   def index
     @bill_of_materials = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).order(created_at: :desc)
   end
@@ -28,7 +48,7 @@ class BillOfMaterialsController < ApplicationController
     @bill_of_material.finished_good = original_bom.finished_good.dup if original_bom.finished_good.present?
     @bill_of_material.bom_raw_material_items = original_bom.bom_raw_material_items.map(&:dup)
   
-    @item_masters = ItemMaster.all  # ✅ Ensure this is present
+    @item_masters = ItemMaster.all  
     render :new
   end
 
