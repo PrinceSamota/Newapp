@@ -1,22 +1,23 @@
 class ArticlesController < ApplicationController
   def manual_decode
-    article_number = params[:article_number] || params[:article_no]
-    decoder = ArticleDecoder.new(article_number)
-    decoded = decoder.decode
+    @article_number = params[:article_number] || params[:article_no]
+    decoder = ArticleDecoder.new(@article_number)
+    @decoded = decoder.decode
   
     respond_to do |format|
       format.html { render :manual_decode }
-      format.json { render json: decoded }
+      format.json { render json: @decoded }
     end
   end
 
   def manual_decode_post
     article_number = params[:article_number]
     decoded = ArticleDecoder.new(article_number).decode
-
-    session[:decoded_data] = decoded
+  
     session[:article_number] = article_number
-    redirect_to manual_decode_result_path
+    session[:decoded_data] = decoded
+  
+    redirect_to new_order_entry_path
   end
 
   def manual_decode_result

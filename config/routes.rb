@@ -7,9 +7,11 @@ Rails.application.routes.draw do
   end
   resources :production_orders
   resources :clients, only: [:create]
+  resources :order_entries
 get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'
 get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
 # config/routes.rb
+post '/manual_decode', to: 'order_entries#manual_decode', as: :manual_decode
 get 'bill_of_materials/:sku_id/:item_name/bom_details', to: 'bill_of_materials#bom_details', as: :bill_of_material_bom_details
 
   resources :raw_material_stock_batches, only: [:new, :create, :index]

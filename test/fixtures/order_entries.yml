@@ -1,0 +1,37 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  order_no: MyString
+  article_no: MyString
+  client: MyString
+  target_date: 2025-07-08
+  ship_to_location: MyString
+  qty: 1
+  type: 
+  profile: MyString
+  voltage: MyString
+  wattage: MyString
+  length: MyString
+  cct: MyString
+  cover_type: MyString
+  fuse_type: MyString
+  loop: MyString
+  sku_number: MyString
+
+two:
+  order_no: MyString
+  article_no: MyString
+  client: MyString
+  target_date: 2025-07-08
+  ship_to_location: MyString
+  qty: 1
+  type: 
+  profile: MyString
+  voltage: MyString
+  wattage: MyString
+  length: MyString
+  cct: MyString
+  cover_type: MyString
+  fuse_type: MyString
+  loop: MyString
+  sku_number: MyString
