@@ -1,4 +1,5 @@
 class OrderEntriesController < ApplicationController
+  require 'ostruct'
     def new
         @order_entry = OrderEntry.new
         @item_masters = ItemMaster.all
