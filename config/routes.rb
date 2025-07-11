@@ -25,7 +25,7 @@ post 'item_masters/decode_article', to: 'item_masters#decode_article'
   resources :raw_material_inwards
   resources :orders, only: [:show]
   resources :availabilities, only: [:new, :create, :index]
-  resources :item_masters, only: [:create, :show]
+  resources :item_masters
   resources :organizations
   resources :measurements, only: [:new, :create, :index]
   resources :categories, only: [:new, :create, :index]

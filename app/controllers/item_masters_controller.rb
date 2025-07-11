@@ -16,6 +16,18 @@ class ItemMastersController < ApplicationController
           end
         end
       end
+      def edit
+        @item_master = ItemMaster.find(params[:id])
+      end
+      
+      def update
+        @item_master = ItemMaster.find(params[:id])
+        if @item_master.update(item_master_params)
+          redirect_to root_path, notice: "Item updated successfully!"
+        else
+          render :edit
+        end
+      end
       
       def decode_article
         article_number = params[:article_number]
