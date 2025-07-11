@@ -1,0 +1,64 @@
+<div class="h-screen overflow-hidden px-4 py-6 relative">
+  
+  <div class="absolute top-6 left-6">
+    <%= link_to root_path, class: "inline-flex items-center gap-2 text-gray-700 hover:bg-gray-200 rounded-md px-3 py-2 border border-gray-300 shadow-sm" do %>
+      <i class="fa-solid fa-arrow-left"></i>
+      <span class="font-semibold">Back</span>
+    <% end %>
+  </div>
+
+  <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl mx-auto mt-12">
+    <h2 class="text-2xl font-bold text-center mb-6 text-gray-700">Edit Item</h2>
+
+    <%= form_with(model: @item_master, local: true, class: "space-y-4") do |f| %>
+      <div>
+        <%= f.label :item_name, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :item_name, class: "w-full border border-gray-300 rounded-md px-4 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :measurement_id, "Measurement", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.collection_select :measurement_id, Measurement.all, :id, :name, { include_blank: "Select" }, class: "w-full border border-gray-300 rounded-md px-4 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :category_id, "Category", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.collection_select :category_id, Category.all, :id, :name, { include_blank: "Select" }, class: "w-full border border-gray-300 rounded-md px-4 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :opening_stock, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :opening_stock, step: :any, class: "w-full border border-gray-300 rounded-md px-4 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :purchase_price, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :purchase_price, step: :any, class: "w-full border border-gray-300 rounded-md px-4 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :sale_price, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :sale_price, step: :any, class: "w-full border border-gray-300 rounded-md px-4 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :minimum_stock_level, class: "block text-sm font-medium text-gray-700" %>
+        <%= f.number_field :minimum_stock_level, step: :any, class: "w-full border border-gray-300 rounded-md px-4 py-2" %>
+      </div>
+
+      <div>
+        <%= f.label :is_bOM, "Is BOM?", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.check_box :is_bOM %>
+      </div>
+
+      <div>
+        <%= f.label :sku_id, "SKU ID (Not Editable)", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :sku_id, class: "w-full border border-gray-300 rounded-md px-4 py-2 bg-gray-100 cursor-not-allowed", disabled: true %>
+      </div>
+
+      <div>
+        <%= f.submit "Update Item", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 w-full cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>

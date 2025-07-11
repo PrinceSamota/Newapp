@@ -223,7 +223,9 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                       <% @item_masters.each do |item| %>
                         <tr class="hover:bg-gray-50  text-left">
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.item_name %></td>
+                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200 text-blue-600 hover:underline">
+                          <%= link_to item.item_name, edit_item_master_path(item) %>
+                          </td>
                           <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.measurement&.name %></td>
                           <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.category&.name %></td>
                           <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.opening_stock %></td>
