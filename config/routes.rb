@@ -12,6 +12,7 @@ get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'
 get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
 # config/routes.rb
 post '/manual_decode', to: 'order_entries#manual_decode', as: :manual_decode
+get '/manual_decode', to: 'order_entries#manual_decode'
 get 'bill_of_materials/:sku_id/:item_name/bom_details', to: 'bill_of_materials#bom_details', as: :bill_of_material_bom_details
 
   resources :raw_material_stock_batches, only: [:new, :create, :index]
@@ -19,7 +20,6 @@ get 'bill_of_materials/:sku_id/:item_name/bom_details', to: 'bill_of_materials#b
 get "/check_bom", to: "item_masters#check_bom"
 get "/check_bom_usage", to: "item_masters#check_bom_usage"
   get 'item_masters/:id/details', to: 'item_masters#details'
-  post 'manual_decode', to: 'articles#manual_decode'
 post 'item_masters/decode_article', to: 'item_masters#decode_article'
   resources :bom_raw_materials
   resources :raw_material_inwards
@@ -31,9 +31,6 @@ post 'item_masters/decode_article', to: 'item_masters#decode_article'
   resources :categories, only: [:new, :create, :index]
   root 'uploads#index'
   resources :uploads, only: [:index, :create, :show]
-  post 'decode_article', to: 'articles#decode'
-get  'manual_decode', to: 'articles#manual_decode'
-post 'manual_decode', to: 'articles#manual_decode_post'
 get 'manual_decode_result', to: 'articles#manual_decode_result'
   devise_for :users
   resources :posts
