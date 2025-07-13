@@ -50,8 +50,25 @@ class ItemMastersController < ApplicationController
   
     def item_master_params
       params.require(:item_master).permit(
-        :item_name, :opening_stock,
-        :purchase_price, :sale_price, :is_bOM, :minimum_stock_level, :category_id, :measurement_id, :org_id
+        :item_name,
+        :opening_stock,
+        :purchase_price,
+        :sale_price,
+        :is_bOM,
+        :minimum_stock_level,
+        :category_id,
+        :measurement_id,
+        :org_id,
+        :fuse_type_id,
+        :cct_id,
+        :cover_type_id,
+        :item_type_id,
+        :length_id,
+        :loop_id,
+        :profile_id,
+        :voltage_id,
+        :wattage_id,
+        :article_number
       )
     end
   end

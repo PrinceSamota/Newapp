@@ -1,0 +1,63 @@
+<div>
+  <turbo-frame id="wattage_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-sm font-semibold text-gray-800">Wattage</label>
+        <button type="button" onclick="document.getElementById('newWattageForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+      </div>
+
+      <% if current_user.present? %>
+        <%= select_tag "item_master[wattage_id]",
+          options_from_collection_for_select(Wattage.where(org_id: current_user.org_id), :id, :name, selected_wattage_id),
+          include_blank: "Select Wattage",
+          class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+      <% else %>
+        <p class="text-red-500 text-sm">Please log in to select wattage.</p>
+      <% end %>
+
+      <!-- Add new Wattage -->
+      <div id="newWattageForm" class="mt-2 <%= 'hidden' unless show_form %>">
+        <div class="flex gap-2">
+          <input id="new_wattage_value" type="text" placeholder="New Wattage (e.g., 12W)"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewWattage()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+        <div id="wattage-errors" class="text-red-600 text-sm mt-2"></div>
+      </div>
+
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </turbo-frame>
+</div>
+
+<script>
+  function submitNewWattage() {
+    const value = document.getElementById('new_wattage_value').value;
+
+    fetch("/wattages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ wattage: { name: value } })
+
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("wattage_section").innerHTML = html;
+    })
+    .catch(error => {
+      document.getElementById("wattage-errors").innerText = "Something went wrong.";
+      console.error(error);
+    });
+  }
+</script>

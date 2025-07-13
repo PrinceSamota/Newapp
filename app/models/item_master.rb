@@ -5,7 +5,16 @@ class ItemMaster < ApplicationRecord
   belongs_to :category
   belongs_to :measurement
   before_create :generate_sku_id
-
+  belongs_to :fuse_type, optional: true
+  belongs_to :loop, optional: true
+  belongs_to :item_type, optional: true
+  belongs_to :profile, optional: true
+  belongs_to :wattage, optional: true
+  belongs_to :voltage, optional: true
+  belongs_to :length, optional: true
+  belongs_to :cct, optional: true
+  belongs_to :cover_type, optional: true
+  
   private
 
   def generate_sku_id
