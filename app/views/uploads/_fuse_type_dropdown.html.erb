@@ -1,0 +1,62 @@
+<div>
+  <turbo-frame id="fuse_type_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-sm font-semibold text-gray-800">Fuse Type</label>
+        <button type="button" onclick="document.getElementById('newFuseTypeForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+      </div>
+
+      <% if current_user.present? %>
+        <%= select_tag "item_master[fuse_type_id]",
+          options_from_collection_for_select(FuseType.where(org_id: current_user.org_id), :id, :name, selected_fuse_type_id),
+          include_blank: "Select Fuse Type",
+          class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+      <% else %>
+        <p class="text-red-500 text-sm">Please log in to select fuse type.</p>
+      <% end %>
+
+      <!-- Add new Fuse Type -->
+      <div id="newFuseTypeForm" class="mt-2 <%= 'hidden' unless show_form %>">
+        <div class="flex gap-2">
+          <input id="new_fuse_type_name" type="text" placeholder="New Fuse Type name"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewFuseType()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+        <div id="fuse_type-errors" class="text-red-600 text-sm mt-2"></div>
+      </div>
+
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </turbo-frame>
+</div>
+
+<script>
+  function submitNewFuseType() {
+    const name = document.getElementById('new_fuse_type_name').value;
+
+    fetch("/fuse_types", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ fuse_type: { name } })
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("fuse_type_section").innerHTML = html;
+    })
+    .catch(error => {
+      document.getElementById("fuse_type-errors").innerText = "Something went wrong.";
+      console.error(error);
+    });
+  }
+</script>

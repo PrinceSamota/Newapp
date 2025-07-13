@@ -4,6 +4,9 @@ class UploadsController < ApplicationController
     @decoded_result = nil
     @article_number = nil
     @item_masters = ItemMaster.order(created_at: :desc)
+    @selected_fuse_type_id = nil
+    @show_fuse_form = false
+    @fuse_type_errors = []
   end
 
   def create

@@ -1,0 +1,63 @@
+<div>
+  <turbo-frame id="length_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-sm font-semibold text-gray-800">Length</label>
+        <button type="button" onclick="document.getElementById('newLengthForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+      </div>
+
+      <% if current_user.present? %>
+       <%= select_tag "item_master[length_id]",
+  options_from_collection_for_select(Length.where(org_id: current_user.org_id), :id, :name, selected_length_id),
+  include_blank: "Select Length",
+  class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+
+      <% else %>
+        <p class="text-red-500 text-sm">Please log in to select length.</p>
+      <% end %>
+
+      <!-- Add new Length -->
+      <div id="newLengthForm" class="mt-2 <%= 'hidden' unless show_form %>">
+        <div class="flex gap-2">
+          <input id="new_length_value" type="text" placeholder="New Length value"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewLength()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+        <div id="length-errors" class="text-red-600 text-sm mt-2"></div>
+      </div>
+
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </turbo-frame>
+</div>
+
+<script>
+  function submitNewLength() {
+    const value = document.getElementById('new_length_value').value;
+
+    fetch("/lengths", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ length: { name: value } })
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("length_section").innerHTML = html;
+    })
+    .catch(error => {
+      document.getElementById("length-errors").innerText = "Something went wrong.";
+      console.error(error);
+    });
+  }
+</script>

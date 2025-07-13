@@ -1,0 +1,62 @@
+<div>
+  <turbo-frame id="cover_type_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-sm font-semibold text-gray-800">Cover Type</label>
+        <button type="button" onclick="document.getElementById('newCoverTypeForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+      </div>
+
+      <% if current_user.present? %>
+        <%= select_tag "item_master[cover_type_id]",
+          options_from_collection_for_select(CoverType.where(org_id: current_user.org_id), :id, :name, selected_cover_type_id),
+          include_blank: "Select Cover Type",
+          class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+      <% else %>
+        <p class="text-red-500 text-sm">Please log in to select cover type.</p>
+      <% end %>
+
+      <!-- Add new Cover Type -->
+      <div id="newCoverTypeForm" class="mt-2 <%= 'hidden' unless show_form %>">
+        <div class="flex gap-2">
+          <input id="new_cover_type_name" type="text" placeholder="New Cover Type name"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewCoverType()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+        <div id="cover_type-errors" class="text-red-600 text-sm mt-2"></div>
+      </div>
+
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </turbo-frame>
+</div>
+
+<script>
+  function submitNewCoverType() {
+    const name = document.getElementById('new_cover_type_name').value;
+
+    fetch("/cover_types", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ cover_type: { name } })
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("cover_type_section").innerHTML = html;
+    })
+    .catch(error => {
+      document.getElementById("cover_type-errors").innerText = "Something went wrong.";
+      console.error(error);
+    });
+  }
+</script>

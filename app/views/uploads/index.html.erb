@@ -60,7 +60,99 @@
                             </label>
                           </div>
                         </div>
-                        
+                        <div id="bom-fields" class="mt-4 hidden col-span-1 md:col-span-2">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          
+                          <!-- Article Number -->
+                          <div class="w-full" >
+                            <%= f.label :article_number, "Article Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+                            <%= f.text_field :article_number, placeholder: "Enter article number", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+                          </div>
+                      
+                          <!-- Fuse Type Dropdown -->
+                          <div class="w-full" >
+                            <%= render partial: "uploads/fuse_type_dropdown", locals: {
+                              selected_fuse_type_id: @selected_fuse_type_id || nil,
+                              show_form: @show_fuse_form || false,
+                              errors: @fuse_type_errors || []
+                            } %>
+                          </div>
+                      
+                          <!-- Loop Dropdown -->
+                          <div>
+                            <%= render partial: "uploads/loop_dropdown", locals: {
+                              selected_loop_id: nil,
+                              show_form: false,
+                              errors: []
+                            } %>
+                          </div>
+                      
+                          <!-- Item Type Dropdown -->
+                          <div>
+                            <%= render partial: "uploads/item_type_dropdown", locals: {
+                              selected_item_type_id: nil,
+                              show_form: false,
+                              errors: []
+                            } %>
+                          </div>
+                      
+                          <!-- Profile Dropdown -->
+                          <div>
+                            <%= render partial: "uploads/profile_dropdown", locals: {
+                              selected_profile_id: nil,
+                              show_form: false,
+                              errors: []
+                            } %>
+                          </div>
+                      
+                          <!-- Wattage Dropdown -->
+                          <div>
+                            <%= render partial: "uploads/wattage_dropdown", locals: {
+                              selected_wattage_id: nil,
+                              show_form: false,
+                              errors: []
+                            } %>
+                          </div>
+                      
+                          <!-- Voltage Dropdown -->
+                          <div>
+                            <%= render partial: "uploads/voltage_dropdown", locals: {
+                              selected_voltage_id: nil,
+                              show_form: false,
+                              errors: []
+                            } %>
+                          </div>
+                      
+                          <!-- Length Dropdown -->
+                          <div>
+                            <%= render partial: "uploads/length_dropdown", locals: {
+                              selected_length_id: nil,
+                              show_form: false,
+                              errors: []
+                            } %>
+                          </div>
+                      
+                          <!-- CCT Dropdown -->
+                          <div>
+                            <%= render partial: "uploads/cct_dropdown", locals: {
+                              selected_cct_id: nil,
+                              show_form: false,
+                              errors: []
+                            } %>
+                          </div>
+                      
+                          <!-- Cover Type Dropdown -->
+                          <div>
+                            <%= render partial: "uploads/cover_type_dropdown", locals: {
+                              selected_cover_type_id: nil,
+                              show_form: false,
+                              errors: []
+                            } %>
+                          </div>
+                          
+                        </div>
+                      </div>
+                      
                         <!-- Category Dropdown -->
                         <div class="col-span-1 md:col-span-2">
                           <%= render partial: "uploads/category_dropdown", locals: { selected_category_id: nil, show_form: false, errors: [] } %>
@@ -420,4 +512,27 @@ document.addEventListener("DOMContentLoaded", function () {
       row.style.display = match ? "" : "none";
     });
   }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const bomYes = document.querySelector("input[name='item_master[is_bOM]'][value='true']");
+    const bomNo = document.querySelector("input[name='item_master[is_bOM]'][value='false']");
+    const bomFields = document.getElementById("bom-fields");
+
+    function toggleBOMFields() {
+      if (bomYes.checked) {
+        bomFields.classList.remove("hidden");
+      } else {
+        bomFields.classList.add("hidden");
+      }
+    }
+
+    // Add event listeners
+    bomYes.addEventListener("change", toggleBOMFields);
+    bomNo.addEventListener("change", toggleBOMFields);
+
+    // Initial toggle on page load
+    toggleBOMFields();
+  });
+
+
 </script>

@@ -1,0 +1,62 @@
+<div>
+  <turbo-frame id="profile_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-sm font-semibold text-gray-800">Profile</label>
+        <button type="button" onclick="document.getElementById('newProfileForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+      </div>
+
+      <% if current_user.present? %>
+        <%= select_tag "item_master[profile_id]",
+          options_from_collection_for_select(Profile.where(org_id: current_user.org_id), :id, :name, selected_profile_id),
+          include_blank: "Select Profile",
+          class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+      <% else %>
+        <p class="text-red-500 text-sm">Please log in to select profile.</p>
+      <% end %>
+
+      <!-- Add new Profile -->
+      <div id="newProfileForm" class="mt-2 <%= 'hidden' unless show_form %>">
+        <div class="flex gap-2">
+          <input id="new_profile_name" type="text" placeholder="New Profile name"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewProfile()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+        <div id="profile-errors" class="text-red-600 text-sm mt-2"></div>
+      </div>
+
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </turbo-frame>
+</div>
+
+<script>
+  function submitNewProfile() {
+    const name = document.getElementById('new_profile_name').value;
+
+    fetch("/profiles", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ profile: { name } })
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("profile_section").innerHTML = html;
+    })
+    .catch(error => {
+      document.getElementById("profile-errors").innerText = "Something went wrong.";
+      console.error(error);
+    });
+  }
+</script>

@@ -5,6 +5,15 @@ Rails.application.routes.draw do
       get :clone
     end
   end
+  resources :fuse_types, only: [:index, :create]
+  resources :ccts, only: [:index, :create]
+  resources :cover_types, only: [:index, :create]
+  resources :item_types, only: [:index, :create]
+  resources :lengths, only: [:index, :create]
+  resources :loops, only: [:index, :create]
+  resources :profiles, only: [:index, :create]
+  resources :voltages, only: [:index, :create]
+  resources :wattages, only: [:index, :create]
   resources :production_orders
   resources :clients, only: [:create]
   resources :order_entries

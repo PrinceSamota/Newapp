@@ -1,0 +1,2 @@
+module CctsHelper
+end
