@@ -30,8 +30,10 @@
         <tbody class="bg-white divide-y divide-gray-100">
           <% @order_entries.each do |order| %>
             <tr class="hover:bg-gray-50">
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.order_no %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.article_no %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center">
+            <%= link_to order.order_no, order_entry_path(order), class: "text-blue-600 hover:underline font-semibold" %>
+          </td>
+                        <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.article_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.client&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.ship_to_location %></td>

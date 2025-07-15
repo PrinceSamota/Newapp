@@ -43,7 +43,10 @@
       <tbody class="bg-white divide-y divide-gray-200" id="bomTableBody">
         <% @bill_of_materials.each do |bom| %>
           <tr class="hover:bg-gray-50" data-bom-number="<%= bom.bom_number.downcase %>" data-bom-name="<%= bom.name.downcase %>">
-            <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200"><%= bom.bom_number %></td>
+            <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200 text-blue-600 underline">
+  <%= link_to bom.bom_number, bill_of_material_path(bom) %>
+</td>
+
             <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200"><%= bom.name %></td>
 
             <!-- Finished Good Info -->
@@ -63,10 +66,6 @@
             <!-- Action Buttons -->
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex flex-col gap-2">
-                <%= link_to edit_bill_of_material_path(bom), class: "flex items-center gap-1 cursor-pointer text-sm" do %>
-                  <i class="fa fa-pen-to-square"></i>
-                  <span>Edit</span>
-                <% end %>
 
                 <%= link_to clone_bill_of_material_path(bom), class: "flex items-center gap-1 cursor-pointer text-sm", title: "Clone" do %>
                   <i class="fa-solid fa-clone"></i>

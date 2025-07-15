@@ -6,6 +6,18 @@ class RawMaterialStockBatchesController < ApplicationController
     @item_masters = ItemMaster.all
   end
 
+  def show
+    @batch = RawMaterialStockBatch.includes(:raw_material_stock_items).find(params[:id])
+  end
+  
+  def update
+    @raw_material_stock_batch = RawMaterialStockBatch.find(params[:id])
+    if @raw_material_stock_batch.update(batch_params)
+      redirect_to raw_material_stock_batches_path, notice: "Batch updated successfully."
+    else
+      render :edit
+    end
+  end
 def create
   @batch = RawMaterialStockBatch.new(batch_params)
 

@@ -12,7 +12,13 @@
     </div>
 
       </div>
-  
+      <div>
+      <%= f.label :order_no, "Order Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.select :order_no,
+            options_from_collection_for_select(OrderEntry.all, :order_no, :order_no, dispatch.order_no),
+            { include_blank: "Select Order No" },
+            class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+    </div>
       <!-- Quantity -->
       <div>
         <%= f.label :quantity, "Quantity", class: "block text-sm font-medium text-gray-700 mb-1" %>
