@@ -4,4 +4,6 @@ class RawMaterialStockBatch < ApplicationRecord
     validates :supplier_name, presence: true
     validates :receiving_date, presence: true
     validates :supplier_invoice_number, presence: true
+    has_paper_trail save_changes: true
+
 end

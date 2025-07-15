@@ -6,22 +6,25 @@ class RawMaterialStockBatchesController < ApplicationController
     @item_masters = ItemMaster.all
   end
 
-  def create
-    @batch = RawMaterialStockBatch.new(batch_params)
-  
-    if @batch.save
-      @batch.raw_material_stock_items.each do |stock_item|
-        item = ItemMaster.find_by(sku_id: stock_item.sku_id)
-        if item
-          item.opening_stock = item.opening_stock.to_i + stock_item.receiving_quantity.to_i
-          item.save
-        end
+def create
+  @batch = RawMaterialStockBatch.new(batch_params)
+
+  if @batch.save
+    @batch.raw_material_stock_items.each do |stock_item|
+      item = ItemMaster.find_by(sku_id: stock_item.sku_id)
+      if item
+        previous_stock = item.opening_stock.to_i
+        item.update(opening_stock: previous_stock + stock_item.receiving_quantity.to_i)
+        item.versions.last.update!(source_type: "RawMaterialStockBatch", source_id: @batch.id)
       end
-      redirect_to raw_material_stock_batches_path, notice: "Raw material batch created successfully."
-    else
-      render :new, status: :unprocessable_entity
     end
+    redirect_to raw_material_stock_batches_path, notice: "Raw material batch created successfully."
+  else
+    render :new, status: :unprocessable_entity
   end
+end
+
+  
 
   def index
     @batches = RawMaterialStockBatch.includes(:raw_material_stock_items).order(created_at: :desc)

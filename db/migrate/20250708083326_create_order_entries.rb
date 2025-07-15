@@ -7,15 +7,6 @@ class CreateOrderEntries < ActiveRecord::Migration[7.2]
       t.date :target_date
       t.string :ship_to_location
       t.integer :qty
-      t.string :ptype
-      t.string :profile
-      t.string :voltage
-      t.string :wattage
-      t.string :length
-      t.string :cct
-      t.string :cover_type
-      t.string :fuse_type
-      t.string :loop
       t.string :sku_number
 
       t.timestamps
