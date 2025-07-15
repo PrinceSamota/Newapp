@@ -30,6 +30,15 @@ class OrderEntriesController < ApplicationController
     def show
       @order_entry = OrderEntry.find(params[:id])
     end
+    def update
+      @order_entry = OrderEntry.find(params[:id])
+      if @order_entry.update(order_entry_params_upload)
+        redirect_to order_entries_path, notice: "Order updated successfully."
+      else
+        render :show
+      end
+    end
+    
   
     private
   
@@ -43,6 +52,9 @@ class OrderEntriesController < ApplicationController
         :qty,
         :sku_number
       )
+    end
+    def order_entry_params_upload
+      params.require(:order_entry).permit(:order_no, :article_no, :client_id, :target_date, :ship_to_location, :qty)
     end
     def decode_article_fields
       decoded = ArticleDecoder.new(@order_entry.article_no).decode

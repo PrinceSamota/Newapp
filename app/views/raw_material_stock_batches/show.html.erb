@@ -1,0 +1,121 @@
+<%= link_to raw_material_stock_batches_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 rounded border border-gray-300" do %>
+    <i class="fa-solid fa-arrow-left"></i>
+      <span class="font-bold">Back</span>
+    <% end %>
+<div class="pt-6">
+  <%= form_with model: @batch, url: raw_material_stock_batch_path(@batch), method: :patch, local: true do |f| %>
+    <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+      <h2 class="text-xl font-bold text-gray-800 mb-6">Edit Raw Material Inward Stock </h2>
+
+      <!-- Top Inputs -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Supplier Name</label>
+          <%= f.text_field :supplier_name, placeholder: "Enter supplier name", class: "w-full border-gray-300 rounded-md p-2 border focus:ring focus:ring-blue-200" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Receiving Date</label>
+          <%= f.date_field :receiving_date, class: "w-full border-gray-300 rounded-md p-2 border focus:ring focus:ring-blue-200" %>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Supplier Invoice No.</label>
+          <%= f.text_field :supplier_invoice_number, placeholder: "Enter invoice number", class: "w-full border-gray-300 rounded-md p-2 border focus:ring focus:ring-blue-200" %>
+        </div>
+      </div>
+
+      <!-- Items Table -->
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Items</h3>
+      <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-300 mb-4">
+        <table class="min-w-full text-sm">
+          <thead class="bg-gray-50 text-gray-700 text-xs font-semibold uppercase">
+            <tr>
+              <th class="px-4 py-2 text-left">SKU ID</th>
+              <th class="px-4 py-2 text-left">Item Name</th>
+              <th class="px-4 py-2 text-left">Quantity</th>
+              <th class="px-4 py-2 text-left">Price (₹)</th>
+              <th class="px-4 py-2 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-100">
+            <%= f.fields_for :raw_material_stock_items do |item_fields| %>
+              <tr class="item-row">
+                <td class="px-4 py-2">
+                  <%= item_fields.text_field :sku_id,
+                    readonly: true,
+                    class: "w-full border-gray-300 p-2 rounded-md border bg-gray-100 cursor-not-allowed" %>
+                </td>
+                <td class="px-4 py-2">
+                  <%= item_fields.text_field :item_name,
+                    readonly: true,
+                    class: "w-full border-gray-300 p-2 rounded-md border bg-gray-100 cursor-not-allowed" %>
+                </td>
+                <td class="px-4 py-2">
+                  <%= item_fields.number_field :receiving_quantity,
+                    placeholder: "Qty", step: "0.01",
+                    class: "w-full border-gray-300 p-2 rounded-md border" %>
+                </td>
+                <td class="px-4 py-2">
+                  <%= item_fields.number_field :purchase_price,
+                    placeholder: "₹", step: "0.01",
+                    class: "w-full border-gray-300 p-2 rounded-md border" %>
+                </td>
+                <td class="px-4 py-2">
+                  <span class="item-total block text-right text-gray-700 font-medium pr-2">₹0.00</span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" class="px-4 py-2 text-right font-semibold text-gray-700">Total Price:</td>
+              <td class="px-4 py-2">
+                <span id="grand-total" class="block text-right text-green-600 font-bold pr-2">₹0.00</span>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      
+
+
+      <!-- Submit Button -->
+      <div class="mt-4 text-right">
+        <%= f.submit "Submit", class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md shadow cursor-pointer" %>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<!-- JavaScript for Totals -->
+<script>
+  // Function to convert number to Indian currency format like ₹5,96,000.00
+  function formatIndianCurrency(amount) {
+    return '₹' + amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function calculateTotals() {
+    let grandTotal = 0.0;
+
+    document.querySelectorAll('.item-row').forEach(row => {
+      const qtyField = row.querySelector('input[name*="[receiving_quantity]"]');
+      const priceField = row.querySelector('input[name*="[purchase_price]"]');
+      const totalCell = row.querySelector('.item-total');
+
+      const qty = parseFloat(qtyField.value) || 0;
+      const price = parseFloat(priceField.value) || 0;
+      const total = qty * price;
+
+      totalCell.textContent = `${formatIndianCurrency(total)}`;
+      grandTotal += total;
+    });
+
+    document.getElementById('grand-total').textContent = ` ${formatIndianCurrency(grandTotal)}`;
+  }
+
+  document.addEventListener('turbo:load', () => {
+    calculateTotals();
+    document.querySelectorAll('input[name*="[receiving_quantity]"], input[name*="[purchase_price]"]').forEach(input => {
+      input.addEventListener('input', calculateTotals);
+    });
+  });
+</script>

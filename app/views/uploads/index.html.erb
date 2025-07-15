@@ -305,7 +305,7 @@
                   <table class="min-w-full divide-y divide-gray-200 text-sm">
                   <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
                   <tr>
-                    <% ["Item Name", "Measurement", "Category", "Stock", "Purchase Price", "Sale Price", "Minimum Stock Level", "Is BOM", "SKU", "Action"].each_with_index do |header, index| %>
+                    <% ["Item Name", "Measurement", "Category", "Stock", "Purchase Price", "Sale Price", "Minimum Stock Level", "Is BOM", "SKU"].each_with_index do |header, index| %>
                       <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 9 %>">
                         <%= header %>
                       </th>
@@ -326,9 +326,6 @@
                           <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.minimum_stock_level %></td>
                           <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.is_bOM ? "Yes" : "No" %></td>
                           <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sku_id %></td>
-                          <td class="px-6 py-4 whitespace-nowrap flex gap-2">
-                            <button class="text-gray-600 cursor-pointer hover:text-gray-700 "><i class="fa fa-pen-to-square"></i></button>
-                          </td>
                         </tr>
                       <% end %>
                     </tbody>

@@ -56,7 +56,17 @@ end
     @item_masters = ItemMaster.all  
     render :new
   end
-
+  def update_bom_all_items
+    @bill_of_material = BillOfMaterial.find(params[:id])
+  
+    if @bill_of_material.update(bom_params_update)
+      redirect_to bill_of_materials_path, notice: "BOM items updated successfully."
+    else
+      render :show, status: :unprocessable_entity
+    end
+  end
+  
+  
   def find_by_sku
     sku_id = params[:sku_id]
     item_name = params[:item_name]
@@ -105,5 +115,11 @@ end
     finished_good_attributes: [:sku_id, :item_name, :quantity, :unit],
     bom_raw_material_items_attributes: [:sku_id, :item_name, :quantity, :unit, :_destroy]
   )
+  end
+  def bom_params_update
+    params.require(:bill_of_material).permit(
+      finished_good_attributes: [:id, :quantity, :unit],
+      bom_raw_material_items_attributes: [:id, :quantity, :unit]
+    )
   end
 end
