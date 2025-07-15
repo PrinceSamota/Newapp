@@ -1,0 +1,73 @@
+<div class="flex items-center justify-between mb-4">
+  <%= link_to root_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 border border-gray-300" do %>
+    <i class="fa-solid fa-arrow-left"></i>
+    <span class="font-bold">Back</span>
+  <% end %>
+
+  <h2 class="text-xl font-semibold">
+    <%= @item_master.item_name %> - History
+  </h2>
+</div>
+
+<div class="overflow-x-auto rounded-lg shadow">
+  <div class="overflow-hidden rounded-lg border border-gray-200">
+    <table class="min-w-full text-sm bg-white">
+      <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+        <tr>
+          <th class="px-6 py-3 text-left">Time</th>
+          <th class="px-6 py-3 text-left">Source</th>
+          <th class="px-6 py-3 text-left">Before Stock</th>
+          <th class="px-6 py-3 text-left">Change</th>
+          <th class="px-6 py-3 text-left">After Stock</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        <% @versions.each do |version| %>
+          <% begin %>
+            <% permitted_classes = [Time, ActiveSupport::TimeWithZone, ActiveSupport::TimeZone] %>
+            <% changes = YAML.safe_load(version.object_changes || '', permitted_classes: permitted_classes, aliases: true) %>
+            <% old_data = YAML.safe_load(version.object || '', permitted_classes: permitted_classes, aliases: true) %>
+
+            <% if changes.present? && changes.is_a?(Hash) %>
+              <% stock_fields = ["opening_stock", "total_inward", "inward_quantity", "received_stock", "total_outward", "outward_quantity", "used_stock"] %>
+              <% stock_fields.each do |field| %>
+                <% if changes[field].present? %>
+                  <% old_val, new_val = changes[field] %>
+                  <% next if old_val == new_val %>
+                  <% diff = new_val.to_f - old_val.to_f %>
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      <%= version.created_at.in_time_zone("Asia/Kolkata").strftime("%d-%m-%Y %I:%M %p") %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      <% if version.respond_to?(:source_type) && version.source_type.present? %>
+                        <%= version.source_type %> (ID: <%= version.source_id %>)
+                      <% else %>
+                        -
+                      <% end %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-semibold"><%= old_val %></td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <% if diff > 0 %>
+                        <span class="text-green-600 font-bold">+<%= diff %></span>
+                      <% elsif diff < 0 %>
+                        <span class="text-red-600 font-bold"><%= diff %></span>
+                      <% else %>
+                        <span>-</span>
+                      <% end %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-semibold"><%= new_val %></td>
+                  </tr>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% rescue Psych::SyntaxError, ArgumentError => e %>
+            <tr>
+              <td colspan="5" class="px-6 py-4 text-red-500 text-sm">YAML Error: <%= e.message %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

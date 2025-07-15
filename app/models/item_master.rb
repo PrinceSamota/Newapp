@@ -14,7 +14,8 @@ class ItemMaster < ApplicationRecord
   belongs_to :length, optional: true
   belongs_to :cct, optional: true
   belongs_to :cover_type, optional: true
-  
+  has_paper_trail save_changes: true
+
   private
 
   def generate_sku_id

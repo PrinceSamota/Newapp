@@ -2,6 +2,11 @@ class ItemMastersController < ApplicationController
     def show
         @item_master = ItemMaster.find(params[:id])
       end
+
+      def versions
+        @item_master = ItemMaster.find(params[:id])
+        @versions = @item_master.versions.order(created_at: :desc)
+      end
       
       def create
         @item_master = ItemMaster.new(item_master_params)

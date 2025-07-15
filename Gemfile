@@ -13,6 +13,7 @@ gem 'devise'
 gem 'cssbundling-rails'
 gem 'roo'
 gem 'bootsnap', require: false
+gem 'paper_trail', '~> 13.0'
 
 # PostgreSQL instead of SQLite
 group :development, :test do

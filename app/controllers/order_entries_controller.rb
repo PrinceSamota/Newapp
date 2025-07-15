@@ -41,15 +41,6 @@ class OrderEntriesController < ApplicationController
         :target_date,
         :ship_to_location,
         :qty,
-        :fuse_type,
-        :loop,
-        :ptype,
-        :profile,
-        :voltage,
-        :wattage,
-        :length,
-        :cct,
-        :cover_type,
         :sku_number
       )
     end

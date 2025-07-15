@@ -24,37 +24,19 @@
             <th class="px-4 py-3 border-r border-gray-300">Target Date</th>
             <th class="px-4 py-3 border-r border-gray-300">Ship To Location</th>
             <th class="px-4 py-3 border-r border-gray-300">Qty</th>
-            <th class="px-4 py-3 border-r border-gray-300">Fuse Type</th>
-            <th class="px-4 py-3 border-r border-gray-300">Loop</th>
-            <th class="px-4 py-3 border-r border-gray-300">Type</th>
-            <th class="px-4 py-3 border-r border-gray-300">Profile</th>
-            <th class="px-4 py-3 border-r border-gray-300">Voltage</th>
-            <th class="px-4 py-3 border-r border-gray-300">Wattage</th>
-            <th class="px-4 py-3 border-r border-gray-300">Length</th>
-            <th class="px-4 py-3 border-r border-gray-300">CCT</th>
-            <th class="px-4 py-3 border-r border-gray-300">Cover Type</th>
             <th class="px-4 py-3 border-r border-gray-300">SKU Number</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-100">
           <% @order_entries.each do |order| %>
             <tr class="hover:bg-gray-50">
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.order_no %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.article_no %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.client&.name %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.target_date %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.ship_to_location %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.qty %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.fuse_type %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.loop %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.ptype %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.profile %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.voltage %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.wattage %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.length %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.cct %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.cover_type %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= order.sku_number %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.order_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.article_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.client&.name %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.ship_to_location %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
             </tr>
           <% end %>
         </tbody>

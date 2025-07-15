@@ -5,6 +5,8 @@ class ProductionOrder < ApplicationRecord
     before_create :generate_pid
     validates :production_order_items, presence: true
     validates_associated :production_order_items
+    has_paper_trail save_changes: true
+
     private
   
     def generate_pid

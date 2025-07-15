@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_08_083326) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -268,15 +268,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_08_083326) do
     t.date "target_date"
     t.string "ship_to_location"
     t.integer "qty"
-    t.string "ptype"
-    t.string "profile"
-    t.string "voltage"
-    t.string "wattage"
-    t.string "length"
-    t.string "cct"
-    t.string "cover_type"
-    t.string "fuse_type"
-    t.string "loop"
     t.string "sku_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -407,6 +398,20 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_08_083326) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object", limit: 1073741823
+    t.text "object_changes", limit: 1073741823
+    t.string "source_type"
+    t.bigint "source_id"
+    t.datetime "created_at"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
+    t.index ["source_type", "source_id"], name: "index_versions_on_source_type_and_source_id"
   end
 
   create_table "voltages", force: :cascade do |t|
