@@ -128,6 +128,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
     t.integer "client_id"
   end
 
+  create_table "extras", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "finished_goods", force: :cascade do |t|
     t.integer "bill_of_material_id", null: false
     t.string "item_name"
@@ -166,12 +173,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
     t.integer "length_id"
     t.integer "cct_id"
     t.integer "cover_type_id"
+    t.integer "extra_id"
     t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_item_masters_on_category_id"
     t.index ["cct_id"], name: "index_item_masters_on_cct_id"
     t.index ["cover_type_id"], name: "index_item_masters_on_cover_type_id"
+    t.index ["extra_id"], name: "index_item_masters_on_extra_id"
     t.index ["fuse_type_id"], name: "index_item_masters_on_fuse_type_id"
     t.index ["item_type_id"], name: "index_item_masters_on_item_type_id"
     t.index ["length_id"], name: "index_item_masters_on_length_id"
@@ -269,6 +278,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
     t.string "ship_to_location"
     t.integer "qty"
     t.string "sku_number"
+    t.string "fuse_type"
+    t.string "loop"
+    t.string "item_type"
+    t.string "profile"
+    t.string "wattage"
+    t.string "voltage"
+    t.string "length"
+    t.string "cct"
+    t.string "cover_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -437,6 +455,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
   add_foreign_key "item_masters", "categories"
   add_foreign_key "item_masters", "ccts"
   add_foreign_key "item_masters", "cover_types"
+  add_foreign_key "item_masters", "extras"
   add_foreign_key "item_masters", "fuse_types"
   add_foreign_key "item_masters", "item_types"
   add_foreign_key "item_masters", "lengths"
