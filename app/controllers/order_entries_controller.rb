@@ -50,11 +50,21 @@ class OrderEntriesController < ApplicationController
         :target_date,
         :ship_to_location,
         :qty,
-        :sku_number
+        :sku_number,
+        :fuse_type,
+        :loop,
+        :item_type,
+        :profile,
+        :wattage,
+        :voltage,
+        :length,
+        :cct,
+        :cover_type
       )
     end
+    
     def order_entry_params_upload
-      params.require(:order_entry).permit(:order_no, :article_no, :client_id, :target_date, :ship_to_location, :qty)
+      params.require(:order_entry).permit(:order_no, :article_no, :client_id, :target_date, :ship_to_location, :qty, :fuse_type, :loop, :item_type, :profile, :wattage, :voltage, :length, :cct, :cover_type)
     end
     def decode_article_fields
       decoded = ArticleDecoder.new(@order_entry.article_no).decode

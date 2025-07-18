@@ -149,7 +149,14 @@
                               errors: []
                             } %>
                           </div>
-                          
+
+                          <div>
+                          <%= render partial: "uploads/extra_dropdown", locals: {
+                            selected_extra_id: nil,
+                            show_form: false,
+                            errors: []
+                          } %>
+                        </div>
                         </div>
                       </div>
                       

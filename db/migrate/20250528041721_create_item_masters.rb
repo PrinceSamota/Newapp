@@ -20,6 +20,7 @@ class CreateItemMasters < ActiveRecord::Migration[7.2]
       t.references :length, foreign_key: true
       t.references :cct, foreign_key: true
       t.references :cover_type, foreign_key: true
+      t.references :extra, foreign_key: true
       t.integer :org_id
       t.timestamps
     end

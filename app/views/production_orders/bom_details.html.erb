@@ -58,3 +58,8 @@
 <% else %>
   <div class="text-red-600 mt-4">No BOM found.</div>
 <% end %>
+<%= button_to update_stock_bill_of_material_path(@bom), method: :post,
+    class: "mt-4 mb-6 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded" do %>
+  <i class="fa-solid fa-boxes-stacked"></i>
+  <span>Update Stock</span>
+<% end %>

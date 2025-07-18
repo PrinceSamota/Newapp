@@ -11,26 +11,6 @@ def create
   @bill_of_material = BillOfMaterial.new(bom_params)
 
   if @bill_of_material.save
-    PaperTrail.request(controller_info: {
-      source_type: "BillOfMaterial",
-      source_id: @bill_of_material.id
-    }) do
-      fg = @bill_of_material.finished_good
-      if fg.present?
-        fg_item = ItemMaster.find_by(sku_id: fg.sku_id)
-        if fg_item
-          fg_item.update(opening_stock: fg_item.opening_stock.to_i + fg.quantity.to_i)
-        end
-      end
-  
-      @bill_of_material.bom_raw_material_items.each do |rm|
-        rm_item = ItemMaster.find_by(sku_id: rm.sku_id)
-        if rm_item
-          rm_item.update(opening_stock: rm_item.opening_stock.to_i - rm.quantity.to_i)
-        end
-      end
-    end
-  
     redirect_to bill_of_materials_path, notice: "BOM created successfully"
   else
     @item_masters = ItemMaster.where(is_bom: true)
@@ -41,6 +21,32 @@ def create
 end
 
   
+def update_stock
+  @bill_of_material = BillOfMaterial.find(params[:id])
+
+  PaperTrail.request(controller_info: {
+    source_type: "BillOfMaterial",
+    source_id: @bill_of_material.id
+  }) do
+    fg = @bill_of_material.finished_good
+    if fg.present?
+      fg_item = ItemMaster.find_by(sku_id: fg.sku_id)
+      if fg_item
+        fg_item.update(opening_stock: fg_item.opening_stock.to_i + fg.quantity.to_i)
+      end
+    end
+
+    @bill_of_material.bom_raw_material_items.each do |rm|
+      rm_item = ItemMaster.find_by(sku_id: rm.sku_id)
+      if rm_item
+        rm_item.update(opening_stock: rm_item.opening_stock.to_i - rm.quantity.to_i)
+      end
+    end
+  end
+
+  redirect_to production_orders_path, notice: "Stock updated successfully."
+end
+
   def index
     @bill_of_materials = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).order(created_at: :desc)
   end

@@ -51,6 +51,27 @@ class ItemMastersController < ApplicationController
           bom_names: boms.pluck(:bom_number, :name)
         }
       end
+      def fetch_by_article
+        item = ItemMaster.find_by(article_number: params[:article_number])
+      
+        if item
+          render json: {
+            fuse_type: item.fuse_type&.name,
+            loop: item.loop&.name,
+            item_type: item.item_type&.name,
+            profile: item.profile&.name,
+            wattage: item.wattage&.name,
+            voltage: item.voltage&.name,
+            length: item.length&.name,
+            cct: item.cct&.name,
+            cover_type: item.cover_type&.name
+          }
+        else
+          render json: { error: "Item not found" }, status: :not_found
+        end
+      end
+
+      
     private
   
     def item_master_params
@@ -73,6 +94,7 @@ class ItemMastersController < ApplicationController
         :profile_id,
         :voltage_id,
         :wattage_id,
+        :extra_id,
         :article_number
       )
     end

@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   resources :dispatches
   resources :bill_of_materials, only: [:index, :new, :create, :show] do
     member do
-      get :clone
+      get :clone 
+      post :update_stock
     end
   end
   resources :fuse_types, only: [:index, :create]
@@ -20,10 +21,12 @@ Rails.application.routes.draw do
 get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'
 get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
 # config/routes.rb
+get "item_masters/fetch_by_article", to: "item_masters#fetch_by_article"
 post '/manual_decode', to: 'order_entries#manual_decode', as: :manual_decode
 get '/manual_decode', to: 'order_entries#manual_decode'
 get 'bill_of_materials/:sku_id/:item_name/bom_details', to: 'bill_of_materials#bom_details', as: :bill_of_material_bom_details
 patch 'bill_of_materials/:id/update_bom_all_items', to: 'bill_of_materials#update_bom_all_items', as: :update_bom_all_items
+resources :extras, only: [:create]
 
 resources :raw_material_stock_batches
   resources :boms, only: [:index, :new, :create]

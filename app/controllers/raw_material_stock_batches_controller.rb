@@ -3,7 +3,7 @@ class RawMaterialStockBatchesController < ApplicationController
   def new
     @batch = RawMaterialStockBatch.new
     @batch.raw_material_stock_items.build 
-    @item_masters = ItemMaster.all
+    @item_masters = ItemMaster.where(is_bom: false)
   end
 
   def show
