@@ -187,6 +187,12 @@
           document.getElementById("length_field").value = data.length || "";
           document.getElementById("cct_field").value = data.cct || "";
           document.getElementById("cover_type_field").value = data.cover_type || "";
+          const skuSelect = document.querySelector('select[name="order_entry[sku_number]"]');
+          if (skuSelect && data.sku_id) {
+            for (const option of skuSelect.options) {
+              option.selected = option.value === data.sku_id;
+            }
+          }
         })
         .catch(() => {
           console.warn("Article not found in Item Master");

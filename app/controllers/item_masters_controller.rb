@@ -64,7 +64,8 @@ class ItemMastersController < ApplicationController
             voltage: item.voltage&.name,
             length: item.length&.name,
             cct: item.cct&.name,
-            cover_type: item.cover_type&.name
+            cover_type: item.cover_type&.name,
+            sku_id: item.sku_id
           }
         else
           render json: { error: "Item not found" }, status: :not_found
