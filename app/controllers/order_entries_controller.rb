@@ -20,6 +20,7 @@ class OrderEntriesController < ApplicationController
       if @order_entry.save
         redirect_to order_entries_path, notice: "Order entry created successfully."
       else
+        @item_masters = ItemMaster.all 
         render :new
       end
     end
@@ -64,7 +65,7 @@ class OrderEntriesController < ApplicationController
     end
     
     def order_entry_params_upload
-      params.require(:order_entry).permit(:order_no, :article_no, :client_id, :target_date, :ship_to_location, :qty, :fuse_type, :loop, :item_type, :profile, :wattage, :voltage, :length, :cct, :cover_type)
+      params.require(:order_entry).permit(:order_no, :article_no, :client_id, :target_date, :ship_to_location, :qty, :fuse_type, :loop, :item_type, :profile, :wattage, :voltage, :length, :cct, :cover_type, :sku_number)
     end
     def decode_article_fields
       decoded = ArticleDecoder.new(@order_entry.article_no).decode
