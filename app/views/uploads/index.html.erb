@@ -25,41 +25,41 @@
                         <!-- Opening Stock -->
                         <div>
                           <%= f.label :opening_stock, "Opening Stock", class: "block text-sm font-medium text-gray-700 mb-1" %>
-                          <%= f.number_field :opening_stock, placeholder: "Enter opening stock", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+                          <%= f.number_field :opening_stock, placeholder: "Enter opening stock",  step: :any, class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
                         </div>
 
                         <!-- Purchase Price -->
                         <div>
                           <%= f.label :purchase_price, "Purchase Price", class: "block text-sm font-medium text-gray-700 mb-1" %>
-                          <%= f.number_field :purchase_price, placeholder: "Enter purchase price", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+                          <%= f.number_field :purchase_price, placeholder: "Enter purchase price", step: :any, class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
                         </div>
 
                         <!-- Sale Price -->
                         <div>
                           <%= f.label :sale_price, "Sale Price", class: "block text-sm font-medium text-gray-700 mb-1" %>
-                          <%= f.number_field :sale_price, placeholder: "Enter sale price", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+                          <%= f.number_field :sale_price, placeholder: "Enter sale price", step: :any, class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
                         </div>
 
                         <!-- Minimum Stock Level -->
                         <div>
                           <%= f.label :minimum_stock_level, "Minimum Stock Level", class: "block text-sm font-medium text-gray-700 mb-1" %>
-                          <%= f.number_field :minimum_stock_level, placeholder: "Enter minimum stock level", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+                          <%= f.number_field :minimum_stock_level, placeholder: "Enter minimum stock level", step: :any, class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
                         </div>
 
                         <!-- BOM Radio Buttons -->
-                        <div class="flex items-center gap-4 mt-2">
-                          <%= f.label :is_bOM, "BOM", class: "block text-sm font-medium text-gray-700" %>
-                          <div class="flex gap-4 ml-4">
-                            <label class="inline-flex items-center">
-                              <%= f.radio_button :is_bOM, true, class: "form-radio text-blue-600" %>
-                              <span class="ml-2 text-sm text-gray-800">Yes</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                              <%= f.radio_button :is_bOM, false, class: "form-radio text-blue-600" %>
-                              <span class="ml-2 text-sm text-gray-800">No</span>
-                            </label>
-                          </div>
+                        <div class="flex items-center gap-4 mt-2" id="is_bom_radio_group">
+                        <%= f.label :is_bOM, "BOM", class: "block text-sm font-medium text-gray-700" %>
+                        <div class="flex gap-4 ml-4">
+                          <label class="inline-flex items-center">
+                            <%= f.radio_button :is_bOM, true, class: "form-radio text-blue-600" %>
+                            <span class="ml-2 text-sm text-gray-800">Yes</span>
+                          </label>
+                          <label class="inline-flex items-center">
+                            <%= f.radio_button :is_bOM, false, class: "form-radio text-blue-600", checked: true %>
+                            <span class="ml-2 text-sm text-gray-800">No</span>
+                          </label>
                         </div>
+                      </div>
                         <div id="bom-fields" class="mt-4 hidden col-span-1 md:col-span-2">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                           
@@ -168,9 +168,19 @@
                         <!-- Measurement Dropdown -->
                         <div class="col-span-1 md:col-span-2">
                           <%= render partial: "uploads/measurement_dropdown", locals: { selected_measurement_id: nil, show_form: false, errors: [] } %>
-                            <div class="col-span-1 md:col-span-2 mt-8">
-                        <%= f.submit "Save", class: "bg-[#465fff] hover:bg-[#354edd] px-6 py-2 rounded-xl w-full text-white text-sm font-semibold shadow-md transition-all duration-200" %>
-                      </div>
+                          <!-- Save Button with Tooltip -->
+                          <div class="col-span-1 md:col-span-2 mt-8 relative group flex flex-col items-center">
+                          <!-- Tooltip (placed above the button) -->
+                          <div id="save-tooltip"
+                               class="text-red-500 text-sm mb-2 hidden absolute z-50 bg-white border border-red-300 rounded p-2 shadow-lg max-w-xs text-center"
+                               style="bottom: 100%; left: 50%; transform: translateX(-50%); white-space: normal;">
+                          </div>
+                        
+                          <!-- Save button -->
+                          <%= f.submit "Save", id: "item-master-save-btn", disabled: true,
+                            class: "cursor-not-allowed bg-gray-400 px-6 py-2 rounded-xl w-full text-white text-sm font-semibold shadow-md transition-all duration-200" %>
+                        </div>
+                        
                         </div>
                       
                       <!-- Submit Button -->
@@ -434,7 +444,125 @@
 
 
 
-document.addEventListener("DOMContentLoaded", function () {
+ function filterItems() {
+    const input = document.getElementById("itemSearch");
+    const filter = input.value.toLowerCase();
+    const rows = document.querySelectorAll("tbody tr");
+
+    rows.forEach((row) => {
+      const itemName = row.children[0]?.innerText.toLowerCase();
+      const category = row.children[2]?.innerText.toLowerCase();
+      const measurement = row.children[1]?.innerText.toLowerCase();
+
+      const match = itemName.includes(filter) || category.includes(filter) || measurement.includes(filter);
+      row.style.display = match ? "" : "none";
+    });
+  }
+
+  document.addEventListener("turbo:load", () => {
+  const form = document.querySelector("#itemMasterModal form");
+  const saveBtn = document.querySelector("#item-master-save-btn");
+
+  const requiredSelectors = [
+    "#item_master_item_name",
+    "#item_master_opening_stock",
+    "#item_master_purchase_price",
+    "#item_master_sale_price",
+    "#item_master_minimum_stock_level",
+    "#item_master_category_id",
+    "#item_master_measurement_id",
+  ];
+
+  const bomSelectors = [
+    "#item_master_article_number",
+    "#item_master_fuse_type_id",
+    "#item_master_loop_id",
+    "#item_master_item_type_id",
+    "#item_master_profile_id",
+    "#item_master_wattage_id",
+    "#item_master_voltage_id",
+    "#item_master_length_id",
+    "#item_master_cct_id",
+    "#item_master_cover_type_id",
+    "#item_master_extra_id"
+  ];
+
+  const fieldLabelMap = {
+    "#item_master_item_name": "Item Name",
+    "#item_master_opening_stock": "Opening Stock",
+    "#item_master_purchase_price": "Purchase Price",
+    "#item_master_sale_price": "Sale Price",
+    "#item_master_minimum_stock_level": "Minimum Stock",
+    "#item_master_category_id": "Category",
+    "#item_master_measurement_id": "Measurement",
+    "#item_master_article_number": "Article Number",
+    "#item_master_fuse_type_id": "Fuse Type",
+    "#item_master_loop_id": "Loop",
+    "#item_master_item_type_id": "Item Type",
+    "#item_master_profile_id": "Profile",
+    "#item_master_wattage_id": "Wattage",
+    "#item_master_voltage_id": "Voltage",
+    "#item_master_length_id": "Length",
+    "#item_master_cct_id": "CCT",
+    "#item_master_cover_type_id": "Cover Type",
+    "#item_master_extra_id": "Extra"
+  };
+
+  const tooltip = document.getElementById("save-tooltip");
+
+  function isFieldFilled(selector) {
+    const el = document.querySelector(selector);
+    return el && el.value.trim() !== "";
+  }
+
+  function getMissingFields() {
+    let missing = [];
+    requiredSelectors.forEach(sel => {
+      if (!isFieldFilled(sel)) missing.push(fieldLabelMap[sel]);
+    });
+
+    const isBOM = document.querySelector('input[name="item_master[is_bOM]"]:checked')?.value === "true";
+    if (isBOM) {
+      bomSelectors.forEach(sel => {
+        if (!isFieldFilled(sel)) missing.push(fieldLabelMap[sel]);
+      });
+    }
+
+    return missing;
+  }
+
+  function validateForm() {
+    const missing = getMissingFields();
+    const isValid = missing.length === 0;
+
+    saveBtn.disabled = !isValid;
+    saveBtn.classList.toggle("cursor-not-allowed", !isValid);
+    saveBtn.classList.toggle("bg-gray-400", !isValid);
+    saveBtn.classList.toggle("bg-[#465fff]", isValid);
+
+    tooltip.innerHTML = !isValid ? "Please fill:<br>" + missing.map(f => `• ${f}`).join("<br>") : "";
+  }
+
+  form.querySelectorAll("input, select").forEach(input => {
+    input.addEventListener("input", validateForm);
+    input.addEventListener("change", validateForm);
+  });
+
+  // Tooltip on hover
+  saveBtn.parentElement.addEventListener("mouseenter", () => {
+    if (saveBtn.disabled && tooltip.innerHTML.trim() !== "") {
+      tooltip.classList.remove("hidden");
+    }
+  });
+
+  saveBtn.parentElement.addEventListener("mouseleave", () => {
+    tooltip.classList.add("hidden");
+  });
+
+  validateForm(); // initial call
+});
+
+document.addEventListener("turbo:load", function () {
   const decodeButton = document.getElementById("decode_button");
   const articleInput = document.getElementById("article_number_input");
 
@@ -537,6 +665,5 @@ document.addEventListener("DOMContentLoaded", function () {
     // Initial toggle on page load
     toggleBOMFields();
   });
-
 
 </script>

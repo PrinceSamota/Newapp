@@ -60,13 +60,39 @@ class OrderEntriesController < ApplicationController
         :voltage,
         :length,
         :cct,
-        :cover_type
+        :cover_type,
+        :status_id
+      )
+    end
+    def order_entry_params_upload
+      params.require(:order_entry).permit(
+        :order_no,
+        :article_no,
+        :client_id,
+        :target_date,
+        :ship_to_location,
+        :qty,
+        :sku_number,
+        :fuse_type,
+        :loop,
+        :item_type,
+        :profile,
+        :wattage,
+        :voltage,
+        :length,
+        :cct,
+        :cover_type,
+        :start_serial_no,
+        :end_serial_no,
+        :mfg_date,
+        :driver_revision_no,
+        :invoice_no,
+        :tracking_no,
+        :dispatch_no,
+        :status_id
       )
     end
     
-    def order_entry_params_upload
-      params.require(:order_entry).permit(:order_no, :article_no, :client_id, :target_date, :ship_to_location, :qty, :fuse_type, :loop, :item_type, :profile, :wattage, :voltage, :length, :cct, :cover_type, :sku_number)
-    end
     def decode_article_fields
       decoded = ArticleDecoder.new(@order_entry.article_no).decode
     

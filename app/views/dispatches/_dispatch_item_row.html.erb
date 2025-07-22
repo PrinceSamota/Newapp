@@ -1,0 +1,5 @@
+<%= form_with model: Dispatch.new, local: true do |form| %>
+  <%= form.fields_for :dispatch_items, dispatch_item, child_index: index do |f| %>
+    <%= render partial: "dispatch_item_fields", locals: { f: f } %>
+  <% end %>
+<% end %>

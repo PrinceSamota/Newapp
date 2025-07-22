@@ -15,59 +15,89 @@
 
     <!-- Table -->
     <div class="overflow-x-auto">
-  <table class="text-sm divide-y divide-gray-200 border border-gray-300 rounded min-w-full">
-    <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
-      <tr>
-      <th class="px-4 py-3 sticky left-0 bg-gray-100 z-10 border-r border-gray-300" style="min-width:220px">Order No</th>
-      <th class="px-4 py-3 sticky left-[220px] bg-gray-100 z-10 border-r border-gray-300" style="min-width:220px">Article No</th>
-      <th class="px-4 py-3 sticky left-[440px] bg-gray-100 z-10 border-r border-gray-300" style="min-width:220px">Client</th>
-      
-
-        <%# Scrollable columns %>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Target Date</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Ship To</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Qty</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">SKU</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Fuse</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Loop</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Item Type</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Profile</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Wattage</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Voltage</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Length</th>
-        <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">CCT</th>
-        <th class="px-4 py-3" style="min-width:120px">Cover</th>
-      </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-gray-100">
-      <% @order_entries.each do |order| %>
-        <tr class="hover:bg-gray-50">
-          <td class="px-4 py-3 sticky left-0 bg-white z-10 border-r border-gray-300 text-center" style="width:220px">
-            <%= link_to order.order_no, order_entry_path(order), class: "text-blue-600 hover:underline font-semibold" %>
-          </td>
-          <td class="px-4 py-3 sticky left-[220px] bg-white z-10 border-r border-gray-300 text-center" style="width:220px"><%= order.article_no %></td>
-          <td class="px-4 py-3 sticky left-[440px] bg-white z-10 border-r border-gray-300 text-center" style="width:220px"><%= order.client&.name %></td>
-
-          <%# Scrollable columns %>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.target_date %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.ship_to_location %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.qty %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.sku_number %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.fuse_type %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.loop %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.item_type %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.profile %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.wattage %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.voltage %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.length %></td>
-          <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px"><%= order.cct %></td>
-          <td class="px-4 py-3 text-center" style="width:220px"><%= order.cover_type %></td>
+    <table class="text-sm divide-y divide-gray-200 border border-gray-300 rounded min-w-full">
+      <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
+        <tr>
+        <th class="px-4 sticky left-0 bg-gray-100 z-10 border-r border-gray-300" style="min-width:220px; height:52px;">
+        <div class="flex items-center justify-between h-full">
+          <div class="w-1/2 pr-2 text-center font-semibold h-full flex items-center justify-center">Order No</div>
+          <div class="w-1/2 pl-2 border-l border-black border-l-[2px] text-center font-semibold h-full flex items-center justify-center">Article No</div>
+        </div>
+      </th>
+          <th class="px-4 py-3 bg-gray-100 z-10 border-r border-gray-300" style="min-width:120px">Client</th>
+  
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Target Date</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Ship To</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Qty</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">SKU</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Fuse</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Loop</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Item Type</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Profile</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Wattage</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Voltage</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Length</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">CCT</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Cover</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Start Serial</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">End Serial</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">MFG Date</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Driver Rev. No</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Invoice No</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Tracking No</th>
+          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Dispatch No</th>
+          <th class="px-4 py-3" style="min-width:140px">Status</th>
         </tr>
-      <% end %>
-    </tbody>
-  </table>
-</div>
-
+      </thead>
+  
+      <tbody class="bg-white divide-y divide-gray-100">
+        <% @order_entries.each do |order| %>
+          <tr class="hover:bg-gray-50">
+          <td class="px-4 sticky left-0 bg-white z-10 border-r border-gray-300 text-center" style="width:220px; height:52px;">
+          <div class="flex justify-between h-full">
+            <div class="pr-2 w-1/2 h-full flex items-center justify-center">
+              <%= link_to order.order_no, order_entry_path(order), class: "text-blue-600 hover:underline font-semibold" %>
+            </div>
+            <div class="pl-2 w-1/2 border-l border-l-[2px] border-black  h-full flex items-center justify-center">
+              <%= order.article_no %>
+            </div>
+          </div>
+        </td>
+        
+  
+            <!-- Scrollable: Client -->
+            <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px">
+              <%= order.client&.name %>
+            </td>
+  
+            <!-- Scrollable columns -->
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.ship_to_location %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.fuse_type %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.loop %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.item_type %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.profile %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.wattage %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.voltage %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.length %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cct %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cover_type %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.start_serial_no %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.end_serial_no %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.mfg_date %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision_no %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.invoice_no %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.tracking_no %></td>
+            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.dispatch_no %></td>
+            <td class="px-4 py-3 text-center"><%= order.status&.name %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  
 
 
   

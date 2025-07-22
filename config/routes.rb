@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  resources :dispatches
+  resources :dispatches do
+    get :new_item_row, on: :collection
+  end
   resources :bill_of_materials, only: [:index, :new, :create, :show] do
     member do
       get :clone 
@@ -27,13 +29,15 @@ get '/manual_decode', to: 'order_entries#manual_decode'
 get 'bill_of_materials/:sku_id/:item_name/bom_details', to: 'bill_of_materials#bom_details', as: :bill_of_material_bom_details
 patch 'bill_of_materials/:id/update_bom_all_items', to: 'bill_of_materials#update_bom_all_items', as: :update_bom_all_items
 resources :extras, only: [:create]
-
+resources :statuses, only: [:create]
 resources :raw_material_stock_batches
   resources :boms, only: [:index, :new, :create]
 get "/check_bom", to: "item_masters#check_bom"
 get "/check_bom_usage", to: "item_masters#check_bom_usage"
   get 'item_masters/:id/details', to: 'item_masters#details'
 post 'item_masters/decode_article', to: 'item_masters#decode_article'
+get '/dispatches/new_item_row', to: 'dispatches#new_item_row'
+
   resources :bom_raw_materials
   resources :raw_material_inwards
   resources :orders, only: [:show]

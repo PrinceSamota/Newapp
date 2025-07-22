@@ -69,7 +69,7 @@
   
         <div id="bom-raw-materials" class="space-y-4">
           <%= f.fields_for :bom_raw_material_items do |rm| %>
-            <%= render 'raw_material_fields', f: rm, item_masters: @item_masters %>
+            <%= render 'raw_material_fields', f: rm, item_masters: @item_masters_false %>
           <% end %>
         </div>
   

@@ -1,0 +1,11 @@
+<tr class="hover:bg-gray-50 text-left border-b border-gray-200">
+  <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
+    <%= link_to(dispatch.client&.name || "N/A", edit_dispatch_path(dispatch), class: "text-blue-600 hover:underline") %>
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
+    <%= dispatch.dispatch_date&.strftime("%d-%b-%Y") || "N/A" %>
+  </td>
+  <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
+    <%= dispatch.delivery_date&.strftime("%d-%b-%Y") || "N/A" %>
+  </td>
+</tr>

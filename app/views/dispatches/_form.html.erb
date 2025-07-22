@@ -1,80 +1,48 @@
-<%= form_with model: dispatch, url: dispatches_path, data: { turbo_frame: "modal" }, class: "p-6  rounded-lg" do |f| %>
-  
-    <div class="grid grid-cols-1  gap-6">
-      <!-- Client -->
-      <div>
-      <div class="col-span-1 md:col-span-2">
-      <%= render partial: "dispatches/client_section", locals: { selected_client_id: dispatch.client_id } %>
+<%= form_with(model: dispatch, local: true) do |f| %>
+  <!-- Dispatch main fields -->
+  <div class="mb-4">
+    <%= f.label :client_id, "Client", class: "block text-sm font-medium text-gray-700" %>
+    <%= f.collection_select :client_id, Client.all, :id, :name, include_blank: "Select Client", class: "w-full border p-2 rounded" %>
+  </div>
 
+  <div class="mb-4">
+    <%= f.label :dispatch_date, "Dispatch Date", class: "block text-sm font-medium text-gray-700" %>
+    <%= f.date_field :dispatch_date, class: "w-full border p-2 rounded" %>
+  </div>
 
+  <div class="mb-4">
+    <%= f.label :delivery_date, "Delivery Date", class: "block text-sm font-medium text-gray-700" %>
+    <%= f.date_field :delivery_date, class: "w-full border p-2 rounded" %>
+  </div>
 
+  <h3 class="font-bold text-lg my-4">Dispatch Items</h3>
 
-    </div>
+  <%= f.fields_for :dispatch_items do |item_fields| %>
+    <div class="bg-gray-100 p-4 rounded-lg mb-4">
+      <div class="mb-2">
+        <%= item_fields.label :order_no, "Order Number", class: "block text-sm font-medium text-gray-700" %>
+        <%= item_fields.select :order_no,
+              options_from_collection_for_select(OrderEntry.all, :order_no, :order_no, item_fields.object.order_no),
+              { include_blank: "Select Order No" },
+              class: "w-full border p-2 rounded" %>
+      </div>
 
+      <div class="mb-2">
+        <%= item_fields.label :quantity %>
+        <%= item_fields.number_field :quantity, class: "w-full border p-2 rounded" %>
       </div>
-      <div>
-      <%= f.label :order_no, "Order Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.select :order_no,
-            options_from_collection_for_select(OrderEntry.all, :order_no, :order_no, dispatch.order_no),
-            { include_blank: "Select Order No" },
-            class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-    </div>
-      <!-- Quantity -->
-      <div>
-        <%= f.label :quantity, "Quantity", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.number_field :quantity, placeholder: "Enter quantity", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+
+      <div class="mb-2">
+        <%= item_fields.label :mode_of_shipment %>
+        <%= item_fields.text_field :mode_of_shipment, class: "w-full border p-2 rounded" %>
       </div>
-  
-      <!-- Mode of Shipment -->
-      <div>
-        <%= f.label :mode_of_shipment, "Mode of Shipment", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_field :mode_of_shipment, placeholder: "e.g. Air, Road, Courier", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+
+      <div class="mb-2">
+        <%= item_fields.label :courier_company %>
+        <%= item_fields.text_field :courier_company, class: "w-full border p-2 rounded" %>
       </div>
-  
-      <!-- Courier Company -->
-      <div>
-        <%= f.label :courier_company, "Courier Company", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_field :courier_company, placeholder: "Enter courier company", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-      </div>
-  
-      <!-- Dispatch Date -->
-      <div>
-        <%= f.label :dispatch_date, "Dispatch Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.date_field :dispatch_date, class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-      </div>
-  
-      <!-- Delivery Date -->
-      <div>
-        <%= f.label :delivery_date, "Delivery Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.date_field :delivery_date, class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-      </div>
-    </div>
-  
-    <!-- Submit Button -->
-    <div class="mt-6 flex justify-end">
-      <%= f.submit "Create Dispatch", class: "bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-sm transition duration-200 cursor-pointer" %>
     </div>
   <% end %>
-  <script>
-  function submitNewClient() {
-    const name = document.getElementById('new_client_name').value;
 
-    fetch("/clients", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-        "Accept": "text/vnd.turbo-stream.html"
-      },
-      body: JSON.stringify({ client: { name: name } })
-    })
-    .then(response => response.text())
-    .then(html => {
-      document.getElementById("client_section").innerHTML = html;
-    })
-    .catch(error => {
-      document.getElementById("client-errors").innerText = "Something went wrong.";
-      console.error(error);
-    });
-  }
-</script>
+  <%= f.submit "Create Dispatch", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
+<% end %>

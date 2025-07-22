@@ -2,112 +2,169 @@
     <i class="fa-solid fa-arrow-left"></i>
     <span class="font-bold">Back</span>
   <% end %>
-<%= form_with model: @bill_of_material, url: update_bom_all_items_path(@bill_of_material), method: :patch, local: true do |f| %>
-    <div class="pt-6">
-      <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
-        <h2 class="text-xl font-bold text-gray-800 mb-6"> <%= @bill_of_material.name %></h2>
-  
-        <!-- BOM Info -->
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-6">
-  <div>
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">Finished Good</h3>
-    <% if @bill_of_material.finished_good.present? %>
-      <div class="border border-gray-200  shadow-sm rounded-md p-3 bg-gray-50">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          
-          <!-- SKU -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">SKU</label>
-            <%= f.fields_for :finished_good do |fg_fields| %>
-              <%= fg_fields.text_field :sku_id,
-                readonly: true,
-                class: "w-full border border-gray-300 rounded-md p-2 bg-gray-100 text-gray-800 cursor-not-allowed" %>
-            <% end %>
-          </div>
-          
-          <!-- Item Name -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
-            <%= f.fields_for :finished_good do |fg_fields| %>
-              <%= fg_fields.text_field :item_name,
-                readonly: true,
-                class: "w-full border border-gray-300 rounded-md p-2 bg-gray-100 text-gray-800 cursor-not-allowed" %>
-            <% end %>
-          </div>
-          
-          <!-- Quantity -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-            <%= f.fields_for :finished_good do |fg_fields| %>
-              <%= fg_fields.number_field :quantity,
-                step: 0.01,
-                class: "w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200" %>
-            <% end %>
-          </div>
-          
-          <!-- Unit -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-            <%= f.fields_for :finished_good do |fg_fields| %>
-              <%= fg_fields.text_field :unit,
-                class: "w-full border border-gray-300 rounded-md p-2 focus:ring focus:ring-blue-200" %>
-            <% end %>
-          </div>
+<% if @bill_of_material.errors.any? %>
+  <div id="error-box" class="flex justify-end">
+    <div class="bg-red-50 border border-red-400 text-red-800 px-6 py-4 rounded-lg shadow-sm mb-6 w-[20%] ml-auto mr-6 relative">
+      <!-- Close Button -->
+      <button onclick="document.getElementById('error-box').remove()" class="absolute top-2 right-3 text-red-700 hover:text-red-900 text-xl font-bold leading-none focus:outline-none">
+        &times;
+      </button>
 
-        </div>
-      </div>
-    <% end %>
-  </div>
-</div>
-
-        <!-- Raw Material Section -->
-        <h3 class="text-lg font-semibold text-gray-800 mb-4">Raw Materials</h3>
-        <% if @bill_of_material.bom_raw_material_items.any? %>
-          <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-300 mb-4">
-            <table class="min-w-full text-sm">
-              <thead class="bg-gray-50 text-gray-700 text-xs font-semibold uppercase">
-                <tr>
-                  <th class="px-4 py-2 text-left">SKU</th>
-                  <th class="px-4 py-2 text-left">Item Name</th>
-                  <th class="px-4 py-2 text-left">Quantity</th>
-                  <th class="px-4 py-2 text-left">Unit</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-100">
-              <%= f.fields_for :bom_raw_material_items do |rm_fields| %>
-                <tr class="item-row">
-                  <td class="px-4 py-2">
-                    <%= rm_fields.text_field :sku_id,
-                      readonly: true,
-                      class: "w-full border-gray-300 p-2 rounded-md border bg-gray-100 cursor-not-allowed text-gray-800" %>
-                  </td>
-                  <td class="px-4 py-2">
-                    <%= rm_fields.text_field :item_name,
-                      readonly: true,
-                      class: "w-full border-gray-300 p-2 rounded-md border bg-gray-100 cursor-not-allowed text-gray-800" %>
-                  </td>
-                  <td class="px-4 py-2">
-                    <%= rm_fields.number_field :quantity, step: 0.01,
-                      class: "w-full border-gray-300 p-2 rounded-md border" %>
-                  </td>
-                  <td class="px-4 py-2">
-                    <%= rm_fields.text_field :unit,
-                      class: "w-full border-gray-300 p-2 rounded-md border" %>
-                  </td>
-                </tr>
-              <% end %>
-            </tbody>
-            </table>
-          </div>
-        <% else %>
-          <p class="italic text-gray-500">No raw materials found.</p>
-        <% end %>
-  
-        <!-- Submit Button -->
-        <div class="mt-6 text-right">
-          <%= f.submit "Save Changes", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md shadow cursor-pointer" %>
+      <div class="flex items-start gap-3">
+        <i class="fa-solid fa-circle-exclamation text-red-500 mt-1"></i>
+        <div>
+          <p class="font-semibold mb-2">Please fix the following errors:</p>
+          <ul class="list-disc list-inside text-sm space-y-1">
+            <% @bill_of_material.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
         </div>
       </div>
     </div>
-  <% end %>
+  </div>
+<% end %>
+
+
+  <%= form_with model: @bill_of_material, url: update_bom_all_items_path(@bill_of_material), method: :patch, local: true do |f| %>
+    <div class="pt-6">
+      <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+        <h2 class="text-xl font-bold text-gray-800 mb-6"><%= @bill_of_material.name %></h2>
   
+        <!-- Finished Good -->
+        <% if @bill_of_material.finished_good.present? %>
+          <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Finished Good</h3>
+            <div class="border border-gray-200 shadow-sm rounded-md p-3 bg-gray-50">
+              <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <%= f.fields_for :finished_good do |fg_fields| %>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">SKU</label>
+                    <%= fg_fields.text_field :sku_id, readonly: true, class: "w-full border border-gray-300 rounded-md p-2 bg-gray-100 text-gray-800 cursor-not-allowed" %>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+                    <%= fg_fields.text_field :item_name, readonly: true, class: "w-full border border-gray-300 rounded-md p-2 bg-gray-100 text-gray-800 cursor-not-allowed" %>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                    <%= fg_fields.number_field :quantity, step: 0.01, class: "w-full border border-gray-300 rounded-md p-2" %>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+                    <%= fg_fields.text_field :unit, class: "w-full border border-gray-300 rounded-md p-2" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+  
+        <!-- Raw Materials Section -->
+        <div class="mb-6">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Raw Materials</h3>
+        <div id="raw-materials-wrapper" class="space-y-4">
+          <% if @bill_of_material.bom_raw_material_items.any? %>
+            <% @bill_of_material.bom_raw_material_items.each do |raw_material_item| %>
+              <%= f.fields_for :bom_raw_material_items, raw_material_item do |ff| %>
+                <div class=" raw-material-row">
+                  <div class="grid grid-cols-1  gap-4">
+                    <%= render 'raw_material_row', f: ff, item_masters: @item_masters %>
+                  </div>
+                </div>
+              <% end %>
+            <% end %>
+          <% else %>
+            <%= f.fields_for :bom_raw_material_items, BomRawMaterialItem.new do |ff| %>
+              <div class="border border-gray-200 shadow-sm rounded-md p-4 bg-gray-50 raw-material-row">
+                <div class="grid grid-cols-1  gap-4">
+                  <%= render 'raw_material_row', f: ff, item_masters: @item_masters %>
+                </div>
+              </div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      
+  
+        <!-- Add Raw Material -->
+        <div>
+          <button type="button" id="add-raw-material" class="bg-green-500 text-white px-4 py-2 rounded mt-4">
+            + Add Raw Material
+          </button>
+        </div>
+  
+        <!-- Save Button -->
+        <div class="mt-6 text-right">
+          <%= f.submit "Save Changes", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md shadow" %>
+        </div>
+  
+        <!-- Hidden Template -->
+        <% raw_material_template = capture do %>
+          <%= f.fields_for :bom_raw_material_items, BomRawMaterialItem.new, child_index: "NEW_RECORD" do |ff| %>
+            <%= render 'raw_material_row', f: ff, item_masters: @item_masters %>
+          <% end %>
+        <% end %>
+        <%= content_tag :template, raw_material_template, id: "raw-material-template" %>
+  
+      </div>
+    </div>
+  <% end %>
+<script>
+  document.addEventListener("turbo:load", () => {
+    const itemMap = {
+      <% @item_masters.each do |item| %>
+        "<%= item.sku_id %>": "<%= j item.item_name %>",
+      <% end %>
+    };
+
+    const reverseMap = {
+      <% @item_masters.each do |item| %>
+        "<%= j item.item_name %>": "<%= item.sku_id %>",
+      <% end %>
+    };
+
+    function setupLinking(row) {
+      const skuSelect = row.querySelector(".sku-id-field");
+      const itemSelect = row.querySelector(".item-name-select");
+
+      if (skuSelect && itemSelect) {
+        skuSelect.addEventListener("change", () => {
+          const val = skuSelect.value;
+          if (itemMap[val]) itemSelect.value = itemMap[val];
+        });
+
+        itemSelect.addEventListener("change", () => {
+          const val = itemSelect.value;
+          if (reverseMap[val]) skuSelect.value = reverseMap[val];
+        });
+      }
+
+      const deleteBtn = row.querySelector(".delete-raw-material");
+      if (deleteBtn) {
+        deleteBtn.addEventListener("click", () => {
+          const destroyField = row.querySelector("input.destroy-flag");
+          if (destroyField) {
+            destroyField.value = "1";
+            row.style.display = "none";
+          }
+        });
+      }
+    }
+
+    // Setup all current raw material rows
+    document.querySelectorAll(".raw-material-row").forEach(setupLinking);
+
+    // Add new raw material row
+    const addButton = document.getElementById("add-raw-material");
+    if (addButton) {
+      addButton.addEventListener("click", (e) => {
+        const time = new Date().getTime();
+        const templateHTML = document.getElementById("raw-material-template").innerHTML.replace(/NEW_RECORD/g, time);
+        const wrapper = document.getElementById("raw-materials-wrapper");
+        wrapper.insertAdjacentHTML("beforeend", templateHTML);
+        setupLinking(wrapper.lastElementChild);
+      }, { once: true }); // ensures the event listener is attached only once
+    }
+  });
+</script>
