@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -115,14 +115,21 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "dispatches", force: :cascade do |t|
+  create_table "dispatch_items", force: :cascade do |t|
+    t.integer "dispatch_id", null: false
     t.string "order_no"
     t.integer "quantity"
-    t.string "client"
+    t.string "courier_company"
     t.string "mode_of_shipment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dispatch_id"], name: "index_dispatch_items_on_dispatch_id"
+  end
+
+  create_table "dispatches", force: :cascade do |t|
+    t.string "client"
     t.date "dispatch_date"
     t.date "delivery_date"
-    t.string "courier_company"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "client_id"
@@ -287,6 +294,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
     t.string "length"
     t.string "cct"
     t.string "cover_type"
+    t.string "start_serial_no"
+    t.string "end_serial_no"
+    t.string "mfg_date"
+    t.string "driver_revision_no"
+    t.string "invoice_no"
+    t.string "tracking_no"
+    t.string "dispatch_no"
+    t.string "status_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -398,6 +413,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
     t.index ["raw_material_stock_batch_id"], name: "index_raw_material_stock_items_on_raw_material_stock_batch_id"
   end
 
+  create_table "statuses", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "uploaded_files", force: :cascade do |t|
     t.string "file"
     t.datetime "created_at", null: false
@@ -451,6 +473,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_13_211849) do
   add_foreign_key "bom_raw_material_items", "bill_of_materials"
   add_foreign_key "bom_raw_materials", "boms"
   add_foreign_key "boms", "item_masters"
+  add_foreign_key "dispatch_items", "dispatches"
   add_foreign_key "finished_goods", "bill_of_materials"
   add_foreign_key "item_masters", "categories"
   add_foreign_key "item_masters", "ccts"

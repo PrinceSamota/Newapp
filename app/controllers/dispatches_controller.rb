@@ -6,24 +6,28 @@ class DispatchesController < ApplicationController
 
   def new
     @dispatch = Dispatch.new
-    render layout: false
+    @dispatch.dispatch_items.build
+   
   end
 
   def create
     @dispatch = Dispatch.new(dispatch_params)
+  
     if @dispatch.save
-      respond_to do |format|
-        format.turbo_stream
-        format.html { redirect_to dispatches_path, notice: "Dispatch created successfully." }
-      end
+      @dispatches = Dispatch.all.order(created_at: :desc) # ✅ add this
+      redirect_to dispatches_path, notice: "BOM created successfully"
+      
+    
     else
       render :new, status: :unprocessable_entity
     end
   end
+
   def edit
     @dispatch = Dispatch.find(params[:id])
+    @dispatch.dispatch_items.build if @dispatch.dispatch_items.empty?
   end
-  
+
   def update
     @dispatch = Dispatch.find(params[:id])
     if @dispatch.update(dispatch_params)
@@ -32,9 +36,19 @@ class DispatchesController < ApplicationController
       render :edit
     end
   end
+  def new_item_row
+    @dispatch_item = DispatchItem.new
+    @index = params[:index].to_i
+    render partial: 'dispatches/dispatch_item_fields', locals: { dispatch_item: @dispatch_item, index: @index }
+  end
   private
 
   def dispatch_params
-    params.require(:dispatch).permit(:order_no, :quantity,  :client_id, :mode_of_shipment, :dispatch_date, :delivery_date, :courier_company)
+    params.require(:dispatch).permit(
+      :client_id, :dispatch_date, :delivery_date,
+      dispatch_items_attributes: [
+        :id, :order_no, :quantity, :courier_company, :mode_of_shipment, :_destroy
+      ]
+    )
   end
 end

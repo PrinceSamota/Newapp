@@ -17,6 +17,14 @@ class CreateOrderEntries < ActiveRecord::Migration[7.2]
       t.string :length
       t.string :cct
       t.string :cover_type
+      t.string :start_serial_no
+      t.string :end_serial_no
+      t.string :mfg_date
+      t.string :driver_revision_no
+      t.string :invoice_no
+      t.string :tracking_no
+      t.string :dispatch_no
+      t.string :status_id
       t.timestamps
     end
   end

@@ -17,6 +17,21 @@ class ItemMaster < ApplicationRecord
   belongs_to :extra, optional: true
   has_paper_trail save_changes: true
 
+  validates :item_name, presence: true
+  validates :opening_stock, presence: true
+  validates :purchase_price, presence: true
+  validates :sale_price, presence: true
+  validates :minimum_stock_level, presence: true
+
+  # BOM-specific validations
+  with_options if: :is_bOM? do
+    validates :article_number, presence: true
+    validates :fuse_type_id, :loop_id, :item_type_id, :profile_id, :wattage_id,
+              :voltage_id, :length_id, :cct_id, :cover_type_id, :extra_id,
+              presence: true
+  end
+
+  validates :category_id, :measurement_id, presence: true
   private
 
   def generate_sku_id

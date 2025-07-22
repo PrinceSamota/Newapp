@@ -4,7 +4,8 @@ class BillOfMaterialsController < ApplicationController
     @bill_of_material = BillOfMaterial.new
     @bill_of_material.build_finished_good
     @bill_of_material.bom_raw_material_items.build
-    @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) # Only BOM items
+    @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) 
+    @item_masters_false = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
   end
 
 def create
@@ -52,6 +53,7 @@ end
   end
   def show
     @bill_of_material = BillOfMaterial.find(params[:id])
+    @item_masters = ItemMaster.all
   end
   def clone
     original_bom = BillOfMaterial.find(params[:id])
@@ -66,8 +68,9 @@ end
     @bill_of_material = BillOfMaterial.find(params[:id])
   
     if @bill_of_material.update(bom_params_update)
-      redirect_to bill_of_materials_path, notice: "BOM items updated successfully."
+      redirect_to bill_of_materials_path, notice: "Updated successfully"
     else
+      @item_masters = ItemMaster.all
       render :show, status: :unprocessable_entity
     end
   end
@@ -124,8 +127,9 @@ end
   end
   def bom_params_update
     params.require(:bill_of_material).permit(
-      finished_good_attributes: [:id, :quantity, :unit],
-      bom_raw_material_items_attributes: [:id, :quantity, :unit]
+      :name,
+      finished_good_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy],
+      bom_raw_material_items_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy]
     )
   end
 end

@@ -1,26 +1,22 @@
 <turbo-frame id="client_section">
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col gap-2 w-full md:w-[500px]">
     <div class="flex justify-between items-center">
-      <label class="text-sm font-semibold text-gray-800">Client</label>
+      <label class="text-sm font-semibold text-gray-700">Client</label>
       <button type="button" onclick="document.getElementById('newClientForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
     </div>
 
-    <div class="flex items-center gap-2">
-    <%= select_tag "dispatch[client_id]",
-      options_from_collection_for_select(Client.where(org_id: current_user.org_id), :id, :name, selected_client_id),
-      include_blank: "Select Client",
-      class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
-  
-    
-  </div>
-  
-  
-  
+    <div class="flex items-center">
+      <%= select_tag "dispatch[client_id]",
+        options_from_collection_for_select(Client.where(org_id: current_user.org_id), :id, :name, selected_client_id),
+        include_blank: "Select Client",
+        class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+    </div>
+
     <!-- Inline form to add new client -->
     <div id="newClientForm" class="mt-2 hidden">
       <div class="flex gap-2">
-        <input id="new_client_name" type="text" placeholder="New client name" class="flex-1 rounded-md border px-3 py-2 text-sm" />
-        <button type="button" onclick="submitNewClient()" class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        <input id="new_client_name" type="text" placeholder="New client name" class="w-full rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewClient()" class="bg-green-600 text-white px-3 py-2 rounded text-sm whitespace-nowrap">Add</button>
       </div>
       <div id="client-errors" class="text-red-600 text-sm mt-2"></div>
     </div>

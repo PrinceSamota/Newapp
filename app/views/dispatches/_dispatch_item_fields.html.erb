@@ -1,0 +1,37 @@
+<%= fields_for "dispatch[dispatch_items_attributes][#{index}]", dispatch_item do |f| %>
+  <div class="dispatch-item relative grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 border border-gray-300 rounded-lg p-4 shadow-sm bg-gray-50">
+
+    <!-- Order Number -->
+    <div>
+      <%= f.label :order_no, "Order Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :order_no, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
+    </div>
+
+    <!-- Quantity -->
+    <div>
+      <%= f.label :quantity, "Quantity", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.number_field :quantity, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
+    </div>
+
+    <!-- Courier Company -->
+    <div>
+      <%= f.label :courier_company, "Courier Company", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :courier_company, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
+    </div>
+
+    <!-- Mode of Shipment -->
+    <div>
+      <%= f.label :mode_of_shipment, "Mode of Shipment", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.text_field :mode_of_shipment, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
+    </div>
+
+    <!-- Hidden field for destroy -->
+    <%= f.hidden_field :_destroy %>
+
+    <!-- Remove Button (top-right cross style) -->
+    <button type="button"
+      class="remove-item absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition">
+      ✕
+    </button>
+  </div>
+<% end %>

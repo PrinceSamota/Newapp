@@ -19,32 +19,27 @@
     </div>
 
     <!-- Add Dispatch Button -->
-    <button
-      id="open-modal-btn"
-      class="flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300 font-bold"
-    >
-      <i class="fa-solid fa-plus"></i> New Dispatch
-    </button>
+    <%= link_to new_dispatch_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300 font-bold" do %>
+      <i class="fa-solid fa-plus"></i>
+      <span class="font-semibold">New Dispatch</span>
+    <% end %>
   </div>
 
-  <!-- Dispatches Table -->
-  <div class="overflow-x-auto border border-t-0 border-gray-300 shadow-xl rounded-b-lg">
-    <table class="min-w-full divide-y divide-gray-200 text-sm">
-      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
-        <tr>
-          <% ["Order No", "Client", "Quantity", "Mode of shipment", "Dispatch Date", "Delivery Date", "Courier Company"].each_with_index do |header, index| %>
-            <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 6 %>">
-              <%= header %>
-            </th>
-          <% end %>
-        </tr>
-      </thead>
+  
 
-      <tbody id="dispatches_list" class="bg-white divide-y divide-gray-200">
-        <%= render @dispatches %>
-      </tbody>
-    </table>
-  </div>
+<table class="min-w-full bg-white border border-gray-200  overflow-hidden shadow-sm">
+  <thead class="bg-gray-100 text-gray-700 text-sm">
+    <tr>
+      <th class="px-6 py-3 border-b border-gray-200 text-left">Client</th>
+      <th class="px-6 py-3 border-b border-gray-200 text-left">Dispatch Date</th>
+      <th class="px-6 py-3 border-b border-gray-200 text-left">Delivery Date</th>
+    </tr>
+  </thead>
+  <tbody class="text-sm" id="dispatches_list">
+    <%= render partial: "dispatch_row", collection: @dispatches, as: :dispatch %>
+  </tbody>
+</table>
+
 
   <!-- Slide-in Modal -->
   <turbo-frame id="modal">
