@@ -8,18 +8,14 @@
     <!-- SKU ID Dropdown -->
     <div class="col-span-2">
       <%= f.label :sku_id, "SKU ID", class: "block text-xs font-medium text-gray-600 mb-1" %>
-      <%= f.select :sku_id,
-        options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }),
-        { include_blank: "Choose SKU" },
+      <%= f.collection_select :sku_id, @item_masters, :sku_id, :sku_id, { include_blank: "Choose SKU" },
         class: "sku-select w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
     </div>
   
     <!-- Item Name Dropdown -->
     <div class="col-span-2">
       <%= f.label :item_name, "Item Name", class: "block text-xs font-medium text-gray-600 mb-1" %>
-      <%= f.select :item_name,
-        options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }),
-        { include_blank: "Choose Item" },
+      <%= f.collection_select :item_name, @item_masters, :item_name, :item_name, { include_blank: "Choose Item" },
         class: "item-name-select w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
     </div>
   

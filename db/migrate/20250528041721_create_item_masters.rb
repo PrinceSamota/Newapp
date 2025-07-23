@@ -3,8 +3,8 @@ class CreateItemMasters < ActiveRecord::Migration[7.2]
     create_table :item_masters do |t|
       t.string :item_name
       t.integer :opening_stock
-      t.integer :purchase_price
-      t.integer :sale_price
+      t.decimal :purchase_price
+      t.decimal :sale_price
       t.boolean :is_bOM
       t.string :sku_id
       t.string :article_number

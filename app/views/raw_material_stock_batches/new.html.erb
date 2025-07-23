@@ -54,7 +54,7 @@
       <!-- Dynamic Items (Start Below Supplier Info) -->
       <div id="items" class="space-y-4">
         <h3 class="text-lg font-semibold text-gray-800">Items</h3>
-        <%= form.fields_for :raw_material_stock_items, @batch.raw_material_stock_items.build do |item_form| %>
+       <%= form.fields_for :raw_material_stock_items do |item_form| %>
             <div class="item-fields">
               <%= render 'item_fields', f: item_form %>
             </div>
@@ -73,10 +73,15 @@
 
   
       <!-- Submit Button -->
+      <%= turbo_frame_tag "raw_material_form" do %>
+  <%= form_with model: @batch, local: false do |form| %>
       <div class="pt-6">
         <%= form.submit "Submit", class: "w-32 relative left-[94%] bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl text-lg" %>
       </div>
     </div>
+    <% end %>
+    <% end %>
+    
   <% end %>
   
   

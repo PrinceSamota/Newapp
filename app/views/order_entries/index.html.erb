@@ -2,11 +2,21 @@
   <div class="bg-white rounded-lg shadow-md border border-gray-200 mt-6">
     
     <!-- Header -->
-    <div class="flex flex-col md:flex-row justify-between items-center gap-3  p-6">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-3 p-6">
       <h2 class="text-xl font-semibold w-full md:w-auto text-center md:text-left">
         All Order Entries
       </h2>
-
+      <div data-controller="bom-search" class="relative">
+        <span class="absolute top-1/2 left-0 pl-3 transform -translate-y-1/2 text-gray-500">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+        <input
+          type="text"
+          id="bomSearchInput"
+          placeholder="Order No, Article No, SKU No"
+          class="border border-gray-300 rounded-md px-3 py-2 text-sm w-full pl-10 focus:ring-blue-500 focus:border-blue-500"
+        />
+      </div>
       <%= link_to new_order_entry_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300" do %>
         <i class="fa-solid fa-plus"></i>
         <span class="font-semibold">New Order</span>
@@ -15,91 +25,120 @@
 
     <!-- Table -->
     <div class="overflow-x-auto">
-    <table class="text-sm divide-y divide-gray-200 border border-gray-300 rounded min-w-full">
-      <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
-        <tr>
-        <th class="px-4 sticky left-0 bg-gray-100 z-10 border-r border-gray-300" style="min-width:220px; height:52px;">
-        <div class="flex items-center justify-between h-full">
-          <div class="w-1/2 pr-2 text-center font-semibold h-full flex items-center justify-center">Order No</div>
-          <div class="w-1/2 pl-2 border-l border-black border-l-[2px] text-center font-semibold h-full flex items-center justify-center">Article No</div>
-        </div>
-      </th>
-          <th class="px-4 py-3 bg-gray-100 z-10 border-r border-gray-300" style="min-width:120px">Client</th>
-  
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Target Date</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Ship To</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Qty</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">SKU</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Fuse</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Loop</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Item Type</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Profile</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Wattage</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Voltage</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Length</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">CCT</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Cover</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Start Serial</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">End Serial</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">MFG Date</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Driver Rev. No</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Invoice No</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Tracking No</th>
-          <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Dispatch No</th>
-          <th class="px-4 py-3" style="min-width:140px">Status</th>
-        </tr>
-      </thead>
-  
-      <tbody class="bg-white divide-y divide-gray-100">
-        <% @order_entries.each do |order| %>
-          <tr class="hover:bg-gray-50">
-          <td class="px-4 sticky left-0 bg-white z-10 border-r border-gray-300 text-center" style="width:220px; height:52px;">
-          <div class="flex justify-between h-full">
-            <div class="pr-2 w-1/2 h-full flex items-center justify-center">
-              <%= link_to order.order_no, order_entry_path(order), class: "text-blue-600 hover:underline font-semibold" %>
-            </div>
-            <div class="pl-2 w-1/2 border-l border-l-[2px] border-black  h-full flex items-center justify-center">
-              <%= order.article_no %>
-            </div>
-          </div>
-        </td>
-        
-  
-            <!-- Scrollable: Client -->
-            <td class="px-4 py-3 border-r border-gray-300 text-center" style="width:220px">
-              <%= order.client&.name %>
-            </td>
-  
-            <!-- Scrollable columns -->
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.ship_to_location %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.fuse_type %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.loop %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.item_type %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.profile %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.wattage %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.voltage %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.length %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cct %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cover_type %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.start_serial_no %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.end_serial_no %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.mfg_date %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision_no %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.invoice_no %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.tracking_no %></td>
-            <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.dispatch_no %></td>
-            <td class="px-4 py-3 text-center"><%= order.status&.name %></td>
+      <table class="text-sm divide-y divide-gray-200 border border-gray-300 rounded min-w-full">
+        <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
+          <tr>
+            <th class="px-4 sticky left-0 bg-gray-100 z-10 text-center relative sticky-border" style="min-width:320px; height:52px;">
+              <style>
+                .sticky-border::after {
+                  content: "";
+                  position: absolute;
+                  right: 0;
+                  top: 0;
+                  height: 100%;
+                  width: 2px;
+                  background-color: black;
+                  z-index: 50;
+                }
+              </style>
+              <div class="flex items-center justify-between h-full">
+                <div class="w-1/2 pr-2 font-semibold h-full flex items-center justify-center">Order No</div>
+                <div class="w-1/2 pl-2 border-l-2 border-black font-semibold h-full flex items-center justify-center">Article No</div>
+              </div>
+            </th>
+            <th class="px-4 py-3 bg-gray-100 z-10 border-r border-gray-300" style="min-width:120px">Client</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Target Date</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Ship To</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Qty</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">SKU</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Fuse</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Loop</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Item Type</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Profile</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Wattage</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Voltage</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Length</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">CCT</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Cover</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Start Serial</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">End Serial</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">MFG Date</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Driver Rev. No</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Invoice No</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Tracking No</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Dispatch No</th>
+            <th class="px-4 py-3" style="min-width:140px">Status</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-  
+        </thead>
 
-
-  
+        <tbody id="bomTableBody" class="bg-white divide-y divide-gray-100">
+          <% @order_entries.each do |order| %>
+            <tr class="hover:bg-gray-50"
+              data-order-no="<%= order.order_no.to_s.downcase %>"
+              data-article-no="<%= order.article_no.to_s.downcase %>"
+              data-sku-no="<%= order.sku_number.to_s.downcase %>">
+              
+              <td class="px-4 sticky left-0 bg-white z-10 text-center relative" style="width:320px; height:52px;">
+                <div class="sticky-border flex justify-between h-full">
+                  <div class="pr-2 w-1/2 h-full flex items-center justify-center">
+                    <%= link_to order.order_no, order_entry_path(order), class: "text-blue-600 hover:underline font-semibold" %>
+                  </div>
+                  <div class="pl-2 w-1/2 border-l-2 border-black h-full flex items-center justify-center">
+                    <%= order.article_no %>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.client&.name %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.ship_to_location %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.fuse_type %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.loop %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.item_type %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.profile %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.wattage %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.voltage %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.length %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cct %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cover_type %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.start_serial_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.end_serial_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.mfg_date %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.invoice_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.tracking_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.dispatch_no %></td>
+              <td class="px-4 py-3 text-center"><%= order.status&.name %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
+
+<!-- Search Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const searchInput = document.getElementById("bomSearchInput");
+    const tableRows = document.querySelectorAll("#bomTableBody tr");
+
+    searchInput.addEventListener("input", function () {
+      const query = this.value.toLowerCase();
+
+      tableRows.forEach(row => {
+        const orderNo = row.dataset.orderNo || "";
+        const articleNo = row.dataset.articleNo || "";
+        const skuNo = row.dataset.skuNo || "";
+
+        const isMatch =
+          orderNo.includes(query) ||
+          articleNo.includes(query) ||
+          skuNo.includes(query);
+
+        row.style.display = isMatch ? "" : "none";
+      });
+    });
+  });
+</script>

@@ -3,6 +3,7 @@ class OrderEntriesController < ApplicationController
     def new
         @order_entry = OrderEntry.new
         @item_masters = ItemMaster.all
+        @item_articles = ItemMaster.pluck(:article_number).compact.uniq
       end
       
       def manual_decode
@@ -21,6 +22,7 @@ class OrderEntriesController < ApplicationController
         redirect_to order_entries_path, notice: "Order entry created successfully."
       else
         @item_masters = ItemMaster.all 
+        @item_articles = ItemMaster.pluck(:article_number).compact.uniq
         render :new
       end
     end
