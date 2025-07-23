@@ -322,30 +322,41 @@
                   <table class="min-w-full divide-y divide-gray-200 text-sm">
                   <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
                   <tr>
-                    <% ["Item Name", "Measurement", "Category", "Stock", "Purchase Price", "Sale Price", "Minimum Stock Level", "Is BOM", "SKU"].each_with_index do |header, index| %>
-                      <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 9 %>">
+                    <% ["Item Name", "Measurement", "Category", "Stock", "Purchase Price", "Sale Price", "Minimum Stock Level", "Is BOM", "SKU", "Article No", "Fuse Type", "Loop", "Item Type", "Profile", "Wattage", "Voltage", "Length", "CCT", "Cover Type", "Extra"].each_with_index do |header, index| %>
+                      <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 19 %>">
                         <%= header %>
                       </th>
                     <% end %>
                   </tr>
                 </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                      <% @item_masters.each do |item| %>
-                        <tr class="hover:bg-gray-50  text-left">
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200 text-blue-600 hover:underline">
-                          <%= link_to item.item_name, edit_item_master_path(item) %>
-                          </td>
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.measurement&.name %></td>
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.category&.name %></td>
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.opening_stock %></td>
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.purchase_price %></td>
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sale_price %></td>
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.minimum_stock_level %></td>
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.is_bOM ? "Yes" : "No" %></td>
-                          <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sku_id %></td>
-                        </tr>
-                      <% end %>
-                    </tbody>
+  <% @item_masters.each do |item| %>
+    <tr class="hover:bg-gray-50 text-left">
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200 text-blue-600 hover:underline">
+        <%= link_to item.item_name, edit_item_master_path(item) %>
+      </td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.measurement&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.category&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.opening_stock %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.purchase_price %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sale_price %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.minimum_stock_level %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.is_bOM ? "Yes" : "No" %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sku_id %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.article_number %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.fuse_type&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.loop&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.item_type&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.profile&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.wattage&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.voltage&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.length&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.cct&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.cover_type&.name %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.extra&.name %></td>
+    </tr>
+  <% end %>
+</tbody>
                   </table>
                 </div>
 

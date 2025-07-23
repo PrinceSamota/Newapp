@@ -73,7 +73,7 @@
           <% end %>
         </div>
   
-        <button type="button" id="add-raw-material" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md">
+        <button type="button" id="add-raw-material" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md cursor-pointer">
           + Add Raw Material
         </button>
       </div>
@@ -83,13 +83,13 @@
         <% new_object = BomRawMaterialItem.new %>
         <% index = "NEW_INDEX" %>
         <%= f.fields_for :bom_raw_material_items, new_object, child_index: index do |rm_form| %>
-          <%= render 'raw_material_fields', f: rm_form, item_masters: @item_masters %>
+          <%= render 'raw_material_fields', f: rm_form, item_masters: @item_masters_false %>
         <% end %>
       </div>
   
       <!-- Submit Button -->
       <div class="text-right">
-        <%= f.submit "Save BOM", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl text-lg" %>
+        <%= f.submit "Save BOM", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl text-lg cursor-pointer" %>
       </div>
     </div>
   <% end %>

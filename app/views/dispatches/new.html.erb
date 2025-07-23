@@ -42,44 +42,51 @@
 
       <!-- Add Item Button -->
       <div class="mt-2">
-        <button type="button" id="add-item" class="text-blue-600 hover:underline font-medium text-sm">+ Add Item</button>
+        <button type="button" id="add-item" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md cursor-pointer">+ Add Item</button>
       </div>
     </div>
 
     <!-- Submit -->
     <div class="text-right">
-      <%= f.submit "Save Dispatch", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg" %>
+      <%= f.submit "Save Dispatch", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg cursor-pointer" %>
     </div>
   </div>
 <% end %>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const addItemBtn = document.getElementById("add-item");
-    const container = document.getElementById("dispatch-items");
+document.addEventListener("turbo:load", function () {
+  const addItemBtn = document.getElementById("add-item");
+  const container = document.getElementById("dispatch-items");
 
-    let index = <%= @dispatch.dispatch_items.size %>;
+  if (!addItemBtn) return;
 
-    addItemBtn.addEventListener("click", function () {
-      fetch("<%= new_item_row_dispatches_path %>?index=" + index)
-        .then(response => response.text())
-        .then(html => {
-          container.insertAdjacentHTML("beforeend", html);
-          index++;
-        });
-    });
+  // Prevent multiple binding
+  if (addItemBtn.dataset.listenerAttached === "true") return;
+  addItemBtn.dataset.listenerAttached = "true";
 
-    container.addEventListener("click", function (e) {
-      if (e.target.classList.contains("remove-item")) {
-        const item = e.target.closest(".dispatch-item");
-        if (item.querySelector('input[name*="_destroy"]')) {
-          item.querySelector('input[name*="_destroy"]').value = "1";
-          item.style.display = "none";
-        } else {
-          item.remove();
-        }
-      }
-    });
+  let index = <%= @dispatch.dispatch_items.size %>;
+
+  addItemBtn.addEventListener("click", function () {
+    fetch("<%= new_item_row_dispatches_path %>?index=" + index)
+      .then(response => response.text())
+      .then(html => {
+        container.insertAdjacentHTML("beforeend", html);
+        index++;
+      });
   });
+
+  container.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-item")) {
+      const item = e.target.closest(".dispatch-item");
+      if (item.querySelector('input[name*="_destroy"]')) {
+        item.querySelector('input[name*="_destroy"]').value = "1";
+        item.style.display = "none";
+      } else {
+        item.remove();
+      }
+    }
+  });
+});
+
   function submitNewClient() {
     const name = document.getElementById('new_client_name').value;
 

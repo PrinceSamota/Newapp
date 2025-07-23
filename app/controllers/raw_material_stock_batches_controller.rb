@@ -32,7 +32,11 @@ def create
     end
     redirect_to raw_material_stock_batches_path, notice: "Raw material batch created successfully."
   else
-    render :new, status: :unprocessable_entity
+    @item_masters = ItemMaster.all
+  
+  @batch.raw_material_stock_items.build if @batch.raw_material_stock_items.empty?
+
+  render :new, status: :unprocessable_entity
   end
 end
 
