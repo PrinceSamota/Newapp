@@ -65,7 +65,8 @@ class OrderEntriesController < ApplicationController
         :length,
         :cct,
         :cover_type,
-        :status_id
+        :status_id,
+        :remark
       )
     end
     def order_entry_params_upload
