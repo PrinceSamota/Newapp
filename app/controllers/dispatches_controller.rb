@@ -2,6 +2,7 @@ class DispatchesController < ApplicationController
   def index
     @dispatches = Dispatch.order(created_at: :desc)
     @dispatch = Dispatch.new
+   
   end
 
   def new

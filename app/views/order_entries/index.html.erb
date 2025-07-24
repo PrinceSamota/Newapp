@@ -67,6 +67,7 @@
             <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Invoice No</th>
             <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Tracking No</th>
             <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Dispatch No</th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Remark</th>
             <th class="px-4 py-3" style="min-width:140px">Status</th>
           </tr>
         </thead>
@@ -109,6 +110,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.invoice_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.tracking_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.dispatch_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.remark %></td>
               <td class="px-4 py-3 text-center"><%= order.status&.name %></td>
             </tr>
           <% end %>

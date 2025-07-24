@@ -302,6 +302,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.string "tracking_no"
     t.string "dispatch_no"
     t.string "status_id"
+    t.string "remark"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

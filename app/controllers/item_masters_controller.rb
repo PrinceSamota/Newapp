@@ -27,12 +27,39 @@ class ItemMastersController < ApplicationController
       
       def update
         @item_master = ItemMaster.find(params[:id])
-        if @item_master.update(item_master_params)
-          redirect_to root_path, notice: "Item updated successfully!"
+      
+        # Grab strong params once
+        new_params = item_master_params
+      
+        # Check if BOM was previously true and is now being set to false
+        was_bom = @item_master.is_bOM
+        will_be_bom = ActiveModel::Type::Boolean.new.cast(new_params[:is_bOM])
+      
+        # If it's now not a BOM, manually clear dependent fields
+        if was_bom && !will_be_bom
+          # Clear BOM-related fields
+          new_params = new_params.merge(
+            fuse_type_id: nil,
+            loop_id: nil,
+            item_type_id: nil,
+            profile_id: nil,
+            wattage_id: nil,
+            voltage_id: nil,
+            length_id: nil,
+            cct_id: nil,
+            cover_type_id: nil,
+            article_number: nil,
+            extra_id: nil
+          )
+        end
+      
+        if @item_master.update(new_params)
+          redirect_to root_path, notice: "Item Master updated successfully."
         else
           render :edit
         end
       end
+      
       
       def decode_article
         article_number = params[:article_number]

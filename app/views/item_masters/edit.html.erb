@@ -14,13 +14,27 @@
       <span class="font-semibold">Stock History</span>
     <% end %>
   </div>
-  
+  <% if @item_master.errors.any? %>
+  <div id="error-alert" class="relative mb-4 rounded-lg border border-red-300 bg-red-50 p-4 text-red-700">
+    <!-- ❌ Close Button -->
+    <button onclick="document.getElementById('error-alert').style.display='none'" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-lg font-bold">
+      &times;
+    </button>
 
+    <h4 class="font-semibold mb-2">Please fix the following errors:</h4>
+    <ul class="list-disc pl-5 text-sm">
+      <% @item_master.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
   <!-- Main Card -->
   <div class="bg-white p-8 rounded-2xl shadow-xl max-w-[100%] mx-auto">
     <h2 class="text-2xl font-bold text-center mb-8 text-gray-800">Edit Item</h2>
 
-    <%= form_with(model: @item_master, local: true, class: "space-y-6") do |f| %>
+    <%= form_with(model: @item_master, local: true, data: { turbo: false }, class: "space-y-6") do |f| %>
+
 
       <!-- Row 1 -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -65,9 +79,13 @@
           <%= f.number_field :minimum_stock_level, step: :any, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
         </div>
 
-        <div>
-        <%= f.label :is_bOM, "Is BOM?", class: "block text-sm font-medium text-gray-700 mb-1" %><br>
-        <%= f.check_box :is_bOM, { id: "is_bom_checkbox", onchange: "toggleBomFields()" }, true, false %>
+        <div class="mb-4 mt-8">
+        <%= f.hidden_field :is_bOM, value: false %>
+<%= f.check_box :is_bOM, { id: 'is_bom_checkbox', class: 'mr-2', onchange: 'toggleBomFields()' }, true, false %>
+<%= f.label :is_bOM, "Is BOM?" %>
+
+
+
       </div>
       
         <div>
@@ -134,6 +152,10 @@
 <div>
 <%= f.label :article_number, "Article Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
 <%= f.text_field :article_number, placeholder: "Enter article number", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+</div>
+<div>
+<%= f.label :extra_id, "Extra", class: "block text-sm font-medium text-gray-700 mb-1" %>
+<%= f.collection_select :extra_id, Extra.all, :id, :name, { include_blank: "Select" }, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
 </div>
 </div>
 
