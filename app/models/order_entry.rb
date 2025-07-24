@@ -3,7 +3,7 @@ class OrderEntry < ApplicationRecord
   belongs_to :status, optional: true
 
   before_create :generate_serial_numbers
-
+  has_many :dispatch_items, foreign_key: :order_no, primary_key: :order_no
   private
 
   def generate_serial_numbers

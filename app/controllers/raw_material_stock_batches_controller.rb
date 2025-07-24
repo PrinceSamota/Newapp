@@ -4,6 +4,7 @@ class RawMaterialStockBatchesController < ApplicationController
     @batch = RawMaterialStockBatch.new
     @batch.raw_material_stock_items.build 
     @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
+    @selected_supplier_id = params[:supplier_id]
   end
 
   def show
@@ -56,7 +57,7 @@ end
   
   def batch_params
     params.require(:raw_material_stock_batch).permit(
-      :supplier_name, :receiving_date, :supplier_invoice_number,
+      :supplier_id, :receiving_date, :supplier_invoice_number,
       raw_material_stock_items_attributes: [:id, :item_name, :sku_id, :receiving_quantity, :purchase_price, :item_master_id, :_destroy]
     )
   end

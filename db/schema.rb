@@ -119,8 +119,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.integer "dispatch_id", null: false
     t.string "order_no"
     t.integer "quantity"
-    t.string "courier_company"
-    t.string "mode_of_shipment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["dispatch_id"], name: "index_dispatch_items_on_dispatch_id"
@@ -130,6 +128,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.string "client"
     t.date "dispatch_date"
     t.date "delivery_date"
+    t.string "courier_company"
+    t.string "mode_of_shipment"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "client_id"
@@ -394,11 +394,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   end
 
   create_table "raw_material_stock_batches", force: :cascade do |t|
-    t.string "supplier_name"
+    t.integer "supplier_id"
     t.date "receiving_date"
     t.string "supplier_invoice_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["supplier_id"], name: "index_raw_material_stock_batches_on_supplier_id"
   end
 
   create_table "raw_material_stock_items", force: :cascade do |t|
@@ -414,6 +415,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   end
 
   create_table "statuses", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "suppliers", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
     t.datetime "created_at", null: false
@@ -490,6 +498,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   add_foreign_key "items", "orders"
   add_foreign_key "order_details", "orders"
   add_foreign_key "production_order_items", "production_orders"
+  add_foreign_key "raw_material_stock_batches", "suppliers"
   add_foreign_key "raw_material_stock_items", "raw_material_stock_batches"
   add_foreign_key "users", "organizations", column: "org_id"
 end
