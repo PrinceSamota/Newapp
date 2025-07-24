@@ -32,11 +32,47 @@
   
       <!-- Supplier Info Section (Top) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-          <label class="block text-sm font-medium text-gray-700">Supplier Name</label>
-          <%= form.text_field :supplier_name, placeholder: "Enter supplier name", class: "mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
-        </div>
-  
+      <turbo-frame id="supplier_section">
+  <div class="flex flex-col gap-2 w-full md:w-[500px]">
+    <!-- Supplier label and + button -->
+    <div class="flex justify-between items-center">
+      <label class="text-sm font-semibold text-gray-700">Supplier</label>
+      <button type="button"
+              onclick="document.getElementById('newSupplierForm').classList.toggle('hidden')"
+              class="text-blue-600 text-xl font-bold">+</button>
+    </div>
+
+    <!-- ✅ Corrected select_tag -->
+    <div class="flex items-center">
+      <%= select_tag "raw_material_stock_batch[supplier_id]",
+        options_from_collection_for_select(Supplier.where(org_id: current_user.org_id), :id, :name),
+        include_blank: "Select Supplier",
+        class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+    </div>
+
+    <!-- Inline form to add new supplier -->
+    <div id="newSupplierForm" class="mt-2 hidden">
+      <div class="flex gap-2">
+        <input id="new_supplier_name" type="text" placeholder="New supplier name"
+               class="w-full rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewSupplier()"
+                class="bg-green-600 text-white px-3 py-2 rounded text-sm whitespace-nowrap">Add</button>
+      </div>
+      <div id="supplier-errors" class="text-red-600 text-sm mt-2"></div>
+    </div>
+
+    <!-- Flash error messages -->
+    <% if flash[:supplier_errors].present? %>
+      <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+        <% flash[:supplier_errors].each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+</turbo-frame>
+
+    
         <div>
           <label class="block text-sm font-medium text-gray-700">Receiving Date</label>
           <%= form.date_field :receiving_date, class: "mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
@@ -256,5 +292,41 @@
   document.addEventListener("turbo:before-cache", function () {
     window.rawMaterialStockFormInitialized = false;
   });
+  function submitNewSupplier() {
+    const nameField = document.getElementById("new_supplier_name");
+    const name = nameField.value.trim();
+    const errorsDiv = document.getElementById("supplier-errors");
+  
+    if (name === "") {
+      errorsDiv.textContent = "Supplier name cannot be blank.";
+      return;
+    }
+  
+    fetch("/suppliers", {
+      method: "POST",
+      headers: {
+        "X-CSRF-Token": document.querySelector("[name='csrf-token']").content,
+        "Content-Type": "application/json",
+        Accept: "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ supplier: { name: name } })
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Error creating supplier");
+        }
+        return response.text();
+      })
+      .then(html => {
+        Turbo.renderStreamMessage(html);
+        nameField.value = "";
+        document.getElementById("newSupplierForm").classList.add("hidden");
+        errorsDiv.textContent = "";
+      })
+      .catch(error => {
+        errorsDiv.textContent = "Failed to add supplier.";
+      });
+  }
+  
 </script>
 

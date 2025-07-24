@@ -66,16 +66,17 @@
         </div>
 
         <div>
-          <%= f.label :is_bOM, "Is BOM?", class: "block text-sm font-medium text-gray-700 mb-1" %><br>
-          <%= f.check_box :is_bOM, {}, true, false %>
-        </div>
-
+        <%= f.label :is_bOM, "Is BOM?", class: "block text-sm font-medium text-gray-700 mb-1" %><br>
+        <%= f.check_box :is_bOM, { id: "is_bom_checkbox", onchange: "toggleBomFields()" }, true, false %>
+      </div>
+      
         <div>
           <%= f.label :sku_id, "SKU ID (Not Editable)", class: "block text-sm font-medium text-gray-700 mb-1" %>
           <%= f.text_field :sku_id, class: "w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 cursor-not-allowed", disabled: true %>
         </div>
       </div>
       <!-- Row 4 -->
+      <div id="bom-fields" style="<%= @item_master.is_bOM? ? '' : 'display: none;' %>">
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
   <div>
     <%= f.label :fuse_type_id, "Fuse Type", class: "block text-sm font-medium text-gray-700 mb-1" %>
@@ -134,7 +135,7 @@
 <%= f.label :article_number, "Article Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
 <%= f.text_field :article_number, placeholder: "Enter article number", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
 </div>
-
+</div>
 
 </div>
       <!-- Submit -->
@@ -147,3 +148,19 @@
 
   </div>
 </div>
+<script>
+  function toggleBomFields() {
+    const isBOM = document.getElementById('is_bom_checkbox').checked;
+    const bomFields = document.getElementById('bom-fields');
+    if (isBOM) {
+      bomFields.style.display = 'block';
+    } else {
+      bomFields.style.display = 'none';
+    }
+  }
+
+  // Trigger on page load (for edit form)
+  document.addEventListener('DOMContentLoaded', () => {
+    toggleBomFields();
+  });
+</script>

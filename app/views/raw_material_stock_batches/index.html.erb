@@ -45,12 +45,12 @@
           <% @batches.each do |batch| %>
             <tr
               class="hover:bg-gray-50 transition"
-              data-supplier="<%= batch.supplier_name.to_s.downcase %>"
+              data-supplier="<%= batch.supplier&.name %>"
               data-date="<%= batch.receiving_date.present? ? batch.receiving_date.strftime('%d-%m-%Y').downcase : '' %>"
               data-invoice="<%= batch.supplier_invoice_number.to_s.downcase %>"
             >
               <td class="px-4 py-3 border-r border-gray-200">
-  <%= link_to (batch.supplier_name.presence || "N/A"), raw_material_stock_batch_path(batch), class: "text-blue-600 hover:underline font-medium" %>
+  <%= link_to (batch.supplier&.name.presence || "N/A"), raw_material_stock_batch_path(batch), class: "text-blue-600 hover:underline font-medium" %>
 </td>
 
               <td class="px-4 py-3 border-r border-gray-200">

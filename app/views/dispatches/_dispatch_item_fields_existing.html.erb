@@ -1,4 +1,4 @@
-<div class="dispatch-item relative grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 border border-gray-300 rounded-lg p-4 shadow-sm bg-gray-50">
+<div class="dispatch-item relative grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 border border-gray-300 rounded-lg p-4 shadow-sm bg-gray-50">
 
   <!-- Order Number -->
   <div>
@@ -12,17 +12,6 @@
     <%= f.number_field :quantity, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
   </div>
 
-  <!-- Courier Company -->
-  <div>
-    <%= f.label :courier_company, "Courier Company", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= f.text_field :courier_company, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
-  </div>
-
-  <!-- Mode of Shipment -->
-  <div>
-    <%= f.label :mode_of_shipment, "Mode of Shipment", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= f.text_field :mode_of_shipment, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
-  </div>
 
   <!-- Hidden field for destroy -->
   <%= f.hidden_field :_destroy %>

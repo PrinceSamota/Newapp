@@ -4,7 +4,8 @@ class CreateDispatches < ActiveRecord::Migration[7.2]
       t.string :client
       t.date :dispatch_date
       t.date :delivery_date
-  
+      t.string :courier_company
+      t.string :mode_of_shipment
 
       t.timestamps
     end

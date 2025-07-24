@@ -27,7 +27,9 @@ class OrderEntriesController < ApplicationController
       end
     end
     def index
-      @order_entries = OrderEntry.all
+     
+      @order_entries = OrderEntry.includes(:client, :status)
+                           .where.not(order_no: DispatchItem.select(:order_no))
     end
   
     def show
