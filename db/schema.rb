@@ -358,6 +358,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.integer "current_stock"
     t.float "quantity"
     t.string "bom"
+    t.string "stage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["production_order_id"], name: "index_production_order_items_on_production_order_id"

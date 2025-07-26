@@ -66,7 +66,8 @@ class OrderEntriesController < ApplicationController
         :cct,
         :cover_type,
         :status_id,
-        :remark
+        :remark,
+        :generate_serial
       )
     end
     def order_entry_params_upload

@@ -52,7 +52,7 @@
           </td>
               <td class="px-4 py-3 border-r border-gray-300"><%= bom_number %></td>
               <td class="px-4 py-3 border-r border-gray-300"><%= item.item_name%> </td>
-            <td class="px-4 py-3 border-r border-gray-300"></td>
+            <td class="px-4 py-3 border-r border-gray-300"><%= item.stage.presence || "—" %></td>
 
             </tr>
           <% end %>

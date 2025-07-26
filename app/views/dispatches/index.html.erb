@@ -84,19 +84,24 @@ document.addEventListener("turbo:load", () => {
     });
   }
 });
-document.addEventListener("DOMContentLoaded", function () {
-    const searchInput = document.getElementById("dispatchSearch");
-    const tableRows = document.querySelectorAll("#dispatches_list tr");
+document.addEventListener("turbo:load", function () {
+  const searchInput = document.getElementById("dispatchSearch");
+  const tableRows = document.querySelectorAll("#dispatches_list tr");
 
-    searchInput.addEventListener("keyup", function () {
-      const query = this.value.toLowerCase();
+  searchInput.addEventListener("keyup", function () {
+    const query = this.value.toLowerCase();
 
-      tableRows.forEach(row => {
-        const rowText = row.innerText.toLowerCase();
-        row.style.display = rowText.includes(query) ? "" : "none";
-      });
+    tableRows.forEach(row => {
+      const order = row.dataset.order || "";
+      const client = row.dataset.client || "";
+      const courier = row.dataset.courier || "";
+      const items = row.dataset.dispatchItems || "";
+
+      const combined = `${order} ${client} ${courier} ${items}`;
+      row.style.display = combined.includes(query) ? "" : "none";
     });
   });
+});
 </script>
 
 <style>
