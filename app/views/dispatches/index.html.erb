@@ -30,11 +30,14 @@
 <table class="min-w-full bg-white border border-gray-200  overflow-hidden shadow-sm">
   <thead class="bg-gray-100 text-gray-700 text-sm">
     <tr>
-      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Client</th>
+      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">DID</th>
+      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">TO Location</th>
       <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Dispatch Date</th>
       <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Delivery Date</th>
       <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Courier Company</th>
       <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Mode of Shipment</th>
+      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Tracking No</th>
+      <th class="px-6 py-3 border-b border-gray-200 text-left">Order Nos</th>
     </tr>
   </thead>
   <tbody class="text-sm" id="dispatches_list">
@@ -89,19 +92,47 @@ document.addEventListener("turbo:load", function () {
   const tableRows = document.querySelectorAll("#dispatches_list tr");
 
   searchInput.addEventListener("keyup", function () {
-    const query = this.value.toLowerCase();
+    const query = this.value.toLowerCase().replace(/[^0-9]/g, ""); // normalize query (digits only)
 
     tableRows.forEach(row => {
       const order = row.dataset.order || "";
       const client = row.dataset.client || "";
       const courier = row.dataset.courier || "";
       const items = row.dataset.dispatchItems || "";
+      const serialStart = row.dataset.serialStart || "";
+      const serialEnd = row.dataset.serialEnd || "";
 
       const combined = `${order} ${client} ${courier} ${items}`;
-      row.style.display = combined.includes(query) ? "" : "none";
+
+      // Try matching normal text
+      let matches = combined.includes(query);
+
+      // Match serial range (strip letters like 'S00014' -> '00014' -> 14)
+      const startNum = parseInt(serialStart.replace(/[^0-9]/g, ""));
+      const endNum = parseInt(serialEnd.replace(/[^0-9]/g, ""));
+      const queryNum = parseInt(query);
+
+      if (!matches && !isNaN(startNum) && !isNaN(endNum) && !isNaN(queryNum)) {
+        matches = queryNum >= startNum && queryNum <= endNum;
+      }
+
+      row.style.display = matches ? "" : "none";
     });
   });
 });
+function filterBySerialNumber(min, max) {
+  document.querySelectorAll('tr[data-serial-start]').forEach(row => {
+    const start = parseInt(row.dataset.serialStart || 0);
+    const end = parseInt(row.dataset.serialEnd || 0);
+    
+    if ((min && start < min) || (max && end > max)) {
+      row.style.display = "none";
+    } else {
+      row.style.display = "";
+    }
+  });
+}
+
 </script>
 
 <style>

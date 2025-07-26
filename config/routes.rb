@@ -38,6 +38,7 @@ get "/check_bom_usage", to: "item_masters#check_bom_usage"
 post 'item_masters/decode_article', to: 'item_masters#decode_article'
 get '/dispatches/new_item_row', to: 'dispatches#new_item_row'
 resources :suppliers, only: [:create]
+resources :locations, only: [:create]
   resources :bom_raw_materials
   resources :raw_material_inwards
   resources :orders, only: [:show]
