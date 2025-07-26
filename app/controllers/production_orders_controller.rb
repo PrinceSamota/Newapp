@@ -36,7 +36,7 @@ class ProductionOrdersController < ApplicationController
 
   def production_order_params
     params.require(:production_order).permit(
-      production_order_items_attributes: [:id, :sku_id, :item_name, :current_stock, :quantity, :bom, :_destroy]
+      production_order_items_attributes: [:id, :sku_id, :item_name, :current_stock, :quantity, :bom, :stage, :_destroy]
     )
   end
 end

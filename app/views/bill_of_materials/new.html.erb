@@ -119,16 +119,7 @@
         "<%= j item.item_name %>": "<%= item.sku_id %>",
       <% end %>
     };
-    const skuToUnit = {
-      <% @item_masters.each do |item| %>
-        "<%= item.sku_id %>": "<%= j item.measurement&.name || '' %>",
-      <% end %>
-    };
-    const itemToUnit = {
-      <% @item_masters.each do |item| %>
-        "<%= j item.item_name %>": "<%= item.measurement&.name || '' %>",
-      <% end %>
-    };
+
 
     function addRow() {
       if (!template) return;

@@ -7,7 +7,8 @@ class CreateProductionOrderItems < ActiveRecord::Migration[7.2]
       t.integer :current_stock
       t.float :quantity
       t.string :bom
-
+      t.string :stage
+      
       t.timestamps
     end
   end

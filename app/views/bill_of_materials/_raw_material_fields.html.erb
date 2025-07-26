@@ -4,8 +4,8 @@
   <div>
     <%= f.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.select :sku_id,
-      options_for_select(item_masters.map { |item| [item.sku_id, item.sku_id] }, f.object.sku_id),
-      { include_blank: "Choose SKU" },
+  options_for_select(item_masters.map { |item| [item.sku_id, item.sku_id] }, f.object.sku_id),
+  { include_blank: "Choose SKU" },
       id: f.object.object_id.to_s + "_sku_id",
       class: "sku-id-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
     %>
@@ -15,8 +15,8 @@
   <div>
     <%= f.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.select :item_name,
-      options_for_select(item_masters.map { |item| [item.item_name, item.item_name] }, f.object.item_name),
-      { include_blank: "Choose Item" },
+  options_for_select(item_masters.map { |item| [item.item_name, item.item_name] }, f.object.item_name),
+  { include_blank: "Choose Item" }  ,
       id: f.object.object_id.to_s + "_item_name",
       class: "item-name-select w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
     %>
@@ -43,14 +43,14 @@
 <script>
 document.addEventListener("turbo:load", () => {
   const itemMap = {
-    <% @item_masters.each do |item| %>
-      "<%= item.sku_id %>": "<%= j item.item_name %>",
+    <% item_masters.each do |item| %>
+      "<%= j item.sku_id %>": "<%= j item.item_name %>",
     <% end %>
   };
 
   const reverseMap = {
-    <% @item_masters.each do |item| %>
-      "<%= j item.item_name %>": "<%= item.sku_id %>",
+    <% item_masters.each do |item| %>
+      "<%= j item.item_name %>": "<%= j item.sku_id %>",
     <% end %>
   };
 
@@ -60,35 +60,39 @@ document.addEventListener("turbo:load", () => {
 
     if (!skuSelect || !itemSelect) return;
 
-    skuSelect.addEventListener("change", function () {
-      const selectedSku = this.value;
-      if (itemMap[selectedSku]) {
-        itemSelect.value = itemMap[selectedSku];
-      }
+    skuSelect.addEventListener("change", () => {
+      const selectedSku = skuSelect.value;
+      const relatedItem = itemMap[selectedSku];
+      if (relatedItem) itemSelect.value = relatedItem;
     });
 
-    itemSelect.addEventListener("change", function () {
-      const selectedItem = this.value;
-      if (reverseMap[selectedItem]) {
-        skuSelect.value = reverseMap[selectedItem];
-      }
+    itemSelect.addEventListener("change", () => {
+      const selectedItem = itemSelect.value;
+      const relatedSku = reverseMap[selectedItem];
+      if (relatedSku) skuSelect.value = relatedSku;
     });
   }
 
-  // Setup autofill for existing rows
+  // Setup for existing rows
   document.querySelectorAll(".raw-material-row").forEach(setupRawMaterialAutofill);
 
-  // Also attach to dynamically added rows
-  const addButton = document.getElementById("add-raw-material");
-  if (addButton) {
-    addButton.addEventListener("click", () => {
-      setTimeout(() => {
-        const newRows = document.querySelectorAll(".raw-material-row");
-        const lastRow = newRows[newRows.length - 1];
-        setupRawMaterialAutofill(lastRow);
-      }, 100); // slight delay to let Turbo render
-    });
-  }
-});
+  // Watch for new rows
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === 1 && node.classList.contains("raw-material-row")) {
+          setupRawMaterialAutofill(node);
+        }
 
+        const newRows = node.querySelectorAll?.(".raw-material-row") || [];
+        newRows.forEach(setupRawMaterialAutofill);
+      });
+    });
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+});
 </script>
