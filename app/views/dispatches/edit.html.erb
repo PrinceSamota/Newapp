@@ -10,8 +10,8 @@
     <!-- TOP SECTION -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Client</label>
-        <%= f.collection_select :client_id, Client.all, :id, :name, { prompt: 'Select Client' }, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+        <%= f.collection_select :location_id, Location.all, :id, :name, { prompt: 'Select Location' }, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Dispatch Date</label>

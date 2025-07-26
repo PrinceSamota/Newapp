@@ -1,10 +1,26 @@
+<% serial_starts = dispatch.dispatch_items.map do |item| 
+  OrderEntry.find_by(order_no: item.order_no)&.start_serial_no.to_s.gsub(/\D/, '').to_i 
+end.compact %>
+<% order_numbers = dispatch.dispatch_items.map(&:order_no).join(", ") %>
+<% serial_ends = dispatch.dispatch_items.map do |item| 
+  OrderEntry.find_by(order_no: item.order_no)&.end_serial_no.to_s.gsub(/\D/, '').to_i 
+end.compact %>
+
+<% serial_start_min = serial_starts.min || 0 %>
+<% serial_end_max = serial_ends.max || 0 %>
+
 <tr class="hover:bg-gray-50 text-left border-b border-gray-200" 
 data-order="<%= dispatch.dispatch_items.map(&:order_no).join(' ').downcase %>"
-data-client="<%= dispatch.client.name.downcase %>"
+data-location="<%= dispatch.location.name.downcase %>"
 data-courier="<%= dispatch.courier_company.to_s.downcase %>"
-data-dispatch-items="<%= dispatch.dispatch_items.map(&:order_no).join(' ').downcase %>">
+data-dispatch-items="<%= dispatch.dispatch_items.map(&:order_no).join(' ').downcase %>"
+data-serial-start="<%= serial_start_min %>"
+  data-serial-end="<%= serial_end_max %>">
   <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
-    <%= link_to(dispatch.client&.name || "N/A", edit_dispatch_path(dispatch), class: "text-blue-600 hover:underline") %>
+  <%= dispatch.d_id %>
+</td>
+  <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
+    <%= link_to(dispatch.location&.name || "N/A", edit_dispatch_path(dispatch), class: "text-blue-600 hover:underline") %>
   </td>
   <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
     <%= dispatch.dispatch_date&.strftime("%d-%b-%Y") || "N/A" %>
@@ -18,4 +34,8 @@ data-dispatch-items="<%= dispatch.dispatch_items.map(&:order_no).join(' ').downc
 <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
 <%= dispatch.mode_of_shipment || "N/A" %>
 </td>
+<td class="px-6 py-4 whitespace-nowrap border-r border-gray-200">
+<%= dispatch.track_no %>
+</td>
+<td class="px-6 py-4"><%= order_numbers %></td>
 </tr>

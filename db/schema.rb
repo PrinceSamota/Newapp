@@ -125,14 +125,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   end
 
   create_table "dispatches", force: :cascade do |t|
-    t.string "client"
+    t.integer "location_id"
     t.date "dispatch_date"
     t.date "delivery_date"
     t.string "courier_company"
     t.string "mode_of_shipment"
+    t.string "d_id"
+    t.string "track_no"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "client_id"
+    t.index ["location_id"], name: "index_dispatches_on_location_id"
   end
 
   create_table "extras", force: :cascade do |t|
@@ -225,6 +228,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   end
 
   create_table "lengths", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "locations", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
     t.datetime "created_at", null: false
@@ -484,6 +494,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   add_foreign_key "bom_raw_materials", "boms"
   add_foreign_key "boms", "item_masters"
   add_foreign_key "dispatch_items", "dispatches"
+  add_foreign_key "dispatches", "locations"
   add_foreign_key "finished_goods", "bill_of_materials"
   add_foreign_key "item_masters", "categories"
   add_foreign_key "item_masters", "ccts"

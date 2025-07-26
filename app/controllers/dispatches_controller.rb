@@ -46,11 +46,13 @@ class DispatchesController < ApplicationController
 
   def dispatch_params
     params.require(:dispatch).permit(
-      :client_id,
+      :location_id,
       :dispatch_date,
       :delivery_date,
       :courier_company,
       :mode_of_shipment,
+      :d_id,
+      :track_no,
       dispatch_items_attributes: [:id, :order_no, :quantity, :_destroy]
     )
   end
