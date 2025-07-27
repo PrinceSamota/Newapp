@@ -6,7 +6,7 @@
     <%= f.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }, f.object.sku_id),
   { include_blank: "Choose SKU" },
       id: f.object.object_id.to_s + "_sku_id",
-      class: "sku-id-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+      class: "required-field sku-id-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
     %>
   </div>
 
@@ -17,7 +17,7 @@
   options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, f.object.item_name),
   { include_blank: "Choose Item" }  ,
       id: f.object.object_id.to_s + "_item_name",
-      class: "item-name-select w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+      class: "required-field item-name-select w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
     %>
   </div>
 
@@ -34,13 +34,28 @@
     <%= f.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.number_field :quantity,
       value: f.object.quantity || 1,
-      class: "quantity-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+      class: "required-field quantity-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
     %>
   </div>
 
-  <!-- Unit -->
-  
+  <div>
+    <%= f.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.text_field :unit,
+      value: f.object.unit,
+      class: "required-field unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+    %>
+  </div>
+
+  <!-- Hidden field for destroy -->
+  <%= f.hidden_field :_destroy %>
+
+  <!-- Cross ✕ Button -->
+  <button type="button"
+    class="remove-raw-material absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
+    ✕
+  </button>
 </div>
+
 <script>
 document.addEventListener("turbo:load", () => {
   const itemMap = {
@@ -55,38 +70,53 @@ document.addEventListener("turbo:load", () => {
     <% end %>
   };
 
+  const skuToUnit = {
+    <% item_masters.each do |item| %>
+      "<%= j item.sku_id %>": "<%= j item.measurement&.name || '' %>",
+    <% end %>
+  };
+
+  const itemToUnit = {
+    <% item_masters.each do |item| %>
+      "<%= j item.item_name %>": "<%= j item.measurement&.name || '' %>",
+    <% end %>
+  };
+
   function setupRawMaterialAutofill(row) {
     const skuSelect = row.querySelector(".sku-id-field");
     const itemSelect = row.querySelector(".item-name-select");
+    const unitInput = row.querySelector(".unit-field");
 
-    if (!skuSelect || !itemSelect) return;
+    if (!skuSelect || !itemSelect || !unitInput) return;
 
     skuSelect.addEventListener("change", () => {
-      const selectedSku = skuSelect.value;
-      const relatedItem = itemMap[selectedSku];
-      if (relatedItem) itemSelect.value = relatedItem;
+      const sku = skuSelect.value;
+      if (skuToItem[sku]) itemSelect.value = skuToItem[sku];
+      if (skuToUnit[sku]) unitInput.value = skuToUnit[sku];
     });
 
     itemSelect.addEventListener("change", () => {
-      const selectedItem = itemSelect.value;
-      const relatedSku = reverseMap[selectedItem];
-      if (relatedSku) skuSelect.value = relatedSku;
+      const item = itemSelect.value;
+      if (itemToSku[item]) skuSelect.value = itemToSku[item];
+      if (itemToUnit[item]) unitInput.value = itemToUnit[item];
     });
   }
 
   // Setup for existing rows
   document.querySelectorAll(".raw-material-row").forEach(setupRawMaterialAutofill);
 
-  // Watch for new rows
+  // Watch for new rows added dynamically
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === 1 && node.classList.contains("raw-material-row")) {
+        if (node.nodeType !== 1) return;
+
+        if (node.classList.contains("raw-material-row")) {
           setupRawMaterialAutofill(node);
         }
 
-        const newRows = node.querySelectorAll?.(".raw-material-row") || [];
-        newRows.forEach(setupRawMaterialAutofill);
+        const nestedRows = node.querySelectorAll?.(".raw-material-row") || [];
+        nestedRows.forEach(setupRawMaterialAutofill);
       });
     });
   });
@@ -96,4 +126,5 @@ document.addEventListener("turbo:load", () => {
     subtree: true,
   });
 });
+
 </script>

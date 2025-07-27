@@ -2,49 +2,64 @@
   <i class="fa-solid fa-arrow-left"></i>
   <span class="font-bold">Back</span>
 <% end %>
-<%= form_with model: @dispatch, local: true do |f| %>
-<div class="mx-auto bg-white p-8 rounded-2xl shadow-md mt-8 space-y-6">
 
-  <!-- Header -->
-  <h2 class="text-2xl font-semibold text-gray-800">Create Dispatch</h2>
+<% if @dispatch.errors.any? %>
+  <div class="bg-red-100 border border-red-300 text-red-800 p-4 rounded-lg mb-4">
+    <p class="font-semibold">Please fix the following errors:</p>
+    <ul class="mt-2 list-disc list-inside text-sm">
+      <% @dispatch.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
 
-  <!-- Basic Fields -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-b border-gray-300 pb-6">
-    <!-- Client -->
-    <div>
-      <div class="flex items-center gap-2">
-      <%= render partial: "dispatches/location_section", locals: { selected_location_id: @dispatch.location_id } %>
+<%= form_with model: @dispatch, local: true, html: { id: "dispatch-form" } do |f| %>
+  <div class="mx-auto bg-white p-8 rounded-2xl shadow-md mt-8 space-y-6">
+
+    <h2 class="text-2xl font-semibold text-gray-800">Create Dispatch</h2>
+
+    <!-- Grid Fields -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 border-b border-gray-300 pb-6">
+
+      <!-- Location (Turbo Frame) -->
+      <div>
+        <div class="flex items-center gap-2">
+          <%= render partial: "dispatches/location_section", locals: { selected_location_id: @dispatch.location_id } %>
+        </div>
       </div>
-    </div>
 
-    <!-- Dispatch Date -->
-    <div>
-      <%= f.label :dispatch_date, "Dispatch Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.date_field :dispatch_date, class: "w-full border border-gray-300 rounded-md px-4 py-2 text-sm focus:ring-blue-500 focus:border-blue-500" %>
-    </div>
+      <!-- Dispatch Date -->
+      <div>
+        <%= f.label :dispatch_date, "Dispatch Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.date_field :dispatch_date, class: "w-full border border-gray-300 rounded-md px-4 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 required-field" %>
+      </div>
 
-    <!-- Delivery Date -->
-    <div>
-      <%= f.label :delivery_date, "Delivery Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.date_field :delivery_date, class: "w-full border border-gray-300 rounded-md px-4 py-2 text-sm focus:ring-blue-500 focus:border-blue-500" %>
-    </div>
-    <!-- Courier Company -->
-    <div>
-      <%= f.label :courier_company, "Courier Company", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.text_field :courier_company, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
-    </div>
+      <!-- Delivery Date -->
+      <div>
+        <%= f.label :delivery_date, "Delivery Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.date_field :delivery_date, class: "w-full border border-gray-300 rounded-md px-4 py-2 text-sm focus:ring-blue-500 focus:border-blue-500 required-field" %>
+      </div>
 
-    <!-- Mode of Shipment -->
-    <div>
-      <%= f.label :mode_of_shipment, "Mode of Shipment", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <%= f.text_field :mode_of_shipment, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
-    </div>
-    <div>
-    <%= f.label :track_no, "Tracking No.", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= f.text_field :track_no, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
-  </div>
-  </div>
+      <!-- Courier Company -->
+      <div>
+        <%= f.label :courier_company, "Courier Company", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :courier_company, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none " %>
+      </div>
 
+      <!-- Mode of Shipment (Optional) -->
+      <div>
+        <%= f.label :mode_of_shipment, "Mode of Shipment", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :mode_of_shipment, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" %>
+      </div>
+
+      <!-- Tracking No. -->
+      <div>
+        <%= f.label :track_no, "Tracking No.", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :track_no, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none " %>
+      </div>
+
+    </div>
 
     <!-- Dispatch Items -->
     <div>
@@ -54,7 +69,6 @@
           <%= render partial: 'dispatch_item_fields_existing', locals: { f: item_form } %>
         <% end %>
       </div>
-      
 
       <!-- Add Item Button -->
       <div class="mt-2">
@@ -66,16 +80,19 @@
     <div class="text-right">
       <%= f.submit "Save Dispatch", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-lg cursor-pointer" %>
     </div>
+
   </div>
 <% end %>
+
+<!-- Scripts -->
 <script>
 document.addEventListener("turbo:load", function () {
   const addItemBtn = document.getElementById("add-item");
   const container = document.getElementById("dispatch-items");
+  const form = document.getElementById("dispatch-form");
 
-  if (!addItemBtn) return;
+  if (!addItemBtn || !form) return;
 
-  // Prevent multiple binding
   if (addItemBtn.dataset.listenerAttached === "true") return;
   addItemBtn.dataset.listenerAttached = "true";
 
@@ -101,8 +118,47 @@ document.addEventListener("turbo:load", function () {
       }
     }
   });
+
+  // Frontend Validation
+  form.addEventListener("submit", function (e) {
+    let valid = true;
+    const requiredFields = form.querySelectorAll(".required-field");
+
+    requiredFields.forEach((field) => {
+      const hasValue = field.value.trim() !== "";
+      field.classList.remove("border-red-500");
+      if (field.nextElementSibling && field.nextElementSibling.classList.contains("text-red-500")) {
+        field.nextElementSibling.remove();
+      }
+
+      if (!hasValue) {
+        field.classList.add("border-red-500");
+        const error = document.createElement("p");
+        error.classList.add("text-red-500", "text-xs", "mt-1");
+        error.textContent = "This field is required";
+        field.after(error);
+        valid = false;
+      }
+    });
+
+    // Validate location manually
+    const locationSelect = document.querySelector("#dispatch_location_id");
+    if (locationSelect && !locationSelect.value) {
+      locationSelect.classList.add("border-red-500");
+      if (!locationSelect.nextElementSibling || !locationSelect.nextElementSibling.classList.contains("text-red-500")) {
+        const error = document.createElement("p");
+        error.classList.add("text-red-500", "text-xs", "mt-1");
+        error.textContent = "Please select a location";
+        locationSelect.after(error);
+      }
+      valid = false;
+    }
+
+    if (!valid) e.preventDefault();
+  });
 });
 
+// New Location JS
 function submitNewLocation() {
   const name = document.getElementById('new_location_name').value;
 
@@ -124,5 +180,4 @@ function submitNewLocation() {
     console.error(error);
   });
 }
-
 </script>
