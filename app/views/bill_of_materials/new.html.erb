@@ -33,12 +33,13 @@
             <%= fg.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
             <%= fg.select :item_name, options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, fg.object.item_name), { include_blank: "Choose Item" }, id: "finished-good-item-name", class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
           </div>
-    
+          
           <div>
             <%= fg.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
             <%= fg.number_field :quantity, value: 1, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+
           </div>
-    
+
           <div>
             <%= fg.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
             <%= fg.text_field :unit, class: "required-field unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>

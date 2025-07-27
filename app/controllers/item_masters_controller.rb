@@ -32,8 +32,8 @@ class ItemMastersController < ApplicationController
         new_params = item_master_params
       
         # Check if BOM was previously true and is now being set to false
-        was_bom = @item_master.is_bOM
-        will_be_bom = ActiveModel::Type::Boolean.new.cast(new_params[:is_bOM])
+        was_bom = @item_master.is_bom
+        will_be_bom = ActiveModel::Type::Boolean.new.cast(new_params[:is_bom])
       
         # If it's now not a BOM, manually clear dependent fields
         if was_bom && !will_be_bom
@@ -108,7 +108,7 @@ class ItemMastersController < ApplicationController
         :opening_stock,
         :purchase_price,
         :sale_price,
-        :is_bOM,
+        :is_bom,
         :minimum_stock_level,
         :category_id,
         :measurement_id,

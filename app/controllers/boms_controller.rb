@@ -8,7 +8,7 @@ class BomsController < ApplicationController
 
   def new
     @bom = Bom.new
-    @item_masters = ItemMaster.where(is_bOM: true)
+    @item_masters = ItemMaster.where(is_bom: true)
     @boms = Bom.order(created_at: :desc) 
     
   end
@@ -20,7 +20,7 @@ class BomsController < ApplicationController
     if @bom.save
       redirect_to new_bom_path, notice: "BOM created successfully."
     else
-      @item_masters = ItemMaster.where(is_bOM: true)
+      @item_masters = ItemMaster.where(is_bom: true)
       @boms = Bom.order(created_at: :desc)
       render :new, status: :unprocessable_entity
     end

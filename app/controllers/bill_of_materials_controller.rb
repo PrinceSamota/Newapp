@@ -4,8 +4,7 @@ class BillOfMaterialsController < ApplicationController
     @bill_of_material = BillOfMaterial.new
     @bill_of_material.build_finished_good
     @bill_of_material.bom_raw_material_items.build
-    @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) 
-    @item_masters_false = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
+    load_item_masters
   end
 
 def create
@@ -122,16 +121,20 @@ end
 
   def bom_params
     params.require(:bill_of_material).permit(
-    :name,
+    :name, :bom_tag,
     finished_good_attributes: [:sku_id, :item_name, :quantity, :unit],
     bom_raw_material_items_attributes: [:sku_id, :item_name, :quantity, :unit, :_destroy]
   )
   end
   def bom_params_update
     params.require(:bill_of_material).permit(
-      :name,
+      :name, :bom_tag,
       finished_good_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy],
       bom_raw_material_items_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy]
     )
+  end
+  def load_item_masters
+    @item_masters = ItemMaster.where(is_bom: true)
+    @item_masters_false = ItemMaster.where(is_bom: false)
   end
 end

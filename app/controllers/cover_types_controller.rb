@@ -1,6 +1,5 @@
 class CoverTypesController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @cover_type = CoverType.new(cover_type_params)
       @cover_type.org_id = current_user.org_id

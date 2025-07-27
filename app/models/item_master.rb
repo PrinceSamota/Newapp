@@ -24,7 +24,7 @@ class ItemMaster < ApplicationRecord
   validates :minimum_stock_level, presence: true
 
   # BOM-specific validations
-  with_options if: :is_bOM? do
+  with_options if: :is_bom? do
     validates :article_number, presence: true
     validates :fuse_type_id, :loop_id, :item_type_id, :profile_id, :wattage_id,
               :voltage_id, :length_id, :cct_id, :cover_type_id, 

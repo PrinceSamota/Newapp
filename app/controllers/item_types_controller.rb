@@ -1,6 +1,5 @@
 class ItemTypesController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @item_type = ItemType.new(item_type_params)
       @item_type.org_id = current_user.org_id

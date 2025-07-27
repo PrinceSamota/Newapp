@@ -1,6 +1,5 @@
 class VoltagesController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @voltage = Voltage.new(voltage_params)
       @voltage.org_id = current_user.org_id

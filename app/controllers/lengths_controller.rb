@@ -1,6 +1,5 @@
 class LengthsController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @length = Length.new(length_params)
       @length.org_id = current_user.org_id

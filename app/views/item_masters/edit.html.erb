@@ -80,9 +80,9 @@
         </div>
 
         <div class="mb-4 mt-8">
-        <%= f.hidden_field :is_bOM, value: false %>
-<%= f.check_box :is_bOM, { id: 'is_bom_checkbox', class: 'mr-2', onchange: 'toggleBomFields()' }, true, false %>
-<%= f.label :is_bOM, "Is BOM?" %>
+        <%= f.hidden_field :is_bom, value: false %>
+<%= f.check_box :is_bom, { id: 'is_bom_checkbox', class: 'mr-2', onchange: 'toggleBomFields()' }, true, false %>
+<%= f.label :is_bom, "Is BOM?" %>
 
 
 
@@ -94,7 +94,7 @@
         </div>
       </div>
       <!-- Row 4 -->
-      <div id="bom-fields" style="<%= @item_master.is_bOM? ? '' : 'display: none;' %>">
+      <div id="bom-fields" style="<%= @item_master.is_bom? ? '' : 'display: none;' %>">
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
   <div>
     <%= f.label :fuse_type_id, "Fuse Type", class: "block text-sm font-medium text-gray-700 mb-1" %>

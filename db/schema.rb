@@ -48,6 +48,46 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_28_041720) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "bill_of_materials", force: :cascade do |t|
+    t.string "name"
+    t.string "bom_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "bom_tag"
+  end
+
+  create_table "bom_raw_material_items", force: :cascade do |t|
+    t.integer "bill_of_material_id", null: false
+    t.string "item_name"
+    t.integer "quantity"
+    t.string "sku_id"
+    t.string "unit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bill_of_material_id"], name: "index_bom_raw_material_items_on_bill_of_material_id"
+  end
+
+  create_table "bom_raw_materials", force: :cascade do |t|
+    t.integer "bom_id", null: false
+    t.string "item_master_id"
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bom_id"], name: "index_bom_raw_materials_on_bom_id"
+  end
+
+  create_table "boms", force: :cascade do |t|
+    t.string "bom_number"
+    t.integer "item_master_id", null: false
+    t.string "sku_id"
+    t.integer "quantity"
+    t.string "unit"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["item_master_id"], name: "index_boms_on_item_master_id"
+  end
+
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
@@ -81,6 +121,44 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_28_041720) do
     t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "item_masters", force: :cascade do |t|
+    t.string "item_name"
+    t.integer "opening_stock"
+    t.decimal "purchase_price"
+    t.decimal "sale_price"
+    t.boolean "is_bom"
+    t.string "sku_id"
+    t.string "article_number"
+    t.integer "minimum_stock_level"
+    t.integer "category_id"
+    t.integer "measurement_id"
+    t.integer "fuse_type_id"
+    t.integer "loop_id"
+    t.integer "item_type_id"
+    t.integer "profile_id"
+    t.integer "wattage_id"
+    t.integer "voltage_id"
+    t.integer "length_id"
+    t.integer "cct_id"
+    t.integer "cover_type_id"
+    t.integer "extra_id"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_item_masters_on_category_id"
+    t.index ["cct_id"], name: "index_item_masters_on_cct_id"
+    t.index ["cover_type_id"], name: "index_item_masters_on_cover_type_id"
+    t.index ["extra_id"], name: "index_item_masters_on_extra_id"
+    t.index ["fuse_type_id"], name: "index_item_masters_on_fuse_type_id"
+    t.index ["item_type_id"], name: "index_item_masters_on_item_type_id"
+    t.index ["length_id"], name: "index_item_masters_on_length_id"
+    t.index ["loop_id"], name: "index_item_masters_on_loop_id"
+    t.index ["measurement_id"], name: "index_item_masters_on_measurement_id"
+    t.index ["profile_id"], name: "index_item_masters_on_profile_id"
+    t.index ["voltage_id"], name: "index_item_masters_on_voltage_id"
+    t.index ["wattage_id"], name: "index_item_masters_on_wattage_id"
   end
 
   create_table "item_types", force: :cascade do |t|
@@ -216,6 +294,49 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_28_041720) do
   create_table "raw_material_inward_batches", force: :cascade do |t|
     t.string "supplier_name"
     t.date "receiving_date"
+    
+  create_table "raw_material_inwards", force: :cascade do |t|
+    t.string "supplier_name"
+    t.date "receiving_date"
+    t.string "sku_id"
+    t.string "item_name"
+    t.integer "receiving_quantity"
+    t.float "purchase_price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "raw_material_stock_batches", force: :cascade do |t|
+    t.integer "supplier_id"
+    t.date "receiving_date"
+    t.string "supplier_invoice_number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["supplier_id"], name: "index_raw_material_stock_batches_on_supplier_id"
+  end
+
+  create_table "raw_material_stock_items", force: :cascade do |t|
+    t.integer "raw_material_stock_batch_id", null: false
+    t.string "item_name"
+    t.string "sku_id"
+    t.integer "receiving_quantity"
+    t.decimal "purchase_price"
+    t.integer "item_master_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["raw_material_stock_batch_id"], name: "index_raw_material_stock_items_on_raw_material_stock_batch_id"
+  end
+
+  create_table "statuses", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "suppliers", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

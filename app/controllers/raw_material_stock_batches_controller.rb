@@ -3,7 +3,7 @@ class RawMaterialStockBatchesController < ApplicationController
   def new
     @batch = RawMaterialStockBatch.new
     @batch.raw_material_stock_items.build 
-    @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
+    @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', false)
     @selected_supplier_id = params[:supplier_id]
   end
 

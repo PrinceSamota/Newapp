@@ -1,6 +1,5 @@
 class LocationsController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @location = Location.new(location_params)
       @location.org_id = current_user.org_id

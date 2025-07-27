@@ -1,6 +1,5 @@
 class ExtrasController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @extra = Extra.new(extra_params)
       @extra.org_id = current_user.org_id

@@ -48,14 +48,14 @@
 
                         <!-- BOM Radio Buttons -->
                         <div class="flex items-center gap-4 mt-2" id="is_bom_radio_group">
-                        <%= f.label :is_bOM, "BOM", class: "block text-sm font-medium text-gray-700" %>
+                        <%= f.label :is_bom, "BOM", class: "block text-sm font-medium text-gray-700" %>
                         <div class="flex gap-4 ml-4">
                           <label class="inline-flex items-center">
-                            <%= f.radio_button :is_bOM, true, class: "form-radio text-blue-600" %>
+                            <%= f.radio_button :is_bom, true, class: "form-radio text-blue-600" %>
                             <span class="ml-2 text-sm text-gray-800">Yes</span>
                           </label>
                           <label class="inline-flex items-center">
-                            <%= f.radio_button :is_bOM, false, class: "form-radio text-blue-600", checked: true %>
+                            <%= f.radio_button :is_bom, false, class: "form-radio text-blue-600", checked: true %>
                             <span class="ml-2 text-sm text-gray-800">No</span>
                           </label>
                         </div>
@@ -341,7 +341,7 @@
       <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.purchase_price %></td>
       <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sale_price %></td>
       <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.minimum_stock_level %></td>
-      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.is_bOM ? "Yes" : "No" %></td>
+      <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.is_bom ? "Yes" : "No" %></td>
       <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sku_id %></td>
       <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.article_number %></td>
       <td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.fuse_type&.name %></td>
@@ -530,7 +530,7 @@
       if (!isFieldFilled(sel)) missing.push(fieldLabelMap[sel]);
     });
 
-    const isBOM = document.querySelector('input[name="item_master[is_bOM]"]:checked')?.value === "true";
+    const isBOM = document.querySelector('input[name="item_master[is_bom]"]:checked')?.value === "true";
     if (isBOM) {
       bomSelectors.forEach(sel => {
         if (!isFieldFilled(sel)) missing.push(fieldLabelMap[sel]);
@@ -655,8 +655,8 @@ document.addEventListener("turbo:load", function () {
   }
 
   document.addEventListener("turbo:load", function () {
-    const bomYes = document.querySelector("input[name='item_master[is_bOM]'][value='true']");
-    const bomNo = document.querySelector("input[name='item_master[is_bOM]'][value='false']");
+    const bomYes = document.querySelector("input[name='item_master[is_bom]'][value='true']");
+    const bomNo = document.querySelector("input[name='item_master[is_bom]'][value='false']");
     const bomFields = document.getElementById("bom-fields");
 
     function toggleBOMFields() {
