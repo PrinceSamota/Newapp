@@ -3,8 +3,7 @@
   <!-- SKU ID -->
   <div>
     <%= f.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.select :sku_id,
-  options_for_select(item_masters.map { |item| [item.sku_id, item.sku_id] }, f.object.sku_id),
+    <%= f.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }, f.object.sku_id),
   { include_blank: "Choose SKU" },
       id: f.object.object_id.to_s + "_sku_id",
       class: "sku-id-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
@@ -15,10 +14,18 @@
   <div>
     <%= f.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.select :item_name,
-  options_for_select(item_masters.map { |item| [item.item_name, item.item_name] }, f.object.item_name),
+  options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, f.object.item_name),
   { include_blank: "Choose Item" }  ,
       id: f.object.object_id.to_s + "_item_name",
       class: "item-name-select w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+    %>
+  </div>
+
+  <div>
+    <%= f.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
+    <%= f.text_field :unit,
+      value: f.object.unit,
+      class: "unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
     %>
   </div>
 
@@ -32,24 +39,18 @@
   </div>
 
   <!-- Unit -->
-  <div>
-    <%= f.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.text_field :unit,
-      value: f.object.unit,
-      class: "unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-    %>
-  </div>
+  
 </div>
 <script>
 document.addEventListener("turbo:load", () => {
   const itemMap = {
-    <% item_masters.each do |item| %>
+    <% @item_masters.each do |item| %>
       "<%= j item.sku_id %>": "<%= j item.item_name %>",
     <% end %>
   };
 
   const reverseMap = {
-    <% item_masters.each do |item| %>
+    <% @item_masters.each do |item| %>
       "<%= j item.item_name %>": "<%= j item.sku_id %>",
     <% end %>
   };
