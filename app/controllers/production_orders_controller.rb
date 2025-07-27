@@ -2,7 +2,7 @@ class ProductionOrdersController < ApplicationController
   def new
     @production_order = ProductionOrder.new
     @production_order.production_order_items.build
-    @item_masters = ItemMaster.where(is_bOM: true)
+    @item_masters = ItemMaster.where(is_bom: true)
   end
   
   def create
@@ -19,7 +19,7 @@ class ProductionOrdersController < ApplicationController
       end
       redirect_to production_orders_path, notice: "Production order created successfully."
     else
-      @item_masters = ItemMaster.where(is_bOM: true)
+      @item_masters = ItemMaster.where(is_bom: true)
       render :new, status: :unprocessable_entity  
     end
   end

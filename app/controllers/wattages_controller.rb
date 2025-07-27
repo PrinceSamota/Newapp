@@ -1,5 +1,4 @@
 class WattagesController < ApplicationController
-    before_action :authenticate_user!
   
     def create
       @wattage = Wattage.new(wattage_params)

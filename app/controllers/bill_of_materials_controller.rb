@@ -4,8 +4,8 @@ class BillOfMaterialsController < ApplicationController
     @bill_of_material = BillOfMaterial.new
     @bill_of_material.build_finished_good
     @bill_of_material.bom_raw_material_items.build
-    @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) 
-    @item_masters_false = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
+    @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true) 
+    @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false)
   end
 
 def create

@@ -1,6 +1,5 @@
 class FuseTypesController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @fuse_type = FuseType.new(fuse_type_params)
       @fuse_type.org_id = current_user.org_id

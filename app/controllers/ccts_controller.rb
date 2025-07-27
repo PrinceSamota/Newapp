@@ -1,6 +1,5 @@
 class CctsController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @cct = Cct.new(cct_params)
       @cct.org_id = current_user.org_id

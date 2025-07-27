@@ -1,6 +1,5 @@
 class LoopsController < ApplicationController
-    before_action :authenticate_user!
-  
+
     def create
       @loop = Loop.new(loop_params)
       @loop.org_id = current_user.org_id

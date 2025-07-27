@@ -168,7 +168,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.integer "opening_stock"
     t.decimal "purchase_price"
     t.decimal "sale_price"
-    t.boolean "is_bOM"
+    t.boolean "is_bom"
     t.string "sku_id"
     t.string "article_number"
     t.integer "minimum_stock_level"
@@ -383,13 +383,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   create_table "profiles", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "raw_material_inward_batches", force: :cascade do |t|
-    t.string "supplier_name"
-    t.date "receiving_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -5,7 +5,7 @@ class CreateItemMasters < ActiveRecord::Migration[7.2]
       t.integer :opening_stock
       t.decimal :purchase_price
       t.decimal :sale_price
-      t.boolean :is_bOM
+      t.boolean :is_bom
       t.string :sku_id
       t.string :article_number
       t.integer :minimum_stock_level
