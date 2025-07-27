@@ -10,7 +10,8 @@ class BillOfMaterialsController < ApplicationController
 
 def create
   @bill_of_material = BillOfMaterial.new(bom_params)
-
+  @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) 
+    @item_masters_false = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
   if @bill_of_material.save
     redirect_to bill_of_materials_path, notice: "BOM created successfully"
   else
@@ -61,7 +62,8 @@ end
     @bill_of_material.finished_good = original_bom.finished_good.dup if original_bom.finished_good.present?
     @bill_of_material.bom_raw_material_items = original_bom.bom_raw_material_items.map(&:dup)
   
-    @item_masters = ItemMaster.all  
+    @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) 
+    @item_masters_false = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
     render :new
   end
   def update_bom_all_items

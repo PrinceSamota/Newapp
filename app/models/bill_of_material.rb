@@ -6,10 +6,10 @@ class BillOfMaterial < ApplicationRecord
     accepts_nested_attributes_for :bom_raw_material_items, allow_destroy: true
   
     before_create :generate_bom_number
-    validates :name, presence: true, uniqueness: { case_sensitive: false, }
+
     has_paper_trail save_changes: true
 
-    validate :must_have_at_least_one_raw_material
+ 
   
     def generate_bom_number
       last_number = BillOfMaterial.maximum(:id).to_i + 1

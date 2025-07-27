@@ -2,25 +2,9 @@
     <i class="fa-solid fa-arrow-left"></i>
     <span class="font-bold">Back</span>
   <% end %>
-<% if @bill_of_material.errors.any? %>
-  <div id="error-box" class="fixed right-6 top-6 max-w-sm bg-red-100 border border-red-300 text-red-700 rounded-lg p-4 shadow-xl z-50">
-    <!-- Close Button -->
-    <button type="button" onclick="document.getElementById('error-box').remove()"
-      class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-lg font-bold">
-      &times;
-    </button>
 
-    <!-- Error Messages -->
-    <p class="font-bold mb-2 pr-6">Please fix the following errors:</p>
-    <ul class="list-disc pl-5 space-y-1 text-sm pr-6">
-      <% @bill_of_material.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
 
-  <%= form_with model: @bill_of_material, local: true do |f| %>
+  <%= form_with model: @bill_of_material, id: "bom-form", local: true do |f| %>
     <div class="max-w-8xl mx-auto bg-white p-8 rounded-2xl shadow-xl space-y-8 mt-10">
       
       <!-- Header -->
@@ -30,7 +14,7 @@
       
       <div>
         <label class="block text-sm font-medium text-gray-700">Bill of Material Name</label>
-        <%= f.text_field :name, placeholder: "Enter BOM Name", id: "bom-name", class: "mt-1 w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+        <%= f.text_field :name, placeholder: "Enter BOM Name", id: "bom-name", class: "required-field mt-1 w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
       </div>
   
       <!-- Finished Good Section (Styled to Match Raw Material UI) -->
@@ -42,22 +26,22 @@
           
           <div>
             <%= fg.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
-            <%= fg.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }, fg.object.sku_id), { include_blank: "Choose SKU" }, id: "finished-good-sku-id", class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+            <%= fg.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }, fg.object.sku_id), { include_blank: "Choose SKU" }, id: "finished-good-sku-id", class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
           </div>
     
           <div>
             <%= fg.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
-            <%= fg.select :item_name, options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, fg.object.item_name), { include_blank: "Choose Item" }, id: "finished-good-item-name", class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+            <%= fg.select :item_name, options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, fg.object.item_name), { include_blank: "Choose Item" }, id: "finished-good-item-name", class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
           </div>
     
           <div>
             <%= fg.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
-            <%= fg.number_field :quantity, value: 1, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+            <%= fg.number_field :quantity, value: 1, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
           </div>
     
           <div>
             <%= fg.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
-            <%= fg.text_field :unit, class: "unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+            <%= fg.text_field :unit, class: "required-field unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
           </div>
           
         </div>
@@ -121,6 +105,18 @@
     };
 
 
+
+    const skuToUnit = {
+      <% @item_masters.each do |item| %>
+        "<%= item.sku_id %>": "<%= j item.measurement&.name || '' %>",
+      <% end %>
+    };
+    const itemToUnit = {
+      <% @item_masters.each do |item| %>
+        "<%= j item.item_name %>": "<%= item.measurement&.name || '' %>",
+      <% end %>
+    };
+    
     function addRow() {
       if (!template) return;
       const html = template.replace(/NEW_INDEX/g, index);
@@ -215,8 +211,40 @@
       });
     }
   });
+  document.addEventListener("turbo:load", () => {
+    const form = document.getElementById("bom-form");
+    if (!form) return;
+  
+    form.addEventListener("submit", (e) => {
+      let isValid = true;
+  
+      // Remove previous errors
+      form.querySelectorAll(".required-field").forEach((field) => {
+        field.classList.remove("border-red-500");
+        const next = field.nextElementSibling;
+        if (next && next.classList.contains("text-red-500")) {
+          next.remove();
+        }
+      });
+  
+      // Validate fields
+      form.querySelectorAll(".required-field").forEach((field) => {
+  if (field.offsetParent !== null && !field.value.trim()) {
+    isValid = false;
+    field.classList.add("border-red-500");
 
-  document.addEventListener("turbo:before-cache", () => {
-    window.bomRawMaterialFormInitialized = false;
+    const error = document.createElement("p");
+    error.textContent = "This field is required";
+    error.className = "text-red-500 text-xs mt-1";
+    field.insertAdjacentElement("afterend", error);
+  }
+});
+  
+      // Only prevent if validation fails
+      if (!isValid) {
+        e.preventDefault();
+      }
+    });
   });
+  
 </script>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_28_041720) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -48,45 +48,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "bill_of_materials", force: :cascade do |t|
-    t.string "name"
-    t.string "bom_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "bom_raw_material_items", force: :cascade do |t|
-    t.integer "bill_of_material_id", null: false
-    t.string "item_name"
-    t.integer "quantity"
-    t.string "sku_id"
-    t.string "unit"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["bill_of_material_id"], name: "index_bom_raw_material_items_on_bill_of_material_id"
-  end
-
-  create_table "bom_raw_materials", force: :cascade do |t|
-    t.integer "bom_id", null: false
-    t.string "item_master_id"
-    t.integer "quantity"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["bom_id"], name: "index_bom_raw_materials_on_bom_id"
-  end
-
-  create_table "boms", force: :cascade do |t|
-    t.string "bom_number"
-    t.integer "item_master_id", null: false
-    t.string "sku_id"
-    t.integer "quantity"
-    t.string "unit"
-    t.integer "org_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["item_master_id"], name: "index_boms_on_item_master_id"
-  end
-
   create_table "categories", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
@@ -101,41 +62,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "clients", force: :cascade do |t|
-    t.string "name"
-    t.integer "org_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "cover_types", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "dispatch_items", force: :cascade do |t|
-    t.integer "dispatch_id", null: false
-    t.string "order_no"
-    t.integer "quantity"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["dispatch_id"], name: "index_dispatch_items_on_dispatch_id"
-  end
-
-  create_table "dispatches", force: :cascade do |t|
-    t.integer "location_id"
-    t.date "dispatch_date"
-    t.date "delivery_date"
-    t.string "courier_company"
-    t.string "mode_of_shipment"
-    t.string "d_id"
-    t.string "track_no"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "client_id"
-    t.index ["location_id"], name: "index_dispatches_on_location_id"
   end
 
   create_table "extras", force: :cascade do |t|
@@ -145,60 +76,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "finished_goods", force: :cascade do |t|
-    t.integer "bill_of_material_id", null: false
-    t.string "item_name"
-    t.integer "quantity"
-    t.string "sku_id"
-    t.string "unit"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["bill_of_material_id"], name: "index_finished_goods_on_bill_of_material_id"
-  end
-
   create_table "fuse_types", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "item_masters", force: :cascade do |t|
-    t.string "item_name"
-    t.integer "opening_stock"
-    t.decimal "purchase_price"
-    t.decimal "sale_price"
-    t.boolean "is_bOM"
-    t.string "sku_id"
-    t.string "article_number"
-    t.integer "minimum_stock_level"
-    t.integer "category_id"
-    t.integer "measurement_id"
-    t.integer "fuse_type_id"
-    t.integer "loop_id"
-    t.integer "item_type_id"
-    t.integer "profile_id"
-    t.integer "wattage_id"
-    t.integer "voltage_id"
-    t.integer "length_id"
-    t.integer "cct_id"
-    t.integer "cover_type_id"
-    t.integer "extra_id"
-    t.integer "org_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["category_id"], name: "index_item_masters_on_category_id"
-    t.index ["cct_id"], name: "index_item_masters_on_cct_id"
-    t.index ["cover_type_id"], name: "index_item_masters_on_cover_type_id"
-    t.index ["extra_id"], name: "index_item_masters_on_extra_id"
-    t.index ["fuse_type_id"], name: "index_item_masters_on_fuse_type_id"
-    t.index ["item_type_id"], name: "index_item_masters_on_item_type_id"
-    t.index ["length_id"], name: "index_item_masters_on_length_id"
-    t.index ["loop_id"], name: "index_item_masters_on_loop_id"
-    t.index ["measurement_id"], name: "index_item_masters_on_measurement_id"
-    t.index ["profile_id"], name: "index_item_masters_on_profile_id"
-    t.index ["voltage_id"], name: "index_item_masters_on_voltage_id"
-    t.index ["wattage_id"], name: "index_item_masters_on_wattage_id"
   end
 
   create_table "item_types", force: :cascade do |t|
@@ -228,13 +110,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   end
 
   create_table "lengths", force: :cascade do |t|
-    t.string "name"
-    t.integer "org_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "locations", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
     t.datetime "created_at", null: false
@@ -287,36 +162,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.index ["order_id"], name: "index_order_details_on_order_id"
   end
 
-  create_table "order_entries", force: :cascade do |t|
-    t.string "order_no"
-    t.string "article_no"
-    t.string "client_id"
-    t.date "target_date"
-    t.string "ship_to_location"
-    t.integer "qty"
-    t.string "sku_number"
-    t.string "fuse_type"
-    t.string "loop"
-    t.string "item_type"
-    t.string "profile"
-    t.string "wattage"
-    t.string "voltage"
-    t.string "length"
-    t.string "cct"
-    t.string "cover_type"
-    t.string "start_serial_no"
-    t.string "end_serial_no"
-    t.string "mfg_date"
-    t.string "driver_revision_no"
-    t.string "invoice_no"
-    t.string "tracking_no"
-    t.string "dispatch_no"
-    t.string "status_id"
-    t.string "remark"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "orders", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -361,25 +206,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "production_order_items", force: :cascade do |t|
-    t.integer "production_order_id", null: false
-    t.string "sku_id"
-    t.string "item_name"
-    t.integer "current_stock"
-    t.float "quantity"
-    t.string "bom"
-    t.string "stage"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["production_order_id"], name: "index_production_order_items_on_production_order_id"
-  end
-
-  create_table "production_orders", force: :cascade do |t|
-    t.string "pid"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "profiles", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
@@ -390,52 +216,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
   create_table "raw_material_inward_batches", force: :cascade do |t|
     t.string "supplier_name"
     t.date "receiving_date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "raw_material_inwards", force: :cascade do |t|
-    t.string "supplier_name"
-    t.date "receiving_date"
-    t.string "sku_id"
-    t.string "item_name"
-    t.integer "receiving_quantity"
-    t.float "purchase_price"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "raw_material_stock_batches", force: :cascade do |t|
-    t.integer "supplier_id"
-    t.date "receiving_date"
-    t.string "supplier_invoice_number"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["supplier_id"], name: "index_raw_material_stock_batches_on_supplier_id"
-  end
-
-  create_table "raw_material_stock_items", force: :cascade do |t|
-    t.integer "raw_material_stock_batch_id", null: false
-    t.string "item_name"
-    t.string "sku_id"
-    t.integer "receiving_quantity"
-    t.decimal "purchase_price"
-    t.integer "item_master_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["raw_material_stock_batch_id"], name: "index_raw_material_stock_items_on_raw_material_stock_batch_id"
-  end
-
-  create_table "statuses", force: :cascade do |t|
-    t.string "name"
-    t.integer "org_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "suppliers", force: :cascade do |t|
-    t.string "name"
-    t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -460,20 +240,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  create_table "versions", force: :cascade do |t|
-    t.string "item_type", null: false
-    t.bigint "item_id", null: false
-    t.string "event", null: false
-    t.string "whodunnit"
-    t.text "object", limit: 1073741823
-    t.text "object_changes", limit: 1073741823
-    t.string "source_type"
-    t.bigint "source_id"
-    t.datetime "created_at"
-    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
-    t.index ["source_type", "source_id"], name: "index_versions_on_source_type_and_source_id"
-  end
-
   create_table "voltages", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
@@ -490,28 +256,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_22_045855) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "bom_raw_material_items", "bill_of_materials"
-  add_foreign_key "bom_raw_materials", "boms"
-  add_foreign_key "boms", "item_masters"
-  add_foreign_key "dispatch_items", "dispatches"
-  add_foreign_key "dispatches", "locations"
-  add_foreign_key "finished_goods", "bill_of_materials"
-  add_foreign_key "item_masters", "categories"
-  add_foreign_key "item_masters", "ccts"
-  add_foreign_key "item_masters", "cover_types"
-  add_foreign_key "item_masters", "extras"
-  add_foreign_key "item_masters", "fuse_types"
-  add_foreign_key "item_masters", "item_types"
-  add_foreign_key "item_masters", "lengths"
-  add_foreign_key "item_masters", "loops"
-  add_foreign_key "item_masters", "measurements"
-  add_foreign_key "item_masters", "profiles"
-  add_foreign_key "item_masters", "voltages"
-  add_foreign_key "item_masters", "wattages"
   add_foreign_key "items", "orders"
   add_foreign_key "order_details", "orders"
-  add_foreign_key "production_order_items", "production_orders"
-  add_foreign_key "raw_material_stock_batches", "suppliers"
-  add_foreign_key "raw_material_stock_items", "raw_material_stock_batches"
   add_foreign_key "users", "organizations", column: "org_id"
 end
