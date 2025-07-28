@@ -74,7 +74,15 @@
               </div>
             </td>
           </tr>
+          
         <% end %>
+        <tr>
+            <div class="flex items-center justify-between px-4 py-3 border-t border-gray-200 text-sm text-gray-600">
+          <div class="flex space-x-1">
+            <%= will_paginate @bill_of_materials %>
+          </div>
+        </div>
+          </tr>
       </tbody>
     </table>
   <% else %>

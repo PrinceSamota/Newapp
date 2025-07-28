@@ -3,7 +3,7 @@ class CreateItems < ActiveRecord::Migration[7.2]
     create_table :items do |t|
       t.string :name
       t.string :article_no
-      t.references :order, null: false, foreign_key: true
+      t.integer :order_id
 
       t.timestamps
     end

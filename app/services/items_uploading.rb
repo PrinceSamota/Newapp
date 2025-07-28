@@ -6,9 +6,8 @@ class ItemsUploading
   def upload
     xlsx = Roo::Spreadsheet.open(@file)
     items_sheet = xlsx.sheet('itemMaster')
+    item_master_upload(items_sheet)
     bom_sheet = xlsx.sheet('BOM')
-
-    #item_master_upload(items_sheet)
     bom_upload(bom_sheet)
   end
 
@@ -51,7 +50,6 @@ class ItemsUploading
       extra: header.find_index("extra"),
       minimum_stock_level: header.find_index("minimum_stock_level")
     }
-
     # Stream each row from row 2 (index 1)
     items_sheet.each_row_streaming(offset: 1) do |row|
       item_attributes = {
@@ -111,7 +109,7 @@ class ItemsUploading
 
       if fg_item_master && rm_item_master
         # Create or find BOM
-        bom = BomRawMaterial.find_or_initialize_by(bom_number: bom_number)
+        bom = BillOfMaterial.find_or_initialize_by(bom_number: bom_number)
         bom.name = fg_item_master.item_name
 
         unless bom.save
@@ -127,7 +125,7 @@ class ItemsUploading
         fg.assign_attributes(
           item_name: fg_item_master.item_name,
           quantity: 1,
-          unit: fg_item_master.unit
+          unit: fg_item_master.measurement.name
         )
 
         unless fg.save
@@ -143,7 +141,7 @@ class ItemsUploading
         rm.assign_attributes(
           item_name: rm_item_master.item_name,
           quantity: quantity,
-          unit: rm_item_master.unit
+          unit: rm_item_master.measurement.name
         )
 
         unless rm.save

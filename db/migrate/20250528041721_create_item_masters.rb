@@ -9,18 +9,18 @@ class CreateItemMasters < ActiveRecord::Migration[7.2]
       t.string :sku_id
       t.string :article_number
       t.integer :minimum_stock_level
-      t.references :category, foreign_key: true
-      t.references :measurement, foreign_key: true
-      t.references :fuse_type, foreign_key: true
-      t.references :loop, foreign_key: true
-      t.references :item_type, foreign_key: true
-      t.references :profile, foreign_key: true
-      t.references :wattage, foreign_key: true
-      t.references :voltage, foreign_key: true
-      t.references :length, foreign_key: true
-      t.references :cct, foreign_key: true
-      t.references :cover_type, foreign_key: true
-      t.references :extra, foreign_key: true
+      t.integer :category_id
+      t.integer :measurement_id
+      t.integer :fuse_type_id
+      t.integer :loop_id
+      t.integer :item_type_id
+      t.integer :profile_id
+      t.integer :wattage_id
+      t.integer :voltage_id
+      t.integer :length_id
+      t.integer :cct_id
+      t.integer :cover_type_id
+      t.integer :extra_id
       t.integer :org_id
       t.timestamps
     end

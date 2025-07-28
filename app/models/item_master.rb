@@ -4,7 +4,7 @@ class ItemMaster < ApplicationRecord
   has_many :raw_material_stock_items
   belongs_to :category
   belongs_to :measurement
-  before_create :generate_sku_id
+  before_create :generate_sku_id, if: -> { sku_id.blank? }
   belongs_to :fuse_type, optional: true
   belongs_to :loop, optional: true
   belongs_to :item_type, optional: true

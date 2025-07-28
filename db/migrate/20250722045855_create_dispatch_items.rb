@@ -3,7 +3,7 @@ class CreateDispatchItems < ActiveRecord::Migration[7.2]
     create_table :dispatch_items do |t|
       t.references :dispatch, null: false, foreign_key: true
       t.string :order_no
-      t.integer :quantity
+      t.float :quantity
 
 
       t.timestamps

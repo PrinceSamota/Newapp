@@ -8,50 +8,51 @@ class BillOfMaterialsController < ApplicationController
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement)
   end
 
-def create
-  @bill_of_material = BillOfMaterial.new(bom_params)
-  @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
-    @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement) 
-  if @bill_of_material.save!
-    redirect_to bill_of_materials_path, notice: "BOM created successfully"
-  else
+  def create
+    @bill_of_material = BillOfMaterial.new(bom_params)
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement) 
-    render :new, status: :unprocessable_entity
+    if @bill_of_material.save!
+      redirect_to bill_of_materials_path, notice: "BOM created successfully"
+    else
+      @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
+      @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement) 
+      render :new, status: :unprocessable_entity
+    end
+
+    
   end
 
   
-end
+  def update_stock
+    @bill_of_material = BillOfMaterial.find(params[:id])
 
-  
-def update_stock
-  @bill_of_material = BillOfMaterial.find(params[:id])
+    PaperTrail.request(controller_info: {
+      source_type: "BillOfMaterial",
+      source_id: @bill_of_material.id
+    }) do
+      fg = @bill_of_material.finished_good
+      if fg.present?
+        fg_item = ItemMaster.find_by(sku_id: fg.sku_id)
+        if fg_item
+          fg_item.update(opening_stock: fg_item.opening_stock.to_i + fg.quantity.to_i)
+        end
+      end
 
-  PaperTrail.request(controller_info: {
-    source_type: "BillOfMaterial",
-    source_id: @bill_of_material.id
-  }) do
-    fg = @bill_of_material.finished_good
-    if fg.present?
-      fg_item = ItemMaster.find_by(sku_id: fg.sku_id)
-      if fg_item
-        fg_item.update(opening_stock: fg_item.opening_stock.to_i + fg.quantity.to_i)
+      @bill_of_material.bom_raw_material_items.each do |rm|
+        rm_item = ItemMaster.find_by(sku_id: rm.sku_id)
+        if rm_item
+          rm_item.update(opening_stock: rm_item.opening_stock.to_i - rm.quantity.to_i)
+        end
       end
     end
 
-    @bill_of_material.bom_raw_material_items.each do |rm|
-      rm_item = ItemMaster.find_by(sku_id: rm.sku_id)
-      if rm_item
-        rm_item.update(opening_stock: rm_item.opening_stock.to_i - rm.quantity.to_i)
-      end
-    end
+    redirect_to production_orders_path, notice: "Stock updated successfully."
   end
-
-  redirect_to production_orders_path, notice: "Stock updated successfully."
-end
 
   def index
-    @bill_of_materials = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).order(created_at: :desc)
+    @q = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).ransack(params[:q])
+    @bill_of_materials = @q.result(distinct: true).paginate(page: params[:page], per_page: 30)
   end
   def show
     @bill_of_material = BillOfMaterial.find(params[:id])
@@ -62,14 +63,14 @@ end
     @bill_of_material = original_bom.dup
     @bill_of_material.finished_good = original_bom.finished_good.dup if original_bom.finished_good.present?
     @bill_of_material.bom_raw_material_items = original_bom.bom_raw_material_items.map(&:dup)
-  
+    
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement)  
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement) 
     render :new
   end
   def update_bom_all_items
     @bill_of_material = BillOfMaterial.find(params[:id])
-  
+    
     if @bill_of_material.update(bom_params_update)
       redirect_to bill_of_materials_path, notice: "Updated successfully"
     else
@@ -82,12 +83,12 @@ end
   def find_by_sku
     sku_id = params[:sku_id]
     item_name = params[:item_name]
-  
+    
     bom = BillOfMaterial
-            .includes(:bom_raw_material_items)
-            .joins(:finished_good)
-            .find_by(finished_goods: { sku_id: sku_id, item_name: item_name })
-  
+    .includes(:bom_raw_material_items)
+    .joins(:finished_good)
+    .find_by(finished_goods: { sku_id: sku_id, item_name: item_name })
+    
     if bom
       render json: {
         bom_name: bom.name,
@@ -103,36 +104,36 @@ end
       render json: { error: "No BOM found" }, status: :not_found
     end
   end
-    def bom_details
-      sku_id = params[:sku_id]
-      item_name = params[:item_name]
+  def bom_details
+    sku_id = params[:sku_id]
+    item_name = params[:item_name]
 
-      @bom = BillOfMaterial
-        .joins(:finished_good)
-        .includes(:bom_raw_material_items)
-        .find_by(finished_goods: { sku_id: sku_id, item_name: item_name })
+    @bom = BillOfMaterial
+    .joins(:finished_good)
+    .includes(:bom_raw_material_items)
+    .find_by(finished_goods: { sku_id: sku_id, item_name: item_name })
 
-      if @bom.nil?
-        redirect_to production_orders_path, alert: "No BOM found for this Finished Good"
-      else
+    if @bom.nil?
+      redirect_to production_orders_path, alert: "No BOM found for this Finished Good"
+    else
         render 'production_orders/bom_details'  # ✅ correct path
       end
     end
-  
-  private
+    
+    private
 
-  def bom_params
-    params.require(:bill_of_material).permit(
-    :name, :bom_tag,
-    finished_good_attributes: [:sku_id, :item_name, :quantity, :unit],
-    bom_raw_material_items_attributes: [:sku_id, :item_name, :quantity, :unit, :_destroy]
-  )
+    def bom_params
+      params.require(:bill_of_material).permit(
+        :name, :bom_tag,
+        finished_good_attributes: [:sku_id, :item_name, :quantity, :unit],
+        bom_raw_material_items_attributes: [:sku_id, :item_name, :quantity, :unit, :_destroy]
+        )
+    end
+    def bom_params_update
+      params.require(:bill_of_material).permit(
+        :name, :bom_tag,
+        finished_good_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy],
+        bom_raw_material_items_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy]
+        )
+    end
   end
-  def bom_params_update
-    params.require(:bill_of_material).permit(
-      :name, :bom_tag,
-      finished_good_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy],
-      bom_raw_material_items_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy]
-    )
-  end
-end

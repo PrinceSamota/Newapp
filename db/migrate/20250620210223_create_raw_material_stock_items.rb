@@ -1,7 +1,7 @@
 class CreateRawMaterialStockItems < ActiveRecord::Migration[7.2]
   def change
     create_table :raw_material_stock_items do |t|
-      t.references :raw_material_stock_batch, null: false, foreign_key: true
+      t.integer :raw_material_stock_batch_id
       t.string :item_name
       t.string :sku_id
       t.integer :receiving_quantity
