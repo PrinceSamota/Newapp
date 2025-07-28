@@ -16,7 +16,7 @@ class RawMaterialStockBatchesController < ApplicationController
     if @raw_material_stock_batch.update(batch_params)
       redirect_to raw_material_stock_batches_path, notice: "Batch updated successfully."
     else
-      render :edit
+      render :edit 
     end
   end
 def create

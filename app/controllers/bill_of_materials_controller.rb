@@ -4,14 +4,15 @@ class BillOfMaterialsController < ApplicationController
     @bill_of_material = BillOfMaterial.new
     @bill_of_material.build_finished_good
     @bill_of_material.bom_raw_material_items.build
-    load_item_masters
+    @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) 
+    @item_masters_false = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
   end
 
 def create
   @bill_of_material = BillOfMaterial.new(bom_params)
   @item_masters = ItemMaster.where('"item_masters"."is_bOM" = ?', true) 
     @item_masters_false = ItemMaster.where('"item_masters"."is_bOM" = ?', false)
-  if @bill_of_material.save
+  if @bill_of_material.save!
     redirect_to bill_of_materials_path, notice: "BOM created successfully"
   else
     @item_masters = ItemMaster.where(is_bom: true)

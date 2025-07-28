@@ -46,9 +46,13 @@
             <% bom_number, finished_good = item.bom.to_s.split(",", 2) %>
             <tr class="hover:bg-gray-50">
             <td class="px-4 py-3 border-r border-gray-300">
-            <%= link_to order.pid,
-                bill_of_material_bom_details_path(item.sku_id, item.item_name),
-                class: "text-blue-600 hover:underline" %>
+            <% if item.sku_id.present? && item.item_name.present? %>
+  <%= link_to order.pid,
+      bill_of_material_bom_details_path(item.sku_id, item.item_name),
+      class: "text-blue-600 hover:underline" %>
+<% else %>
+  <%= order.pid %>
+<% end %>
           </td>
               <td class="px-4 py-3 border-r border-gray-300"><%= bom_number %></td>
               <td class="px-4 py-3 border-r border-gray-300"><%= item.item_name%> </td>

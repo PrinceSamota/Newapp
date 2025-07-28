@@ -8,7 +8,7 @@
   }.to_json %>
 <% end %>
 
-<div class="production-order-row relative grid grid-cols-5 gap-4 items-end bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm">
+<div class="production-order-row relative grid grid-cols-6 gap-4 items-end bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm mt-6">
 
   <!-- SKU ID -->
   <div>
@@ -16,7 +16,7 @@
     <%= f.select :sku_id,
       options_for_select(item_masters.map { |item| [item.sku_id, item.sku_id] }, f.object.sku_id),
       { include_blank: "Choose SKU" },
-      class: "sku-id-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      class: "required-field sku-id-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
   </div>
 
   <!-- Item Name -->
@@ -25,27 +25,27 @@
     <%= f.select :item_name,
       options_for_select(item_masters.map { |item| [item.item_name, item.item_name] }, f.object.item_name),
       { include_blank: "Choose Item" },
-      class: "item-name-select w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      class: "required-field item-name-select w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
   </div>
 
   <!-- Current Stock -->
   <div>
     <%= f.label :current_stock, "Current Stock", class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.number_field :current_stock,
-      class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
   </div>
 
   <!-- Quantity -->
   <div>
     <%= f.label :quantity, "Quantity", class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.number_field :quantity,
-      class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
   </div>
 
   <div>
     <%= f.label :stage, "Stage", class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.text_field :stage,
-      class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
   </div>
 
   <!-- BOM -->
@@ -55,7 +55,7 @@
       <!-- This will show BOM field if exists, else show Create BOM link -->
       <div class="bom-input-wrapper w-full">
         <%= f.text_field :bom,
-          class: "bom-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",
+          class: "required-field bom-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",
           readonly: true %>
       </div>
       <a href="/bill_of_materials/new"
@@ -65,7 +65,10 @@
    </a>
     </div>
   </div>
-
+  <button type="button"
+    class="remove-raw-material absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
+    ✕
+  </button>
 </div>
 <script>
 document.addEventListener("turbo:load", () => {
