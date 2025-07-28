@@ -2,29 +2,8 @@
     <i class="fa-solid fa-arrow-left"></i>
       <span class="font-bold">Back</span>
     <% end %>
-<% if @batch.errors.any? %>
-  <div id="error-alert" class="fixed top-5 right-5 w-80 z-50 p-4 bg-red-100 border border-red-300 text-red-700 rounded-md shadow-lg transition-all duration-300">
-    <!-- ❌ Close Button -->
-    <button type="button" onclick="document.getElementById('error-alert').remove();" 
-      class="absolute top-2 right-2 text-red-600 hover:text-red-800 text-xl leading-none focus:outline-none">
-      &times;
-    </button>
 
-    <!-- Error Header -->
-    <h3 class="font-semibold mb-2 text-sm">
-      <%= pluralize(@batch.errors.count, "error") %> prevented this batch from being saved:
-    </h3>
-
-    <!-- Error List -->
-    <ul class="list-disc pl-5 space-y-1 text-sm max-h-40 overflow-y-auto">
-      <% @batch.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-    </ul>
-  </div>
-<% end %>
-
-<%= form_with model: @batch, local: true do |form| %>
+<%= form_with model: @batch, id: "RMI-form", local: true do |form| %>
     <div class="max-w-8xl mx-auto bg-white p-8 rounded-2xl shadow-xl space-y-8 mt-10">
   
       <!-- Header -->
@@ -47,7 +26,7 @@
       <%= select_tag "raw_material_stock_batch[supplier_id]",
         options_from_collection_for_select(Supplier.where(org_id: current_user.org_id), :id, :name),
         include_blank: "Select Supplier",
-        class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+        class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
     </div>
 
     <!-- Inline form to add new supplier -->
@@ -75,12 +54,12 @@
     
         <div>
           <label class="block text-sm font-medium text-gray-700">Receiving Date</label>
-          <%= form.date_field :receiving_date, class: "mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= form.date_field :receiving_date, class: "required-field mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
         </div>
   
         <div>
           <label class="block text-sm font-medium text-gray-700">Supplier Invoice No.</label>
-          <%= form.text_field :supplier_invoice_number, placeholder: "Enter invoice number", class: "mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= form.text_field :supplier_invoice_number, placeholder: "Enter invoice number", class: "required-field mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
         </div>
       </div>
   
@@ -99,7 +78,7 @@
   
       <!-- Add Item Button -->
       <div class="pt-2">
-        <button type="button" id="add-item" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md">
+        <button type="button" id="add-item" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md cursor-pointer">
           + Add Item
         </button>
       </div>
@@ -112,7 +91,7 @@
       <%= turbo_frame_tag "raw_material_form" do %>
   <%= form_with model: @batch, local: false do |form| %>
       <div class="pt-6">
-        <%= form.submit "Submit", class: "w-32 relative left-[94%] bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl text-lg" %>
+        <%= form.submit "Submit", class: "w-32 relative left-[94%] bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-xl text-lg cursor-pointer" %>
       </div>
     </div>
     <% end %>
@@ -124,13 +103,13 @@
   
 <!-- JS Template for adding new items -->
 <div id="item-template" style="display: none;">
-  <div class="item-fields grid grid-cols-7 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm">
+  <div class="relative item-fields grid grid-cols-7 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm mt-6">
 
     <!-- SKU ID Dropdown (col-span-2) -->
     <div class="col-span-2">
       <label class="text-xs font-medium text-gray-700 block mb-1">SKU ID</label>
       <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][sku_id]"
-              class="sku-id-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
+              class="required-field sku-id-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
         <option value="">Choose SKU</option>
         <% @item_masters.each do |item| %>
           <option value="<%= item.sku_id %>"><%= item.sku_id %></option>
@@ -142,7 +121,7 @@
     <div class="col-span-2">
       <label class="text-xs font-medium text-gray-700 block mb-1">Item Name</label>
       <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][item_name]"
-              class="item-name-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
+              class="required-field item-name-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
         <option value="">Choose Item</option>
         <% @item_masters.each do |item| %>
           <option value="<%= item.item_name %>"><%= item.item_name %></option>
@@ -156,7 +135,7 @@
       <input type="number"
              name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][receiving_quantity]"
              placeholder="Qty"
-             class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+             class="required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
     <!-- Price Input (col-span-1) -->
@@ -165,7 +144,7 @@
       <input type="number" step="0.01"
              name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][purchase_price]"
              placeholder="₹"
-             class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
+             class="required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
     <!-- Total for Row (col-span-1) -->
@@ -176,8 +155,16 @@
       </div>
     </div>
 
+    <!-- ✕ Remove Button -->
+    <button type="button"
+      class="remove-raw-material absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer"
+      title="Remove">
+      ✕
+    </button>
+
   </div>
 </div>
+
 </div>
 
 <script>
@@ -327,6 +314,50 @@
         errorsDiv.textContent = "Failed to add supplier.";
       });
   }
-  
+  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('click', function (e) {
+    if (e.target.classList.contains('remove-raw-material')) {
+      const row = e.target.closest('.item-fields');
+      if (row) row.remove();
+    }
+  });
+});
+
+document.addEventListener("turbo:load", () => {
+  const form = document.getElementById("RMI-form");
+  if (!form) return;
+
+  form.addEventListener("submit", (e) => {
+    let isValid = true;
+
+    // Remove previous errors
+    form.querySelectorAll(".required-field").forEach((field) => {
+      field.classList.remove("border-red-500");
+      const next = field.nextElementSibling;
+      if (next && next.classList.contains("text-red-500")) {
+        next.remove();
+      }
+    });
+
+    // Validate fields
+    form.querySelectorAll(".required-field").forEach((field) => {
+if (field.offsetParent !== null && !field.value.trim()) {
+  isValid = false;
+  field.classList.add("border-red-500");
+
+  const error = document.createElement("p");
+  error.textContent = "This field is required";
+  error.className = "text-red-500 text-xs mt-1";
+  field.insertAdjacentElement("afterend", error);
+}
+});
+
+    // Only prevent if validation fails
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+});
+
 </script>
 

@@ -22,7 +22,7 @@
 
   </div>
 
-  <%= form_with model: @production_order, local: true do |f| %>
+  <%= form_with model: @production_order, id: "po-form", local: true do |f| %>
     <div id="items">
       <%= f.fields_for :production_order_items do |item_form| %>
         <%= render "item_fields", f: item_form, item_masters: @item_masters %>
@@ -34,7 +34,7 @@
       <button
         type="button"
         id="add-item"
-        class="bg-green-500 text-white px-4 py-2 rounded mt-4 shadow hover:bg-green-600"
+        class="bg-green-500 text-white px-4 py-2 rounded mt-4 shadow hover:bg-green-600 cursor-pointer"
       >
         <i class="fa-solid fa-plus mr-1"></i> Add new row
       </button>
@@ -42,7 +42,7 @@
 
     <!-- Submit Button -->
     <div class="mt-6 text-right">
-      <%= f.submit "Order", class: "bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 shadow" %>
+      <%= f.submit "Order", class: "bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 shadow cursor-pointer" %>
     </div>
   <% end %>
 
@@ -63,4 +63,47 @@
       });
     }
   });
+  document.addEventListener("turbo:load", () => {
+  const form = document.getElementById("po-form");
+  if (!form) return;
+
+  form.addEventListener("submit", (e) => {
+    let isValid = true;
+
+    // Remove previous errors
+    form.querySelectorAll(".required-field").forEach((field) => {
+      field.classList.remove("border-red-500");
+      const next = field.nextElementSibling;
+      if (next && next.classList.contains("text-red-500")) {
+        next.remove();
+      }
+    });
+
+    // Validate fields
+    form.querySelectorAll(".required-field").forEach((field) => {
+if (field.offsetParent !== null && !field.value.trim()) {
+  isValid = false;
+  field.classList.add("border-red-500");
+
+  const error = document.createElement("p");
+  error.textContent = "This field is required";
+  error.className = "text-red-500 text-xs mt-1";
+  field.insertAdjacentElement("afterend", error);
+}
+});
+
+    // Only prevent if validation fails
+    if (!isValid) {
+      e.preventDefault();
+    }
+  });
+});
+document.addEventListener("turbo:load", () => {
+  document.body.addEventListener("click", function (e) {
+    if (e.target.closest(".remove-raw-material")) {
+      const row = e.target.closest(".production-order-row");
+      if (row) row.remove();
+    }
+  });
+});
 </script>
