@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  
+  resources :onboardings, only: [:index] do
+    collection do
+      post "upload"
+    end
+  end
+
   resources :dispatches do
     get :new_item_row, on: :collection
   end
@@ -51,7 +58,7 @@ resources :locations, only: [:create]
   resources :organizations
   resources :measurements, only: [:new, :create, :index]
   resources :categories, only: [:new, :create, :index]
-  root 'uploads#index'
+  root 'item_masters#index'
   resources :uploads, only: [:index, :create, :show]
 get 'manual_decode_result', to: 'articles#manual_decode_result'
   devise_for :users

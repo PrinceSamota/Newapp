@@ -14,11 +14,14 @@ gem 'cssbundling-rails'
 gem 'roo'
 gem 'bootsnap', require: false
 gem 'paper_trail', '~> 13.0'
+gem 'will_paginate', '~> 4.0'
+gem 'ransack'
 
 # PostgreSQL instead of SQLite
 group :development, :test do
   gem "sqlite3", group: :production
   gem "pg", group: :production
+  gem "byebug"
 end
 
 group :development do

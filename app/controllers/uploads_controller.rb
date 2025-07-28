@@ -2,7 +2,8 @@ class UploadsController < ApplicationController
   def index
     @decoded_result = nil
     @article_number = nil
-    @item_masters = ItemMaster.order(created_at: :desc)
+    @q = ItemMaster.ransack(params[:q])
+    @item_masters = @q.result(distinct: true).paginate(page: params[:page], per_page: 30)
     @selected_fuse_type_id = nil
     @show_fuse_form = false
     @fuse_type_errors = []

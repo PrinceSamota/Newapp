@@ -1,4 +1,15 @@
 class ItemMastersController < ApplicationController
+
+    def index
+      @decoded_result = nil
+      @article_number = nil
+      @q = ItemMaster.ransack(params[:q])
+      @item_masters = @q.result(distinct: true).paginate(page: params[:page], per_page: 30)
+      @selected_fuse_type_id = nil
+      @show_fuse_form = false
+      @fuse_type_errors = []
+    end
+    
     def show
         @item_master = ItemMaster.find(params[:id])
       end

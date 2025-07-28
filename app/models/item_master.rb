@@ -38,4 +38,22 @@ class ItemMaster < ApplicationRecord
     last_number = ItemMaster.maximum(:id).to_i + 1
     self.sku_id = "SKU#{last_number.to_s.rjust(5, '0')}"
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[
+      item_name
+      sku_id
+      category
+      article_number
+    ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[
+      category
+      sku_id
+    ]
+  end
+
+
 end

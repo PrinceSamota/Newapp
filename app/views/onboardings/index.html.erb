@@ -1,0 +1,16 @@
+<div class="bg-white p-8 rounded-2xl shadow-lg max-w-full mx-auto mt-6 overflow-auto">
+ 	<%= form_with url: upload_onboardings_path, local: true, multipart: true, html: { id: "file-upload-form" } do |form| %>
+	    <div class="mb-4">
+	      <%= form.file_field :file, id: "fileInput", class: "hidden" %>
+	      <div class="flex items-center space-x-4">
+	        <label for="fileInput" class="px-4 py-2 bg-gray-200 text-gray-700 rounded cursor-pointer hover:bg-gray-300">
+	          Choose file
+	        </label>
+	        <span id="fileName" class="text-gray-600 text-sm">No file chosen</span>
+	      </div>
+	    </div>
+	    <div>
+	      <%= form.submit "Upload", class: "w-full hover:bg-gray-100 px-4 py-1 rounded-full text-black font-bold transition cursor-pointer border-2" %>
+	    </div>
+	  <% end %>
+</div>
