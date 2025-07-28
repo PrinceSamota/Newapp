@@ -130,6 +130,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.string "mode_of_shipment"
     t.string "d_id"
     t.string "track_no"
+    t.string "progress"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "client_id"

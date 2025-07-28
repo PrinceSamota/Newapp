@@ -8,6 +8,8 @@ class CreateDispatches < ActiveRecord::Migration[7.2]
       t.string :mode_of_shipment
       t.string :d_id
       t.string :track_no
+      t.string :progress
+      
       t.timestamps
     end
   end

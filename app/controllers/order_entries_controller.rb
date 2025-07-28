@@ -27,9 +27,14 @@ class OrderEntriesController < ApplicationController
       end
     end
     def index
-     
-      @order_entries = OrderEntry.includes(:client, :status)
-                           .where.not(order_no: DispatchItem.select(:order_no))
+      dispatched_order_nos = DispatchItem
+                               .joins(:dispatch)
+                               .where(dispatches: { progress: 'Shipment' })
+                               .pluck(:order_no)
+    
+                               @order_entries = OrderEntry
+                        .includes(:client, :status)
+                        .where.not(order_no: dispatched_order_nos)
     end
   
     def show

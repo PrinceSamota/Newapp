@@ -26,7 +26,9 @@ class DispatchesController < ApplicationController
 
   def edit
     @dispatch = Dispatch.find(params[:id])
-    @dispatch.dispatch_items.build if @dispatch.dispatch_items.empty?
+    if @dispatch.dispatch_items.empty?
+      @dispatch.dispatch_items.build
+    end
   end
 
   def update
@@ -53,6 +55,7 @@ class DispatchesController < ApplicationController
       :mode_of_shipment,
       :d_id,
       :track_no,
+      :progress,
       dispatch_items_attributes: [:id, :order_no, :quantity, :_destroy]
     )
   end

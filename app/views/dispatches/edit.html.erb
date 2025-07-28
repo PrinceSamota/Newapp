@@ -29,6 +29,16 @@
         <label class="block text-sm font-medium text-gray-700 mb-1">Courier Company</label>
         <%= f.text_field :courier_company, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
       </div>
+      <div>
+      <%= f.label :progress, "Progress", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.select :progress,
+            options_for_select([["Draft", "Draft"], ["Shipment", "Shipment"]], selected: f.object.progress || "Draft"),
+            {},
+            class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+      %>
+    </div>
+    
+
     </div>
 
     <!-- DISPATCH ITEMS SECTION -->
@@ -36,13 +46,19 @@
 
     <div class="">
       <% @dispatch.dispatch_items.each_with_index do |item, index| %>
+        
         <%= fields_for "dispatch[dispatch_items_attributes][#{index}]", item do |df| %>
+        <%= df.hidden_field :id %>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-300 rounded-t-xl p-4 bg-gray-50 shadow-sm mt-8">
             <!-- Order No -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Order No</label>
-              <%= df.text_field :order_no, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
-            </div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Order No</label>
+            <%= df.select :order_no,
+                  OrderEntry.pluck(:order_no, :order_no),      
+                  { include_blank: "Select Order Number" },    
+                  class: "w-full rounded-xl border border-gray-300 p-2.5"
+            %>
+          </div>
 
             <!-- Quantity -->
             <div>
