@@ -35,7 +35,7 @@
         type="button"
         id="add-item"
         class="bg-green-500 text-white px-4 py-2 rounded mt-4 shadow hover:bg-green-600 cursor-pointer"
-      >
+          >
         <i class="fa-solid fa-plus mr-1"></i> Add new row
       </button>
     </div>
@@ -62,48 +62,48 @@
         container.insertAdjacentHTML("beforeend", template.replace(/TEMPLATE/g, new Date().getTime()));
       });
     }
+    });
+    document.addEventListener("turbo:load", () => {
+    const form = document.getElementById("po-form");
+    if (!form) return;
+  
+    form.addEventListener("submit", (e) => {
+      let isValid = true;
+  
+      // Remove previous errors
+      form.querySelectorAll(".required-field").forEach((field) => {
+        field.classList.remove("border-red-500");
+        const next = field.nextElementSibling;
+        if (next && next.classList.contains("text-red-500")) {
+          next.remove();
+        }
+      });
+  
+      // Validate fields
+      form.querySelectorAll(".required-field").forEach((field) => {
+  if (field.offsetParent !== null && !field.value.trim()) {
+    isValid = false;
+    field.classList.add("border-red-500");
+  
+    const error = document.createElement("p");
+    error.textContent = "This field is required";
+    error.className = "text-red-500 text-xs mt-1";
+    field.insertAdjacentElement("afterend", error);
+  }
   });
-  document.addEventListener("turbo:load", () => {
-  const form = document.getElementById("po-form");
-  if (!form) return;
-
-  form.addEventListener("submit", (e) => {
-    let isValid = true;
-
-    // Remove previous errors
-    form.querySelectorAll(".required-field").forEach((field) => {
-      field.classList.remove("border-red-500");
-      const next = field.nextElementSibling;
-      if (next && next.classList.contains("text-red-500")) {
-        next.remove();
+  
+      // Only prevent if validation fails
+      if (!isValid) {
+        e.preventDefault();
       }
     });
-
-    // Validate fields
-    form.querySelectorAll(".required-field").forEach((field) => {
-if (field.offsetParent !== null && !field.value.trim()) {
-  isValid = false;
-  field.classList.add("border-red-500");
-
-  const error = document.createElement("p");
-  error.textContent = "This field is required";
-  error.className = "text-red-500 text-xs mt-1";
-  field.insertAdjacentElement("afterend", error);
-}
-});
-
-    // Only prevent if validation fails
-    if (!isValid) {
-      e.preventDefault();
-    }
   });
-});
-document.addEventListener("turbo:load", () => {
-  document.body.addEventListener("click", function (e) {
-    if (e.target.closest(".remove-raw-material")) {
-      const row = e.target.closest(".production-order-row");
-      if (row) row.remove();
-    }
-  });
-});
+  document.addEventListener("turbo:load", () => {
+    document.body.addEventListener("click", function (e) {
+      if (e.target.closest(".remove-raw-material")) {
+        const row = e.target.closest(".production-order-row");
+        if (row) row.remove();
+      }
+    });
+      });
 </script>

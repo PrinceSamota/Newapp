@@ -32,6 +32,7 @@ class ItemMaster < ApplicationRecord
   end
 
   validates :category_id, :measurement_id, presence: true
+  before_validation :generate_item_name, if: -> { is_bom == true }
   private
 
   def generate_sku_id
@@ -54,6 +55,18 @@ class ItemMaster < ApplicationRecord
       sku_id
     ]
   end
-
+  def generate_item_name
+    self.item_name = [
+      item_type&.name,
+      profile&.name,
+      voltage&.name,
+      wattage&.name,
+      length&.name,
+      cct&.name,
+      cover_type&.name,
+      fuse_type&.name,
+      extra&.name,
+    ].compact.join("_")
+  end
 
 end

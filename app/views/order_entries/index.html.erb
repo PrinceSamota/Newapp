@@ -4,7 +4,7 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-center gap-3 p-6">
       <h2 class="text-xl font-semibold w-full md:w-auto text-center md:text-left">
-        All Order Entries
+      Pending Orders
       </h2>
       <div data-controller="bom-search" class="relative">
         <span class="absolute top-1/2 left-0 pl-3 transform -translate-y-1/2 text-gray-500">
@@ -91,7 +91,7 @@
               </td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.client&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.ship_to_location %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.location&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.fuse_type %></td>

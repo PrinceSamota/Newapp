@@ -7,18 +7,25 @@
   
   <!-- SKU ID Dropdown -->
   <div class="col-span-2">
-    <%= f.label :sku_id, "SKU ID", class: "block text-xs font-medium text-gray-600 mb-1" %>
-    <%= f.collection_select :sku_id, @item_masters, :sku_id, :sku_id, { include_blank: "Choose SKU" },
-      class: "sku-select required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-  </div>
+  <%= render 'shared/searchable_dropdown',
+        field_id: "sku_#{f.index || SecureRandom.hex(4)}",
+        label_text: "SKU ID",
+        field_name: "#{f.object_name}[sku_id]",
+        items: @item_masters,
+        value_method: :sku_id,
+        selected_value: f.object.sku_id %>
+</div>
 
   <!-- Item Name Dropdown -->
   <div class="col-span-2">
-    <%= f.label :item_name, "Item Name", class: "block text-xs font-medium text-gray-600 mb-1" %>
-    <%= f.collection_select :item_name, @item_masters, :item_name, :item_name, { include_blank: "Choose Item" },
-      class: "item-name-select required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-  </div>
-
+  <%= render 'shared/searchable_dropdown',
+      field_id: "item_#{f.index || 'new'}",
+      label_text: 'Item Name',
+      field_name: f.object_name + '[item_name]',
+      items: @item_masters,
+      value_method: :item_name,
+      selected_value: f.object.item_name %>
+</div>
   <!-- Quantity -->
   <div class="col-span-1">
     <%= f.label :receiving_quantity, "Quantity", class: "block text-xs font-medium text-gray-600 mb-1" %>
@@ -45,3 +52,54 @@
     </div>
   </div>
 </div>
+<script>
+  function filterDropdown(fieldId) {
+    const input = document.getElementById(`${fieldId}_search`);
+    const filter = input.value.toLowerCase();
+    const list = document.getElementById(`${fieldId}_list`);
+    const options = list.getElementsByTagName('div');
+
+    list.classList.remove('hidden');
+
+    Array.from(options).forEach(option => {
+      const text = option.textContent.toLowerCase();
+      option.style.display = text.includes(filter) ? '' : 'none';
+    });
+  }
+
+  function toggleDropdown(fieldId) {
+    document.getElementById(`${fieldId}_list`).classList.toggle('hidden');
+  }
+
+  function selectLinkedDropdown(fieldId, element) {
+    const selectedText = element.textContent.trim();
+    const sku = element.dataset.sku;
+    const itemName = element.dataset.itemName;
+
+    document.getElementById(`${fieldId}_search`).value = selectedText;
+    document.getElementById(`${fieldId}_hidden`).value = fieldId.startsWith("sku_") ? sku : itemName;
+    document.getElementById(`${fieldId}_list`).classList.add('hidden');
+
+    const index = fieldId.split('_')[1]; // eg. sku_3 → 3
+
+    const otherSkuId = `sku_${index}`;
+    const otherItemId = `item_${index}`;
+
+    if (fieldId.startsWith('sku_')) {
+      document.getElementById(`${otherItemId}_search`).value = itemName;
+      document.getElementById(`${otherItemId}_hidden`).value = itemName;
+    } else if (fieldId.startsWith('item_')) {
+      document.getElementById(`${otherSkuId}_search`).value = sku;
+      document.getElementById(`${otherSkuId}_hidden`).value = sku;
+    }
+  }
+
+  // Hide dropdown on click outside
+  document.addEventListener("click", function(event) {
+    document.querySelectorAll('[id$="_list"]').forEach(list => {
+      if (!list.parentElement.contains(event.target)) {
+        list.classList.add('hidden');
+      }
+    });
+  });
+</script>

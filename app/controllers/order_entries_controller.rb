@@ -29,7 +29,7 @@ class OrderEntriesController < ApplicationController
     def index
       dispatched_order_nos = DispatchItem
                                .joins(:dispatch)
-                               .where(dispatches: { progress: 'Shipment' })
+                               .where(dispatches: { progress: 'Dispatched' })
                                .pluck(:order_no)
     
                                @order_entries = OrderEntry
@@ -58,7 +58,7 @@ class OrderEntriesController < ApplicationController
         :article_no,        
         :client_id,
         :target_date,
-        :ship_to_location,
+        :location_id,
         :qty,
         :sku_number,
         :fuse_type,

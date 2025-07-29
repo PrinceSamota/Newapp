@@ -1,0 +1,28 @@
+<div class="relative">
+  <%= label_tag field_id, label_text, class: "text-xs font-medium text-gray-700 block mb-1" %>
+
+  <input type="text"
+         id="<%= field_id %>_search"
+         placeholder="Search <%= label_text %>..."
+         onkeyup="filterDropdown('<%= field_id %>')"
+         onclick="toggleDropdown('<%= field_id %>')"
+         autocomplete="off"
+         class="required-field w-full px-3 py-2 border border-gray-300 rounded-md text-sm" />
+
+  <input type="hidden"
+         name="<%= field_name %>"
+         id="<%= field_id %>_hidden"
+         value="<%= selected_value %>" />
+
+  <div id="<%= field_id %>_list"
+       class="absolute z-10 bg-white border border-gray-300 rounded-lg mt-1 max-h-60 overflow-auto w-full hidden shadow-lg">
+    <% items.each do |item| %>
+      <div class="px-4 py-2 cursor-pointer hover:bg-gray-100 text-sm"
+           onclick="selectLinkedDropdown('<%= field_id %>', this)"
+           data-sku="<%= item.sku_id %>"
+           data-item-name="<%= j item.item_name %>">
+        <%= item.send(value_method) %>
+      </div>
+    <% end %>
+  </div>
+</div>
