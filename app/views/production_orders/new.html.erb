@@ -22,7 +22,7 @@
 
   </div>
 
-  <%= form_with model: @production_order, id: "po-form", local: true do |f| %>
+  <%= form_with model: @production_order, local: true do |f| %>
     <div id="items">
       <%= f.fields_for :production_order_items do |item_form| %>
         <%= render "item_fields", f: item_form, item_masters: @item_masters %>
@@ -35,7 +35,7 @@
         type="button"
         id="add-item"
         class="bg-green-500 text-white px-4 py-2 rounded mt-4 shadow hover:bg-green-600 cursor-pointer"
-          >
+      >
         <i class="fa-solid fa-plus mr-1"></i> Add new row
       </button>
     </div>

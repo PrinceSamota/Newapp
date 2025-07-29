@@ -79,16 +79,25 @@ class ItemMastersController < ApplicationController
       
         render json: decoded
       end
+
       def check_bom_usage
         item = ItemMaster.find_by(sku_id: params[:sku_id])
+      
+        if item.nil?
+          render json: { used: false, bom_names: [], bom_ids: [] } and return
+        end
+      
         boms = BillOfMaterial.joins(:finished_good)
                              .where(finished_good: { sku_id: item.sku_id })
-    
+      
         render json: {
           used: boms.exists?,
-          bom_names: boms.pluck(:bom_number, :name)
+          bom_names: boms.map { |bom| "#{bom.bom_number}" }, # cleaner formatting
+          bom_ids: boms.pluck(:id)
         }
       end
+      
+      
       def fetch_by_article
         item = ItemMaster.find_by(article_number: params[:article_number])
       

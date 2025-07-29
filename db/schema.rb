@@ -348,6 +348,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
 
   create_table "production_order_items", force: :cascade do |t|
     t.integer "production_order_id"
+    t.text "bom_ids"
     t.string "sku_id"
     t.string "item_name"
     t.integer "current_stock"

@@ -24,11 +24,15 @@ Rails.application.routes.draw do
   resources :profiles, only: [:index, :create]
   resources :voltages, only: [:index, :create]
   resources :wattages, only: [:index, :create]
-  resources :production_orders
+  resources :production_orders do
+    member do
+    get :bom_details
+    end
+  end
   resources :clients, only: [:create]
   resources :order_entries
 get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'
-get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
+# get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
 # config/routes.rb
 get "item_masters/fetch_by_article", to: "item_masters#fetch_by_article"
 post '/manual_decode', to: 'order_entries#manual_decode', as: :manual_decode

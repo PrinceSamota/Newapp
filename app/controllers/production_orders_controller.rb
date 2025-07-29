@@ -6,25 +6,45 @@ class ProductionOrdersController < ApplicationController
   end
   
   def create
-    @production_order = ProductionOrder.new(production_order_params)
+    clean_params = production_order_params
+    clean_params[:production_order_items_attributes]&.each do |_, item_attrs|
+      if item_attrs[:bom_ids].is_a?(Array)
+        item_attrs[:bom_ids] = item_attrs[:bom_ids].reject(&:blank?).to_json
+      end
+    end
+  
+    @production_order = ProductionOrder.new(clean_params)
   
     if @production_order.save
-      @production_order.production_order_items.each do |item|
-        item_master = ItemMaster.find_by(sku_id: item.sku_id)
-        if item_master
-          previous_stock = item_master.opening_stock.to_i
-          item_master.update(opening_stock: previous_stock - item.quantity.to_i)
-          item_master.versions.last.update!(source_type: "ProductionOrder", source_id: @production_order.id)
-        end
-      end
       redirect_to production_orders_path, notice: "Production order created successfully."
     else
       @item_masters = ItemMaster.all
-      render :new, status: :unprocessable_entity  
+      render :new, status: :unprocessable_entity
     end
   end
   
+  def bom_details
+    @production_order = ProductionOrder.find(params[:id])
+    @p_items = @production_order.production_order_items.includes(:production_order)
+    @quantity = params[:quantity]
   
+    # Flatten all BOM IDs from all items
+    @bom_ids = @p_items.flat_map do |item|
+      JSON.parse(item.bom_ids || "[]") rescue []
+    end.uniq
+  
+    @boms = BillOfMaterial.where(id: @bom_ids)
+  
+    # Create a mapping from BOM ID to its associated ProductionOrderItem
+    @bom_to_item_map = {}
+    @p_items.each do |item|
+      (JSON.parse(item.bom_ids || "[]") rescue []).each do |bom_id|
+        @bom_to_item_map[bom_id.to_i] = item
+      end
+    end
+  end
+  
+
   def index
     @production_orders = ProductionOrder.includes(:production_order_items).order(created_at: :desc)
   end
@@ -36,7 +56,7 @@ class ProductionOrdersController < ApplicationController
 
   def production_order_params
     params.require(:production_order).permit(
-      production_order_items_attributes: [:id, :sku_id, :item_name, :current_stock, :quantity, :bom, :stage, :_destroy]
+      production_order_items_attributes: [:id, :sku_id, :item_name, :current_stock, :quantity, :bom, :stage,  :_destroy, bom_ids: [] ]
     )
   end
 end

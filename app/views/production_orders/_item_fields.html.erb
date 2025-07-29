@@ -32,7 +32,7 @@
   <div>
     <%= f.label :current_stock, "Current Stock", class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.number_field :current_stock,
-      class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",disabled: true %>
   </div>
 
   <!-- Quantity -->
@@ -42,12 +42,9 @@
       class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
   </div>
 
-  <div>
-    <%= f.label :stage, "Stage", class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.text_field :stage,
-      class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-  </div>
+  
 
+  <!-- BOM -->
   <!-- BOM -->
   <div>
     <%= f.label :bom, "BOM", class: "text-xs font-medium text-gray-700 block mb-1" %>
@@ -55,16 +52,25 @@
       <!-- This will show BOM field if exists, else show Create BOM link -->
       <div class="bom-input-wrapper w-full">
         <%= f.text_field :bom,
-        class: "required-field bom-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",
+          class: "required-field bom-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",
           readonly: true %>
+  
+        <!-- ✅ Correct hidden field -->
+        <div class="bom-id-container">
+        <% (f.object.bom_ids || []).each do |bom_id| %>
+          <%= hidden_field_tag "#{f.object_name}[bom_ids][]", bom_id, class: "bom-id-field" %>
+        <% end %>
       </div>
+      </div>
+  
       <a href="/bill_of_materials/new"
-      target="_blank"
-      class="create-bom-btn hidden flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer text-sm font-medium border border-gray-300 shadow-sm">
+        target="_blank"
+        class="create-bom-btn hidden flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer text-sm font-medium border border-gray-300 shadow-sm">
         <i class="fa-solid fa-plus text-lg"></i> Create BOM
-   </a>
+      </a>
     </div>
   </div>
+  
   <button type="button"
     class="remove-raw-material absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
     ✕
@@ -131,33 +137,51 @@ document.addEventListener("turbo:load", () => {
       checkBOMUsage(row);
     }
   });
-
   function checkBOMUsage(row) {
-    const skuField = row.querySelector(".sku-id-field");
-    const bomFieldWrapper = row.querySelector(".bom-input-wrapper");
-    const bomField = row.querySelector(".bom-field");
-    const createLink = row.querySelector(".create-bom-btn");
+  const skuField = row.querySelector(".sku-id-field");
+  const bomFieldWrapper = row.querySelector(".bom-input-wrapper");
+  const bomField = row.querySelector(".bom-field");
+  const createLink = row.querySelector(".create-bom-btn");
+  const bomIdField = row.querySelector(".bom-id-field");
 
-    const sku = skuField.value;
+  const sku = skuField.value;
 
-    if (sku) {
-      fetch(`/check_bom_usage?sku_id=${sku}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.used) {
-            bomField.value = data.bom_names.join(", ");
-            bomFieldWrapper.classList.remove("hidden");
-            createLink.classList.add("hidden");
-          } else {
-            bomField.value = "";
-            bomFieldWrapper.classList.add("hidden");
-            createLink.classList.remove("hidden");
+  if (sku) {
+    fetch(`/check_bom_usage?sku_id=${sku}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.used) {
+          bomField.value = data.bom_names.join(", ");
+          bomFieldWrapper.classList.remove("hidden");
+          createLink.classList.add("hidden");
+
+          // ✅ Store multiple BOM IDs as array (stringified)
+          const bomIdContainer = row.querySelector(".bom-id-container");
+          if (bomIdContainer) {
+            bomIdContainer.innerHTML = ""; // Clear previous hidden fields
+          
+            data.bom_ids.forEach(id => {
+              const input = document.createElement("input");
+              input.type = "hidden";
+              input.name = `${skuField.name.replace('[sku_id]', '[bom_ids][]')}`;
+              input.value = id;
+              input.classList.add("bom-id-field");
+              bomIdContainer.appendChild(input);
+            });
           }
-        })
-        .catch(err => {
-          console.error("BOM check failed:", err);
-        });
-    }
+        } else {
+          bomField.value = "";
+          bomFieldWrapper.classList.add("hidden");
+          createLink.classList.remove("hidden");
+
+          if (bomIdField) {
+            bomIdField.value = "";
+          }
+        }
+      });
   }
+}
+
+
 });
 </script>
