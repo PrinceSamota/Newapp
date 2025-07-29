@@ -25,4 +25,17 @@ class OrderEntry < ApplicationRecord
       self.end_serial_no = "S#{new_end_number.to_s.rjust(6, '0')}"
     end
   end
+
+  def self.ransackable_attributes(auth_object = nil)
+    %w[
+      order_no
+      article_no
+      dispatch_no
+      sku_id
+    ]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w["client", "dispatch_items", "location"]
+  end
 end

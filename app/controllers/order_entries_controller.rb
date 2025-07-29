@@ -2,7 +2,7 @@ class OrderEntriesController < ApplicationController
   require 'ostruct'
     def new
         @order_entry = OrderEntry.new
-        @item_masters = ItemMaster.all
+        @item_masters = ItemMaster.includes(:raw_material_stock_items,:category,:measurement,:fuse_type,:loop,:item_type,:profile,:wattage,:voltage,:length,:cct,:cover_type,:extra).all
         @item_articles = ItemMaster.pluck(:article_number).compact.uniq
       end
       
@@ -32,9 +32,10 @@ class OrderEntriesController < ApplicationController
                                .where(dispatches: { progress: 'Dispatched' })
                                .pluck(:order_no)
     
-                               @order_entries = OrderEntry
+                               @q = OrderEntry
                                .includes(:client)
-                               .where.not(order_no: dispatched_order_nos)
+                               .where.not(order_no: dispatched_order_nos).ransack(params[:q])
+                                @order_entries = @q.result(distinct: true)
                                
                                color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
                                @dispatch_color_map = {}
