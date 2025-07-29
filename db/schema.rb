@@ -365,7 +365,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
   end
 
   create_table "production_order_items", force: :cascade do |t|
-    t.integer "production_order_id", null: false
+    t.integer "production_order_id"
+    t.text "bom_ids"
     t.string "sku_id"
     t.string "item_name"
     t.integer "current_stock"
@@ -374,7 +375,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.string "stage"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["production_order_id"], name: "index_production_order_items_on_production_order_id"
   end
 
   create_table "production_orders", force: :cascade do |t|
@@ -505,7 +505,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
   add_foreign_key "item_masters", "wattages"
   add_foreign_key "items", "orders"
   add_foreign_key "order_details", "orders"
-  add_foreign_key "production_order_items", "production_orders"
   add_foreign_key "raw_material_stock_batches", "suppliers"
   add_foreign_key "raw_material_stock_items", "raw_material_stock_batches"
   add_foreign_key "users", "organizations", column: "org_id"
