@@ -106,29 +106,28 @@
   <div class="relative item-fields grid grid-cols-7 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm mt-6">
 
     <!-- SKU ID Dropdown (col-span-2) -->
+    <!-- SKU ID Dropdown -->
     <div class="col-span-2">
-      <label class="text-xs font-medium text-gray-700 block mb-1">SKU ID</label>
-      <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][sku_id]"
-              class="required-field sku-id-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
-        <option value="">Choose SKU</option>
-        <% @item_masters.each do |item| %>
-          <option value="<%= item.sku_id %>"><%= item.sku_id %></option>
-        <% end %>
-      </select>
+      <%= render 'shared/searchable_dropdown',
+          field_id: "sku_INDEX",  
+          label_text: "SKU ID",
+          field_name: "raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][sku_id]",
+          items: @item_masters,
+          value_method: :sku_id,
+          selected_value: nil %>
     </div>
-
-    <!-- Item Name Dropdown (col-span-2) -->
+    
+    <!-- Item Name Dropdown -->
     <div class="col-span-2">
-      <label class="text-xs font-medium text-gray-700 block mb-1">Item Name</label>
-      <select name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][item_name]"
-              class="required-field item-name-dropdown w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
-        <option value="">Choose Item</option>
-        <% @item_masters.each do |item| %>
-          <option value="<%= item.item_name %>"><%= item.item_name %></option>
-        <% end %>
-      </select>
+      <%= render 'shared/searchable_dropdown',
+          field_id: "item_INDEX", 
+          label_text: "Item Name",
+          field_name: "raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][item_name]",
+          items: @item_masters,
+          value_method: :item_name,
+          selected_value: nil %>
     </div>
-
+    
     <!-- Quantity Input (col-span-1) -->
     <div class="col-span-1">
       <label class="text-xs font-medium text-gray-700 block mb-1">Quantity</label>

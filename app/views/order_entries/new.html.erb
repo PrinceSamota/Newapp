@@ -53,51 +53,93 @@
       </div>
 
       <!-- Row 2 -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
         <div>
           <%= f.label :qty, "Quantity", class: "block text-sm font-medium text-gray-700 mb-1" %>
           <%= f.number_field :qty, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2" %>
         </div>
 
         <div>
-    <%= f.label :sku_number, "SKU ID", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= f.text_field :sku_number, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2", id: "sku_id_field" %>
-  </div>
-
-        <div class="md:col-span-2">
-          <%= f.label :ship_to_location, "Ship To Location", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.text_field :ship_to_location, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          <%= f.label :sku_number, "SKU ID", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_field :sku_number, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2", id: "sku_id_field" %>
         </div>
+
+        <div>
+          <%= f.label :remark, "Remark", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_field :remark, class: " w-full border border-gray-300 rounded-lg px-4 py-2" %>
+        </div>
+        
+        <!--  <%= f.label :ship_to_location, "Ship To Location", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_field :ship_to_location, class: " w-full border border-gray-300 rounded-lg px-4 py-2" %> --!>
       </div>
 
       <!-- Row 3 (Client + Add New) -->
-      <turbo-frame id="client_section" class="block mt-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="md:col-span-2">
-            <div class="flex justify-between items-center mb-1">
-              <label class="text-sm font-medium text-gray-700">Client</label>
-              <button type="button" onclick="document.getElementById('newClientForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <turbo-frame id="client_section" class="block mt-6">
+      <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+        <div class="md:col-span-1">
+          <div class="flex justify-between items-center mb-1">
+            <label class="text-sm font-medium text-gray-700">Client</label>
+            <button type="button" 
+                    onclick="document.getElementById('newClientForm').classList.toggle('hidden')" 
+                    class="text-blue-600 text-xl font-bold">+</button>
+          </div>
+          
+          <%= f.collection_select :client_id,
+                Client.where(org_id: current_user.org_id),
+                :id, :name,
+                { include_blank: "Select Client" },
+                { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 text-sm" } %>
+
+          <!-- Inline form dropdown ke niche -->
+          <div id="newClientForm" class="hidden mt-2">
+            <div class="flex gap-2">
+              <input id="new_client_name" type="text" placeholder="New client name" 
+                    class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm" />
+              <button type="button" onclick="submitNewClient()" 
+                      class="bg-green-600 text-white px-4 py-2 rounded-md text-sm">Add</button>
             </div>
-            <%= f.collection_select :client_id,
-                  Client.where(org_id: current_user.org_id),
+            <div id="client-errors" class="text-red-600 text-sm mt-1"></div>
+          </div>
+
+          <% if flash[:client_errors].present? %>
+            <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+              <% flash[:client_errors].each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          <% end %>
+        </div>
+      </div>
+    </turbo-frame>
+
+      <turbo-frame id="status_section" class="block mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
+          <div class="md:col-span-1">
+            <div class="flex justify-between items-center mb-1">
+              <label class="text-sm font-medium text-gray-700">Status</label>
+              <button type="button" onclick="document.getElementById('newStatusForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+            </div>
+            <%= f.collection_select :status_id,
+                  Status.where(org_id: current_user.org_id),
                   :id, :name,
-                  { include_blank: "Select Client" },
+                  { include_blank: "Select Status" },
                   { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 text-sm" } %>
           </div>
 
           <!-- Inline form -->
           <div class="md:col-span-1">
-            <div id="newClientForm" class="hidden">
+            <div id="newStatusForm" class="hidden">
               <div class="flex gap-2">
-                <input id="new_client_name" type="text" placeholder="New client name" class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm" />
-                <button type="button" onclick="submitNewClient()" class="bg-green-600 text-white px-4 py-2 rounded-md text-sm">Add</button>
+                <input id="new_status_name" type="text" placeholder="New status name" class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm" />
+                <button type="button" onclick="submitNewStatus()" class="bg-green-600 text-white px-4 py-2 rounded-md text-sm">Add</button>
               </div>
-              <div id="client-errors" class="text-red-600 text-sm mt-1"></div>
+              <div id="status-errors" class="text-red-600 text-sm mt-1"></div>
             </div>
 
-            <% if flash[:client_errors].present? %>
+            <% if flash[:status_errors].present? %>
               <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
-                <% flash[:client_errors].each do |msg| %>
+                <% flash[:status_errors].each do |msg| %>
                   <li><%= msg %></li>
                 <% end %>
               </ul>
@@ -105,41 +147,10 @@
           </div>
         </div>
       </turbo-frame>
-      <turbo-frame id="status_section" class="block mt-6">
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <div class="md:col-span-2">
-      <div class="flex justify-between items-center mb-1">
-        <label class="text-sm font-medium text-gray-700">Status</label>
-        <button type="button" onclick="document.getElementById('newStatusForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
-      </div>
-      <%= f.collection_select :status_id,
-            Status.where(org_id: current_user.org_id),
-            :id, :name,
-            { include_blank: "Select Status" },
-            { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 text-sm" } %>
-    </div>
-
-    <!-- Inline form -->
-    <div class="md:col-span-1">
-      <div id="newStatusForm" class="hidden">
-        <div class="flex gap-2">
-          <input id="new_status_name" type="text" placeholder="New status name" class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm" />
-          <button type="button" onclick="submitNewStatus()" class="bg-green-600 text-white px-4 py-2 rounded-md text-sm">Add</button>
-        </div>
-        <div id="status-errors" class="text-red-600 text-sm mt-1"></div>
-      </div>
-
-      <% if flash[:status_errors].present? %>
-        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
-          <% flash[:status_errors].each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      <% end %>
-    </div>
-  </div>
-</turbo-frame>
-
+          <div class="mt-5">
+            <%= render partial: "dispatches/location_section", locals: { f: f, selected_location_id: @order_entry.location_id } %>
+          </div>
+         </div>
       <!-- Row 3: Autofill fields from Article Number -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
        <div>
@@ -186,10 +197,7 @@
     <%= f.label :cover_type, "Cover Type", class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= f.text_field :cover_type, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2", id: "cover_type_field" %>
   </div>
-     <div>
-    <%= f.label :remark, "Remark", class: "block text-sm font-medium text-gray-700 mb-1" %>
-    <%= f.text_field :remark, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2" %>
-  </div>
+  
   <div class="mt-6">
   <label class="inline-flex items-center">
     <%= f.check_box :generate_serial, {}, true, false %>
@@ -388,4 +396,25 @@ if (field.offsetParent !== null && !field.value.trim()) {
   });
 });
 
+function submitNewLocation() {
+  const name = document.getElementById('new_location_name').value;
+
+  fetch("/locations", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+      "Accept": "text/vnd.turbo-stream.html"
+    },
+    body: JSON.stringify({ location: { name: name } })
+  })
+  .then(response => response.text())
+  .then(html => {
+    document.getElementById("location_section").innerHTML = html;
+  })
+  .catch(error => {
+    document.getElementById("location-errors").innerText = "Something went wrong.";
+    console.error(error);
+  });
+}
 </script>
