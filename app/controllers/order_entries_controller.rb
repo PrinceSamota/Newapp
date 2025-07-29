@@ -33,8 +33,22 @@ class OrderEntriesController < ApplicationController
                                .pluck(:order_no)
     
                                @order_entries = OrderEntry
-                        .includes(:client, :status)
-                        .where.not(order_no: dispatched_order_nos)
+                               .includes(:client)
+                               .where.not(order_no: dispatched_order_nos)
+                               
+                               color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
+                               @dispatch_color_map = {}
+                               color_index = 0
+                             
+                               @order_entries.each do |order|
+                                 d_id = order.dispatch_d_id
+                                 next unless d_id.present?
+                             
+                                 unless @dispatch_color_map[d_id]
+                                   @dispatch_color_map[d_id] = color_classes[color_index % color_classes.length]
+                                   color_index += 1
+                                 end
+                               end
     end
   
     def show
@@ -70,7 +84,7 @@ class OrderEntriesController < ApplicationController
         :length,
         :cct,
         :cover_type,
-        :status_id,
+        :status,
         :remark,
         :generate_serial
       )
@@ -81,7 +95,7 @@ class OrderEntriesController < ApplicationController
         :article_no,
         :client_id,
         :target_date,
-        :ship_to_location,
+        :location_id,
         :qty,
         :sku_number,
         :fuse_type,
@@ -100,7 +114,8 @@ class OrderEntriesController < ApplicationController
         :invoice_no,
         :tracking_no,
         :dispatch_no,
-        :status_id
+        :status,
+        :box
       )
     end
     

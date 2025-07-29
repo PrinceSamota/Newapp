@@ -1,10 +1,13 @@
 class OrderEntry < ApplicationRecord
   belongs_to :client
-  belongs_to :status, optional: true
   belongs_to :location, optional: true
   attr_accessor :generate_serial
   before_create :generate_serial_numbers, if: -> { ActiveModel::Type::Boolean.new.cast(generate_serial) }
   has_many :dispatch_items, foreign_key: :order_no, primary_key: :order_no
+  def dispatch_d_id
+    dispatch_item = DispatchItem.find_by(order_no: self.order_no)
+    dispatch_item&.dispatch&.d_id
+  end
   private
 
   def generate_serial_numbers

@@ -30,15 +30,44 @@ class DispatchesController < ApplicationController
       @dispatch.dispatch_items.build
     end
   end
-
+  
   def update
     @dispatch = Dispatch.find(params[:id])
-    if @dispatch.update(dispatch_params)
-      redirect_to dispatches_path, notice: "Dispatch updated successfully."
-    else
-      render :edit
+  
+    ActiveRecord::Base.transaction do
+      if @dispatch.update(dispatch_params_update)
+  
+        if @dispatch.progress == "Dispatched"
+          PaperTrail.request(controller_info: {
+            source_type: "Dispatch",
+            source_id: @dispatch.id
+          }) do
+            @dispatch.dispatch_items.each do |item|
+              order = OrderEntry.find_by(order_no: item.order_no)
+              if order.present?
+                item_master = ItemMaster.find_by(sku_id: order.sku_number)
+                if item_master.present?
+                  item_master.opening_stock -= order.qty.to_f
+                  item_master.save!
+                else
+                  raise ActiveRecord::Rollback, "ItemMaster not found for SKU #{order.sku_number}"
+                end
+              else
+                raise ActiveRecord::Rollback, "OrderEntry not found for Order No #{item.order_no}"
+              end
+            end
+          end
+        end
+  
+        redirect_to dispatches_path, notice: "Dispatch updated and stock adjusted."
+      else
+        render :edit
+      end
     end
   end
+  
+  
+
   def new_item_row
     @dispatch_item = DispatchItem.new
     @index = params[:index].to_i
@@ -56,6 +85,20 @@ class DispatchesController < ApplicationController
       :d_id,
       :track_no,
       :progress,
+      dispatch_items_attributes: [:id, :order_no, :quantity, :_destroy]
+    )
+  end
+  def dispatch_params_update
+    params.require(:dispatch).permit(
+      :location_id,
+      :dispatch_date,
+      :delivery_date,
+      :courier_company,
+      :mode_of_shipment,
+      :d_id,
+      :track_no,
+      :progress,
+      :invoice_no,
       dispatch_items_attributes: [:id, :order_no, :quantity, :_destroy]
     )
   end

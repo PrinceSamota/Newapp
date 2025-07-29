@@ -113,40 +113,10 @@
       </div>
     </turbo-frame>
 
-      <turbo-frame id="status_section" class="block mt-6">
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-6">
-          <div class="md:col-span-1">
-            <div class="flex justify-between items-center mb-1">
-              <label class="text-sm font-medium text-gray-700">Status</label>
-              <button type="button" onclick="document.getElementById('newStatusForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
-            </div>
-            <%= f.collection_select :status_id,
-                  Status.where(org_id: current_user.org_id),
-                  :id, :name,
-                  { include_blank: "Select Status" },
-                  { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 text-sm" } %>
-          </div>
-
-          <!-- Inline form -->
-          <div class="md:col-span-1">
-            <div id="newStatusForm" class="hidden">
-              <div class="flex gap-2">
-                <input id="new_status_name" type="text" placeholder="New status name" class="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm" />
-                <button type="button" onclick="submitNewStatus()" class="bg-green-600 text-white px-4 py-2 rounded-md text-sm">Add</button>
-              </div>
-              <div id="status-errors" class="text-red-600 text-sm mt-1"></div>
-            </div>
-
-            <% if flash[:status_errors].present? %>
-              <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
-                <% flash[:status_errors].each do |msg| %>
-                  <li><%= msg %></li>
-                <% end %>
-              </ul>
-            <% end %>
-          </div>
-        </div>
-      </turbo-frame>
+      <div>
+    <%= f.label :status, "Status", class: "block text-sm font-medium text-gray-700 mb-1 mt-6" %>
+    <%= f.text_field :status, class: " w-full border border-gray-300 rounded-lg px-4 py-2" %>
+  </div>
           <div class="mt-5">
             <%= render partial: "dispatches/location_section", locals: { f: f, selected_location_id: @order_entry.location_id } %>
           </div>

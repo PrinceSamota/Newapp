@@ -9,7 +9,8 @@ class CreateDispatches < ActiveRecord::Migration[7.2]
       t.string :d_id
       t.string :track_no
       t.string :progress
-      
+      t.string :invoice_no
+
       t.timestamps
     end
   end
