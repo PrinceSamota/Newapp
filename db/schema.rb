@@ -134,10 +134,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.string "d_id"
     t.string "track_no"
     t.string "progress"
+    t.string "invoice_no"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "client_id"
-    t.index ["location_id"], name: "index_dispatches_on_location_id"
   end
 
   create_table "extras", force: :cascade do |t|
@@ -313,8 +313,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.string "invoice_no"
     t.string "tracking_no"
     t.string "dispatch_no"
-    t.string "status_id"
+    t.string "status"
     t.string "remark"
+    t.string "box"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -489,7 +490,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
   add_foreign_key "bom_raw_materials", "boms"
   add_foreign_key "boms", "item_masters"
   add_foreign_key "dispatch_items", "dispatches"
-  add_foreign_key "dispatches", "locations"
   add_foreign_key "finished_goods", "bill_of_materials"
   add_foreign_key "item_masters", "categories"
   add_foreign_key "item_masters", "ccts"

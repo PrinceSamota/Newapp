@@ -24,8 +24,9 @@ class CreateOrderEntries < ActiveRecord::Migration[7.2]
       t.string :invoice_no
       t.string :tracking_no
       t.string :dispatch_no
-      t.string :status_id
+      t.string :status
       t.string :remark
+      t.string :box
       t.timestamps
     end
   end
