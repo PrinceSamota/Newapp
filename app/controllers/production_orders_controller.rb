@@ -26,20 +26,33 @@ class ProductionOrdersController < ApplicationController
   def bom_details
     @production_order = ProductionOrder.find(params[:id])
     @p_items = @production_order.production_order_items.includes(:production_order)
-    @quantity = params[:quantity]
+    @quantity = params[:quantity].to_f
   
-    # Flatten all BOM IDs from all items
-    @bom_ids = @p_items.flat_map do |item|
-      JSON.parse(item.bom_ids || "[]") rescue []
-    end.uniq
-  
+    @bom_ids = @p_items.flat_map { |item| JSON.parse(item.bom_ids || "[]") rescue [] }.uniq
     @boms = BillOfMaterial.where(id: @bom_ids)
   
-    # Create a mapping from BOM ID to its associated ProductionOrderItem
     @bom_to_item_map = {}
+    @insufficient_stock_bom_ids = []
+  
     @p_items.each do |item|
       (JSON.parse(item.bom_ids || "[]") rescue []).each do |bom_id|
         @bom_to_item_map[bom_id.to_i] = item
+      end
+    end
+  
+    # Check insufficient stock for each BOM
+    @boms.each do |bom|
+      bom.bom_raw_material_items.each do |rm|
+        required_quantity = rm.quantity.to_f * @quantity
+    
+        # Fetch current stock from ItemMaster using SKU
+        item = ItemMaster.find_by(sku_id: rm.sku_id)
+        current_stock = item&.opening_stock.to_f
+    
+        if current_stock < required_quantity
+          @insufficient_stock_bom_ids << bom.id
+          break
+        end
       end
     end
   end

@@ -4,7 +4,7 @@
 <% end %>
 <div class="min-h-screen bg-gray-50 py-4 mt-5">
   <div class="bg-white p-8 rounded-2xl shadow-xl max-w-full mx-auto">
-    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">New Order Entry</h2>
+    <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">New Order</h2>
     
     <%= form_with model: @order_entry, id: "order-form", local: true do |f| %>
       <!-- Row 1 -->
@@ -179,7 +179,7 @@
       
       <!-- Submit Button -->
    <div class="mt-10 flex justify-end">
-  <%= f.submit "Create Order", class: "bg-blue-600 text-white w-64 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 shadow" %>
+  <%= f.submit "Create Order", class: "bg-blue-600 text-white w-64 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 shadow cursor-pointer" %>
 </div>
     <% end %>
   </div>
