@@ -315,6 +315,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.string "status"
     t.string "remark"
     t.string "box"
+    t.string "extra"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

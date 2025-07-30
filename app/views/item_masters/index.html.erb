@@ -13,14 +13,15 @@
 					<!-- Heading -->
 					<h2 class="text-2xl font-bold text-gray-800 mb-8 text-center">Add Item Master</h2>
 
-					<%= form_with model: ItemMaster.new, url: item_masters_path do |f| %>
+					<%= form_with model: ItemMaster.new, url: item_masters_path,  html: { id: "item-form" } do |f| %>
 					<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 						<!-- Item Name -->
 						<div>
 							<%= f.label :item_name, "Item Name", class: "block text-sm font-medium text-gray-700 mb-1" %>
                              <%= f.text_field :item_name, id: "item_name_field", placeholder: "Enter item name", class: "w-full rounded-lg border border-gray-300 px-4 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-						</div>
+							 <span id="item-name-error" class="text-red-500 text-sm mt-1 hidden">This Item Name already exists.</span>
+							 </div>
 
 						<!-- Opening Stock -->
 						<div>
@@ -331,7 +332,7 @@
 					<table class="min-w-full divide-y divide-gray-200 text-sm">
 						<thead class="bg-gray-100 text-gray-600 uppercase text-xs">
 							<tr>
-								<% ["SKU","Item Name", "Category", "Stock", "Purchase Price", "Sale Price", "Minimum Stock Level", "Is BOM", "SKU", "Article No", "Measurement"].each_with_index do |header, index| %>
+								<% ["SKU","Item Name", "Category", "Stock", "Purchase Price", "Sale Price", "Minimum Stock Level", "Is BOM", "Extra", "Article No", "Measurement"].each_with_index do |header, index| %>
 								<th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 19 %>">
 									<%= header %>
 								</th>
@@ -353,7 +354,7 @@
 								<td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.sale_price %></td>
 								<td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.minimum_stock_level %></td>
 								<td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.is_bom ? "Yes" : "No" %></td>
-								
+								<td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.extra&.name %></td>
 								<td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.article_number %></td>
 								<td class="px-6 py-4 whitespace-nowrap border-r-1 border-gray-200"><%= item.measurement&.name %></td>
 							</tr>
@@ -563,7 +564,7 @@
   	tooltip.classList.add("hidden");
   });
 
-  validateForm(); // initial call
+  validateForm(); 
 });
 
 		document.addEventListener("turbo:load", function () {
@@ -662,11 +663,10 @@
 				}
 			}
 
-    // Add event listeners
+
     bomYes.addEventListener("change", toggleBOMFields);
     bomNo.addEventListener("change", toggleBOMFields);
 
-    // Initial toggle on page load
     toggleBOMFields();
 });
 document.addEventListener("turbo:load", () => {
@@ -688,11 +688,52 @@ document.addEventListener("turbo:load", () => {
       }
     }
 
-    // Attach listeners
     bomYes.addEventListener("change", updateItemNameField);
     bomNo.addEventListener("change", updateItemNameField);
 
-    // Initial call on load
     updateItemNameField();
   });
+  
+  document.addEventListener("turbo:load", () => {
+  const itemNameInput = document.getElementById("item_name_field");
+  const saveBtn = document.getElementById("item-master-save-btn");
+  const tooltip = document.getElementById("save-tooltip");
+  const form = document.getElementById("item-form");
+
+  const itemNameError = document.getElementById("item-name-error");
+
+  function validateItemName() {
+	const name = itemNameInput.value.trim().toLowerCase();
+  
+	if (existingItemNames.includes(name)) {
+	  itemNameInput.classList.add("border-red-500");
+	  tooltip.innerText = "This Item Name already exists.";
+	  tooltip.classList.remove("hidden");
+	  itemNameError.classList.remove("hidden");
+	  saveBtn.disabled = true;
+	  return false;
+	} else {
+	  itemNameInput.classList.remove("border-red-500");
+	  tooltip.classList.add("hidden");
+	  tooltip.innerText = "";
+	  itemNameError.classList.add("hidden");
+	  saveBtn.disabled = false;
+	  return true;
+	}
+  }
+
+  itemNameInput.addEventListener("input", validateItemName);
+
+  if (form) {
+    form.addEventListener("submit", function (e) {
+      if (!validateItemName()) {
+        e.preventDefault(); 
+      }
+    });
+  }
+});
+
+</script>
+<script>
+  const existingItemNames = <%= raw ItemMaster.pluck(:item_name).map(&:strip).map(&:downcase).to_json %>;
 </script>

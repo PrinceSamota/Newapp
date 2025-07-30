@@ -83,7 +83,7 @@
         </button>
       </div>
       <div class="text-right text-lg font-semibold text-gray-800 mt-4">
-  Total Price: ₹ <span id="total-only-price">0.00</span>
+  Total Price:  <span id="total-only-price">0.00</span>
 </div>
 
   
@@ -133,7 +133,8 @@
       <label class="text-xs font-medium text-gray-700 block mb-1">Quantity</label>
       <input type="number"
              name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][receiving_quantity]"
-             placeholder="Qty"
+             placeholder="Qty",
+             min="1",
              class="required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
@@ -142,7 +143,7 @@
       <label class="text-xs font-medium text-gray-700 block mb-1">Price</label>
       <input type="number" step="0.01"
              name="raw_material_stock_batch[raw_material_stock_items_attributes][INDEX][purchase_price]"
-             placeholder="₹"
+             placeholder="Price"
              class="required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
     </div>
 
@@ -150,7 +151,7 @@
     <div class="col-span-1 text-right">
       <label class="text-xs font-medium text-gray-700 block mb-1">Total</label>
       <div class="text-sm font-semibold text-gray-800">
-        ₹ <span class="row-total-price">0.00</span>
+         <span class="row-total-price">0.00</span>
       </div>
     </div>
 
