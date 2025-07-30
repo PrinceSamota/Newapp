@@ -8,7 +8,8 @@
   field_name: f.object_name + '[sku_id]',
   items: item_masters,
   value_method: :sku_id,
-  selected_value: f.object.sku_id %>
+  selected_value: f.object.sku_id,
+  input_class: "sku-id-field" %>
   </div>
 
   <!-- Item Name -->
@@ -19,7 +20,8 @@
   field_name: f.object_name + '[item_name]',
   items: item_masters,
   value_method: :item_name,
-  selected_value: f.object.item_name %>
+  selected_value: f.object.item_name,
+  input_class: "item-name-select" %>
   </div>
 
   <!-- Unit -->
@@ -37,7 +39,8 @@
   <div>
     <%= f.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
     <%= f.number_field :quantity,
-      value: f.object.quantity || 1,
+      value: f.object.quantity ,
+      min: 1, 
       class: "required-field quantity-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
     %>
   </div>
@@ -77,25 +80,58 @@ document.addEventListener("turbo:load", () => {
     <% end %>
   };
 
-  function setupRawMaterialAutofill(row) {
-    const skuSelect = row.querySelector(".sku-id-field");
-    const itemSelect = row.querySelector(".item-name-select");
-    const unitInput = row.querySelector(".unit-field");
+  const skuToStock = {
+  <% item_masters.each do |item| %>
+    "<%= j item.sku_id %>": <%= item.opening_stock.to_f %>,
+  <% end %>
+};
+function setupRawMaterialAutofill(row) {
+  const skuSelect = row.querySelector(".sku-id-field");
+  const itemSelect = row.querySelector(".item-name-select");
+  const unitInput = row.querySelector(".unit-field");
+  const quantityInput = row.querySelector(".quantity-field");
 
-    if (!skuSelect || !itemSelect || !unitInput) return;
+  if (!skuSelect || !itemSelect || !unitInput || !quantityInput) return;
 
-    skuSelect.addEventListener("change", () => {
-      const sku = skuSelect.value;
-      if (skuToItem[sku]) itemSelect.value = skuToItem[sku];
-      if (skuToUnit[sku]) unitInput.value = skuToUnit[sku];
-    });
+  function validateStock() {
+    const sku = skuSelect.value;
+    const availableStock = skuToStock[sku] || 0;
+    const enteredQty = parseFloat(quantityInput.value);
 
-    itemSelect.addEventListener("change", () => {
-      const item = itemSelect.value;
-      if (itemToSku[item]) skuSelect.value = itemToSku[item];
-      if (itemToUnit[item]) unitInput.value = itemToUnit[item];
-    });
+    if (isNaN(enteredQty) || enteredQty <= 0) {
+      quantityInput.classList.add("border-red-500");
+      quantityInput.setCustomValidity("Quantity must be greater than 0");
+      quantityInput.reportValidity();
+      return false;
+    } else if (enteredQty > availableStock) {
+      quantityInput.classList.add("border-red-500");
+      quantityInput.setCustomValidity(`Only ${availableStock} in stock`);
+      quantityInput.reportValidity();
+      return false;
+    } else {
+      quantityInput.classList.remove("border-red-500");
+      quantityInput.setCustomValidity("");
+      return true;
+    }
   }
+
+  quantityInput.addEventListener("input", validateStock);
+
+  skuSelect.addEventListener("change", () => {
+    const sku = skuSelect.value;
+    if (skuToItem[sku]) itemSelect.value = skuToItem[sku];
+    if (skuToUnit[sku]) unitInput.value = skuToUnit[sku];
+    validateStock();
+  });
+
+  itemSelect.addEventListener("change", () => {
+    const item = itemSelect.value;
+    if (itemToSku[item]) skuSelect.value = itemToSku[item];
+    if (itemToUnit[item]) unitInput.value = itemToUnit[item];
+    validateStock();
+  });
+}
+
 
   // Setup for existing rows
   document.querySelectorAll(".raw-material-row").forEach(setupRawMaterialAutofill);
@@ -166,6 +202,51 @@ document.addEventListener("turbo:load", () => {
       document.querySelectorAll("[id$='_list']").forEach(d => d.classList.add("hidden"));
     }
   });
+
+  document.addEventListener("turbo:load", function () {
+    document.querySelectorAll(".quantity-field").forEach(field => {
+      field.addEventListener("input", function () {
+        if (parseInt(this.value) <= 0) {
+          this.value = "";
+        }
+      });
+    });
+  });
+  
+document.addEventListener("submit", function(e) {
+  const rows = document.querySelectorAll(".raw-material-row");
+  let allValid = true;
+
+  rows.forEach(row => {
+    const skuField = row.querySelector(".sku-id-field");
+    const quantityField = row.querySelector(".quantity-field");
+
+    const sku = skuField?.value?.trim();
+    const qty = parseFloat(quantityField?.value?.trim() || "0");
+    const availableStock = skuToStock[sku] || 0;
+
+    if (!sku || isNaN(qty) || qty <= 0 || qty > availableStock) {
+      quantityField.classList.add("border-red-500");
+
+      if (qty > availableStock) {
+        quantityField.setCustomValidity(`Only ${availableStock} in stock`);
+      } else {
+        quantityField.setCustomValidity("Quantity must be valid and > 0");
+      }
+
+      quantityField.reportValidity();
+      allValid = false;
+    } else {
+      quantityField.setCustomValidity("");
+      quantityField.classList.remove("border-red-500");
+    }
+  });
+
+  if (!allValid) {
+    e.preventDefault();
+    alert("Please fix quantity errors before submitting.");
+  }
+});
 
 
 </script>

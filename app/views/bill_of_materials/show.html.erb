@@ -67,7 +67,7 @@
           <% if @bill_of_material.bom_raw_material_items.any? %>
             <% @bill_of_material.bom_raw_material_items.each do |raw_material_item| %>
               <%= f.fields_for :bom_raw_material_items, raw_material_item do |ff| %>
-                <div class=" raw-material-row">
+                <div class=" raw-material-row nested-fields"">
                   <div class="grid grid-cols-1  gap-4">
                     <%= render 'raw_material_row', f: ff, item_masters: @item_masters %>
                   </div>
@@ -77,7 +77,7 @@
           <% else %>
             <%= f.fields_for :bom_raw_material_items, BomRawMaterialItem.new do |ff| %>
               <div class="border border-gray-200 shadow-sm rounded-md p-4 bg-gray-50 raw-material-row">
-                <div class="grid grid-cols-1  gap-4">
+                <div class="grid grid-cols-1  gap-4 nested-fields"">
                   <%= render 'raw_material_row', f: ff, item_masters: @item_masters %>
                 </div>
               </div>
@@ -166,9 +166,81 @@
     const templateHTML = document.getElementById("raw-material-template").innerHTML.replace(/NEW_RECORD/g, time);
     const wrapper = document.getElementById("raw-materials-wrapper");
     wrapper.insertAdjacentHTML("beforeend", templateHTML);
-    setupLinking(wrapper.lastElementChild);
+const newRow = wrapper.lastElementChild;
+setupLinking(newRow);
+setupValidation(newRow);
   });
 } // ensures the event listener is attached only once
     }
   });
+  const itemStocks = {
+    <% @item_masters.each do |item| %>
+      "<%= item.sku_id %>": <%= item.opening_stock.to_f %>,
+    <% end %>
+  };
+
+  function setupValidation(row) {
+    const skuSelect = row.querySelector(".sku-id-field");
+    const qtyInput = row.querySelector("input[name*='[quantity]']");
+
+    function validateQty() {
+      const selectedSku = skuSelect?.value;
+      const maxQty = itemStocks[selectedSku];
+      const currentQty = parseFloat(qtyInput.value);
+
+      // Remove old error
+      qtyInput.classList.remove("border-red-500");
+      const existingError = row.querySelector(".qty-error");
+      if (existingError) existingError.remove();
+
+      // Validate
+      if (!isNaN(currentQty) && maxQty !== undefined && currentQty > maxQty) {
+        qtyInput.classList.add("border-red-500");
+
+        const error = document.createElement("div");
+        error.className = "text-red-500 text-sm qty-error mt-1";
+        error.innerText = `Quantity cannot be more than opening stock (${maxQty})`;
+
+        qtyInput.parentElement.appendChild(error);
+      }
+    }
+
+    if (skuSelect && qtyInput) {
+      qtyInput.addEventListener("input", validateQty);
+      skuSelect.addEventListener("change", validateQty);
+    }
+  }
+
+  function setupLinking(row) {
+    const skuSelect = row.querySelector(".sku-id-field");
+    const itemSelect = row.querySelector(".item-name-select");
+
+    if (skuSelect && itemSelect) {
+      skuSelect.addEventListener("change", () => {
+        const val = skuSelect.value;
+        if (itemMap[val]) itemSelect.value = itemMap[val];
+      });
+
+      itemSelect.addEventListener("change", () => {
+        const val = itemSelect.value;
+        if (reverseMap[val]) skuSelect.value = reverseMap[val];
+      });
+    }
+
+    const deleteBtn = row.querySelector(".delete-raw-material");
+    if (deleteBtn) {
+      deleteBtn.addEventListener("click", () => {
+        const destroyField = row.querySelector("input.destroy-flag");
+        if (destroyField) {
+          destroyField.value = "1";
+          row.style.display = "none";
+        }
+      });
+    }
+
+    setupValidation(row); // 👈 Validation call yahan
+  }
+
+  // Apply to existing rows
+  document.querySelectorAll(".nested-fields").forEach(setupLinking);
 </script>

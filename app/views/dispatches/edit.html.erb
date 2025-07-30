@@ -106,4 +106,43 @@
       }
     });
   });
+  document.addEventListener("turbo:load", function () {
+    const checkStockAndToggleButton = () => {
+      const errorBlocks = document.querySelectorAll("[data-insufficient-stock='true']");
+      const submitBtn = document.querySelector("input[type='submit']");
+      const progressSelect = document.querySelector("select[name='dispatch[progress]']");
+
+      if (!submitBtn || !progressSelect) return;
+
+      const isDispatching = progressSelect.value === "Dispatched";
+
+      if (isDispatching && errorBlocks.length > 0) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+        submitBtn.title = "Cannot update: insufficient stock.";
+      } else {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        submitBtn.title = "";
+      }
+    };
+
+    checkStockAndToggleButton(); // run initially
+
+    // Re-check on mutation (when items are added/removed)
+    const container = document.getElementById("dispatch-items");
+    if (container) {
+      const observer = new MutationObserver(() => {
+        setTimeout(checkStockAndToggleButton, 200);
+      });
+      observer.observe(container, { childList: true, subtree: true });
+    }
+
+    // Re-check when progress is changed (Shipment ↔ Dispatched)
+    const progressSelect = document.querySelector("select[name='dispatch[progress]']");
+    if (progressSelect) {
+      progressSelect.addEventListener("change", checkStockAndToggleButton);
+    }
+  });
+
 </script>

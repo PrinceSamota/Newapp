@@ -70,8 +70,20 @@
   <% po_item = @bom_to_item_map[bom.id] %>
   <% if po_item.present? %>
     <% if !bom.flag? %>
-      <%= button_to update_stock_bill_of_material_path(bom, po_item_id: po_item.id), method: :post,
-        class: "mt-4 mb-6 inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded cursor-pointer" do %>
+      <% insufficient = @insufficient_stock_bom_ids.include?(bom.id) %>
+  
+      <% if insufficient %>
+        <div class="mt-4 mb-2 text-red-600 font-semibold flex items-center gap-2" data-insufficient-stock="true">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>Cannot update stock: insufficient raw material stock.</span>
+        </div>
+      <% end %>
+  
+      <%= button_to update_stock_bill_of_material_path(bom, po_item_id: po_item.id),
+        method: :post,
+        disabled: insufficient,
+        class: "mt-1 mb-6 inline-flex items-center gap-2 font-semibold py-2 px-4 rounded 
+                #{insufficient ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}" do %>
         <i class="fa-solid fa-boxes-stacked"></i>
         <span>Update Stock</span>
       <% end %>
@@ -82,4 +94,4 @@
       </div>
     <% end %>
   <% end %>
-  <% end %>
+<% end %>  
