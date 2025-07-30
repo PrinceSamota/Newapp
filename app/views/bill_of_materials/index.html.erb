@@ -76,15 +76,25 @@
           </tr>
           
         <% end %>
-        <tr>
-            <div class="flex items-center justify-between px-4 py-3 border-t border-gray-200 text-sm text-gray-600">
-          <div class="flex space-x-1">
-            <%= will_paginate @bill_of_materials %>
-          </div>
-        </div>
-          </tr>
       </tbody>
     </table>
+     <div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+  <div>
+    Showing 
+    <%= @bill_of_materials.offset_value + 1 %> -
+    <%= [@bill_of_materials.offset_value + @bill_of_materials.length, @bill_of_materials.total_entries].min %>
+    of <%= @bill_of_materials.total_entries %> results
+  </div>
+
+  <div class="flex items-center space-x-1">
+    <%= will_paginate @bill_of_materials, renderer: WillPaginate::ActionView::LinkRenderer,
+      class: "pagination flex space-x-1",
+      previous_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
+      next_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
+      container: false %>
+  </div>
+</div>
+
   <% else %>
     <p class="text-gray-500 italic px-6 py-4">No BOMs found.</p>
   <% end %>

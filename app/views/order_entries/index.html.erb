@@ -84,7 +84,7 @@
 
         <tbody id="bomTableBody" class="bg-white divide-y divide-gray-100">
           <% @order_entries.each do |order| %>
-            <% row_color = @dispatch_color_map[order.dispatch_d_id] || '' %>
+            <% row_color = @dispatch_color_map[order.dispatch_d_id] || 'bg-white' %>
             <tr class="<%= row_color %> hover:cursor-pointer"
     data-order-no="<%= order.order_no.to_s.downcase %>"
     data-article-no="<%= order.article_no.to_s.downcase %>"
@@ -129,6 +129,22 @@
           <% end %>
         </tbody>
       </table>
+      <div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+					<div>
+						Showing 
+						<%= @order_entries.offset_value + 1 %> -
+						<%= [@order_entries.offset_value + @order_entries.length, @order_entries.total_entries].min %>
+						of <%= @order_entries.total_entries %> results
+					</div>
+
+					<div class="flex items-center space-x-1">
+						<%= will_paginate @order_entries, renderer: WillPaginate::ActionView::LinkRenderer,
+						class: "pagination flex space-x-1",
+						previous_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
+						next_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
+						container: false %>
+					</div>
+			    </div>
     </div>
   </div>
 </div>

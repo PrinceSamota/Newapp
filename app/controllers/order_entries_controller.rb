@@ -35,7 +35,7 @@ class OrderEntriesController < ApplicationController
                                @q = OrderEntry
                                .includes(:client)
                                .where.not(order_no: dispatched_order_nos).ransack(params[:q])
-                                @order_entries = @q.result(distinct: true)
+                                @order_entries = @q.result(distinct: true).paginate(page: params[:page], per_page: 30)
                                
                                color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
                                @dispatch_color_map = {}
@@ -63,7 +63,7 @@ class OrderEntriesController < ApplicationController
         render :show
       end
     end
-    
+
   
     private
   
