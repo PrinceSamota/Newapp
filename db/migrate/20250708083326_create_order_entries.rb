@@ -27,6 +27,8 @@ class CreateOrderEntries < ActiveRecord::Migration[7.2]
       t.string :status
       t.string :remark
       t.string :box
+      t.string :extra
+      
       t.timestamps
     end
   end

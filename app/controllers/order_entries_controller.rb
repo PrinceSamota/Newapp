@@ -87,6 +87,7 @@ class OrderEntriesController < ApplicationController
         :cover_type,
         :status,
         :remark,
+        :extra,
         :generate_serial
       )
     end
@@ -116,7 +117,8 @@ class OrderEntriesController < ApplicationController
         :tracking_no,
         :dispatch_no,
         :status,
-        :box
+        :box,
+        :extra
       )
     end
     

@@ -7,7 +7,7 @@
       <%= f.select :order_no,
             OrderEntry.pluck(:order_no, :order_no),
             { include_blank: "Select Order Number" },
-            class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+            class: "required-field w-full rounded-xl border border-gray-300 p-2.5" %>
     </div>
     <%= f.hidden_field :quantity, value: "1" %>
     <%= f.hidden_field :_destroy %>

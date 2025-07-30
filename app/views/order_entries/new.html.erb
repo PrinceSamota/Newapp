@@ -36,7 +36,8 @@
           data-voltage="<%= item.voltage&.name %>"
           data-length="<%= item.length&.name %>"
           data-cct="<%= item.cct&.name %>"
-          data-cover-type="<%= item.cover_type&.name %>">
+          data-cover-type="<%= item.cover_type&.name %>"
+          data-extra=<%= item.extra&.name %> >
           
           <%= item.article_number %>
         </div>
@@ -167,6 +168,10 @@
     <%= f.label :cover_type, "Cover Type", class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= f.text_field :cover_type, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2", id: "cover_type_field" %>
   </div>
+   <div>
+    <%= f.label :extra, "Extra", class: "block text-sm font-medium text-gray-700 mb-1" %>
+    <%= f.text_field :extra, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2", id: "extra_field" %>
+  </div>
   
   <div class="mt-6">
   <label class="inline-flex items-center">
@@ -233,6 +238,7 @@
           document.getElementById("length_field").value = data.length || "";
           document.getElementById("cct_field").value = data.cct || "";
           document.getElementById("cover_type_field").value = data.cover_type || "";
+          document.getElementById("extra_field").value = data.extra || "";
           const skuSelect = document.querySelector('select[name="order_entry[sku_number]"]');
           if (skuSelect && data.sku_id) {
             for (const option of skuSelect.options) {
@@ -327,7 +333,7 @@ function selectArticle(el) {
   document.getElementById("length_field").value = el.dataset.length;
   document.getElementById("cct_field").value = el.dataset.cct;
   document.getElementById("cover_type_field").value = el.dataset.coverType;
-
+  document.getElementById("extra_field").value = el.dataset.extra;
   document.getElementById("articleDropdownList").classList.add("hidden");
 }
 document.addEventListener("turbo:load", () => {

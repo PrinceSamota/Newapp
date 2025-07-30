@@ -31,16 +31,17 @@
     <%= f.label :receiving_quantity, "Quantity", class: "block text-xs font-medium text-gray-600 mb-1" %>
     <%= f.number_field :receiving_quantity,
       step: :any,
+      min: 1,
       placeholder: "Qty",
       class: "required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
   </div>
 
   <!-- Price -->
   <div class="col-span-1 w-[130%]">
-    <%= f.label :purchase_price, "Price (₹)", class: "block text-xs font-medium text-gray-600 mb-1" %>
+    <%= f.label :purchase_price, "Price", class: "block text-xs font-medium text-gray-600 mb-1" %>
     <%= f.number_field :purchase_price,
       step: :any,
-      placeholder: "₹",
+      placeholder: "Price",
       class: "required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" %>
   </div>
 
@@ -48,7 +49,7 @@
   <div class="col-span-1 text-right">
     <label class="text-xs font-medium text-gray-700 block mb-1">Total</label>
     <div class="text-sm font-semibold text-gray-800">
-      ₹ <span class="row-total-price">0.00</span>
+       <span class="row-total-price">0.00</span>
     </div>
   </div>
 </div>
