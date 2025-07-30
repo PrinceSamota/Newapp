@@ -26,7 +26,8 @@ class BillOfMaterialsController < ApplicationController
   def update_stock
     @bom = BillOfMaterial.find(params[:id])
     production_order_item = ProductionOrderItem.find_by(id: params[:po_item_id])
-  
+    @bom.update(flag: true)
+    
     if production_order_item.nil?
       redirect_to production_orders_path, alert: "Production Order Item not found."
       return

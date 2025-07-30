@@ -63,6 +63,22 @@
         <% end %>
       </tbody>
     </table>
+    <div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+					<div>
+						Showing 
+						<%= @production_orders.offset_value + 1 %> -
+						<%= [@production_orders.offset_value + @production_orders.length, @production_orders.total_entries].min %>
+						of <%= @production_orders.total_entries %> results
+					</div>
+
+					<div class="flex items-center space-x-1">
+						<%= will_paginate @production_orders, renderer: WillPaginate::ActionView::LinkRenderer,
+						class: "pagination flex space-x-1",
+						previous_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
+						next_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
+						container: false %>
+					</div>
+			    </div>
   </div>
 </div>
 <div id="bom-detail-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">

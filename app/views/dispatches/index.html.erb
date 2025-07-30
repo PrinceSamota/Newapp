@@ -45,14 +45,30 @@
   </tbody>
 </table>
 
-
   <!-- Slide-in Modal -->
   <turbo-frame id="modal">
     <!-- filled via Turbo Stream -->
   </turbo-frame>
 </div>
 
+<div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+					<div>
+						Showing 
+						<%= @dispatches.offset_value + 1 %> -
+						<%= [@dispatches.offset_value + @dispatches.length, @dispatches.total_entries].min %>
+						of <%= @dispatches.total_entries %> results
+					</div>
+
+					<div class="flex items-center space-x-1">
+						<%= will_paginate @dispatches, renderer: WillPaginate::ActionView::LinkRenderer,
+						class: "pagination flex space-x-1",
+						previous_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
+						next_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
+						container: false %>
+					</div>
+			    </div>
 </div>
+
 <script>
   function closeModal() {
     const modalFrame = document.getElementById("modal");

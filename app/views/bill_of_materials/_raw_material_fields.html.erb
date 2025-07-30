@@ -7,7 +7,8 @@
   label_text: 'SKU ID',
   field_name: f.object_name + '[sku_id]',
   items: item_masters,
-  value_method: :sku_id %>
+  value_method: :sku_id,
+  selected_value: f.object.sku_id %>
   </div>
 
   <!-- Item Name -->
@@ -17,7 +18,8 @@
   label_text: 'Item Name',
   field_name: f.object_name + '[item_name]',
   items: item_masters,
-  value_method: :item_name %>
+  value_method: :item_name,
+  selected_value: f.object.item_name %>
   </div>
 
   <!-- Unit -->

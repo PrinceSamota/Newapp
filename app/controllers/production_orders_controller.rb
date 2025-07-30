@@ -46,7 +46,7 @@ class ProductionOrdersController < ApplicationController
   
 
   def index
-    @production_orders = ProductionOrder.includes(:production_order_items).order(created_at: :desc)
+    @production_orders = ProductionOrder.includes(:production_order_items).order(created_at: :desc).paginate(page: params[:page], per_page: 30)
   end
   def show
     @production_order = ProductionOrder.find(params[:id])
