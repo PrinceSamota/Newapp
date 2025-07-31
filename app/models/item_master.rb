@@ -36,7 +36,7 @@ class ItemMaster < ApplicationRecord
   private
 
   def generate_sku_id
-    last_number = ItemMaster.maximum(:id).to_i + 1
+    last_number = ItemMaster.maximum(:sku_id).delete("SKU").to_i
     self.sku_id = "SKU#{last_number.to_s.rjust(5, '0')}"
   end
 

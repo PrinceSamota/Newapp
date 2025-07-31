@@ -6,7 +6,7 @@ class Bom < ApplicationRecord
   private
 
   def generate_bom_number
-    last_number = Bom.maximum(:id).to_i + 1
+    last_number = Bom.maximum(:sku_id).delete("SKU").to_i
     self.bom_number = "BOM#{last_number.to_s.rjust(5, '0')}"
   end
 end
