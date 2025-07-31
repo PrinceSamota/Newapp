@@ -67,7 +67,7 @@
           <% if @bill_of_material.bom_raw_material_items.any? %>
             <% @bill_of_material.bom_raw_material_items.each do |raw_material_item| %>
               <%= f.fields_for :bom_raw_material_items, raw_material_item do |ff| %>
-                <div class=" raw-material-row nested-fields"">
+                <div class=" raw-material-row nested-fields">
                   <div class="grid grid-cols-1  gap-4">
                     <%= render 'raw_material_row', f: ff, item_masters: @item_masters %>
                   </div>
@@ -77,7 +77,7 @@
           <% else %>
             <%= f.fields_for :bom_raw_material_items, BomRawMaterialItem.new do |ff| %>
               <div class="border border-gray-200 shadow-sm rounded-md p-4 bg-gray-50 raw-material-row">
-                <div class="grid grid-cols-1  gap-4 nested-fields"">
+                <div class="grid grid-cols-1  gap-4 nested-fields">
                   <%= render 'raw_material_row', f: ff, item_masters: @item_masters %>
                 </div>
               </div>
@@ -181,7 +181,7 @@ setupValidation(newRow);
 
   function setupValidation(row) {
     const skuSelect = row.querySelector(".sku-id-field");
-    const qtyInput = row.querySelector("input[name*='[quantity]']");
+    const qtyInput = row.querySelector("input[name*='[quantity_comment]']");
 
     function validateQty() {
       const selectedSku = skuSelect?.value;
