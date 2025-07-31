@@ -32,7 +32,7 @@ class ItemMaster < ApplicationRecord
   end
 
   validates :category_id, :measurement_id, presence: true
-  before_validation :generate_item_name, if: -> { is_bom == true && self.name.blank? }
+  before_validation :generate_item_name, if: -> { is_bom == true && self.item_name.blank? }
   private
 
   def generate_sku_id
