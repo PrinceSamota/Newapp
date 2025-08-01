@@ -172,13 +172,12 @@
     <%= f.label :extra, "Extra", class: "block text-sm font-medium text-gray-700 mb-1" %>
     <%= f.text_field :extra, class: "w-full border border-gray-300 rounded-lg px-4 py-2", id: "extra_field" %>
   </div>
-  
-  <div class="mt-6">
-  <label class="inline-flex items-center">
-    <%= f.check_box :generate_serial, {}, true, false %>
-    <span class="ml-2 text-sm text-gray-700">Generate Serial Numbers</span>
-  </label>
-</div>
+     <div>
+<%= f.label :generate_sno, "Generate SNO.", class: "block text-sm font-medium text-gray-700 mb-1" %>
+<%= f.select :generate_sno, [["Yes", true], ["No", false]], { prompt: "Select Option" }, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2" %>
+
+  </div>
+
 
       </div>
       

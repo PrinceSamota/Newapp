@@ -28,6 +28,7 @@ class CreateOrderEntries < ActiveRecord::Migration[7.2]
       t.string :remark
       t.string :box
       t.string :extra
+      t.boolean :generate_sno
       
       t.timestamps
     end

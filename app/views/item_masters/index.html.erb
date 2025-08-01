@@ -679,7 +679,8 @@ document.addEventListener("turbo:load", () => {
       if (bomYes.checked) {
         // Generate item name (you can update logic below as needed)
         const timestamp = new Date().getTime();
-        itemNameField.value = `auto-gen`;
+        itemNameField.value = "";
+		itemNameField.placeholder = "Will be auto-generated";
         itemNameField.readOnly = true;
         itemNameField.classList.add("bg-gray-100", "cursor-not-allowed");
       } else {

@@ -37,7 +37,7 @@
           <th class="px-4 py-3 text-left border-r border-gray-300">PID</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">BOM Number</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">Finished Good</th>
-         
+          <th class="px-4 py-3 text-left border-r border-gray-300">Executed</th>
         </tr>
       </thead>
       <tbody id="production-orders-table" class="bg-white divide-y divide-gray-100">
@@ -56,9 +56,8 @@
           </td>
               <td class="px-4 py-3 border-r border-gray-300"><%= bom_number %></td>
               <td class="px-4 py-3 border-r border-gray-300"><%= item.item_name%> </td>
-        
-
-            </tr>
+              <td class="px-4 py-3 border-r border-gray-300"><%= order.item_master&.bill_of_material&.flag ? "Yes" : "No" %></td>
+          </tr>
           <% end %>
         <% end %>
       </tbody>

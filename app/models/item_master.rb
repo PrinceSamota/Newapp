@@ -16,13 +16,15 @@ class ItemMaster < ApplicationRecord
   belongs_to :cover_type, optional: true
   belongs_to :extra, optional: true
   has_paper_trail save_changes: true
-
+  has_many :production_order_items
+  has_many :production_orders
   validates :item_name, presence: true
   validates :opening_stock, presence: true
   validates :purchase_price, presence: true
   validates :sale_price, presence: true
   validates :minimum_stock_level, presence: true
-
+  has_one :finished_good, foreign_key: :sku_id, primary_key: :sku_id
+  has_one :bill_of_material, through: :finished_good
   # BOM-specific validations
   with_options if: :is_bom? do
     validates :article_number, presence: true

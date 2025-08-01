@@ -34,7 +34,7 @@
   </div>
 
 
-
+<%= f.hidden_field :item_master_id, class: "item-master-id-field" %>
   <!-- Quantity -->
   <div>
     <%= f.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
@@ -79,6 +79,16 @@ document.addEventListener("turbo:load", () => {
       "<%= j item.item_name %>": "<%= j item.measurement&.name || '' %>",
     <% end %>
   };
+  const itemToId = {
+    <% item_masters.each do |item| %>
+      "<%= j item.item_name %>": "<%= j item.id|| '' %>",
+    <% end %>
+  };
+  const skuToId = {
+    <% item_masters.each do |item| %>
+      "<%= j item.sku_id %>": "<%= j item.id|| '' %>",
+    <% end %>
+  };
 
   const skuToStock = {
   <% item_masters.each do |item| %>
@@ -90,8 +100,8 @@ function setupRawMaterialAutofill(row) {
   const itemSelect = row.querySelector(".item-name-select");
   const unitInput = row.querySelector(".unit-field");
   const quantityInput = row.querySelector(".quantity-field_comment");
-
-  if (!skuSelect || !itemSelect || !unitInput || !quantityInput) return;
+   const itemMasterIdField = row.querySelector(".item-master-id-field");
+  if (!skuSelect || !itemSelect || !unitInput || !quantityInput || !itemMasterIdField) return;
 
   function validateStock() {
     const sku = skuSelect.value;
@@ -121,6 +131,8 @@ function setupRawMaterialAutofill(row) {
     const sku = skuSelect.value;
     if (skuToItem[sku]) itemSelect.value = skuToItem[sku];
     if (skuToUnit[sku]) unitInput.value = skuToUnit[sku];
+    if (skuToId[sku]) itemMasterIdField.value = skuToId[sku];
+
     validateStock();
   });
 
@@ -128,6 +140,7 @@ function setupRawMaterialAutofill(row) {
     const item = itemSelect.value;
     if (itemToSku[item]) skuSelect.value = itemToSku[item];
     if (itemToUnit[item]) unitInput.value = itemToUnit[item];
+      if (itemToId[item]) itemMasterIdField.value = itemToId[item];
     validateStock();
   });
 }
@@ -172,29 +185,40 @@ function setupRawMaterialAutofill(row) {
       item.style.display = text.includes(filter) ? "block" : "none";
     });
   }
+function selectFromDropdown(fieldId, element) {
+  const selectedValue = element.textContent.trim();
+  const input = document.getElementById(`${fieldId}_search`);
+  const hiddenInput = document.getElementById(`${fieldId}_hidden`);
+  const dropdown = document.getElementById(`${fieldId}_list`);
 
-  function selectFromDropdown(fieldId, element) {
-    const selectedValue = element.textContent.trim();
-    const parent = document.getElementById(`${fieldId}_search`).closest(".relative");
-  
-    document.getElementById(`${fieldId}_search`).value = selectedValue;
-    document.getElementById(`${fieldId}_hidden`).value = (fieldId.includes('sku') ? element.dataset.sku : element.dataset.itemName);
-  
-    document.getElementById(`${fieldId}_list`).classList.add("hidden");
-  
-    // Update pair field
-    const fieldPrefix = fieldId.split("_")[1]; // extract unique suffix
-    const pairField = fieldId.includes('sku') ? `item_${fieldPrefix}` : `sku_${fieldPrefix}`;
-  
-    document.getElementById(`${pairField}_search`).value = fieldId.includes('sku') ? element.dataset.itemName : element.dataset.sku;
-    document.getElementById(`${pairField}_hidden`).value = fieldId.includes('sku') ? element.dataset.itemName : element.dataset.sku;
-  
-    // Update unit
-    const unitField = parent.closest('.raw-material-row')?.querySelector(".unit-field");
+  input.value = selectedValue;
+  hiddenInput.value = fieldId.includes('sku') ? element.dataset.sku : element.dataset.itemName;
+  dropdown.classList.add("hidden");
+
+  const fieldSuffix = fieldId.split("_")[1]; // get the unique ID suffix
+  const pairFieldId = fieldId.includes('sku') ? `item_${fieldSuffix}` : `sku_${fieldSuffix}`;
+  const pairFieldInput = document.getElementById(`${pairFieldId}_search`);
+  const pairFieldHidden = document.getElementById(`${pairFieldId}_hidden`);
+
+  if (pairFieldInput && pairFieldHidden) {
+    pairFieldInput.value = fieldId.includes('sku') ? element.dataset.itemName : element.dataset.sku;
+    pairFieldHidden.value = fieldId.includes('sku') ? element.dataset.itemName : element.dataset.sku;
+  }
+
+  const row = input.closest(".raw-material-row"); // ✅ get the row element here
+  if (row) {
+    const unitField = row.querySelector(".unit-field");
     if (unitField) {
       unitField.value = element.dataset.unit || "";
     }
+
+    const itemMasterIdField = row.querySelector(".item-master-id-field");
+    if (itemMasterIdField) {
+      itemMasterIdField.value = element.dataset.itemMasterId || "";
+    }
   }
+}
+
   
 
   document.addEventListener("click", function (e) {

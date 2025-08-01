@@ -20,7 +20,8 @@
            onclick="selectFromDropdown('<%= field_id %>', this)"
            data-sku="<%= item.sku_id %>"
            data-item-name="<%= j item.item_name %>"
-           data-unit="<%= j item.measurement&.name %>">
+           data-unit="<%= j item.measurement&.name %>"
+           data-item-master-id="<%= j item.id %>">
         <%= item.send(value_method) %>
       </div>
     <% end %>
