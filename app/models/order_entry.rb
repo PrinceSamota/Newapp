@@ -8,6 +8,13 @@ class OrderEntry < ApplicationRecord
     dispatch_item = DispatchItem.find_by(order_no: self.order_no)
     dispatch_item&.dispatch&.d_id
   end
+  def self.ransackable_attributes(auth_object = nil)
+    %w[order_no article_no sku_number created_at updated_at]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[client]
+  end
   private
 
   def generate_serial_numbers
@@ -32,12 +39,11 @@ class OrderEntry < ApplicationRecord
     %w[
       order_no
       article_no
-      dispatch_no
-      sku_id
+      sku_number
     ]
   end
 
   def self.ransackable_associations(auth_object = nil)
-    %w["client", "dispatch_items", "location"]
+    %w["client"]
   end
 end

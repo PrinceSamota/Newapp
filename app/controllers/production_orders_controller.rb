@@ -61,10 +61,19 @@ class ProductionOrdersController < ApplicationController
     end
   end
   
-
-  def index
-    @production_orders = ProductionOrder.includes(:production_order_items).order(created_at: :desc).paginate(page: params[:page], per_page: 30)
+  def destroy
+    @production_order = ProductionOrder.find(params[:id])
+    @production_order.destroy
+    redirect_to production_orders_path, notice: "Production Order deleted successfully."
   end
+  def index
+    @q = ProductionOrder
+           .includes(production_order_items: :item_master)
+           .ransack(params[:q])
+    @production_orders = @q.result(distinct: true).paginate(page: params[:page], per_page: 30)
+  end
+  
+  
   def show
     @production_order = ProductionOrder.find(params[:id])
   end

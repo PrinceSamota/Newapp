@@ -38,8 +38,9 @@ class ItemMaster < ApplicationRecord
   private
 
   def generate_sku_id
-    last_number = ItemMaster.maximum(:sku_id).delete("SKU").to_i + 1
-    self.sku_id = "SKU#{last_number.to_s.rjust(5, '0')}"
+    last_sku = ItemMaster.maximum(:sku_id)
+    last_number = last_sku ? last_sku.delete("SKU").to_i : 0
+    self.sku_id = "SKU#{(last_number + 1).to_s.rjust(5, '0')}"
   end
 
   def self.ransackable_attributes(auth_object = nil)
