@@ -14,6 +14,16 @@ class BillOfMaterial < ApplicationRecord
     self.bom_number = "BOM#{last_number.to_s.rjust(5, '0')}"
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["bom_number", "bom_tag", "created_at", "flag", "id", "name", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[
+      finished_good
+    ]
+  end
+
   private
 
   def must_have_at_least_one_raw_material

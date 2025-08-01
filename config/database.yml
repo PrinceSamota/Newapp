@@ -12,7 +12,7 @@ default: &default
 
 development:
   <<: *default
-  database: taa_production
+  database: stack_dev
   #adapter: sqlite3
   #database: storage/development.sqlite3
 
