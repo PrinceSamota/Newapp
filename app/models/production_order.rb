@@ -5,7 +5,13 @@ class ProductionOrder < ApplicationRecord
     before_create :generate_pid
 
     has_paper_trail save_changes: true
-
+    def self.ransackable_attributes(auth_object = nil)
+        %w[created_at id item_master_id pid updated_at]
+      end
+    
+      def self.ransackable_associations(auth_object = nil)
+        %w[production_order_items]
+      end
     private
   
     def generate_pid

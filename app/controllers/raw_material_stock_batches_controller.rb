@@ -43,10 +43,10 @@ end
 
   
 
-  def index
-    @batches = RawMaterialStockBatch.includes(:raw_material_stock_items).order(created_at: :desc).paginate(page: params[:page], per_page: 30)
-    
-  end
+def index
+  @q = RawMaterialStockBatch.ransack(params[:q])
+  @batches = @q.result.includes(:supplier, :raw_material_stock_items).order(created_at: :desc).paginate(page: params[:page], per_page: 30)
+end
 
   private
 

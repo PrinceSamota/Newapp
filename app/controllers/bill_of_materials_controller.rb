@@ -60,33 +60,6 @@ class BillOfMaterialsController < ApplicationController
   
     redirect_to production_orders_path, notice: "Stock updated successfully for BOM ##{@bom.bom_number}."
   end
-  
-  
-  def update_stockrr
-    @bill_of_material = BillOfMaterial.find(params[:id])
-
-    PaperTrail.request(controller_info: {
-      source_type: "BillOfMaterial",
-      source_id: @bill_of_material.id
-    }) do
-      fg = @bill_of_material.finished_good
-      if fg.present?
-        fg_item = ItemMaster.find_by(sku_id: fg.sku_id)
-        if fg_item
-          fg_item.update(opening_stock: fg_item.opening_stock.to_i + fg.quantity.to_i)
-        end
-      end
-
-      @bill_of_material.bom_raw_material_items.each do |rm|
-        rm_item = ItemMaster.find_by(sku_id: rm.sku_id)
-        if rm_item
-          rm_item.update(opening_stock: rm_item.opening_stock.to_i - rm.quantity.to_i)
-        end
-      end
-    end
-
-    redirect_to production_orders_path, notice: "Stock updated successfully."
-  end
 
   def index
     @q = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).ransack(params[:q])

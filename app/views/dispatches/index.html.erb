@@ -108,34 +108,33 @@ document.addEventListener("turbo:load", function () {
   const tableRows = document.querySelectorAll("#dispatches_list tr");
 
   searchInput.addEventListener("keyup", function () {
-    const query = this.value.toLowerCase().replace(/[^0-9]/g, ""); // normalize query (digits only)
+    const query = this.value.toLowerCase().trim();
+    const numericQuery = query.replace(/[^0-9]/g, ""); // for serial range and DID
 
     tableRows.forEach(row => {
       const order = row.dataset.order || "";
-      const client = row.dataset.client || "";
       const courier = row.dataset.courier || "";
-      const items = row.dataset.dispatchItems || "";
-      const serialStart = row.dataset.serialStart || "";
-      const serialEnd = row.dataset.serialEnd || "";
+      const dispatchItems = row.dataset.dispatchItems || "";
+      const dispatchId = row.dataset.dispatchId || "";
+      const combined = `${order} ${courier} ${dispatchItems} ${dispatchId}`.toLowerCase();
 
-      const combined = `${order} ${client} ${courier} ${items}`;
-
-      // Try matching normal text
       let matches = combined.includes(query);
 
-      // Match serial range (strip letters like 'S00014' -> '00014' -> 14)
-      const startNum = parseInt(serialStart.replace(/[^0-9]/g, ""));
-      const endNum = parseInt(serialEnd.replace(/[^0-9]/g, ""));
-      const queryNum = parseInt(query);
+      const serialStart = parseInt(row.dataset.serialStart || "0");
+      const serialEnd = parseInt(row.dataset.serialEnd || "0");
+      const queryNum = parseInt(numericQuery);
 
-      if (!matches && !isNaN(startNum) && !isNaN(endNum) && !isNaN(queryNum)) {
-        matches = queryNum >= startNum && queryNum <= endNum;
+      if (!matches && !isNaN(queryNum)) {
+        if (queryNum >= serialStart && queryNum <= serialEnd) {
+          matches = true;
+        }
       }
 
       row.style.display = matches ? "" : "none";
     });
   });
 });
+
 function filterBySerialNumber(min, max) {
   document.querySelectorAll('tr[data-serial-start]').forEach(row => {
     const start = parseInt(row.dataset.serialStart || 0);

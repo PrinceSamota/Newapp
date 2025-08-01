@@ -310,7 +310,7 @@
 								</div>
 
 								<%= f.submit "Search",
-								class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out" %>
+								class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out cursor-pointer" %>
 								<% end %>
 
 							</div>
@@ -363,15 +363,15 @@
 					</table>
 				</div>
 
-				<div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
-					<div>
-						Showing 
-						<%= @item_masters.offset_value + 1 %> -
-						<%= [@item_masters.offset_value + @item_masters.length, @item_masters.total_entries].min %>
-						of <%= @item_masters.total_entries %> results
-					</div>
+<div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+  <div>
+    Showing 
+    <%= @item_masters.offset_value + 1 %> -
+    <%= [@item_masters.offset_value + @item_masters.length, @item_masters.total_entries].min %>
+    of <%= @item_masters.total_entries %> results
+  </div>
 
-					<div class="flex items-center space-x-1">
+                <div class="flex items-center space-x-1">
 					<%= will_paginate @item_masters, renderer: WillPaginate::ActionView::LinkRenderer,
 						class: "pagination flex space-x-1",
 						previous_label: '<span class="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
@@ -379,7 +379,7 @@
 						container: false %>
 					</div>
 
-			    </div>
+					</div>
 			</div>
 		</div>
 
@@ -412,7 +412,6 @@
 			<% end %>
 		</div>
 	</div>
-
 	<!-- JS for Modal & File Name -->
 	<script>
 		function toggleItemMasterModal(show) {
