@@ -6,6 +6,7 @@ class CreateBomRawMaterialItems < ActiveRecord::Migration[7.2]
       t.float :quantity
       t.string :sku_id
       t.string :unit
+      t.integer :item_master_id
 
       t.timestamps
     end

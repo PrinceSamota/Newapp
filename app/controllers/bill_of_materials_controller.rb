@@ -164,7 +164,7 @@ class BillOfMaterialsController < ApplicationController
       params.require(:bill_of_material).permit(
         :name, :bom_tag,
         finished_good_attributes: [:sku_id, :item_name, :quantity, :unit],
-        bom_raw_material_items_attributes: [:sku_id, :item_name, :quantity, :unit, :_destroy]
+        bom_raw_material_items_attributes: [:sku_id, :item_name, :quantity, :unit, :item_master_id, :_destroy]
         )
     end
     def bom_params_update

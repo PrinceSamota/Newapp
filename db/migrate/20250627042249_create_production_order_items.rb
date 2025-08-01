@@ -9,6 +9,7 @@ class CreateProductionOrderItems < ActiveRecord::Migration[7.2]
       t.float :quantity
       t.string :bom
       t.string :stage
+      t.integer :item_master_id
       
       t.timestamps
     end

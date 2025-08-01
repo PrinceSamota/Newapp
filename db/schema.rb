@@ -63,6 +63,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.float "quantity"
     t.string "sku_id"
     t.string "unit"
+    t.integer "item_master_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -316,6 +317,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.string "remark"
     t.string "box"
     t.string "extra"
+    t.boolean "generate_sno"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -373,12 +375,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.float "quantity"
     t.string "bom"
     t.string "stage"
+    t.integer "item_master_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "production_orders", force: :cascade do |t|
     t.string "pid"
+    t.integer "item_master_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -407,11 +411,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.string "supplier_invoice_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["supplier_id"], name: "index_raw_material_stock_batches_on_supplier_id"
   end
 
   create_table "raw_material_stock_items", force: :cascade do |t|
-    t.integer "raw_material_stock_batch_id", null: false
+    t.integer "raw_material_stock_batch_id"
     t.string "item_name"
     t.string "sku_id"
     t.integer "receiving_quantity"
@@ -419,7 +422,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
     t.integer "item_master_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["raw_material_stock_batch_id"], name: "index_raw_material_stock_items_on_raw_material_stock_batch_id"
   end
 
   create_table "statuses", force: :cascade do |t|
@@ -503,7 +505,5 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_27_101938) do
   add_foreign_key "item_masters", "wattages"
   add_foreign_key "items", "orders"
   add_foreign_key "order_details", "orders"
-  add_foreign_key "raw_material_stock_batches", "suppliers"
-  add_foreign_key "raw_material_stock_items", "raw_material_stock_batches"
   add_foreign_key "users", "organizations", column: "org_id"
 end

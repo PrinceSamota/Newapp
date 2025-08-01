@@ -19,7 +19,7 @@
     <table class="min-w-full divide-y divide-gray-200 text-sm border border-gray-300 shadow rounded-lg">
       <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
         <tr>
-          <% ["#", "SKU ID", "Item Name", "Quantity","Quantity*", "Unit"].each_with_index do |header, index| %>
+          <% ["#", "SKU ID", "Item Name", "Required Quantity","Quantity for PO", "Unit"].each_with_index do |header, index| %>
             <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 4 %>">
               <%= header %>
             </th>
@@ -46,7 +46,7 @@
     <table class="min-w-full divide-y divide-gray-200 text-sm border border-gray-300 shadow-xl rounded-lg">
       <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
         <tr>
-          <% ["#", "SKU ID", "Item Name", "Quantity", "Quantity*","Unit"].each_with_index do |header, index| %>
+          <% ["#", "SKU ID", "Item Name","Current Stock", "Required Quantity", "Quantity for PO","Unit"].each_with_index do |header, index| %>
             <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 4 %>">
               <%= header %>
             </th>
@@ -59,6 +59,7 @@
             <td class="px-6 py-3 border-r border-gray-200"><%= rm_index + 1 %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.sku_id %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.item_name %></td>
+            <td class="px-6 py-3 border-r border-gray-200"><%= rm.item_master.opening_stock %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.quantity %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.quantity.to_f * @quantity.to_f %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.unit %></td>

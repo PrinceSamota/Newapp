@@ -1,6 +1,7 @@
 <%= tag.script type: "application/json", id: "item-master-mapping-data" do %>
   <%= raw item_masters.map { |item|
     {
+      id: item.id,          
       sku_id: item.sku_id,
       item_name: item.item_name,
       opening_stock: item.opening_stock
@@ -9,6 +10,7 @@
 <% end %>
 
 <div class="production-order-row relative grid grid-cols-6 gap-4 items-end bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm mt-6">
+<%= f.hidden_field :item_master_id, id: "item-master-id-field" %>
 
   <!-- SKU ID -->
   <div>
@@ -42,9 +44,8 @@
       class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
   </div>
 
-  
 
-  <!-- BOM -->
+
   <!-- BOM -->
   <div>
     <%= f.label :bom, "BOM", class: "text-xs font-medium text-gray-700 block mb-1" %>
@@ -54,12 +55,15 @@
         <%= f.text_field :bom,
           class: "required-field bom-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",
           readonly: true %>
-  
+
         <!-- ✅ Correct hidden field -->
         <div class="bom-id-container">
-        <% (f.object.bom_ids || []).each do |bom_id| %>
+        <% bom_ids = f.object.bom_ids.is_a?(String) ? JSON.parse(f.object.bom_ids) : f.object.bom_ids %>
+        <% (bom_ids || []).each do |bom_id| %>
           <%= hidden_field_tag "#{f.object_name}[bom_ids][]", bom_id, class: "bom-id-field" %>
         <% end %>
+        
+               
       </div>
       </div>
   
@@ -84,7 +88,8 @@ document.addEventListener("turbo:load", () => {
   const itemToSku = {};
   const skuToStock = {};
   const itemToStock = {};
-
+  const skuToId = {};
+  const itemToId = {};
   // Setup mappings
   mappingData.forEach(item => {
     skuToItem[item.sku_id] = item.item_name;
@@ -92,6 +97,9 @@ document.addEventListener("turbo:load", () => {
 
     skuToStock[item.sku_id] = item.opening_stock;
     itemToStock[item.item_name] = item.opening_stock;
+
+    skuToId[item.sku_id] = item.id;
+    itemToId[item.item_name] = item.id;
   });
 
   document.body.addEventListener("change", (e) => {
@@ -104,6 +112,7 @@ document.addEventListener("turbo:load", () => {
     const skuSelect = row.querySelector(".sku-id-field");
     const itemSelect = row.querySelector(".item-name-select");
     const stockField = row.querySelector("input[name*='current_stock']");
+    const itemMasterIdField = row.querySelector("#item-master-id-field"); 
 
     // When SKU is selected
     if (target.classList.contains("sku-id-field")) {
@@ -118,6 +127,10 @@ document.addEventListener("turbo:load", () => {
         stockField.value = skuToStock[sku];
       }
 
+      if (itemMasterIdField) {
+        itemMasterIdField.value = skuToId[sku] || "";
+      }
+      
       checkBOMUsage(row);
     }
 
@@ -133,6 +146,10 @@ document.addEventListener("turbo:load", () => {
       if (stockField && itemToStock[itemName] !== undefined) {
         stockField.value = itemToStock[itemName];
       }
+
+      if (itemMasterIdField) {
+      itemMasterIdField.value = itemToId[itemName] || "";
+    }
 
       checkBOMUsage(row);
     }

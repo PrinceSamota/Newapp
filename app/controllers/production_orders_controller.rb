@@ -7,11 +7,15 @@ class ProductionOrdersController < ApplicationController
   
   def create
     clean_params = production_order_params
+  
     clean_params[:production_order_items_attributes]&.each do |_, item_attrs|
       if item_attrs[:bom_ids].is_a?(Array)
         item_attrs[:bom_ids] = item_attrs[:bom_ids].reject(&:blank?).to_json
       end
     end
+  
+    first_item = clean_params[:production_order_items_attributes]&.values&.first
+    clean_params[:item_master_id] = first_item[:item_master_id] if first_item.present?
   
     @production_order = ProductionOrder.new(clean_params)
   
@@ -69,7 +73,8 @@ class ProductionOrdersController < ApplicationController
 
   def production_order_params
     params.require(:production_order).permit(
-      production_order_items_attributes: [:id, :sku_id, :item_name, :current_stock, :quantity, :bom, :stage,  :_destroy, bom_ids: [] ]
+      :item_master_id,
+      production_order_items_attributes: [:id, :sku_id, :item_name, :current_stock, :quantity, :bom, :stage, :item_master_id,  :_destroy, bom_ids: [] ]
     )
   end
 end

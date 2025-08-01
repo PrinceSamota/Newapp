@@ -88,7 +88,7 @@ class OrderEntriesController < ApplicationController
         :status,
         :remark,
         :extra,
-        :generate_serial
+        :generate_sno
       )
     end
     def order_entry_params_upload

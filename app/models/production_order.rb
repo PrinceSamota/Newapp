@@ -1,7 +1,7 @@
 class ProductionOrder < ApplicationRecord
     has_many :production_order_items, inverse_of: :production_order, dependent: :destroy
     accepts_nested_attributes_for :production_order_items, allow_destroy: true
-  
+    belongs_to :item_master, optional: true
     before_create :generate_pid
 
     has_paper_trail save_changes: true
