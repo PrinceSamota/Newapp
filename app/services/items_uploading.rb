@@ -136,7 +136,8 @@ class ItemsUploading
         # Create or find RM
         rm = BomRawMaterialItem.find_or_initialize_by(
           bill_of_material_id: bom.id,
-          sku_id: rm_item_master.sku_id
+          sku_id: rm_item_master.sku_id,
+          item_master_id: rm_item_master.id
         )
         rm.assign_attributes(
           item_name: rm_item_master.item_name,
