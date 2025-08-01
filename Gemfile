@@ -10,17 +10,16 @@ gem "stimulus-rails"
 gem "cssbundling-rails"
 gem "jbuilder"
 gem 'devise'
-gem 'cssbundling-rails'
 gem 'roo'
 gem 'bootsnap', require: false
 gem 'paper_trail', '~> 13.0'
 gem 'will_paginate', '~> 4.0'
 gem 'ransack'
+gem "pg"
 
 # PostgreSQL instead of SQLite
 group :development, :test do
-  gem "sqlite3", group: :production
-  gem "pg", group: :production
+  gem "sqlite3"
   gem "byebug"
 end
 
@@ -32,8 +31,4 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
-end
-
-group :production do
-  gem 'pg'
 end
