@@ -16,6 +16,7 @@ gem 'paper_trail', '~> 13.0'
 gem 'will_paginate', '~> 4.0'
 gem 'ransack'
 gem "pg"
+gem 'dotenv-rails'
 
 # PostgreSQL instead of SQLite
 group :development, :test do
