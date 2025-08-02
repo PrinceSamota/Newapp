@@ -12,7 +12,7 @@ gem "jbuilder"
 gem 'devise'
 gem 'roo'
 gem 'bootsnap', require: false
-gem 'paper_trail', '~> 13.0'
+gem 'paper_trail', '~> 16.0'
 gem 'will_paginate', '~> 4.0'
 gem 'ransack'
 gem "pg"
