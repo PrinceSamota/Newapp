@@ -1,0 +1,35 @@
+<div class="relative searchable-wrapper">
+  <label for="<%= field_id %>" class="text-xs font-medium text-gray-700 block mb-1"><%= label_text %></label>
+
+  <div class="relative">
+    <input
+      type="text"
+      id="<%= field_id %>"
+      name="<%= field_name %>"
+      value="<%= selected_value %>"
+      placeholder="Search..."
+      autocomplete="off"
+      data-role="searchable-input"
+      data-type="<%= field_type %>"
+      class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm pr-8 <%= extra_class %>" />
+
+        <button type="button"
+        class="clear-search-input absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 text-sm hidden cursor-pointer"
+        title="Clear">
+        ✕
+      </button>
+  </div>
+
+  <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md" data-role="searchable-dropdown">
+    <% items.each do |item| %>
+      <li class="cursor-pointer px-3 py-2 hover:bg-blue-100"
+          data-value="<%= item.send(value_method) %>"
+          data-sku-id="<%= item.sku_id %>"
+          data-item-name="<%= item.item_name %>"
+          data-stock="<%= item.opening_stock %>"
+          data-item-id="<%= item.id %>">
+        <%= item.send(value_method) %>
+      </li>
+    <% end %>
+  </ul>
+</div>

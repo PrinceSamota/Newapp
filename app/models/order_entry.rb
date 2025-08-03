@@ -29,7 +29,7 @@ class OrderEntry < ApplicationRecord
 
       # Generate end_serial_no using qty
       if self.qty.present? && self.qty > 0
-        new_end_number = new_start_number + self.qty - 1
+        new_end_number = new_start_number + self.qty.to_i - 1
         self.end_serial_no = "S#{new_end_number.to_s.rjust(6, '0')}"
       end
     end

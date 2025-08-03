@@ -1,13 +1,24 @@
 <div class="relative">
   <%= label_tag field_id, label_text, class: "text-xs font-medium text-gray-700 block mb-1" %>
 
-  <input type="text"
-         id="<%= field_id %>_search"
-         placeholder="Search <%= label_text %>..."
-         onkeyup="filterDropdown('<%= field_id %>')"
-         onclick="toggleDropdown('<%= field_id %>')"
-         autocomplete="off"
-         class="required-field w-full px-3 py-2 border border-gray-300 rounded-md text-sm" />
+  <div class="relative">
+    <input type="text"
+           id="<%= field_id %>_search"
+           placeholder="Search <%= label_text %>..."
+           onkeyup="filterDropdown('<%= field_id %>')"
+           onclick="toggleDropdown('<%= field_id %>')"
+           autocomplete="off"
+           readonly
+           class="required-field w-full px-3 py-2 pr-10 border border-gray-300 rounded-md text-sm bg-white " />
+
+    <button type="button"
+            id="<%= field_id %>_clear"
+            onclick="clearDropdownSelection('<%= field_id %>')"
+            class="hidden absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-600 text-sm"
+            title="Clear selection">
+      ✕
+    </button>
+  </div>
 
   <input type="hidden"
          name="<%= field_name %>"

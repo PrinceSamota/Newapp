@@ -1,0 +1,26 @@
+<div class="relative raw-material-dropdown">
+  <label class="block text-sm font-medium text-gray-700 mb-1"><%= label_text %></label>
+  <input
+    type="text"
+    name="<%= field_name %>"
+    id="<%= field_id %>"
+    value="<%= selected_value %>"
+    data-role="searchable-input"
+    data-type="<%= data_type %>"
+    data-dropdown-target="<%= "#{field_id}-dropdown" %>"
+    autocomplete="off"
+    class="searchable-input <%= extra_class %> w-full border border-gray-300 rounded-md px-3 py-2 text-sm bg-white" />
+
+  <ul id="<%= "#{field_id}-dropdown" %>" class="absolute z-10 bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-40 overflow-y-auto hidden w-full text-sm">
+    <% items.each do |item| %>
+      <li
+        class="px-3 py-2 hover:bg-blue-100 cursor-pointer"
+        data-value="<%= item.send(value_method) %>"
+        data-sku-id="<%= item.sku_id %>"
+        data-item-name="<%= item.item_name %>"
+        data-unit="<%= item.measurement&.name %>">
+        <%= item.send(value_method) %>
+      </li>
+    <% end %>
+  </ul>
+</div>

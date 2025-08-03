@@ -102,7 +102,7 @@
         <!-- Hidden Template -->
         <% raw_material_template = capture do %>
           <%= f.fields_for :bom_raw_material_items, BomRawMaterialItem.new, child_index: "NEW_RECORD" do |ff| %>
-            <%= render 'raw_material_row', f: ff, item_masters: @item_masters %>
+            <%= render 'raw_material_row', f: ff, item_masters: @item_masters_false %>
           <% end %>
         <% end %>
         <%= content_tag :template, raw_material_template, id: "raw-material-template" %>
@@ -243,4 +243,6 @@ setupValidation(newRow);
 
   // Apply to existing rows
   document.querySelectorAll(".nested-fields").forEach(setupLinking);
+  
+  
 </script>

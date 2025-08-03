@@ -67,7 +67,8 @@ class BillOfMaterialsController < ApplicationController
   end
   def show
     @bill_of_material = BillOfMaterial.find(params[:id])
-    @item_masters = ItemMaster.all
+    @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
+    @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement)
   end
   def clone
     original_bom = BillOfMaterial.find(params[:id])
@@ -144,7 +145,7 @@ class BillOfMaterialsController < ApplicationController
       params.require(:bill_of_material).permit(
         :name, :bom_tag,
         finished_good_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy],
-        bom_raw_material_items_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy]
+        bom_raw_material_items_attributes: [:id, :sku_id, :item_name, :item_master_id, :quantity, :unit, :_destroy]
         )
     end
   end

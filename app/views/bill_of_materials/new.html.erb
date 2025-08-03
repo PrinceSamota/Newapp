@@ -18,37 +18,50 @@
     </div>
     <div>
   </div>
-    <!-- Finished Good Section (Styled to Match Raw Material UI) -->
-    <div class="bg-blue-50 p-6 rounded-2xl shadow-md border border-gray-200 mt-8">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">Finished Good</h3>
-    
-    <%= f.fields_for :finished_good do |fg| %>
-      <div class="grid grid-cols-4 gap-6 items-center bg-white border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
-        
-        <div>
-          <%= fg.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
-          <%= fg.select :sku_id, options_for_select(@item_masters.map { |item| [item.sku_id, item.sku_id] }, fg.object.sku_id), { include_blank: "Choose SKU" }, id: "finished-good-sku-id", class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-        </div>
-  
-        <div>
-          <%= fg.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
-          <%= fg.select :item_name, options_for_select(@item_masters.map { |item| [item.item_name, item.item_name] }, fg.object.item_name), { include_blank: "Choose Item" }, id: "finished-good-item-name", class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-        </div>
-        
-        <div>
-          <%= fg.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
-          <%= fg.text_field :unit, class: "required-field unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-        </div>
+  <div class="bg-blue-50 p-6 rounded-2xl shadow-md border border-gray-200 mt-8">
+  <h3 class="text-lg font-semibold text-gray-800 mb-4">Finished Good</h3>
 
-        <div>
+  <%= f.fields_for :finished_good do |fg| %>
+    <div class="finished-good grid grid-cols-4 gap-6 items-center bg-white border border-blue-200 rounded-lg px-4 py-3 shadow-sm">
+
+      <!-- SKU ID -->
+      <div class="col-span-1">
+        <%= render 'shared/searchable_dropdown_fg',
+            field_id: "finished-good-sku-id",
+            label_text: "SKU ID",
+            field_name: "#{fg.object_name}[sku_id]",
+            items: @item_masters,
+            value_method: :sku_id,
+            selected_value: fg.object.sku_id,
+            extra_class: "" %>
+      </div>
+      <!-- Item Name -->
+      <div class="col-span-1">
+        <%= render 'shared/searchable_dropdown_fg',
+            field_id: "finished-good-item-name",
+            label_text: "Item Name",
+            field_name: "#{fg.object_name}[item_name]",
+            items: @item_masters,
+            value_method: :item_name,
+            selected_value: fg.object.item_name,
+            extra_class: "" %>
+      </div>
+
+      <!-- Unit -->
+      <div>
+        <%= fg.label :unit, class: "text-xs font-medium text-gray-700 block mb-1" %>
+        <%= fg.text_field :unit, class: "required-field unit-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+
+      <!-- Quantity -->
+      <div>
         <%= fg.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
-        <%= fg.text_field :quantity, value: 1, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-
+        <%= fg.number_field :quantity, value: 1, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
       </div>
+    </div>
+  <% end %>
+</div>
 
-      </div>
-    <% end %>
-  </div>
     <!-- Raw Materials Section -->
     <div class="bg-green-50 p-6 rounded-xl shadow-sm">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Raw Materials</h3>
@@ -191,7 +204,10 @@ function initBomForm() {
   if (fgSku && fgItem) {
     fgSku.addEventListener("change", () => {
       const sku = fgSku.value;
-      if (skuToItem[sku]) fgItem.value = skuToItem[sku];
+      if (skuToItem[sku]) {
+        fgItem.value = skuToItem[sku];
+        if (bomNameField) bomNameField.value = skuToItem[sku]; // <--- Add this line
+      }
       if (skuToUnit[sku] && fgUnit) fgUnit.value = skuToUnit[sku];
       fgItem.dispatchEvent(new Event('change'));
     });
@@ -252,4 +268,91 @@ if (field.offsetParent !== null && !field.value.trim()) {
   });
 });
 
+document.addEventListener("turbo:load", () => {
+  const inputs = document.querySelectorAll(".searchable-input");
+
+  inputs.forEach(input => {
+    const dropdownId = input.dataset.dropdownTarget;
+    const dropdown = document.getElementById(dropdownId);
+    const listItems = dropdown.querySelectorAll("li");
+
+    // Show on focus
+    input.addEventListener("focus", () => {
+      dropdown.classList.remove("hidden");
+    });
+
+    // Hide on blur (with small delay to allow click)
+    input.addEventListener("blur", () => {
+      setTimeout(() => dropdown.classList.add("hidden"), 150);
+    });
+
+    // Filter list
+    input.addEventListener("input", () => {
+      const filter = input.value.toLowerCase();
+      listItems.forEach(item => {
+        const match = item.textContent.toLowerCase().includes(filter);
+        item.style.display = match ? "block" : "none";
+      });
+    });
+
+    // On select from list
+    listItems.forEach(item => {
+      item.addEventListener("click", () => {
+        input.value = item.dataset.value;
+        dropdown.classList.add("hidden");
+        input.dispatchEvent(new Event('input')); // To trigger syncing
+      });
+    });
+  });
+});
+document.addEventListener("turbo:load", () => {
+  const dropdownInputs = document.querySelectorAll("[data-role='searchable-input']");
+
+  dropdownInputs.forEach((input) => {
+    const wrapper = input.closest("div.relative");
+    const dropdown = wrapper.querySelector("ul");
+    const items = dropdown.querySelectorAll("li");
+
+    input.addEventListener("focus", () => {
+      dropdown.classList.remove("hidden");
+    });
+
+    input.addEventListener("blur", () => {
+      setTimeout(() => dropdown.classList.add("hidden"), 150);
+    });
+
+    input.addEventListener("input", () => {
+      const filter = input.value.toLowerCase();
+      items.forEach((li) => {
+        const value = li.dataset.value.toLowerCase();
+        li.style.display = value.includes(filter) ? "block" : "none";
+      });
+    });
+
+    items.forEach((li) => {
+      li.addEventListener("click", () => {
+        input.value = li.dataset.value;
+        dropdown.classList.add("hidden");
+
+        const parent = input.closest(".finished-good");
+
+        const skuInput = parent.querySelector("#finished-good-sku-id");
+        const itemNameInput = parent.querySelector("#finished-good-item-name");
+        const unitInput = parent.querySelector(".unit-field");
+
+        if (input.dataset.type === "sku_id") {
+          itemNameInput.value = li.dataset.itemName;
+          itemNameInput.dispatchEvent(new Event('change'));
+        } else if (input.dataset.type === "item_name") {
+          skuInput.value = li.dataset.skuId;
+          input.dispatchEvent(new Event('change'));
+        }
+
+        if (unitInput) {
+          unitInput.value = li.dataset.unit;
+        }
+      });
+    });
+  });
+});
 </script>

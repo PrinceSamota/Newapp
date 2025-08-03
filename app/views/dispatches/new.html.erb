@@ -83,7 +83,6 @@
 
   </div>
 <% end %>
-
 <!-- Scripts -->
 <script>
 document.addEventListener("turbo:load", function () {
@@ -104,6 +103,9 @@ document.addEventListener("turbo:load", function () {
       .then(html => {
         container.insertAdjacentHTML("beforeend", html);
         index++;
+
+        // ✅ Re-initialize TomSelect on new fields
+        initSearchableDropdowns();
       });
   });
 
@@ -141,7 +143,6 @@ document.addEventListener("turbo:load", function () {
       }
     });
 
-    // Validate location manually
     const locationSelect = document.querySelector("#dispatch_location_id");
     if (locationSelect && !locationSelect.value) {
       locationSelect.classList.add("border-red-500");
@@ -156,7 +157,21 @@ document.addEventListener("turbo:load", function () {
 
     if (!valid) e.preventDefault();
   });
+
+  // ✅ Initialize TomSelect on page load
+  initSearchableDropdowns();
 });
+
+// ✅ Initialize searchable dropdown
+function initSearchableDropdowns() {
+  document.querySelectorAll('select.searchable:not([data-tomselect-bound])').forEach(function(selectEl) {
+    new TomSelect(selectEl, {
+      create: false,
+      sortField: { field: "text", direction: "asc" }
+    });
+    selectEl.dataset.tomselectBound = "true";
+  });
+}
 
 // New Location JS
 function submitNewLocation() {
@@ -180,4 +195,56 @@ function submitNewLocation() {
     console.error(error);
   });
 }
+  function initSearchableDropdowns() {
+  document.querySelectorAll("[data-role='searchable-input']").forEach((input) => {
+    if (input.dataset.bound === "true") return;
+    input.dataset.bound = "true";
+
+    const dropdown = input.parentElement.querySelector("[data-role='searchable-dropdown']");
+
+    // Show dropdown on focus
+    input.addEventListener("focus", () => {
+      dropdown.classList.remove("hidden");
+    });
+
+    // Filter items as user types
+    input.addEventListener("input", () => {
+      const searchTerm = input.value.toLowerCase();
+      let hasMatch = false;
+
+      dropdown.querySelectorAll("li").forEach((item) => {
+        const match = item.textContent.toLowerCase().includes(searchTerm);
+        item.style.display = match ? "block" : "none";
+        if (match) hasMatch = true;
+      });
+
+      dropdown.classList.toggle("hidden", !hasMatch);
+    });
+
+    // Select item
+    dropdown.addEventListener("click", (e) => {
+      if (e.target.tagName === "LI") {
+        input.value = e.target.dataset.value;
+        dropdown.classList.add("hidden");
+      }
+    });
+
+    // Hide dropdown on blur (after small delay to allow click)
+    input.addEventListener("blur", () => {
+      setTimeout(() => dropdown.classList.add("hidden"), 200);
+    });
+  });
+}
+
+// Call once on full page load
+document.addEventListener("DOMContentLoaded", initSearchableDropdowns);
+document.addEventListener("turbo:load", initSearchableDropdowns);
+
+// 👇 Call again when new dispatch item is added
+document.addEventListener("click", function (e) {
+  if (e.target && e.target.id === "add-item") {
+    // Wait for the DOM to update
+    setTimeout(initSearchableDropdowns, 100);
+  }
+});
 </script>
