@@ -10,8 +10,9 @@ class BillOfMaterial < ApplicationRecord
   has_paper_trail save_changes: true
   
   def generate_bom_number
-    last_number = BillOfMaterial.maximum(:id).to_i + 1
-    self.bom_number = "BOM#{last_number.to_s.rjust(5, '0')}"
+    last_bom = BillOfMaterial.maximum(:bom_number)
+    last_number = last_bom ? last_bom.delete("BOM").to_i : 0
+    self.bom_number = "BOM#{(last_number + 1).to_s.rjust(5, '0')}"
   end
 
   def self.ransackable_attributes(auth_object = nil)

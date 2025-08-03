@@ -32,5 +32,9 @@ test:
 # ensure the database is located in a persisted volume.
 production:
   <<: *default
-  database: stack_production
+  database: <%= ENV["DB"] %>
+  username: <%= ENV["DB_USERNAME"] %>
+  password: <%= ENV["DB_PASSWORD"] %>
+  host: <%= ENV["HOST"] %>
+  port: <%= ENV["PORT"] %>
 

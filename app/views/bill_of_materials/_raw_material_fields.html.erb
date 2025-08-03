@@ -38,7 +38,7 @@
   <!-- Quantity -->
   <div>
     <%= f.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.number_field :quantity,
+    <%= f.text_field :quantity,
       value: f.object.quantity ,
       min: 1, 
       class: "required-field quantity-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
