@@ -6,7 +6,7 @@ class CreateOrderEntries < ActiveRecord::Migration[7.2]
       t.string :client_id
       t.date :target_date
       t.integer :location_id
-      t.decimal :qty
+      t.integer :qty
       t.string :sku_number
       t.string :fuse_type
       t.string :loop
