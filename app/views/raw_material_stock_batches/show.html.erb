@@ -50,12 +50,12 @@
                     class: "w-full border-gray-300 p-2 rounded-md border bg-gray-100 cursor-not-allowed" %>
                 </td>
                 <td class="px-4 py-2">
-                  <%= item_fields.number_field :receiving_quantity,
+                  <%= item_fields.text_field :receiving_quantity,
                     placeholder: "Qty", step: "0.01",
                     class: "w-full border-gray-300 p-2 rounded-md border" %>
                 </td>
                 <td class="px-4 py-2">
-                  <%= item_fields.number_field :purchase_price,
+                  <%= item_fields.text_field :purchase_price,
                     placeholder: "₹", step: "0.01",
                     class: "w-full border-gray-300 p-2 rounded-md border" %>
                 </td>
