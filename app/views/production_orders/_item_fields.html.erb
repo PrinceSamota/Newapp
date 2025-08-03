@@ -10,195 +10,174 @@
 <% end %>
 
 <div class="production-order-row relative grid grid-cols-6 gap-4 items-end bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm mt-6">
-<%= f.hidden_field :item_master_id, id: "item-master-id-field" %>
+  <%= f.hidden_field :item_master_id, class: "item-master-id-field" %>
 
-  <!-- SKU ID -->
-  <div>
-    <%= f.label :sku_id, "SKU ID", class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.select :sku_id,
-      options_for_select(item_masters.map { |item| [item.sku_id, item.sku_id] }, f.object.sku_id),
-      { include_blank: "Choose SKU" },
-      class: "required-field sku-id-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-  </div>
+  <%= render 'shared/searchable_input',
+    field_id: "sku-input-#{SecureRandom.hex(4)}",
+    field_name: "#{f.object_name}[sku_id]",
+    label_text: "SKU ID",
+    selected_value: f.object.sku_id,
+    items: item_masters,
+    value_method: :sku_id,
+    field_type: "sku",
+    extra_class: "sku-input" %>
 
-  <!-- Item Name -->
-  <div>
-    <%= f.label :item_name, "Item Name", class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.select :item_name,
-      options_for_select(item_masters.map { |item| [item.item_name, item.item_name] }, f.object.item_name),
-      { include_blank: "Choose Item" },
-      class: "required-field item-name-select w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
-  </div>
+  <%= render 'shared/searchable_input',
+    field_id: "item-name-input-#{SecureRandom.hex(4)}",
+    field_name: "#{f.object_name}[item_name]",
+    label_text: "Item Name",
+    selected_value: f.object.item_name,
+    items: item_masters,
+    value_method: :item_name,
+    field_type: "item",
+    extra_class: "item-name-input" %>
 
   <!-- Current Stock -->
   <div>
     <%= f.label :current_stock, "Current Stock", class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.number_field :current_stock,
-      class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",disabled: true %>
+    <%= f.number_field :current_stock, class: "current-stock-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm", disabled: true %>
   </div>
 
   <!-- Quantity -->
   <div>
     <%= f.label :quantity, "Quantity", class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.number_field :quantity,
-      class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    <%= f.number_field :quantity, class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm" %>
   </div>
 
-
-
-  <!-- BOM -->
+  <!-- BOM + Hidden BOM IDs -->
   <div>
     <%= f.label :bom, "BOM", class: "text-xs font-medium text-gray-700 block mb-1" %>
     <div class="flex items-center gap-2">
-      <!-- This will show BOM field if exists, else show Create BOM link -->
       <div class="bom-input-wrapper w-full">
-        <%= f.text_field :bom,
-          class: "required-field bom-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm",
-          readonly: true %>
-
-        <!-- ✅ Correct hidden field -->
-        <div class="bom-id-container">
-        <% bom_ids = f.object.bom_ids.is_a?(String) ? JSON.parse(f.object.bom_ids) : f.object.bom_ids %>
-        <% (bom_ids || []).each do |bom_id| %>
-          <%= hidden_field_tag "#{f.object_name}[bom_ids][]", bom_id, class: "bom-id-field" %>
-        <% end %>
-        
-               
+        <%= f.text_field :bom, class: "bom-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm", readonly: true %>
+        <div class="bom-id-container"></div>
       </div>
-      </div>
-  
       <a href="/bill_of_materials/new"
-        target="_blank"
-        class="create-bom-btn hidden flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer text-sm font-medium border border-gray-300 shadow-sm">
-        <i class="fa-solid fa-plus text-lg"></i> Create BOM
-      </a>
+      target="_blank"
+      class="create-bom-btn hidden flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer text-sm font-medium border border-gray-300 shadow-sm">
+      <i class="fa-solid fa-plus text-lg"></i> Create BOM
+    </a>
     </div>
   </div>
-  
-  <!-- <button type="button"
-    class="remove-raw-material absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
-    ✕
-  </button> -->
 </div>
+
 <script>
 document.addEventListener("turbo:load", () => {
-  const mappingData = JSON.parse(document.getElementById("item-master-mapping-data").textContent || "[]");
+  document.querySelectorAll('[data-role="searchable-input"]').forEach(input => {
+    const wrapper = input.closest(".searchable-wrapper");
+    const dropdown = wrapper.querySelector('[data-role="searchable-dropdown"]');
+    const clearBtn = wrapper.querySelector(".clear-search-input");
 
-  const skuToItem = {};
-  const itemToSku = {};
-  const skuToStock = {};
-  const itemToStock = {};
-  const skuToId = {};
-  const itemToId = {};
-  // Setup mappings
-  mappingData.forEach(item => {
-    skuToItem[item.sku_id] = item.item_name;
-    itemToSku[item.item_name] = item.sku_id;
+    if (input.value.trim() !== "") {
+      clearBtn.classList.remove("hidden");
+    }
 
-    skuToStock[item.sku_id] = item.opening_stock;
-    itemToStock[item.item_name] = item.opening_stock;
+    input.addEventListener("input", () => {
+      const filter = input.value.toLowerCase();
+      dropdown.querySelectorAll("li").forEach(li => {
+        li.style.display = li.textContent.toLowerCase().includes(filter) ? "" : "none";
+      });
+      dropdown.classList.remove("hidden");
+      clearBtn.classList.remove("hidden");
+    });
 
-    skuToId[item.sku_id] = item.id;
-    itemToId[item.item_name] = item.id;
-  });
+    input.addEventListener("focus", () => dropdown.classList.remove("hidden"));
+    input.addEventListener("blur", () => setTimeout(() => dropdown.classList.add("hidden"), 200));
 
-  document.body.addEventListener("change", (e) => {
-    const target = e.target;
-
-    // Find the parent row
-    const row = target.closest(".grid");
-    if (!row) return;
-
-    const skuSelect = row.querySelector(".sku-id-field");
-    const itemSelect = row.querySelector(".item-name-select");
-    const stockField = row.querySelector("input[name*='current_stock']");
-    const itemMasterIdField = row.querySelector("#item-master-id-field"); 
-
-    // When SKU is selected
-    if (target.classList.contains("sku-id-field")) {
-      const sku = skuSelect.value;
-      const itemName = skuToItem[sku];
-
-      if (itemName) {
-        itemSelect.value = itemName;
-      }
-
-      if (stockField && skuToStock[sku] !== undefined) {
-        stockField.value = skuToStock[sku];
-      }
-
-      if (itemMasterIdField) {
-        itemMasterIdField.value = skuToId[sku] || "";
-      }
+    dropdown.querySelectorAll("li").forEach(li => {
+      li.addEventListener("click", () => {
+        input.value = li.textContent;
+        dropdown.classList.add("hidden");
+        clearBtn.classList.remove("hidden");
       
-      checkBOMUsage(row);
-    }
+        const row = input.closest(".production-order-row");
+        const skuInput = row.querySelector(".sku-input");
+        const itemInput = row.querySelector(".item-name-input");
+        const stockField = row.querySelector(".current-stock-field");
+        const itemMasterIdField = row.querySelector(".item-master-id-field");
+      
+        const sku = li.dataset.skuId;
+        const itemName = li.dataset.itemName;
+        const stock = li.dataset.stock;
+        const itemId = li.dataset.itemId;
+      
+        // Set both fields and make both readonly
+        skuInput.value = sku;
+        itemInput.value = itemName;
+      
+        skuInput.readOnly = true;
+        itemInput.readOnly = true;
+      
+        stockField.value = stock;
+        itemMasterIdField.value = itemId;
+      
+        checkBOMUsage(row, sku);
+      });
+      
+    });
+    clearBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      const row = clearBtn.closest(".production-order-row");
+      const skuInput = row.querySelector(".sku-input");
+      const itemInput = row.querySelector(".item-name-input");
+      const stockField = row.querySelector(".current-stock-field");
+      const itemMasterIdField = row.querySelector(".item-master-id-field");
+      const bomField = row.querySelector(".bom-field");
+      const bomIdContainer = row.querySelector(".bom-id-container");
+      const createBtn = row.querySelector(".create-bom-btn");
 
-    // When Item Name is selected
-    if (target.classList.contains("item-name-select")) {
-      const itemName = itemSelect.value;
-      const sku = itemToSku[itemName];
+      // Reset fields
+      skuInput.value = "";
+      itemInput.value = "";
+      stockField.value = "";
+      itemMasterIdField.value = "";
 
-      if (sku) {
-        skuSelect.value = sku;
-      }
+      skuInput.readOnly = false;
+      itemInput.readOnly = false;
 
-      if (stockField && itemToStock[itemName] !== undefined) {
-        stockField.value = itemToStock[itemName];
-      }
+      bomField.value = "";
+      bomIdContainer.innerHTML = "";
 
-      if (itemMasterIdField) {
-      itemMasterIdField.value = itemToId[itemName] || "";
-    }
-
-      checkBOMUsage(row);
-    }
+      createBtn?.classList.add("hidden");
+      clearBtn.classList.add("hidden");
+    });
   });
-  function checkBOMUsage(row) {
-  const skuField = row.querySelector(".sku-id-field");
-  const bomFieldWrapper = row.querySelector(".bom-input-wrapper");
-  const bomField = row.querySelector(".bom-field");
-  const createLink = row.querySelector(".create-bom-btn");
-  const bomIdField = row.querySelector(".bom-id-field");
 
-  const sku = skuField.value;
+  function checkBOMUsage(row, sku) {
+    const bomField = row.querySelector(".bom-field");
+    const bomWrapper = row.querySelector(".bom-input-wrapper");
+    const createBtn = row.querySelector(".create-bom-btn");
+    const bomIdContainer = row.querySelector(".bom-id-container");
 
-  if (sku) {
+    // Get index for the nested attributes (e.g., [0], [1])
+    const inputField = row.querySelector('[name*="[sku_id]"]');
+    const itemIndex = inputField?.name?.match(/\[(\d+)\]/)?.[1];
+
     fetch(`/check_bom_usage?sku_id=${sku}`)
       .then(res => res.json())
       .then(data => {
+        bomIdContainer.innerHTML = "";
+
         if (data.used) {
           bomField.value = data.bom_names.join(", ");
-          bomFieldWrapper.classList.remove("hidden");
-          createLink.classList.add("hidden");
 
-          // ✅ Store multiple BOM IDs as array (stringified)
-          const bomIdContainer = row.querySelector(".bom-id-container");
-          if (bomIdContainer) {
-            bomIdContainer.innerHTML = ""; // Clear previous hidden fields
-          
-            data.bom_ids.forEach(id => {
-              const input = document.createElement("input");
-              input.type = "hidden";
-              input.name = `${skuField.name.replace('[sku_id]', '[bom_ids][]')}`;
-              input.value = id;
-              input.classList.add("bom-id-field");
-              bomIdContainer.appendChild(input);
-            });
-          }
+          data.bom_ids.forEach(id => {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = `production_order[production_order_items_attributes][${itemIndex}][bom_ids][]`;
+            input.value = id;
+            input.classList.add("bom-id-field");
+            bomIdContainer.appendChild(input);
+          });
+
+          bomWrapper.classList.remove("hidden");
+          createBtn.classList.add("hidden");
         } else {
           bomField.value = "";
-          bomFieldWrapper.classList.add("hidden");
-          createLink.classList.remove("hidden");
-
-          if (bomIdField) {
-            bomIdField.value = "";
-          }
+          bomWrapper.classList.add("hidden");
+          createBtn.classList.remove("hidden");
         }
       });
   }
-}
-
-
 });
 </script>
