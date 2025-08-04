@@ -44,6 +44,6 @@ class OrderEntry < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    %w["client"]
+    %w[client dispatch_items]
   end
 end
