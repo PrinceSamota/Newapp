@@ -24,15 +24,17 @@ class BillOfMaterialsController < ApplicationController
   end
 
   def update_stock
-    @bom = BillOfMaterial.find(params[:id])
-    production_order_item = ProductionOrderItem.find_by(id: params[:po_item_id])
-    @bom.update(flag: true)
+    @po = ProductionOrder.find(params[:id])
+    
+    production_order_item = @po.production_order_items.last if @po.production_order_items
+
     
     if production_order_item.nil?
       redirect_to production_orders_path, alert: "Production Order Item not found."
       return
     end
-  
+    @bom = BillOfMaterial.find_by_bom_number(production_order_item.bom)
+
     multiplier = production_order_item.quantity.to_f
   
     PaperTrail.request(controller_info: {
@@ -57,7 +59,7 @@ class BillOfMaterialsController < ApplicationController
         end
       end
     end
-  
+    @po.update(executed: true)
     redirect_to production_orders_path, notice: "Stock updated successfully for BOM ##{@bom.bom_number}."
   end
 

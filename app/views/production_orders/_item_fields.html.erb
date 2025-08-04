@@ -35,7 +35,7 @@
   <!-- Current Stock -->
   <div>
     <%= f.label :current_stock, "Current Stock", class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.number_field :current_stock, class: "current-stock-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm", disabled: true %>
+    <%= f.number_field :current_stock, class: " w-full border border-gray-300 rounded-md px-3 py-2 text-sm", disabled: true, id: 'current-stock-field' %>
   </div>
 
   <!-- Quantity -->
@@ -93,7 +93,7 @@ document.addEventListener("turbo:load", () => {
         const row = input.closest(".production-order-row");
         const skuInput = row.querySelector(".sku-input");
         const itemInput = row.querySelector(".item-name-input");
-        const stockField = row.querySelector(".current-stock-field");
+        const stockField = row.querySelector("#current-stock-field");
         const itemMasterIdField = row.querySelector(".item-master-id-field");
       
         const sku = li.dataset.skuId;
@@ -120,7 +120,7 @@ document.addEventListener("turbo:load", () => {
       const row = clearBtn.closest(".production-order-row");
       const skuInput = row.querySelector(".sku-input");
       const itemInput = row.querySelector(".item-name-input");
-      const stockField = row.querySelector(".current-stock-field");
+      const stockField = row.querySelector("#current-stock-field");
       const itemMasterIdField = row.querySelector(".item-master-id-field");
       const bomField = row.querySelector(".bom-field");
       const bomIdContainer = row.querySelector(".bom-id-container");

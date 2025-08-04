@@ -68,9 +68,7 @@
       </tbody>
     </table>
   </div>
-  <% po_item = @bom_to_item_map[bom.id] %>
-  <% if po_item.present? %>
-    <% if !bom.flag? %>
+    <% if  !@production_order.executed %>
       <% insufficient = @insufficient_stock_bom_ids.include?(bom.id) %>
   
       <% if insufficient %>
@@ -80,7 +78,7 @@
         </div>
       <% end %>
   
-      <%= button_to update_stock_bill_of_material_path(bom, po_item_id: po_item.id),
+      <%= button_to update_stock_bill_of_material_path(@production_order.id),
         method: :post,
         disabled: insufficient,
         class: "mt-1 mb-6 inline-flex items-center gap-2 font-semibold py-2 px-4 rounded 
@@ -94,5 +92,4 @@
         <span>Stock Already Updated</span>
       </div>
     <% end %>
-  <% end %>
 <% end %>  
