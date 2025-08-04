@@ -18,16 +18,16 @@ class OrderEntry < ApplicationRecord
   private
 
   def generate_serial_numbers
-    if generate_sno 
-      # Get last order's end_serial_no (e.g., "45")
-      last_end_serial = OrderEntry.order(:created_at).last&.end_serial_no
-      last_number = last_end_serial.to_i rescue 0
+    if self.generate_sno
+      # Find the maximum end_serial_no
+      last_end_serial = OrderEntry
+                          .pluck(:end_serial_no)
+                          .map(&:to_i)
+                          .max || 0
   
-      # Start from last end serial + 1 (will be 1 on first run)
-      new_start_number = last_number + 1
+      new_start_number = last_end_serial + 1
       self.start_serial_no = new_start_number.to_s
   
-      # Generate end_serial_no using qty
       if self.qty.present? && self.qty.to_i > 0
         new_end_number = new_start_number + self.qty.to_i - 1
         self.end_serial_no = new_end_number.to_s
