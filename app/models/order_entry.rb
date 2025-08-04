@@ -19,21 +19,21 @@ class OrderEntry < ApplicationRecord
 
   def generate_serial_numbers
     if self.generate_sno
-      # Find the maximum end_serial_no
-      last_end_serial = OrderEntry
-                          .pluck(:end_serial_no)
-                          .map(&:to_i)
-                          .max || 0
+      last_end_serial = OrderEntry.pluck(:end_serial_no)
+                                  .compact
+                                  .map { |s| s[/\d+/].to_i }
+                                  .max || 0
   
       new_start_number = last_end_serial + 1
-      self.start_serial_no = new_start_number.to_s
+      self.start_serial_no = "S#{new_start_number}"
   
       if self.qty.present? && self.qty.to_i > 0
         new_end_number = new_start_number + self.qty.to_i - 1
-        self.end_serial_no = new_end_number.to_s
+        self.end_serial_no = "S#{new_end_number}"
       end
     end
-  end  
+  end
+  
 
   def self.ransackable_attributes(auth_object = nil)
     %w[
