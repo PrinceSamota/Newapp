@@ -6,7 +6,14 @@ class Dispatch < ApplicationRecord
   accepts_nested_attributes_for :dispatch_items, allow_destroy: true
 
   
- 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[id d_id created_at updated_at progress]
+  end
+
+
+  def self.ransackable_associations(auth_object = nil)
+    %w[dispatch_items location]
+  end
   private
 
   def generate_d_id

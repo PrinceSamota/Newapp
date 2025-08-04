@@ -15,7 +15,11 @@ class DispatchesController < ApplicationController
     @dispatch = Dispatch.new(dispatch_params)
   
     if @dispatch.save
-      @dispatches = Dispatch.all.order(created_at: :desc) # ✅ add this
+      @dispatch.dispatch_items.each do |item|
+        order = OrderEntry.find_by(order_no: item.order_no)
+        order.update(dispatch_no: @dispatch.d_id) if order.present?
+      end
+      @dispatches = Dispatch.all.order(created_at: :desc) 
       redirect_to dispatches_path, notice: "BOM created successfully"
       
     

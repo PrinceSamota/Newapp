@@ -58,7 +58,7 @@
             <th class="px-4 py-3 bg-gray-100 z-10 border-r border-gray-300" style="min-width:120px">Client</th>
             <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Target Date</th>
             <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">SKU</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px"><%= sort_link(@q, :dispatch_no) %></th>
+            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px"><%= sort_link(@q, "dispatch_items_dispatch_d_id", "Dispatch No") %></th>
             <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Ship To</th>
             <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">No Of Box</th>
             <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Qty</th>
@@ -104,7 +104,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center whitespace-nowrap max-w-none"><%= order.client&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center">  <%= order.dispatch_d_id || "—" %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center">  <%= order.dispatch_no || order.dispatch_d_id || "—" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center whitespace-nowrap max-w-none"><%= order.location&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.box %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
