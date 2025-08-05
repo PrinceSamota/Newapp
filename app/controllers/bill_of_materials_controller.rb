@@ -6,17 +6,20 @@ class BillOfMaterialsController < ApplicationController
     @bill_of_material.bom_raw_material_items.build
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement)
+    @item_masters_all = ItemMaster.all
   end
 
   def create
     @bill_of_material = BillOfMaterial.new(bom_params)
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement) 
+    @item_masters_all = ItemMaster.all
     if @bill_of_material.save!
       redirect_to bill_of_materials_path, notice: "BOM created successfully"
     else
       @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
       @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement) 
+      @item_masters_all = ItemMaster.all
       render :new, status: :unprocessable_entity
     end
 
@@ -71,6 +74,7 @@ class BillOfMaterialsController < ApplicationController
     @bill_of_material = BillOfMaterial.find(params[:id])
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement)
+    @item_masters_all = ItemMaster.all
   end
   def clone
     original_bom = BillOfMaterial.find(params[:id])
@@ -80,6 +84,7 @@ class BillOfMaterialsController < ApplicationController
     
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement)  
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement) 
+    @item_masters_all = ItemMaster.all
     render :new
   end
   def update_bom_all_items

@@ -68,7 +68,7 @@
 
       <div id="bom-raw-materials" class="space-y-4">
         <%= f.fields_for :bom_raw_material_items do |rm| %>
-          <%= render 'raw_material_fields', f: rm, item_masters: @item_masters_false %>
+          <%= render 'raw_material_fields', f: rm, item_masters: @item_masters_all %>
         <% end %>
       </div>
 
@@ -82,7 +82,7 @@
       <% new_object = BomRawMaterialItem.new %>
       <% index = "NEW_INDEX" %>
       <%= f.fields_for :bom_raw_material_items, new_object, child_index: index do |rm_form| %>
-        <%= render 'raw_material_fields', f: rm_form, item_masters: @item_masters_false %>
+        <%= render 'raw_material_fields', f: rm_form, item_masters: @item_masters_all %>
       <% end %>
     </div>
 
