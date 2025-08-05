@@ -1,8 +1,6 @@
 <div class="pl-6 pr-6">
 <div class="max-w-full mx-auto mt-10 relative">
-  <!-- Unified Header Section -->
   <div class="flex flex-col md:flex-row justify-between items-center p-4 bg-white border border-gray-300 rounded-t-md shadow gap-4">
-    <!-- Heading -->
     <h1 class="text-xl font-semibold text-gray-800">Dispatched Orders</h1>
 
     <!-- Search input in center -->
@@ -18,7 +16,6 @@
       />
     </div>
 
-    <!-- Add Dispatch Button -->
     <%= link_to new_dispatch_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300 font-bold" do %>
       <i class="fa-solid fa-plus"></i>
       <span class="font-semibold">New Dispatch</span>
@@ -27,31 +24,28 @@
 
   
 
-<table class="min-w-full bg-white border border-gray-200  overflow-hidden shadow-sm">
-  <thead class="bg-gray-100 text-gray-700 text-sm">
-    <tr>
-      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">DID</th>
-      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Dispatch Date</th>
-      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Delivery Date</th>
-      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Courier Company</th>
-      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Mode of Shipment</th>
-      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Tracking No</th>
-      <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Progress</th>
-      <th class="px-6 py-3 border-b border-gray-200 text-left">Order Nos</th>
-    </tr>
-  </thead>
-  <tbody class="text-sm" id="dispatches_list">
-    <%= render partial: "dispatch_row", collection: @dispatches, as: :dispatch %>
-  </tbody>
-</table>
-
-  <!-- Slide-in Modal -->
-  <turbo-frame id="modal">
-    <!-- filled via Turbo Stream -->
-  </turbo-frame>
+  <div class="overflow-x-auto max-h-[80vh] overflow-y-auto">
+  <table class="min-w-full bg-white border border-gray-200 shadow-sm text-sm">
+    <thead class="bg-gray-100 text-gray-700 text-sm sticky top-0 z-10">
+      <tr>
+        <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">DID</th>
+        <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Dispatch Date</th>
+        <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Delivery Date</th>
+        <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Courier Company</th>
+        <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Mode of Shipment</th>
+        <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Tracking No</th>
+        <th class="px-6 py-3 border-b border-gray-200 border-r border-gray-300 text-left">Progress</th>
+        <th class="px-6 py-3 border-b border-gray-200 text-left">Order Nos</th>
+      </tr>
+    </thead>
+    <tbody class="text-sm" id="dispatches_list">
+      <%= render partial: "dispatch_row", collection: @dispatches, as: :dispatch %>
+    </tbody>
+  </table>
 </div>
 
-<div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+
+<div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600 shadow-lg">
 					<div>
 						Showing 
 						<%= @dispatches.offset_value + 1 %> -
@@ -59,14 +53,15 @@
 						of <%= @dispatches.total_entries %> results
 					</div>
 
-					<div class="flex items-center space-x-1">
-						<%= will_paginate @dispatches, renderer: WillPaginate::ActionView::LinkRenderer,
-						class: "pagination flex space-x-1",
-						previous_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
-						next_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
-						container: false %>
-					</div>
+          <div class="flex items-center space-x-1">
+          <%= will_paginate @dispatches,
+            renderer: PaginationRenderer,
+            previous_label: "&laquo;".html_safe,
+            next_label: "&raquo;".html_safe,
+            container: false %>
+        </div>
 			    </div>
+</div>
 </div>
 
 <script>
@@ -80,7 +75,7 @@
 
       setTimeout(() => {
         if (modalFrame) modalFrame.innerHTML = "";
-      }, 300); // match animation time
+      }, 300); 
     } else {
       if (modalFrame) modalFrame.innerHTML = "";
     }
@@ -92,7 +87,7 @@ document.addEventListener("turbo:load", () => {
   const openModalBtn = document.getElementById("open-modal-btn");
 
   if (openModalBtn && !openModalBtn.dataset.listenerAttached) {
-    openModalBtn.dataset.listenerAttached = "true"; // prevent double listeners
+    openModalBtn.dataset.listenerAttached = "true"; 
 
     openModalBtn.addEventListener("click", () => {
       fetch("<%= new_dispatch_path %>", {
@@ -109,7 +104,7 @@ document.addEventListener("turbo:load", function () {
 
   searchInput.addEventListener("keyup", function () {
     const query = this.value.toLowerCase().trim();
-    const numericQuery = query.replace(/[^0-9]/g, ""); // for serial range and DID
+    const numericQuery = query.replace(/[^0-9]/g, ""); 
 
     tableRows.forEach(row => {
       const order = row.dataset.order || "";

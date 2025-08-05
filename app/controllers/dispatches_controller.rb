@@ -1,6 +1,6 @@
 class DispatchesController < ApplicationController
   def index
-    @dispatches = Dispatch.order(created_at: :desc).paginate(page: params[:page], per_page: 30)
+    @dispatches = Dispatch.order(created_at: :desc).paginate(page: params[:page], per_page: 100)
     @dispatch = Dispatch.new
    
   end

@@ -44,7 +44,6 @@ class BillOfMaterialsController < ApplicationController
       source_type: "BillOfMaterial",
       source_id: @bom.id
     }) do
-      # Finished Good (Add Stock)
       if (fg = @bom.finished_good).present?
         fg_item = ItemMaster.find_by(sku_id: fg.sku_id)
         if fg_item
@@ -53,7 +52,6 @@ class BillOfMaterialsController < ApplicationController
         end
       end
   
-      # Raw Materials (Subtract Stock)
       @bom.bom_raw_material_items.each do |rm|
         rm_item = ItemMaster.find_by(sku_id: rm.sku_id)
         if rm_item
@@ -68,7 +66,7 @@ class BillOfMaterialsController < ApplicationController
 
   def index
     @q = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).ransack(params[:q])
-    @bill_of_materials = @q.result(distinct: true).paginate(page: params[:page], per_page: 30)
+    @bill_of_materials = @q.result(distinct: true).paginate(page: params[:page], per_page: 100)
   end
   def show
     @bill_of_material = BillOfMaterial.find(params[:id])
@@ -135,7 +133,7 @@ class BillOfMaterialsController < ApplicationController
     if @bom.nil?
       redirect_to production_orders_path, alert: "No BOM found for this Finished Good"
     else
-        render 'production_orders/bom_details'  # ✅ correct path
+        render 'production_orders/bom_details'
       end
     end
     

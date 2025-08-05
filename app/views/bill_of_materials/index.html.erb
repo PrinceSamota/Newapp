@@ -45,54 +45,47 @@
 <% end %>
 </div>
   <% if @bill_of_materials.any? %>
-    <table class="min-w-full divide-y divide-gray-200 text-sm">
-      <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
-        <tr>
-          <% ["BOM Number", "BOM Name", "Finished Good", "Action"].each_with_index do |header, index| %>
-            <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 3 %>">
-              <%= header %>
-            </th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody class="bg-white divide-y divide-gray-200" id="bomTableBody">
-        <% @bill_of_materials.each do |bom| %>
-          <tr class="hover:bg-gray-50" data-bom-number="<%= bom.bom_number.downcase %>" data-bom-name="<%= bom.name.downcase %>">
-            <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200 text-blue-600 underline">
-  <%= link_to bom.bom_number, bill_of_material_path(bom) %>
-</td>
-
-            <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200"><%= bom.name %></td>
-
-            <!-- Finished Good Info -->
-              <td class="px-4 py-3 border-r border-gray-200 w-[30%] max-w-xs whitespace-normal break-words">
-                <% if bom.finished_good.present? %>
-                  <div class="flex flex-wrap gap-x-4 gap-y-1">
-                    <div><strong>SKU:</strong> <%= bom.finished_good.sku_id %></div>
-                    <!-- <div><strong>Item:</strong> <%#= bom.finished_good.item_name %></div>
-                    <div><strong>Qty:</strong> <%#= bom.finished_good.quantity %></div>
-                    <div><strong>Unit:</strong> <%#= bom.finished_good.unit %></div> -->
-                  </div>
-                <% else %>
-                  <span class="text-gray-500 italic">N/A</span>
-                <% end %>
-              </td>
-
-            <!-- Action Buttons -->
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="flex flex-col gap-2">
-
-                <%= link_to clone_bill_of_material_path(bom), class: "flex items-center gap-1 cursor-pointer text-sm", title: "Clone" do %>
-                  <i class="fa-solid fa-clone"></i>
-                  <span>Clone</span>
-                <% end %>
-              </div>
-            </td>
-          </tr>
-          
+    <div class="max-h-[80vh] overflow-y-auto border border-gray-300 rounded-lg">
+  <table class="min-w-full divide-y divide-gray-200 text-sm">
+    <thead class="bg-gray-100 text-gray-600 uppercase text-xs sticky top-0 z-10">
+      <tr>
+        <% ["BOM Number", "BOM Name", "Finished Good", "Action"].each_with_index do |header, index| %>
+          <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 3 %>">
+            <%= header %>
+          </th>
         <% end %>
-      </tbody>
-    </table>
+      </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200" id="bomTableBody">
+      <% @bill_of_materials.each do |bom| %>
+        <tr class="hover:bg-gray-50" data-bom-number="<%= bom.bom_number.downcase %>" data-bom-name="<%= bom.name.downcase %>">
+          <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200 text-blue-600 underline">
+            <%= link_to bom.bom_number, bill_of_material_path(bom) %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap border-r border-gray-200"><%= bom.name %></td>
+          <td class="px-4 py-3 border-r border-gray-200 w-[30%] max-w-xs whitespace-normal break-words">
+            <% if bom.finished_good.present? %>
+              <div class="flex flex-wrap gap-x-4 gap-y-1">
+                <div><strong>SKU:</strong> <%= bom.finished_good.sku_id %></div>
+              </div>
+            <% else %>
+              <span class="text-gray-500 italic">N/A</span>
+            <% end %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex flex-col gap-2">
+              <%= link_to clone_bill_of_material_path(bom), class: "flex items-center gap-1 cursor-pointer text-sm", title: "Clone" do %>
+                <i class="fa-solid fa-clone"></i>
+                <span>Clone</span>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
      <div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
   <div>
     Showing 
@@ -102,12 +95,12 @@
   </div>
 
   <div class="flex items-center space-x-1">
-    <%= will_paginate @bill_of_materials, renderer: WillPaginate::ActionView::LinkRenderer,
-      class: "pagination flex space-x-1",
-      previous_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
-      next_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
-      container: false %>
-  </div>
+  <%= will_paginate @bill_of_materials,
+    renderer: PaginationRenderer,
+    previous_label: "&laquo;".html_safe,
+    next_label: "&raquo;".html_safe,
+    container: false %>
+</div>
 </div>
 
   <% else %>
