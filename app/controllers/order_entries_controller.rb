@@ -34,23 +34,30 @@ class OrderEntriesController < ApplicationController
     
                                @q = OrderEntry
                                .includes(:client)
-                               .where.not(order_no: dispatched_order_nos).ransack(params[:q].presence || {})
-                                @order_entries = @q.result(distinct: true).paginate(page: params[:page], per_page: 30)
-                               
-                               color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
-                               @dispatch_color_map = {}
-                               color_index = 0
-                             
-                               @order_entries.each do |order|
-                                 d_id = order.dispatch_d_id
-                                 next unless d_id.present?
-                             
-                                 unless @dispatch_color_map[d_id]
-                                   @dispatch_color_map[d_id] = color_classes[color_index % color_classes.length]
-                                   color_index += 1
-                                 end
-                               end
+                               .left_joins(dispatch_items: :dispatch) 
+                               .where.not(order_no: dispatched_order_nos)
+                               .select('order_entries.*, dispatches.d_id AS dispatch_d_id') 
+                               .ransack(params[:q].presence || {})
+
+                                @order_entries = @q.result
+                                                  .distinct
+                                                  .paginate(page: params[:page], per_page: 30)
+    
+                                color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
+                                @dispatch_color_map = {}
+                                color_index = 0
+                              
+                                @order_entries.each do |order|
+                                  d_id = order.dispatch_d_id
+                                  next unless d_id.present?
+                              
+                                  unless @dispatch_color_map[d_id]
+                                    @dispatch_color_map[d_id] = color_classes[color_index % color_classes.length]
+                                    color_index += 1
+                                  end
+                                end
     end
+    
   
     def show
       @order_entry = OrderEntry.find(params[:id])
