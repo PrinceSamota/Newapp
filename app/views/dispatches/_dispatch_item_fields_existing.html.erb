@@ -17,7 +17,7 @@
 
       <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md"
           data-role="searchable-dropdown">
-        <% OrderEntry.pluck(:order_no).uniq.each do |order_no| %>
+        <% OrderEntry.pluck(:order_no).each do |order_no| %>
           <li class="cursor-pointer px-3 py-2 hover:bg-blue-100"
               data-value="<%= order_no %>">
             <%= order_no %>
