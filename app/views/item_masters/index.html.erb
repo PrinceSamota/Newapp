@@ -371,13 +371,13 @@
     of <%= @item_masters.total_entries %> results
   </div>
 
-                <div class="flex items-center space-x-1">
-					<%= will_paginate @item_masters, renderer: WillPaginate::ActionView::LinkRenderer,
-						class: "pagination flex space-x-1",
-						previous_label: '<span class="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
-						next_label: '<span class="px-3 py-1 text-sm bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
-						container: false %>
-					</div>
+                  <div class="flex items-center space-x-1">
+    <%= will_paginate @item_masters,
+      renderer: PaginationRenderer,
+      previous_label: "&laquo;".html_safe,
+      next_label: "&raquo;".html_safe,
+      container: false %>
+  </div>
 
 					</div>
 			</div>

@@ -63,12 +63,12 @@
     of <%= @batches.total_entries %> results
   </div>
 
-  <div class="flex items-center space-x-2 text-sm">
-    <%= will_paginate @batches, renderer: WillPaginate::ActionView::LinkRenderer,
-                      class: "flex space-x-1",
-  previous_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
-      next_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
-                      container: false %>
+  <div class="flex items-center space-x-1">
+    <%= will_paginate @batches,
+      renderer: PaginationRenderer,
+      previous_label: "&laquo;".html_safe,
+      next_label: "&raquo;".html_safe,
+      container: false %>
   </div>
 </div>
 
