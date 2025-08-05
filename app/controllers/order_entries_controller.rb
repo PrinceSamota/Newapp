@@ -41,7 +41,7 @@ class OrderEntriesController < ApplicationController
 
                                 @order_entries = @q.result
                                                   .distinct
-                                                  .paginate(page: params[:page], per_page: 30)
+                                                  .paginate(page: params[:page], per_page: 100)
     
                                 color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
                                 @dispatch_color_map = {}

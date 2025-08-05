@@ -71,7 +71,7 @@ class ProductionOrdersController < ApplicationController
            .includes(production_order_items: :item_master)
            .order(created_at: :desc)
            .ransack(params[:q])
-    @production_orders = @q.result(distinct: true).paginate(page: params[:page], per_page: 30)
+    @production_orders = @q.result(distinct: true).paginate(page: params[:page], per_page: 100)
   end
   
   
