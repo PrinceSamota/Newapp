@@ -17,13 +17,13 @@
 
       <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md"
           data-role="searchable-dropdown">
-        <% OrderEntry.select("DISTINCT ON (order_no) id, order_no").order("order_no, id").each do |entry| %>
-          <li class="cursor-pointer px-3 py-2 hover:bg-blue-100"
-              data-id="<%= entry.id %>"
-              data-value="<%= entry.order_no %>">
-            <%= entry.order_no %>
-          </li>
-        <% end %>
+          <% OrderEntry.select(:id, :order_no, :sku_number).distinct.each do |entry| %>
+            <li class="cursor-pointer px-3 py-2 hover:bg-blue-100"
+                data-id="<%= entry.id %>"
+                data-value="<%= entry.order_no %>">
+              <%= "#{entry.order_no} | #{entry.sku_number}" %>
+            </li>
+          <% end %>
       </ul>
     </div>
 
