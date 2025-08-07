@@ -14,16 +14,16 @@
 
   <%= f.hidden_field :quantity, value: "1" %>
   <%= f.hidden_field :_destroy %>
-
-  <!-- ❌ Now this will show correctly -->
+  <% unless @dispatch.progress == "Dispatched" %>
   <button type="button"
     class="remove-item absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
     ✕
   </button>
+  <% end %>
 </div>
 
 
-  <% order = OrderEntry.find_by(order_no: f.object.order_no) %>
+  <% order = OrderEntry.find_by(id: f.object.order_entry_id) %>
   <% item_master = ItemMaster.find_by(sku_id: order&.sku_number) %>
   <% if order.present? %>
     <div class="grid grid-cols-1 md:grid-cols-9 gap-3 bg-gray-50 border border-gray-200 rounded-b-xl p-4 text-sm">
