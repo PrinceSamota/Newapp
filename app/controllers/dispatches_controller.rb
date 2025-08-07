@@ -89,7 +89,7 @@ class DispatchesController < ApplicationController
       :d_id,
       :track_no,
       :progress,
-      dispatch_items_attributes: [:id, :order_no, :quantity, :_destroy]
+      dispatch_items_attributes: [:id, :order_no, :order_entry_id, :quantity, :_destroy]
     )
   end
   def dispatch_params_update

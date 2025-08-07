@@ -27,36 +27,40 @@ class OrderEntriesController < ApplicationController
       end
     end
     def index
-      dispatched_order_nos = DispatchItem
-                               .joins(:dispatch)
-                               .where(dispatches: { progress: 'Dispatched' })
-                               .pluck(:order_no)
+      dispatched_order_entry_ids = DispatchItem
+                                     .joins(:dispatch)
+                                     .where(dispatches: { progress: 'Dispatched' })
+                                     .pluck(:order_entry_id)
+                                     .uniq
     
-                               @q = OrderEntry
-                               .includes(:client)
-                               .left_joins(dispatch_items: :dispatch) 
-                               .where.not(order_no: dispatched_order_nos)
-                               .select('order_entries.*, dispatches.d_id AS dispatch_d_id') 
-                               .ransack(params[:q].presence || {})
-
-                                @order_entries = @q.result
-                                                  .distinct
-                                                  .paginate(page: params[:page], per_page: 30)
+                                     @q = OrderEntry
+                                     .includes(:client)
+                                     .left_joins(dispatch_items: :dispatch)
+                                     .where.not(id: dispatched_order_entry_ids)
+                                     .select('order_entries.*, MIN(dispatches.d_id) AS dispatch_d_id') # ✅ use aggregate function
+                                     .group('order_entries.id') # ✅ only group by primary key
+                                     .ransack(params[:q].presence || {})
+                                   
     
-                                color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
-                                @dispatch_color_map = {}
-                                color_index = 0
-                              
-                                @order_entries.each do |order|
-                                  d_id = order.dispatch_d_id
-                                  next unless d_id.present?
-                              
-                                  unless @dispatch_color_map[d_id]
-                                    @dispatch_color_map[d_id] = color_classes[color_index % color_classes.length]
-                                    color_index += 1
-                                  end
-                                end
+      @order_entries = @q.result
+                         .paginate(page: params[:page], per_page: 30)
+    
+      # Dispatch color mapping
+      color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
+      @dispatch_color_map = {}
+      color_index = 0
+    
+      @order_entries.each do |order|
+        dispatch_no = order.dispatch_no&.strip
+        next unless dispatch_no.present?
+    
+        unless @dispatch_color_map[dispatch_no]
+          @dispatch_color_map[dispatch_no] = color_classes[color_index % color_classes.length]
+          color_index += 1
+        end
+      end
     end
+    
     
   
     def show

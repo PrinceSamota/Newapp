@@ -85,7 +85,7 @@
 
         <tbody id="bomTableBody" class="bg-white divide-y divide-gray-100">
           <% @order_entries.each do |order| %>
-            <% row_color = @dispatch_color_map[order.dispatch_d_id] || 'bg-white' %>
+            <% row_color = @dispatch_color_map[order.dispatch_no&.strip] || 'bg-white' %>
             <tr class="<%= row_color %> hover:cursor-pointer"
     data-order-no="<%= order.order_no.to_s.downcase %>"
     data-article-no="<%= order.article_no.to_s.downcase %>"
@@ -104,7 +104,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center whitespace-nowrap max-w-none"><%= order.client&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center">  <%= order.dispatch_no || order.dispatch_d_id || "—" %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center">  <%= order.dispatch_no || "—" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center whitespace-nowrap max-w-none"><%= order.location&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.box %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
