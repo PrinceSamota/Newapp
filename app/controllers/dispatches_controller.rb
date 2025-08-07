@@ -16,7 +16,7 @@ class DispatchesController < ApplicationController
   
     if @dispatch.save
       @dispatch.dispatch_items.each do |item|
-        order = OrderEntry.find_by(order_no: item.order_no)
+        order = item.order_entry
         order.update(dispatch_no: @dispatch.d_id) if order.present?
       end
       @dispatches = Dispatch.all.order(created_at: :desc) 
@@ -47,7 +47,7 @@ class DispatchesController < ApplicationController
             source_id: @dispatch.id
           }) do
             @dispatch.dispatch_items.each do |item|
-              order = OrderEntry.find_by(order_no: item.order_no)
+              order = item.order_entry
               if order.present?
                 item_master = ItemMaster.find_by(sku_id: order.sku_number)
                 if item_master.present?
@@ -103,7 +103,7 @@ class DispatchesController < ApplicationController
       :track_no,
       :progress,
       :invoice_no,
-      dispatch_items_attributes: [:id, :order_no, :quantity, :_destroy]
+      dispatch_items_attributes: [:id, :order_no, :order_entry_id, :quantity, :_destroy]
     )
   end
 end

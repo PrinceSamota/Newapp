@@ -3,15 +3,31 @@
   <%= f.hidden_field :id %>
 <% disabled_order_no = f.object.persisted? %>
 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-300 rounded-t-xl p-4 bg-gray-50 shadow-sm relative">
-  <div>
-    <label class="block text-sm font-medium text-gray-700 mb-1">Order No</label>
-    <%= f.select :order_no,
-          OrderEntry.pluck(:order_no, :order_no),
-          { include_blank: "Select Order Number" },
-          class: "w-full rounded-xl border border-gray-300 p-2.5",
-              disabled: disabled_order_no %>
-  </div>
+ <div class="relative searchable-wrapper w-full">
+      <label class="block text-sm font-medium text-gray-700 mb-1">Order No</label>
 
+      <input
+        type="text"
+        name="<%= "#{f.object_name}[order_no]" %>"
+        value="<%= f.object.order_no %>"
+        placeholder="Search Order No..."
+        autocomplete="off"
+        data-role="searchable-input"
+        class="order-no-input w-full rounded-xl border border-gray-300 p-2.5 text-sm" />
+
+      <%= f.hidden_field :order_entry_id, class: "order-entry-id-field" %>
+
+      <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md"
+          data-role="searchable-dropdown">
+        <% OrderEntry.select(:id, :order_no, :sku_number).distinct.each do |entry| %>
+          <li class="cursor-pointer px-3 py-2 hover:bg-blue-100"
+              data-id="<%= entry.id %>"
+              data-value="<%= entry.order_no %>">
+            <%= "#{entry.order_no} | #{entry.sku_number}" %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
   <%= f.hidden_field :quantity, value: "1" %>
   <%= f.hidden_field :_destroy %>
   <% unless @dispatch.progress == "Dispatched" %>
