@@ -37,15 +37,14 @@ class OrderEntriesController < ApplicationController
                                      .includes(:client)
                                      .left_joins(dispatch_items: :dispatch)
                                      .where.not(id: dispatched_order_entry_ids)
-                                     .select('order_entries.*, MIN(dispatches.d_id) AS dispatch_d_id') # ✅ use aggregate function
-                                     .group('order_entries.id') # ✅ only group by primary key
+                                     .select('order_entries.*, MIN(dispatches.d_id) AS dispatch_d_id') 
+                                     .group('order_entries.id') 
                                      .ransack(params[:q].presence || {})
                                    
     
       @order_entries = @q.result
-                         .paginate(page: params[:page], per_page: 30)
+                         .paginate(page: params[:page], per_page: 100)
     
-      # Dispatch color mapping
       color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
       @dispatch_color_map = {}
       color_index = 0
