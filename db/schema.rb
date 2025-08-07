@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_04_064557) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_06_223816) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -124,6 +124,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_04_064557) do
     t.float "quantity"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "order_entry_id"
     t.index ["dispatch_id"], name: "index_dispatch_items_on_dispatch_id"
   end
 
@@ -282,7 +283,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_04_064557) do
     t.string "client_id"
     t.date "target_date"
     t.integer "location_id"
-    t.integer "qty"
+    t.decimal "qty"
     t.string "sku_number"
     t.string "fuse_type"
     t.string "loop"

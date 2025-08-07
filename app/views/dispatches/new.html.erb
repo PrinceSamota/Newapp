@@ -241,4 +241,54 @@ document.addEventListener("click", function (e) {
     setTimeout(initSearchableDropdowns, 100);
   }
 });
+
+function initSearchableDropdowns() {
+  document.querySelectorAll("[data-role='searchable-input']:not([data-bound='true'])").forEach((input) => {
+    input.dataset.bound = "true";
+
+    const wrapper = input.closest(".searchable-wrapper");
+    const dropdown = wrapper.querySelector("[data-role='searchable-dropdown']");
+    const hiddenIdField = wrapper.querySelector(".order-entry-id-field");
+
+    input.addEventListener("focus", () => {
+      dropdown.classList.remove("hidden");
+    });
+
+    input.addEventListener("input", () => {
+      const searchTerm = input.value.toLowerCase();
+      let hasMatch = false;
+
+      dropdown.querySelectorAll("li").forEach((item) => {
+        const match = item.textContent.toLowerCase().includes(searchTerm);
+        item.style.display = match ? "block" : "none";
+        if (match) hasMatch = true;
+      });
+
+      dropdown.classList.toggle("hidden", !hasMatch);
+    });
+
+    dropdown.querySelectorAll("li").forEach((item) => {
+      item.addEventListener("click", () => {
+        input.value = item.dataset.value; // Show order_no
+        hiddenIdField.value = item.dataset.id; // Set hidden ID
+        dropdown.classList.add("hidden");
+      });
+    });
+
+    input.addEventListener("blur", () => {
+      setTimeout(() => dropdown.classList.add("hidden"), 200); // Allow time for click
+    });
+  });
+}
+
+// Call once on page load
+document.addEventListener("DOMContentLoaded", initSearchableDropdowns);
+document.addEventListener("turbo:load", initSearchableDropdowns);
+
+// Call after adding new row
+document.addEventListener("click", function (e) {
+  if (e.target && e.target.id === "add-item") {
+    setTimeout(initSearchableDropdowns, 100);
+  }
+});
 </script>
