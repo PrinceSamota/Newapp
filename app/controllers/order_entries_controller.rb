@@ -33,6 +33,7 @@ class OrderEntriesController < ApplicationController
                                      .pluck(:order_entry_id)
                                      .uniq
     
+
                                      @q = OrderEntry
                                      .includes(:client)
                                      .left_joins(dispatch_items: :dispatch)
@@ -52,6 +53,7 @@ class OrderEntriesController < ApplicationController
       @order_entries.each do |order|
         dispatch_no = order.dispatch_no&.strip
         next unless dispatch_no.present?
+
     
         unless @dispatch_color_map[dispatch_no]
           @dispatch_color_map[dispatch_no] = color_classes[color_index % color_classes.length]

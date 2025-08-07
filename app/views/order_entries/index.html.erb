@@ -33,9 +33,12 @@
     </div>
 
     <!-- Table -->
-    <div class="overflow-x-auto">
+    <div id="topScroll" class="overflow-x-auto" style="overflow-y:hidden;">
+  <div style="height:1px;"></div>
+</div>
+    <div  id="bottomScroll" class="overflow-x-auto max-h-[80vh] overflow-y-auto">
       <table class="text-sm divide-y divide-gray-200 border border-gray-300 rounded min-w-full">
-        <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
+        <thead class="bg-gray-100 text-gray-700 text-xs uppercase sticky top-0 z-50">
           <tr>
             <th class="px-4 sticky left-0 bg-gray-100 z-10 text-center relative sticky-border" style="min-width:320px; height:52px;">
               <style>
@@ -48,6 +51,12 @@
                   width: 2px;
                   background-color: black;
                   z-index: 50;
+                }
+                #bottomScroll::-webkit-scrollbar {
+                  display: none;
+                }
+                #bottomScroll {
+                  scrollbar-width: none;
                 }
               </style>
               <div class="flex items-center justify-between h-full">
@@ -130,6 +139,7 @@
           <% end %>
         </tbody>
       </table>
+      </div>
       <div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
 					<div>
 						Showing 
@@ -138,13 +148,13 @@
 						of <%= @order_entries.total_entries %> results
 					</div>
 
-					<div class="flex items-center space-x-1">
-						<%= will_paginate @order_entries, renderer: WillPaginate::ActionView::LinkRenderer,
-						class: "pagination flex space-x-1",
-						previous_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&laquo;</span>'.html_safe,
-						next_label: '<span class="px-2 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">&raquo;</span>'.html_safe,
-						container: false %>
-					</div>
+          <div class="flex items-center space-x-1">
+          <%= will_paginate @order_entries,
+            renderer: PaginationRenderer,
+            previous_label: "&laquo;".html_safe,
+            next_label: "&raquo;".html_safe,
+            container: false %>
+        </div>
 			    </div>
     </div>
   </div>
@@ -171,6 +181,22 @@
 
         row.style.display = isMatch ? "" : "none";
       });
+    });
+  });
+  document.addEventListener("turbo:load", function () {
+    const topScroll = document.getElementById("topScroll");
+    const bottomScroll = document.getElementById("bottomScroll");
+
+    // Top scroll width ko table ke width ke equal set karo
+    topScroll.firstElementChild.style.width = bottomScroll.scrollWidth + "px";
+
+    // Dono scroll ko sync karo
+    topScroll.addEventListener("scroll", function () {
+      bottomScroll.scrollLeft = topScroll.scrollLeft;
+    });
+
+    bottomScroll.addEventListener("scroll", function () {
+      topScroll.scrollLeft = bottomScroll.scrollLeft;
     });
   });
 </script>
