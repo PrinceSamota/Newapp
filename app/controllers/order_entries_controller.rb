@@ -28,23 +28,24 @@ class OrderEntriesController < ApplicationController
     end
     def index
       dispatched_order_entry_ids = DispatchItem
-                                     .joins(:dispatch)
-                                     .where(dispatches: { progress: 'Dispatched' })
-                                     .pluck(:order_entry_id)
-                                     .uniq
+        .joins(:dispatch)
+        .where(dispatches: { progress: 'Dispatched' })
+        .pluck(:order_entry_id)
+        .uniq
     
 
-                                     @q = OrderEntry
-                                     .includes(:client)
-                                     .left_joins(dispatch_items: :dispatch)
-                                     .where.not(id: dispatched_order_entry_ids)
-                                     .select('order_entries.*, MIN(dispatches.d_id) AS dispatch_d_id') 
-                                     .group('order_entries.id') 
-                                     .ransack(params[:q].presence || {})
-                                   
+        @q = OrderEntry
+        .includes(:client)
+        .left_joins(dispatch_items: :dispatch)
+        .where.not(id: dispatched_order_entry_ids)
+        .select('order_entries.*, MIN(dispatches.d_id) AS dispatch_d_id') 
+        .group('order_entries.id') 
+        .ransack(params[:q].presence || {})
     
+        
       @order_entries = @q.result
-                         .paginate(page: params[:page], per_page: 100)
+        .order(params.dig(:q, :s) || 'dispatch_no ASC')
+        .paginate(page: params[:page], per_page: 100)
     
       color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
       @dispatch_color_map = {}
@@ -54,7 +55,7 @@ class OrderEntriesController < ApplicationController
         dispatch_no = order.dispatch_no&.strip
         next unless dispatch_no.present?
 
-    
+        
         unless @dispatch_color_map[dispatch_no]
           @dispatch_color_map[dispatch_no] = color_classes[color_index % color_classes.length]
           color_index += 1
@@ -62,7 +63,7 @@ class OrderEntriesController < ApplicationController
       end
     end
     
-    
+  
   
     def show
       @order_entry = OrderEntry.find(params[:id])
