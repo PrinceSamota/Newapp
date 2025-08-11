@@ -1,9 +1,13 @@
 class DispatchesController < ApplicationController
   def index
-    @dispatches = Dispatch.order(created_at: :desc).paginate(page: params[:page], per_page: 100)
+    @q = Dispatch.ransack(params[:q])
+    @dispatches = @q.result(distinct: true)
+                    .order(created_at: :desc)
+                    .paginate(page: params[:page], per_page: 100)
+  
     @dispatch = Dispatch.new
-   
   end
+  
 
   def new
     @dispatch = Dispatch.new
