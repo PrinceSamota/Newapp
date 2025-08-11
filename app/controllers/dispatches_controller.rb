@@ -40,7 +40,10 @@ class DispatchesController < ApplicationController
   
     ActiveRecord::Base.transaction do
       if @dispatch.update(dispatch_params_update)
-  
+        @dispatch.dispatch_items.each do |item|
+          order = item.order_entry
+          order.update(dispatch_no: @dispatch.d_id) if order.present?
+        end
         if @dispatch.progress == "Dispatched"
           PaperTrail.request(controller_info: {
             source_type: "Dispatch",

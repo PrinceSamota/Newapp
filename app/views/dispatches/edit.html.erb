@@ -127,9 +127,7 @@
       }
     };
 
-    checkStockAndToggleButton(); // run initially
-
-    // Re-check on mutation (when items are added/removed)
+    checkStockAndToggleButton(); 
     const container = document.getElementById("dispatch-items");
     if (container) {
       const observer = new MutationObserver(() => {
@@ -138,11 +136,61 @@
       observer.observe(container, { childList: true, subtree: true });
     }
 
-    // Re-check when progress is changed (Shipment ↔ Dispatched)
+
     const progressSelect = document.querySelector("select[name='dispatch[progress]']");
     if (progressSelect) {
       progressSelect.addEventListener("change", checkStockAndToggleButton);
     }
   });
 
+document.addEventListener("DOMContentLoaded", initSearchableDropdowns);
+document.addEventListener("turbo:load", initSearchableDropdowns);
+
+
+document.addEventListener("click", function (e) {
+  if (e.target && e.target.id === "add-item") {
+
+    setTimeout(initSearchableDropdowns, 100);
+  }
+});
+
+function initSearchableDropdowns() {
+  document.querySelectorAll("[data-role='searchable-input']:not([data-bound='true'])").forEach((input) => {
+    input.dataset.bound = "true";
+    const wrapper = input.closest(".searchable-wrapper");
+    const dropdown = wrapper.querySelector("[data-role='searchable-dropdown']");
+    const hiddenIdField = wrapper.querySelector(".order-entry-id-field");
+    input.addEventListener("focus", () => {
+      dropdown.classList.remove("hidden");
+    });
+    input.addEventListener("input", () => {
+      const searchTerm = input.value.toLowerCase();
+      let hasMatch = false;
+      dropdown.querySelectorAll("li").forEach((item) => {
+        const match = item.textContent.toLowerCase().includes(searchTerm);
+        item.style.display = match ? "block" : "none";
+        if (match) hasMatch = true;
+      });
+      dropdown.classList.toggle("hidden", !hasMatch);
+    });
+    dropdown.querySelectorAll("li").forEach((item) => {
+      item.addEventListener("click", () => {
+        input.value = item.dataset.value;
+        hiddenIdField.value = item.dataset.id; 
+        dropdown.classList.add("hidden");
+      });
+    });
+    input.addEventListener("blur", () => {
+      setTimeout(() => dropdown.classList.add("hidden"), 200); 
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", initSearchableDropdowns);
+document.addEventListener("turbo:load", initSearchableDropdowns);
+document.addEventListener("click", function (e) {
+  if (e.target && e.target.id === "add-item") {
+    setTimeout(initSearchableDropdowns, 100);
+  }
+});
 </script>
