@@ -2,19 +2,21 @@
 <div class="max-w-full mx-auto mt-10 relative">
   <div class="flex flex-col md:flex-row justify-between items-center p-4 bg-white border border-gray-300 rounded-t-md shadow gap-4">
     <h1 class="text-xl font-semibold text-gray-800">Dispatched Orders</h1>
-
-    <!-- Search input in center -->
     <div class="relative w-full md:w-96">
-      <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
-        <i class="fa-solid fa-magnifying-glass"></i>
-      </span>
-      <input
-        type="text"
-        id="dispatchSearch"
-        placeholder="Order No, Client, or Courier..."
-        class="pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-blue-200 w-full"
-      />
-    </div>
+    <%= search_form_for @q, url: dispatches_path, method: :get, html: { class: "flex items-center gap-2" } do |f| %>
+      <div class="relative flex-1">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </span>
+        <%= f.search_field :search_all_cont,
+          placeholder: "Search by DID, Courier, or Mode of Shipment...",
+          class: "pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring focus:ring-blue-200 w-full" %>
+      </div>
+      <%= f.submit "Search",
+        class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out cursor-pointer whitespace-nowrap" %>
+    <% end %>
+  </div>
+  
 
     <%= link_to new_dispatch_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300 font-bold" do %>
       <i class="fa-solid fa-plus"></i>
