@@ -143,8 +143,8 @@
     }
   });
 
-document.addEventListener("DOMContentLoaded", initSearchableDropdowns);
-document.addEventListener("turbo:load", initSearchableDropdowns);
+  document.addEventListener("turbo:load", initSearchableDropdowns);
+  document.addEventListener("turbo:frame-load", initSearchableDropdowns);  
 
 
 document.addEventListener("click", function (e) {
@@ -160,9 +160,11 @@ function initSearchableDropdowns() {
     const wrapper = input.closest(".searchable-wrapper");
     const dropdown = wrapper.querySelector("[data-role='searchable-dropdown']");
     const hiddenIdField = wrapper.querySelector(".order-entry-id-field");
+
     input.addEventListener("focus", () => {
       dropdown.classList.remove("hidden");
     });
+
     input.addEventListener("input", () => {
       const searchTerm = input.value.toLowerCase();
       let hasMatch = false;
@@ -173,21 +175,24 @@ function initSearchableDropdowns() {
       });
       dropdown.classList.toggle("hidden", !hasMatch);
     });
+
     dropdown.querySelectorAll("li").forEach((item) => {
       item.addEventListener("click", () => {
         input.value = item.dataset.value;
-        hiddenIdField.value = item.dataset.id; 
+        hiddenIdField.value = item.dataset.id;
         dropdown.classList.add("hidden");
       });
     });
+
     input.addEventListener("blur", () => {
-      setTimeout(() => dropdown.classList.add("hidden"), 200); 
+      setTimeout(() => dropdown.classList.add("hidden"), 200);
     });
   });
 }
 
-document.addEventListener("DOMContentLoaded", initSearchableDropdowns);
 document.addEventListener("turbo:load", initSearchableDropdowns);
+document.addEventListener("turbo:frame-load", initSearchableDropdowns);
+
 document.addEventListener("click", function (e) {
   if (e.target && e.target.id === "add-item") {
     setTimeout(initSearchableDropdowns, 100);
