@@ -30,7 +30,7 @@
             field_id: "finished-good-sku-id",
             label_text: "SKU ID",
             field_name: "#{fg.object_name}[sku_id]",
-            items: @item_masters,
+            items: @item_masters_good,
             value_method: :sku_id,
             selected_value: fg.object.sku_id,
             extra_class: "" %>
@@ -41,7 +41,7 @@
             field_id: "finished-good-item-name",
             label_text: "Item Name",
             field_name: "#{fg.object_name}[item_name]",
-            items: @item_masters,
+            items: @item_masters_good,
             value_method: :item_name,
             selected_value: fg.object.item_name,
             extra_class: "" %>

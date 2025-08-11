@@ -7,6 +7,12 @@ class BillOfMaterialsController < ApplicationController
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement)
     @item_masters_all = ItemMaster.all
+    used_finished_good_skus = FinishedGood.pluck(:sku_id)
+    @item_masters_good = ItemMaster
+    .where('"item_masters"."is_bom" = ?', true)
+    .where.not(sku_id: used_finished_good_skus)
+    .includes(:measurement)
+
   end
 
   def create
