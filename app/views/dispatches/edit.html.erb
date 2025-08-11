@@ -90,6 +90,7 @@
         .then(html => {
           container.insertAdjacentHTML("beforeend", html);
           index++;
+          initSearchableDropdowns();
         });
     });
 
@@ -146,14 +147,6 @@
   document.addEventListener("turbo:load", initSearchableDropdowns);
   document.addEventListener("turbo:frame-load", initSearchableDropdowns);  
 
-
-document.addEventListener("click", function (e) {
-  if (e.target && e.target.id === "add-item") {
-
-    setTimeout(initSearchableDropdowns, 100);
-  }
-});
-
 function initSearchableDropdowns() {
   document.querySelectorAll("[data-role='searchable-input']:not([data-bound='true'])").forEach((input) => {
     input.dataset.bound = "true";
@@ -191,11 +184,5 @@ function initSearchableDropdowns() {
 }
 
 document.addEventListener("turbo:load", initSearchableDropdowns);
-document.addEventListener("turbo:frame-load", initSearchableDropdowns);
-
-document.addEventListener("click", function (e) {
-  if (e.target && e.target.id === "add-item") {
-    setTimeout(initSearchableDropdowns, 100);
-  }
-});
+document.addEventListener("turbo:frame-load", initSearchableDropdowns); 
 </script>
