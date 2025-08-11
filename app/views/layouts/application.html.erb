@@ -98,34 +98,51 @@
 
 </html>
 <script>
-  document.addEventListener("turbo:load", function () {
-    const sidebar = document.getElementById("sidebar");
-    const toggleBtn = document.getElementById("toggleSidebar");
-    const mainContent = document.getElementById("mainContent");
-    const toggleWrapper = document.getElementById("sidebarToggleWrapper");
+document.addEventListener("turbo:load", function () {
+  const sidebar = document.getElementById("sidebar");
+  const toggleBtn = document.getElementById("toggleSidebar");
+  const mainContent = document.getElementById("mainContent");
+  const toggleWrapper = document.getElementById("sidebarToggleWrapper");
 
-    toggleBtn.addEventListener("click", () => {
-      const isCollapsed = sidebar.classList.contains("w-16");
+  toggleBtn.replaceWith(toggleBtn.cloneNode(true));
+  const newToggleBtn = document.getElementById("toggleSidebar");
 
-      if (isCollapsed) {
-        // Expand sidebar
-        sidebar.classList.remove("w-16");
-        sidebar.classList.add("w-64");
-        mainContent.classList.remove("ml-16");
-        mainContent.classList.add("ml-64");
-        toggleWrapper.classList.remove("justify-center");
-        toggleWrapper.classList.add("justify-end");
-        document.querySelectorAll(".sidebar-label").forEach(el => el.classList.remove("hidden"));
-      } else {
-        // Collapse sidebar
-        sidebar.classList.remove("w-64");
-        sidebar.classList.add("w-16");
-        mainContent.classList.remove("ml-64");
-        mainContent.classList.add("ml-16");
-        toggleWrapper.classList.remove("justify-end");
-        toggleWrapper.classList.add("justify-center");
-        document.querySelectorAll(".sidebar-label").forEach(el => el.classList.add("hidden"));
-      }
+  function collapseSidebar() {
+    sidebar.classList.remove("w-64");
+    sidebar.classList.add("w-16");
+    mainContent.classList.remove("ml-64");
+    mainContent.classList.add("ml-16");
+    toggleWrapper.classList.remove("justify-end");
+    toggleWrapper.classList.add("justify-center");
+    document.querySelectorAll(".sidebar-label").forEach(el => el.classList.add("hidden"));
+  }
+
+  function expandSidebar() {
+    sidebar.classList.remove("w-16");
+    sidebar.classList.add("w-64");
+    mainContent.classList.remove("ml-16");
+    mainContent.classList.add("ml-64");
+    toggleWrapper.classList.remove("justify-center");
+    toggleWrapper.classList.add("justify-end");
+    document.querySelectorAll(".sidebar-label").forEach(el => el.classList.remove("hidden"));
+  }
+
+  collapseSidebar();
+
+  newToggleBtn.addEventListener("click", () => {
+    const isCollapsed = sidebar.classList.contains("w-16");
+    if (isCollapsed) {
+      expandSidebar();
+    } else {
+      collapseSidebar();
+    }
+  });
+
+  document.querySelectorAll("#sidebar a").forEach(link => {
+    link.addEventListener("click", () => {
+      collapseSidebar();
     });
   });
+});
+
 </script>
