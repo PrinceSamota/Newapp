@@ -56,6 +56,7 @@ resources :locations, only: [:create]
   resources :availabilities, only: [:new, :create, :index]
   resources :item_masters do
     member do
+      patch :update_stock
       get :versions
     end
   end

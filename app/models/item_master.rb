@@ -15,7 +15,7 @@ class ItemMaster < ApplicationRecord
   belongs_to :cct, optional: true
   belongs_to :cover_type, optional: true
   belongs_to :extra, optional: true
-  has_paper_trail save_changes: true
+  has_paper_trail save_changes: true, meta: { reason: :paper_trail_reason }  
   has_many :production_order_items
   has_many :production_orders
   validates :item_name, presence: true
@@ -36,6 +36,10 @@ class ItemMaster < ApplicationRecord
   validates :category_id, :measurement_id, presence: true
   before_validation :generate_item_name, if: -> { is_bom == true && self.item_name.blank? }
   private
+  
+  def paper_trail_reason
+    PaperTrail.request.controller_info[:reason] if PaperTrail.request.controller_info
+  end
 
   def generate_sku_id
     last_sku = ItemMaster.maximum(:sku_id)

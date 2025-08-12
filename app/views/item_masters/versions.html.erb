@@ -9,6 +9,46 @@
   </h2>
 </div>
 
+<div class="mb-6 bg-white p-4 rounded-lg shadow border border-gray-200">
+  <%= form_with url: update_stock_item_master_path(@item_master), method: :patch, local: true do |f| %>
+    <div class="flex flex-col md:flex-row md:items-end gap-4">
+
+      <!-- Stock Value -->
+      <div class="flex-1">
+        <%= f.label :stock_value, "Stock", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.number_field :stock_value, step: 1, placeholder: "Quantity", required: true, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+
+      <!-- Reason -->
+      <div class="flex-1">
+        <%= f.label :comment, "Reason", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :comment, placeholder: "Reason for stock update", required: true, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+      </div>
+
+      <!-- Operation -->
+      <div class="flex-2">
+        <%= f.label :operation, "Action", class: "block text-sm font-medium text-gray-700" %>
+        <div class="flex items-center gap-4 border border-gray-300 rounded-md px-3 py-2">
+          <label class="flex items-center gap-1">
+            <%= f.radio_button :operation, "add", checked: true, required: true, class: "text-green-600 cursor-pointer" %>
+            <span>Add</span>
+          </label>
+          <label class="flex items-center gap-1">
+            <%= f.radio_button :operation, "subtract", required: true, class: "text-red-600 cursor-pointer" %>
+            <span>Subtract</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <div class="flex-none">
+        <%= f.submit "Update", class: " mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl text-sm cursor-pointer" %>
+      </div>
+
+    </div>
+  <% end %>
+</div>
+
 <div class="overflow-x-auto rounded-lg shadow">
   <div class="overflow-hidden rounded-lg border border-gray-200">
     <table class="min-w-full text-sm bg-white">
@@ -16,6 +56,7 @@
         <tr>
           <th class="px-6 py-3 text-left">Time</th>
           <th class="px-6 py-3 text-left">Source</th>
+          <th class="px-6 py-3 text-left">Reason</th>
           <th class="px-6 py-3 text-left">Before Stock</th>
           <th class="px-6 py-3 text-left">Change</th>
           <th class="px-6 py-3 text-left">After Stock</th>
@@ -46,6 +87,9 @@
                         -
                       <% end %>
                     </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <%= version.reason.presence || "-" %>
+                  </td>
                     <td class="px-6 py-4 whitespace-nowrap text-gray-700 font-semibold"><%= old_val %></td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <% if diff > 0 %>
