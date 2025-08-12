@@ -98,7 +98,6 @@ document.addEventListener("turbo:load", function () {
         container.insertAdjacentHTML("beforeend", html);
         index++;
 
-        // ✅ Re-initialize TomSelect on new fields
         initSearchableDropdowns();
       });
   });
@@ -115,7 +114,6 @@ document.addEventListener("turbo:load", function () {
     }
   });
 
-  // Frontend Validation
   form.addEventListener("submit", function (e) {
     let valid = true;
     const requiredFields = form.querySelectorAll(".required-field");
@@ -152,11 +150,9 @@ document.addEventListener("turbo:load", function () {
     if (!valid) e.preventDefault();
   });
 
-  // ✅ Initialize TomSelect on page load
   initSearchableDropdowns();
 });
 
-// ✅ Initialize searchable dropdown
 function initSearchableDropdowns() {
   document.querySelectorAll('select.searchable:not([data-tomselect-bound])').forEach(function(selectEl) {
     new TomSelect(selectEl, {
@@ -196,12 +192,10 @@ function submitNewLocation() {
 
     const dropdown = input.parentElement.querySelector("[data-role='searchable-dropdown']");
 
-    // Show dropdown on focus
     input.addEventListener("focus", () => {
       dropdown.classList.remove("hidden");
     });
 
-    // Filter items as user types
     input.addEventListener("input", () => {
       const searchTerm = input.value.toLowerCase();
       let hasMatch = false;
@@ -215,7 +209,6 @@ function submitNewLocation() {
       dropdown.classList.toggle("hidden", !hasMatch);
     });
 
-    // Select item
     dropdown.addEventListener("click", (e) => {
       if (e.target.tagName === "LI") {
         input.value = e.target.dataset.value;
@@ -223,18 +216,15 @@ function submitNewLocation() {
       }
     });
 
-    // Hide dropdown on blur (after small delay to allow click)
     input.addEventListener("blur", () => {
       setTimeout(() => dropdown.classList.add("hidden"), 200);
     });
   });
 }
 
-// Call once on full page load
 document.addEventListener("DOMContentLoaded", initSearchableDropdowns);
 document.addEventListener("turbo:load", initSearchableDropdowns);
 
-// 👇 Call again when new dispatch item is added
 document.addEventListener("click", function (e) {
   if (e.target && e.target.id === "add-item") {
     // Wait for the DOM to update
