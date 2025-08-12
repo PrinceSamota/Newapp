@@ -131,7 +131,8 @@ class OrderEntriesController < ApplicationController
         :dispatch_no,
         :status,
         :box,
-        :extra
+        :extra,
+        :remark
       )
     end
     
