@@ -1,5 +1,5 @@
 class ItemMastersController < ApplicationController
-
+  before_action :set_paper_trail_whodunnit
     def index
       @decoded_result = nil
       @article_number = nil
@@ -39,16 +39,12 @@ class ItemMastersController < ApplicationController
       def update
         @item_master = ItemMaster.find(params[:id])
       
-        # Grab strong params once
         new_params = item_master_params
       
-        # Check if BOM was previously true and is now being set to false
         was_bom = @item_master.is_bom
         will_be_bom = ActiveModel::Type::Boolean.new.cast(new_params[:is_bom])
       
-        # If it's now not a BOM, manually clear dependent fields
         if was_bom && !will_be_bom
-          # Clear BOM-related fields
           new_params = new_params.merge(
             fuse_type_id: nil,
             loop_id: nil,
@@ -92,7 +88,7 @@ class ItemMastersController < ApplicationController
       
         render json: {
           used: boms.exists?,
-          bom_names: boms.map { |bom| "#{bom.bom_number}" }, # cleaner formatting
+          bom_names: boms.map { |bom| "#{bom.bom_number}" },
           bom_ids: boms.pluck(:id)
         }
       end
@@ -118,6 +114,26 @@ class ItemMastersController < ApplicationController
           render json: { error: "Item not found" }, status: :not_found
         end
       end
+      def update_stock
+        @item_master = ItemMaster.find(params[:id])
+        stock_value = params[:stock_value].to_f
+        operation = params[:operation]
+        comment = params[:comment]
+        PaperTrail.request.whodunnit = current_user.id
+        PaperTrail.request.controller_info = { reason: params[:comment] }
+        if operation == "add"
+          @item_master.opening_stock += stock_value
+        elsif operation == "subtract"
+          @item_master.opening_stock -= stock_value
+        end
+      
+        if @item_master.save
+          redirect_to versions_item_master_path(@item_master), notice: "Stock updated successfully"
+        else
+          redirect_to versions_item_master_path(@item_master), alert: "Failed to update stock"
+        end
+      end
+      
 
       
     private

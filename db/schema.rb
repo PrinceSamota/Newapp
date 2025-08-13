@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_06_223816) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_12_211602) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -457,6 +457,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_06_223816) do
     t.string "source_type"
     t.bigint "source_id"
     t.datetime "created_at"
+    t.string "reason"
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
     t.index ["source_type", "source_id"], name: "index_versions_on_source_type_and_source_id"
   end
