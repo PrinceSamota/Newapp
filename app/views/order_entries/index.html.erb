@@ -1,45 +1,75 @@
 <div class="pl-6 pr-6">
   <div class="bg-white rounded-lg shadow-md border border-gray-200 mt-6">
     
-    <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-center gap-3 p-6">
       <h2 class="text-xl font-semibold w-full md:w-auto text-center md:text-left">
-      Pending Orders
+        Pending Orders
       </h2>
       <div data-controller="bom-search" class="relative">
-        
         <%= search_form_for @q, html: { class: "flex items-center gap-2 w-full max-w-xl mx-auto" } do |f| %>
-                <div class="relative w-full">
-                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
-                    viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103 10.5a7.5 7.5 0 0013.15 6.15z"></path>
-                  </svg>
-                </div>
-                <%= f.search_field :order_no_or_article_no_or_sku_number_cont,
-                class: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-                  placeholder: "Search by Item Name, SKU ID, Category, Measurement..." %>
-                </div>
-
-                <%= f.submit "Search",
-                class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out" %>
-                <% end %>
+          <div class="relative w-full">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103 10.5a7.5 7.5 0 0013.15 6.15z"></path>
+              </svg>
+            </div>
+            <%= f.search_field :order_no_or_article_no_or_sku_number_cont,
+              class: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
+              placeholder: "Search by Item Name, SKU ID, Category, Measurement..." %>
+          </div>
+          <%= f.submit "Search",
+            class: "px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out" %>
+        <% end %>
       </div>
+
+      <div class="relative">
+      <div id="cartIconWrapper" class="cursor-pointer ml-4 inline-block">
+        <i class="fa-solid fa-cart-shopping text-2xl text-gray-700"></i>
+        <span id="cartCount"
+          class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+          0
+        </span>
+      </div>
+    
+      <div id="cartModal"
+        class="absolute top-full right-0 mt-2 bg-white p-4 rounded-lg shadow-lg border border-gray-200 hidden z-[999] transform opacity-0 scale-95 transition-all duration-200 ease-out"
+        style="width: 800px;">
+        <div class="flex justify-between items-center border-b pb-2">
+          <h2 class="text-lg font-bold">Selected Orders</h2>
+          <button id="closeCartModal" class="text-gray-500 hover:text-red-500 text-lg">&times;</button>
+        </div>
+    
+        <ul id="cartOrderList" class="mt-4 space-y-2"></ul>
+    
+        <div class="mt-4 text-right">
+          <%= form_with model: @dispatch, url: dispatches_path, method: :post, local: true do |f| %>
+            <%= f.hidden_field :progress, value: "Shipment" %>
+    
+            <div id="hiddenFieldsContainer"></div>
+    
+            <%= f.submit "Create Dispatch", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    
       <%= link_to new_order_entry_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300" do %>
         <i class="fa-solid fa-plus"></i>
         <span class="font-semibold">New Order</span>
       <% end %>
     </div>
 
-    <!-- Table -->
     <div id="topScroll" class="overflow-x-auto" style="overflow-y:hidden;">
-  <div style="height:1px;"></div>
-</div>
-    <div  id="bottomScroll" class="overflow-x-auto max-h-[80vh] overflow-y-auto">
+      <div style="height:1px;"></div>
+    <div id="bottomScroll" class="overflow-x-auto max-h-[80vh] overflow-y-auto">
       <table class="text-sm divide-y divide-gray-200 border border-gray-300 rounded min-w-full">
         <thead class="bg-gray-100 text-gray-700 text-xs uppercase sticky top-0 z-50">
           <tr>
+            <th class="px-4 py-3 border-r border-gray-300 text-center">
+              <input type="checkbox" id="selectAll" class="w-4 h-4">
+            </th>
             <th class="px-4 sticky left-0 bg-gray-100 z-10 text-center relative sticky-border" style="min-width:320px; height:52px;">
               <style>
                 .sticky-border::after {
@@ -58,48 +88,61 @@
                 #bottomScroll {
                   scrollbar-width: none;
                 }
+                #cartIconWrapper {
+                  position: relative; 
+                }
+
+                #cartModal {
+                  position: absolute;
+                  top: 120%;
+                  right: 0; 
+                  background: white;
+                  z-index: 999;
+                }
               </style>
               <div class="flex items-center justify-between h-full">
                 <div class="w-1/2 pr-2 font-semibold h-full flex items-center justify-center"><%= sort_link(@q, :order_no) %></div>
                 <div class="w-1/2 pl-2 border-l-2 border-black font-semibold h-full flex items-center justify-center">Article No</div>
               </div>
             </th>
-            <th class="px-4 py-3 bg-gray-100 z-10 border-r border-gray-300" style="min-width:120px">Client</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Target Date</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">SKU</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px"><%= sort_link(@q, :dispatch_no) %></th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Ship To</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">No Of Box</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Qty</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Item Type</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Profile</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Wattage</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Voltage</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Length</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">CCT</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Cover</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Fuse</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Loop</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:120px">Extra</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Start Serial</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">End Serial</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">MFG Date</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Driver Rev. No</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Invoice No</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Tracking No</th>
-            <th class="px-4 py-3 border-r border-gray-300" style="min-width:140px">Remark</th>
-            <th class="px-4 py-3" style="min-width:140px">Status</th>
+            <th class="px-4 py-3 bg-gray-100 z-10 border-r border-gray-300">Client</th>
+            <th class="px-4 py-3 border-r border-gray-300">Target Date</th>
+            <th class="px-4 py-3 border-r border-gray-300">SKU</th>
+            <th class="px-4 py-3 border-r border-gray-300"><%= sort_link(@q, :dispatch_no) %></th>
+            <th class="px-4 py-3 border-r border-gray-300">Ship To</th>
+            <th class="px-4 py-3 border-r border-gray-300">No Of Box</th>
+            <th class="px-4 py-3 border-r border-gray-300">Qty</th>
+            <th class="px-4 py-3 border-r border-gray-300">Item Type</th>
+            <th class="px-4 py-3 border-r border-gray-300">Profile</th>
+            <th class="px-4 py-3 border-r border-gray-300">Wattage</th>
+            <th class="px-4 py-3 border-r border-gray-300">Voltage</th>
+            <th class="px-4 py-3 border-r border-gray-300">Length</th>
+            <th class="px-4 py-3 border-r border-gray-300">CCT</th>
+            <th class="px-4 py-3 border-r border-gray-300">Cover</th>
+            <th class="px-4 py-3 border-r border-gray-300">Fuse</th>
+            <th class="px-4 py-3 border-r border-gray-300">Loop</th>
+            <th class="px-4 py-3 border-r border-gray-300">Extra</th>
+            <th class="px-4 py-3 border-r border-gray-300">Start Serial</th>
+            <th class="px-4 py-3 border-r border-gray-300">End Serial</th>
+            <th class="px-4 py-3 border-r border-gray-300">MFG Date</th>
+            <th class="px-4 py-3 border-r border-gray-300">Driver Rev. No</th>
+            <th class="px-4 py-3 border-r border-gray-300">Invoice No</th>
+            <th class="px-4 py-3 border-r border-gray-300">Tracking No</th>
+            <th class="px-4 py-3 border-r border-gray-300">Remark</th>
+            <th class="px-4 py-3">Status</th>
           </tr>
         </thead>
 
         <tbody id="bomTableBody" class="bg-white divide-y divide-gray-100">
           <% @order_entries.each do |order| %>
             <% row_color = @dispatch_color_map[order.dispatch_no&.strip] || 'bg-white' %>
-            <tr class="<%= row_color %> hover:cursor-pointer"
-    data-order-no="<%= order.order_no.to_s.downcase %>"
-    data-article-no="<%= order.article_no.to_s.downcase %>"
-    data-sku-no="<%= order.sku_number.to_s.downcase %>">
-              
+            <tr class="<%= row_color %>" data-order-id="<%= order.id %>">
+              <td class="px-4 py-3 border-r border-gray-300 text-center">
+              <input type="checkbox" 
+              class="order-checkbox w-4 h-4" 
+              value="<%= order.id %>" 
+              data-order-no="<%= order.order_no %>">
+                     </td>
               <td class="px-4 sticky left-0 <%= row_color %>  z-10 text-center relative" style="width:320px; height:52px;">
                 <div class="sticky-border flex justify-between h-full">
                   <div class="pr-2 w-1/2 h-full flex items-center justify-center">
@@ -110,11 +153,11 @@
                   </div>
                 </div>
               </td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center whitespace-nowrap max-w-none"><%= order.client&.name %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.client&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center">  <%= order.dispatch_no || "-" %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center whitespace-nowrap max-w-none"><%= order.location&.name %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.dispatch_no || "-" %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.location&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.box %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.item_type %></td>
@@ -139,64 +182,109 @@
           <% end %>
         </tbody>
       </table>
-      </div>
-      <div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
-					<div>
-						Showing 
-						<%= @order_entries.offset_value + 1 %> -
-						<%= [@order_entries.offset_value + @order_entries.length, @order_entries.total_entries].min %>
-						of <%= @order_entries.total_entries %> results
-					</div>
+    </div>
 
-          <div class="flex items-center space-x-1">
-          <%= will_paginate @order_entries,
-            renderer: PaginationRenderer,
-            previous_label: "&laquo;".html_safe,
-            next_label: "&raquo;".html_safe,
-            container: false %>
-        </div>
-			    </div>
+    <div class="flex items-center justify-between px-4 py-4 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+      <div>
+        Showing 
+        <%= @order_entries.offset_value + 1 %> -
+        <%= [@order_entries.offset_value + @order_entries.length, @order_entries.total_entries].min %>
+        of <%= @order_entries.total_entries %> results
+      </div>
+      <div class="flex items-center space-x-1">
+        <%= will_paginate @order_entries, renderer: PaginationRenderer, previous_label: "&laquo;".html_safe, next_label: "&raquo;".html_safe, container: false %>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Search Script -->
+
 <script>
-  document.addEventListener("turbo:load", function () {
-    const searchInput = document.getElementById("bomSearchInput");
-    const tableRows = document.querySelectorAll("#bomTableBody tr");
+document.addEventListener("turbo:load", function () {
+  const cartIconWrapper = document.getElementById("cartIconWrapper");
+  const cartModal = document.getElementById("cartModal");
+  const closeCartModal = document.getElementById("closeCartModal");
+  const cartOrderList = document.getElementById("cartOrderList");
+  const hiddenFieldsContainer = document.getElementById("hiddenFieldsContainer");
+  const selectAll = document.getElementById("selectAll");
 
-    searchInput.addEventListener("input", function () {
-      const query = this.value.toLowerCase();
+  let selectedIds = JSON.parse(localStorage.getItem("selectedOrders")) || [];
 
-      tableRows.forEach(row => {
-        const orderNo = row.dataset.orderNo || "";
-        const articleNo = row.dataset.articleNo || "";
-        const skuNo = row.dataset.skuNo || "";
+  function saveSelection() {
+    localStorage.setItem("selectedOrders", JSON.stringify(selectedIds));
+  }
 
-        const isMatch =
-          orderNo.includes(query) ||
-          articleNo.includes(query) ||
-          skuNo.includes(query);
+  function updateCart() {
+    const cartCount = document.getElementById("cartCount");
+    if (cartCount) cartCount.textContent = selectedIds.length;
+    saveSelection();
+  }
 
-        row.style.display = isMatch ? "" : "none";
+  // Event delegation for checkboxes
+  document.addEventListener("change", function (e) {
+    if (e.target.matches(".order-checkbox")) {
+      const id = e.target.value;
+      if (e.target.checked) {
+        if (!selectedIds.includes(id)) selectedIds.push(id);
+      } else {
+        selectedIds = selectedIds.filter(x => x !== id);
+      }
+      updateCart();
+    }
+
+    if (e.target === selectAll) {
+      const checkboxes = document.querySelectorAll(".order-checkbox");
+      selectedIds = [];
+      checkboxes.forEach(cb => {
+        cb.checked = selectAll.checked;
+        if (selectAll.checked) selectedIds.push(cb.value);
+      });
+      updateCart();
+    }
+  });
+
+  function restoreSelection() {
+    const checkboxes = document.querySelectorAll(".order-checkbox");
+    checkboxes.forEach(cb => {
+      if (selectedIds.includes(cb.value)) cb.checked = true;
+    });
+    if (selectAll) selectAll.checked = checkboxes.length && [...checkboxes].every(cb => cb.checked);
+    updateCart();
+  }
+  restoreSelection();
+
+  cartIconWrapper.addEventListener("click", function (e) {
+    if (e.target.id === "closeCartModal") return;
+
+    cartOrderList.innerHTML = "";
+    hiddenFieldsContainer.innerHTML = "";
+
+    selectedIds.forEach(id => {
+      const checkbox = document.querySelector(`.order-checkbox[value="${id}"]`);
+      const orderNo = checkbox?.dataset.orderNo || "";
+
+      let li = document.createElement("li");
+      li.textContent = `Order ID: ${id} | Order No: ${orderNo}`;
+      cartOrderList.appendChild(li);
+
+      ["order_entry_id", "order_no", "quantity"].forEach((field, i) => {
+        let input = document.createElement("input");
+        input.type = "hidden";
+        input.name = `dispatch[dispatch_items_attributes][][${field}]`;
+        input.value = i === 2 ? 1 : (field === "order_entry_id" ? id : orderNo);
+        hiddenFieldsContainer.appendChild(input);
       });
     });
+
+    cartModal.classList.remove("hidden");
+    setTimeout(() => {
+      cartModal.classList.remove("opacity-0", "scale-95");
+    }, 10);
   });
-  document.addEventListener("turbo:load", function () {
-    const topScroll = document.getElementById("topScroll");
-    const bottomScroll = document.getElementById("bottomScroll");
 
-    // Top scroll width ko table ke width ke equal set karo
-    topScroll.firstElementChild.style.width = bottomScroll.scrollWidth + "px";
-
-    // Dono scroll ko sync karo
-    topScroll.addEventListener("scroll", function () {
-      bottomScroll.scrollLeft = topScroll.scrollLeft;
-    });
-
-    bottomScroll.addEventListener("scroll", function () {
-      topScroll.scrollLeft = bottomScroll.scrollLeft;
-    });
+  closeCartModal.addEventListener("click", function () {
+    cartModal.classList.add("opacity-0", "scale-95");
+    setTimeout(() => cartModal.classList.add("hidden"), 10);
   });
+});
 </script>

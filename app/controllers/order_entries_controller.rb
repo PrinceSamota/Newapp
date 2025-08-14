@@ -61,6 +61,15 @@ class OrderEntriesController < ApplicationController
           color_index += 1
         end
       end
+      if session[:cart].present?
+        @cart_orders = OrderEntry.where(id: session[:cart])
+      else
+        @cart_orders = []
+      end
+      @dispatch = Dispatch.new
+      @cart_orders.each do |order|
+        @dispatch.dispatch_items.build(order_entry_id: order.id, quantity: 1)
+      end
     end
     
   
