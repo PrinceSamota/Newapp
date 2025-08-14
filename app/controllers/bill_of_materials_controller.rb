@@ -71,7 +71,7 @@ class BillOfMaterialsController < ApplicationController
   end
 
   def index
-    @q = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).ransack(params[:q])
+    @q = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).order("created_at DESC").ransack(params[:q])
     @bill_of_materials = @q.result(distinct: true).paginate(page: params[:page], per_page: 100)
   end
   def show
@@ -89,6 +89,12 @@ class BillOfMaterialsController < ApplicationController
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement)  
     @item_masters_false = ItemMaster.where('"item_masters"."is_bom" = ?', false).includes(:measurement) 
     @item_masters_all = ItemMaster.all
+    used_finished_good_skus = FinishedGood.pluck(:sku_id)
+    @item_masters_good = ItemMaster
+    .where('"item_masters"."is_bom" = ?', true)
+    .where.not(sku_id: used_finished_good_skus)
+    .includes(:measurement)
+
     render :new
   end
   def update_bom_all_items
