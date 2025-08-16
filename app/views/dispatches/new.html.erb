@@ -271,6 +271,13 @@ function initSearchableDropdowns() {
       item.addEventListener("click", () => {
         input.value = item.dataset.value; // Show order_no
         hiddenIdField.value = item.dataset.id; // Set hidden ID
+        fetch(`/dispatches/order_details?order_entry_id=${item.dataset.id}`, {
+          headers: { "Accept": "text/vnd.turbo-stream.html" }
+        })
+        .then(response => response.text())
+        .then(html => {
+          wrapper.closest(".dispatch-item").querySelector(".order-details-container").innerHTML = html;
+        });
         dropdown.classList.add("hidden");
       });
     });

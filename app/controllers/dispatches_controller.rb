@@ -76,14 +76,30 @@ class DispatchesController < ApplicationController
       end
     end
   end
-  
+  def order_details
+    @order_entry = OrderEntry.find_by(id: params[:order_entry_id])
+    item_master = ItemMaster.find_by(sku_id: @order_entry.sku_number)
+    respond_to do |format|
+      format.html { render partial: "dispatches/order_details", locals: { order: @order_entry, item_master: item_master } }
+      format.turbo_stream { render partial: "dispatches/order_details", formats: [:html], locals: { order: @order_entry, item_master: item_master } }
+    end
+    
+  end
   
 
   def new_item_row
     @dispatch_item = DispatchItem.new
     @index = params[:index].to_i
-    render partial: 'dispatches/dispatch_item_fields', locals: { dispatch_item: @dispatch_item, index: @index }
+    render partial: 'dispatches/dispatch_item_fields', locals: { dispatch_item: @dispatch_item, index: @index, from_edit: false }
   end
+
+  def new_item_row_edit
+    @index = params[:index].to_i
+    @dispatch_item = DispatchItem.new
+    @from_edit = params[:from_edit] == "true"
+    render partial: "dispatches/dispatch_item_fields", locals: { dispatch_item: @dispatch_item, index: @index, from_edit: @from_edit }
+  end
+
   private
 
   def dispatch_params

@@ -1,38 +1,50 @@
 <%= fields_for "dispatch[dispatch_items_attributes][#{index}]", dispatch_item do |f| %>
-  <div class="dispatch-item relative grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 border border-gray-300 rounded-lg p-4 shadow-sm bg-gray-50">
+  <div class="dispatch-item mb-6 <%= 'from-edit-row' if local_assigns[:from_edit] %>">
+    <%= f.hidden_field :id %>
 
-    <div class="relative searchable-wrapper w-full">
-      <%= f.label :order_no, "Order Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
-      <input
-        type="text"
-        name="<%= "#{f.object_name}[order_no]" %>"
-        value="<%= f.object.order_entry&.order_no %>"
-        placeholder="Search Order Number..."
-        autocomplete="off"
-        data-role="searchable-input"
-        class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-300 rounded-t-xl p-4 bg-gray-50 shadow-sm relative">
+      
+      <% if local_assigns[:from_edit] %>
+        <span class="absolute -top-3 left-13 bg-green-100  text-green-700 px-2 py-1 text-xs rounded-full shadow">
+          New
+        </span>
+      <% end %>
 
-      <%= f.hidden_field :order_entry_id, class: "order-entry-id-field" %>
+      <div class="relative searchable-wrapper w-full">
+        <%= f.label :order_no, "Order Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
 
+        <input
+          type="text"
+          name="<%= "#{f.object_name}[order_no]" %>"
+          value="<%= f.object.order_entry&.order_no %>"
+          placeholder="Search Order Number..."
+          autocomplete="off"
+          data-role="searchable-input"
+          class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
 
-      <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md"
-          data-role="searchable-dropdown">
+        <%= f.hidden_field :order_entry_id, class: "order-entry-id-field" %>
+
+        <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md"
+            data-role="searchable-dropdown">
           <% OrderEntry.select(:id, :order_no, :sku_number).distinct.each do |entry| %>
             <li class="cursor-pointer px-3 py-2 hover:bg-blue-100"
                 data-id="<%= entry.id %>"
                 data-value="<%= entry.order_no %>">
               <%= "#{entry.order_no} | #{entry.sku_number}" %>
-            </li>
+            </li> 
           <% end %>
-      </ul>
+        </ul>
+      </div>
+
+      <%= f.hidden_field :quantity, value: "1" %>
+      <%= f.hidden_field :_destroy %>
+
+      <button type="button"
+        class="remove-item absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
+        ✕
+      </button>
     </div>
 
-    <%= f.hidden_field :quantity, value: "1" %>
-    <%= f.hidden_field :_destroy %>
-
-    <button type="button"
-      class="remove-item absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
-      ✕
-    </button>
+    <div class="order-details-container mt-3"></div>
   </div>
 <% end %>
