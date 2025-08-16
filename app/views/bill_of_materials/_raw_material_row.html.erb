@@ -73,30 +73,70 @@
     const input = document.getElementById(`${fieldId}_search`);
     const hiddenInput = document.getElementById(`${fieldId}_hidden`);
     const dropdown = document.getElementById(`${fieldId}_list`);
-
+  
     input.value = selectedValue;
     hiddenInput.value = fieldId.includes('sku') ? element.dataset.sku : element.dataset.itemName;
     dropdown.classList.add("hidden");
-
+  
     const suffix = fieldId.split("_")[1];
     const pairFieldId = fieldId.includes('sku') ? `item_${suffix}` : `sku_${suffix}`;
     const pairInput = document.getElementById(`${pairFieldId}_search`);
     const pairHidden = document.getElementById(`${pairFieldId}_hidden`);
-
+  
     if (pairInput && pairHidden) {
       pairInput.value = fieldId.includes('sku') ? element.dataset.itemName : element.dataset.sku;
       pairHidden.value = fieldId.includes('sku') ? element.dataset.itemName : element.dataset.sku;
     }
-
+  
     const row = input.closest(".raw-material-row");
     if (row) {
       const unitField = row.querySelector(".unit-field");
       if (unitField) unitField.value = element.dataset.unit || "";
-
+  
       const itemMasterIdField = row.querySelector(".item-master-id-field");
       if (itemMasterIdField) itemMasterIdField.value = element.dataset.itemMasterId || "";
     }
+  
     input.readOnly = true;
     if (pairInput) pairInput.readOnly = true;
+  
+    addClearButton(input, row);
+    if (pairInput) addClearButton(pairInput, row);
   }
+  
+  function addClearButton(input, row) {
+    if (input.parentElement.querySelector(".clear-selection")) return;
+  
+    input.parentElement.style.position = "relative";
+  
+    const clearBtn = document.createElement("span");
+    clearBtn.innerHTML = "x";
+    clearBtn.className =
+      "clear-selection absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-600 cursor-pointer text-sm";
+  
+    input.parentElement.appendChild(clearBtn);
+  
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      const hiddenInput = document.getElementById(input.id.replace("_search", "_hidden"));
+      if (hiddenInput) hiddenInput.value = "";
+  
+      const skuInput = row.querySelector(".sku-id-field");
+      const itemInput = row.querySelector(".item-name-select");
+      const unitField = row.querySelector(".unit-field");
+      const itemMasterIdField = row.querySelector(".item-master-id-field");
+  
+      if (skuInput) skuInput.value = "";
+      if (itemInput) itemInput.value = "";
+      if (unitField) unitField.value = "";
+      if (itemMasterIdField) itemMasterIdField.value = "";
+  
+      if (skuInput) skuInput.readOnly = false;
+      if (itemInput) itemInput.readOnly = false;
+  
+      row.querySelectorAll(".clear-selection").forEach(btn => btn.remove());
+    });
+  }
+  
+  
 </script>
