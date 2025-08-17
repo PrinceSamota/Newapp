@@ -68,7 +68,7 @@
         <thead class="bg-gray-100 text-gray-700 text-xs uppercase sticky top-0 z-50">
           <tr>
             <th class="px-4 py-3 border-r border-gray-300 text-center">
-              <input type="checkbox" id="selectAll" class="w-4 h-4">
+              #
             </th>
             <th class="px-4 sticky left-0 bg-gray-100 z-10 text-center relative sticky-border" style="min-width:320px; height:52px;">
               <style>
@@ -139,9 +139,10 @@
             <tr class="<%= row_color %>" data-order-id="<%= order.id %>">
               <td class="px-4 py-3 border-r border-gray-300 text-center">
               <input type="checkbox" 
-              class="order-checkbox w-4 h-4" 
+              class="order-checkbox w-4 h-4 disabled:opacity-50 disabled:cursor-not-allowed" 
               value="<%= order.id %>" 
-              data-order-no="<%= order.order_no %>">
+              data-order-no="<%= order.order_no %>"
+              <%= "disabled" if order.dispatch_no.present? %>>            
                      </td>
               <td class="px-4 sticky left-0 <%= row_color %>  z-10 text-center relative" style="width:320px; height:52px;">
                 <div class="sticky-border flex justify-between h-full">
@@ -208,36 +209,41 @@ document.addEventListener("turbo:load", function () {
   const hiddenFieldsContainer = document.getElementById("hiddenFieldsContainer");
   const selectAll = document.getElementById("selectAll");
 
-  let selectedIds = JSON.parse(localStorage.getItem("selectedOrders")) || [];
+  let selectedOrders = JSON.parse(localStorage.getItem("selectedOrders")) || [];
 
   function saveSelection() {
-    localStorage.setItem("selectedOrders", JSON.stringify(selectedIds));
+    localStorage.setItem("selectedOrders", JSON.stringify(selectedOrders));
   }
 
   function updateCart() {
     const cartCount = document.getElementById("cartCount");
-    if (cartCount) cartCount.textContent = selectedIds.length;
+    if (cartCount) cartCount.textContent = selectedOrders.length;
     saveSelection();
   }
 
-  // Event delegation for checkboxes
   document.addEventListener("change", function (e) {
     if (e.target.matches(".order-checkbox")) {
       const id = e.target.value;
+      const orderNo = e.target.dataset.orderNo;
+
       if (e.target.checked) {
-        if (!selectedIds.includes(id)) selectedIds.push(id);
+        if (!selectedOrders.some(o => o.id === id)) {
+          selectedOrders.push({ id: id, orderNo: orderNo });
+        }
       } else {
-        selectedIds = selectedIds.filter(x => x !== id);
+        selectedOrders = selectedOrders.filter(o => o.id !== id);
       }
       updateCart();
     }
 
     if (e.target === selectAll) {
       const checkboxes = document.querySelectorAll(".order-checkbox");
-      selectedIds = [];
+      selectedOrders = [];
       checkboxes.forEach(cb => {
         cb.checked = selectAll.checked;
-        if (selectAll.checked) selectedIds.push(cb.value);
+        if (selectAll.checked) {
+          selectedOrders.push({ id: cb.value, orderNo: cb.dataset.orderNo });
+        }
       });
       updateCart();
     }
@@ -246,7 +252,7 @@ document.addEventListener("turbo:load", function () {
   function restoreSelection() {
     const checkboxes = document.querySelectorAll(".order-checkbox");
     checkboxes.forEach(cb => {
-      if (selectedIds.includes(cb.value)) cb.checked = true;
+      if (selectedOrders.some(o => o.id === cb.value)) cb.checked = true;
     });
     if (selectAll) selectAll.checked = checkboxes.length && [...checkboxes].every(cb => cb.checked);
     updateCart();
@@ -259,32 +265,44 @@ document.addEventListener("turbo:load", function () {
     cartOrderList.innerHTML = "";
     hiddenFieldsContainer.innerHTML = "";
 
-    selectedIds.forEach(id => {
-      const checkbox = document.querySelector(`.order-checkbox[value="${id}"]`);
-      const orderNo = checkbox?.dataset.orderNo || "";
-
+    selectedOrders.forEach(order => {
       let li = document.createElement("li");
-      li.textContent = `Order ID: ${id} | Order No: ${orderNo}`;
+      li.textContent = `Order ID: ${order.id} | Order No: ${order.orderNo}`;
       cartOrderList.appendChild(li);
 
       ["order_entry_id", "order_no", "quantity"].forEach((field, i) => {
         let input = document.createElement("input");
         input.type = "hidden";
         input.name = `dispatch[dispatch_items_attributes][][${field}]`;
-        input.value = i === 2 ? 1 : (field === "order_entry_id" ? id : orderNo);
+        input.value = i === 2 ? 1 : (field === "order_entry_id" ? order.id : order.orderNo);
         hiddenFieldsContainer.appendChild(input);
       });
     });
 
     cartModal.classList.remove("hidden");
-    setTimeout(() => {
-      cartModal.classList.remove("opacity-0", "scale-95");
-    }, 10);
+    cartModal.classList.remove("opacity-0", "scale-95");
   });
 
   closeCartModal.addEventListener("click", function () {
     cartModal.classList.add("opacity-0", "scale-95");
-    setTimeout(() => cartModal.classList.add("hidden"), 10);
+    cartModal.classList.add("hidden");
+  });
+
+  document.addEventListener("turbo:submit-end", function (event) {
+    if (event.target.closest("#cartModal form")) {
+      selectedOrders = [];
+      localStorage.removeItem("selectedOrders");
+
+      document.querySelectorAll(".order-checkbox").forEach(cb => cb.checked = false);
+      if (selectAll) selectAll.checked = false;
+
+      updateCart();
+      cartOrderList.innerHTML = "";
+      hiddenFieldsContainer.innerHTML = "";
+
+      cartModal.classList.add("opacity-0", "scale-95");
+      cartModal.classList.add("hidden");
+    }
   });
 });
 </script>
