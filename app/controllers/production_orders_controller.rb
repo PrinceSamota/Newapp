@@ -44,12 +44,10 @@ class ProductionOrdersController < ApplicationController
       end
     end
   
-    # Check insufficient stock for each BOM
     @boms.each do |bom|
       bom.bom_raw_material_items.each do |rm|
         required_quantity = rm.quantity.to_f * @quantity
     
-        # Fetch current stock from ItemMaster using SKU
         item = ItemMaster.find_by(sku_id: rm.sku_id)
         current_stock = item&.opening_stock.to_f
     
