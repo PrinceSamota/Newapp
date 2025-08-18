@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   resources :dispatches do
     get :new_item_row, on: :collection
+    get :order_details, on: :collection
+    get :new_item_row_edit, on: :collection
   end
   resources :bill_of_materials, only: [:index, :new, :create, :show] do
     member do

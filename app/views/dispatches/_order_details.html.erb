@@ -1,0 +1,34 @@
+<% if order.present? %>
+  <div class="grid grid-cols-1 md:grid-cols-9 gap-3 bg-gray-50 border border-gray-200 rounded-b-xl p-4 text-sm">
+    <div><label class="text-xs font-semibold text-gray-500">Article No</label><div><%= order.article_no %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">SKU Number</label><div><%= order.sku_number %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Quantity</label><div><%= order.qty %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Target Date</label><div><%= order.target_date %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Start Serial</label><div><%= order.start_serial_no %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">End Serial</label><div><%= order.end_serial_no %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Profile</label><div><%= order.profile %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">CCT</label><div><%= order.cct %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Cover Type</label><div><%= order.cover_type %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Length</label><div><%= order.length %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Wattage</label><div><%= order.wattage %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Voltage</label><div><%= order.voltage %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Loop</label><div><%= order.loop %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Item Type</label><div><%= order.item_type %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Fuse Type</label><div><%= order.fuse_type %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Remark</label><div><%= order.remark %></div></div>
+    <div><label class="text-xs font-semibold text-gray-500">Status</label><div><%= order.status %></div></div>
+
+    <% if item_master.present? %>
+      <% if item_master.opening_stock < order.qty %>
+        <div class="col-span-full text-red-600 font-semibold bg-red-100 border border-red-300 rounded p-2 mt-2" data-insufficient-stock="true">
+          🚫 Not enough stock for SKU <strong><%= order.sku_number %></strong>. 
+          Required: <%= order.qty %>, Available: <%= item_master.opening_stock %>
+        </div>
+      <% end %>
+    <% else %>
+      <div class="col-span-full text-red-500 mt-2">❗ SKU <%= order.sku_number %> not found in Item Master.</div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="text-red-500 text-sm mt-2">No order found.</div>
+<% end %>
