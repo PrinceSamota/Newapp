@@ -16,7 +16,7 @@ class ItemMastersController < ApplicationController
 
       def versions
         @item_master = ItemMaster.find(params[:id])
-        @versions = @item_master.versions.order(created_at: :desc)
+        @versions = @item_master.versions.reorder(created_at: :desc)
       end
       
       def create
