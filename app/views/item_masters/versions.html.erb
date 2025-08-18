@@ -80,13 +80,27 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                       <%= version.created_at.in_time_zone("Asia/Kolkata").strftime("%d-%m-%Y %I:%M %p") %>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      <% if version.respond_to?(:source_type) && version.source_type.present? %>
-                        <%= version.source_type %> (ID: <%= version.source_id %>)
-                      <% else %>
-                        -
-                      <% end %>
-                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <% if version.source_type == "Dispatch" %>
+                    <%= link_to "Dispatch ( #{version.source_id} )",
+                                edit_dispatch_path(version.source_id),
+                                class: "text-red-600 underline hover:text-red-800" %>
+                  <% elsif version.source_type == "ProductionOrder" %>
+                    <%= link_to "Production Order ( #{version.source_id} )",
+                                production_order_path(version.source_id),
+                                class: "text-purple-600 underline hover:text-purple-800" %>
+                  <% elsif version.source_type == "BillOfMaterial" %>
+                    <%= link_to "Bill Of Material ( #{version.source_id} )",
+                                bill_of_material_path(version.source_id),
+                                class: "text-blue-600 underline hover:text-blue-800" %>
+                  <% elsif version.source_type == "RawMaterialStockBatch" %>
+                    <%= link_to "Raw Material Stock Batch ( #{version.source_id} )",
+                                raw_material_stock_batch_path(version.source_id),
+                                class: "text-green-600 underline hover:text-green-800" %>
+                  <% else %>
+                    -
+                  <% end %>                 
+                  </td>                
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                     <%= version.reason.presence || "-" %>
                   </td>
