@@ -37,13 +37,14 @@
 <%= f.hidden_field :item_master_id, class: "item-master-id-field" %>
   <!-- Quantity -->
   <div>
-    <%= f.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
-    <%= f.text_field :quantity,
-      value: f.object.quantity ,
-      min: 1, 
-      class: "required-field quantity-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
-    %>
-  </div>
+  <%= f.label :quantity, class: "text-xs font-medium text-gray-700 block mb-1" %>
+  <%= f.number_field :quantity,
+        value: f.object.quantity,
+        min: 0.1,
+        step: :any,
+        class: "required-field quantity-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+</div>
+
 
   <%= f.hidden_field :_destroy %>
 
@@ -229,15 +230,8 @@ function selectFromDropdown(fieldId, element) {
     }
   });
 
-  document.addEventListener("turbo:load", function () {
-    document.querySelectorAll(".quantity-field").forEach(field => {
-      field.addEventListener("input", function () {
-        if (parseInt(this.value) <= 0) {
-          this.value = "";
-        }
-      });
-    });
-  });
+
+
   
 document.addEventListener("submit", function(e) {
   const rows = document.querySelectorAll(".raw-material-row");
