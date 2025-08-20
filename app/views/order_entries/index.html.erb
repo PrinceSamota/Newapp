@@ -43,19 +43,17 @@
     
         <ul id="cartOrderList" class="mt-4 space-y-2"></ul>
     
-        <div class="mt-4 text-right">
+        <div class="mt-4 flex justify-end items-center gap-2">
           <%= form_with model: @dispatch, url: dispatches_path, method: :post, local: true do |f| %>
             <%= f.hidden_field :progress, value: "Shipment" %>
-    
             <div id="hiddenFieldsContainer"></div>
-    
-            <%= f.submit "Create Dispatch", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
+            <%= f.submit "Create Dispatch", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer" %>
           <% end %>
+
           <button id="reportButton"
-          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-          Report
-        </button>
-        
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 cursor-pointer">
+            Report
+          </button>
         </div>
       </div>
     </div>
@@ -318,7 +316,28 @@ document.addEventListener("turbo:load", function () {
 
       const ids = selectedOrders.map(o => o.id).join(",");
       const url = `/reports?order_ids=${ids}`;
-      window.open(url, "_blank"); // new tab open karega
+      window.open(url, "_blank");   
+    });
+  }
+  const cartForm = document.querySelector("#cartModal form");
+  if (cartForm) {
+    cartForm.addEventListener("submit", function (e) {
+      let invalidOrders = [];
+
+      selectedOrders.forEach(order => {
+        let row = document.querySelector(`tr[data-order-id='${order.id}']`);
+        if (row) {
+          let dispatchCell = row.querySelector("td:nth-child(6)");
+          if (dispatchCell && dispatchCell.textContent.trim() !== "-" && dispatchCell.textContent.trim() !== "") {
+            invalidOrders.push(order.orderNo);
+          }
+        }
+      });
+
+      if (invalidOrders.length > 0) {
+        e.preventDefault(); 
+        alert("Dispatch already exists for these orders:\n" + invalidOrders.join(", ") + "\n\nPlease unselect them.");
+      }
     });
   }
 });
