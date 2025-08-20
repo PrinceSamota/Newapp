@@ -51,6 +51,11 @@
     
             <%= f.submit "Create Dispatch", class: "bg-blue-600 text-white px-4 py-2 rounded" %>
           <% end %>
+          <button id="reportButton"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+          Report
+        </button>
+        
         </div>
       </div>
     </div>
@@ -141,8 +146,7 @@
               <input type="checkbox" 
               class="order-checkbox w-4 h-4 disabled:opacity-50 disabled:cursor-not-allowed" 
               value="<%= order.id %>" 
-              data-order-no="<%= order.order_no %>"
-              <%= "disabled" if order.dispatch_no.present? %>>            
+              data-order-no="<%= order.order_no %>">            
                      </td>
               <td class="px-4 sticky left-0 <%= row_color %>  z-10 text-center relative" style="width:320px; height:52px;">
                 <div class="sticky-border flex justify-between h-full">
@@ -198,7 +202,6 @@
     </div>
   </div>
 </div>
-
 
 <script>
 document.addEventListener("turbo:load", function () {
@@ -304,5 +307,19 @@ document.addEventListener("turbo:load", function () {
       cartModal.classList.add("hidden");
     }
   });
+  
+  const reportButton = document.getElementById("reportButton");
+  if (reportButton) {
+    reportButton.addEventListener("click", function () {
+      if (selectedOrders.length === 0) {
+        alert("Please select at least one order for report.");
+        return;
+      }
+
+      const ids = selectedOrders.map(o => o.id).join(",");
+      const url = `/reports?order_ids=${ids}`;
+      window.open(url, "_blank"); // new tab open karega
+    });
+  }
 });
 </script>
