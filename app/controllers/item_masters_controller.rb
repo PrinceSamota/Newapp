@@ -4,7 +4,7 @@ class ItemMastersController < ApplicationController
       @decoded_result = nil
       @article_number = nil
       @q = ItemMaster.ransack(params[:q])
-      @item_masters = @q.result(distinct: true).paginate(page: params[:page], per_page: 100)
+      @item_masters = @q.result(distinct: true).order(created_at: :desc).paginate(page: params[:page], per_page: 100)
       @selected_fuse_type_id = nil
       @show_fuse_form = false
       @fuse_type_errors = []
