@@ -76,5 +76,9 @@ class ReportsController < ApplicationController
         end
       end
     end
+
+    def new_order_report
+
+    end
   end
   
