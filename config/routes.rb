@@ -5,7 +5,11 @@ Rails.application.routes.draw do
       post "upload"
     end
   end
-  resources :reports, only: [:index]
+  resources :reports do
+    collection do
+      get :new_order_report
+    end
+  end
   resources :dispatches do
     get :new_item_row, on: :collection
     get :order_details, on: :collection
