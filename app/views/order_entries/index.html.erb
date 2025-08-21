@@ -63,9 +63,11 @@
         <span class="font-semibold">New Order</span>
       <% end %>
     </div>
-
-    <div id="topScroll" class="overflow-x-auto" style="overflow-y:hidden;">
-      <div style="height:1px;"></div>
+    <div id="topScroll" 
+    class="overflow-x-auto"
+    style="overflow-y:hidden; height:20px; position:sticky; top:0; background:white; z-index:20;">
+ <div id="scrollWidth" style="height:1px;"></div>
+</div>
     <div id="bottomScroll" class="overflow-x-auto max-h-[80vh] overflow-y-auto">
       <table class="text-sm divide-y divide-gray-200 border border-gray-300 rounded min-w-full">
         <thead class="bg-gray-100 text-gray-700 text-xs uppercase sticky top-0 z-50">
@@ -203,6 +205,28 @@
 
 <script>
 document.addEventListener("turbo:load", function () {
+  const topScroll = document.getElementById("topScroll");
+      const bottomScroll = document.getElementById("bottomScroll");
+      const scrollWidth = document.getElementById("scrollWidth");
+
+      function syncWidth() {
+        if (scrollWidth && bottomScroll) {
+          scrollWidth.style.width = bottomScroll.scrollWidth + "px";
+        }
+      }
+
+      if (topScroll && bottomScroll && scrollWidth) {
+        syncWidth();
+
+        topScroll.addEventListener("scroll", () => {
+          bottomScroll.scrollLeft = topScroll.scrollLeft;
+        });
+        bottomScroll.addEventListener("scroll", () => {
+          topScroll.scrollLeft = bottomScroll.scrollLeft;
+        });
+
+        window.addEventListener("resize", syncWidth);
+      }
   const cartIconWrapper = document.getElementById("cartIconWrapper");
   const cartModal = document.getElementById("cartModal");
   const closeCartModal = document.getElementById("closeCartModal");
