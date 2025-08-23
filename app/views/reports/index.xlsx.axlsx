@@ -1,0 +1,21 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Report") do |sheet|
+  # Heading
+  sheet.add_row ["Selected Orders:"]
+  sheet.add_row [@selected_order_numbers.join(", ")]
+
+  sheet.add_row []
+  # Table Header
+  sheet.add_row ["SKU", "Quantity", "Stock", "Requirement"]
+
+  # Table Data
+  @report_data.each do |row|
+    sheet.add_row [
+      row[:sku],
+      row[:quantity],
+      row[:stock],
+      row[:requirement]
+    ]
+  end
+end

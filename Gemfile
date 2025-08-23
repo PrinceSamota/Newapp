@@ -17,6 +17,7 @@ gem 'will_paginate', '~> 4.0'
 gem 'ransack'
 gem "pg"
 gem 'dotenv-rails'
+gem 'axlsx_rails'
 
 # PostgreSQL instead of SQLite
 group :development, :test do
