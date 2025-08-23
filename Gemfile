@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 # Use the Puma web server
 gem "puma", ">= 5.0"
-gem "rails", "~> 7.2.2", ">= 7.2.2.1"
+gem "rails", "~> 7.2.2"
 gem "sprockets-rails"
 gem "jsbundling-rails"
 gem "turbo-rails"
