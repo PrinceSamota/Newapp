@@ -63,7 +63,10 @@ class ReportsController < ApplicationController
     result[sku_id][:requirement] = result[sku_id][:stock] - result[sku_id][:quantity]
   
     bom.bom_raw_material_items.each do |rm|
-      next if rm.quantity.nil?
+      if rm.quantity.nil?
+        Rails.logger.warn "Skipping raw material with nil quantity for SKU #{rm.item_master.sku_id} in BOM #{bom.id}"
+        next
+      end
       rm_sku = rm.item_master.sku_id
       rm_qty = rm.quantity * order_qty
   
