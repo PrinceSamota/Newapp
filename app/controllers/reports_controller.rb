@@ -3,8 +3,8 @@ class ReportsController < ApplicationController
     order_ids = params[:order_ids].to_s.split(",")
     @orders = OrderEntry.where(id: order_ids)
   
-    # collect order numbers for showing in view
-    @selected_order_numbers = @orders.pluck(:order_number) rescue @orders.pluck(:id)
+    @selected_order_numbers = @orders.pluck(:order_no)
+
   
     sku_hash = {}
   
