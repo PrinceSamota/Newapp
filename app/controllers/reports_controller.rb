@@ -44,6 +44,7 @@ class ReportsController < ApplicationController
     result = {
       sku_id => {
         sku: sku_id,
+        item_name: item.item_name,
         quantity: rm_final_qty,
         stock: stock,
         requirement: stock - rm_final_qty,
@@ -67,7 +68,9 @@ class ReportsController < ApplicationController
         Rails.logger.warn "Skipping raw material with nil quantity for SKU #{rm.item_master.sku_id} in BOM #{bom.id}"
         next
       end
+      rm_item = rm.item_master
       rm_sku = rm.item_master.sku_id
+      rm_name = rm_item.item_name
       rm_qty = rm.quantity * order_qty
   
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
@@ -95,6 +98,7 @@ class ReportsController < ApplicationController
           result[rm_sku] = {
             sku: rm_sku,
             quantity: rm_qty,
+            item_name: rm_name,
             stock: rm.item_master.opening_stock || 0,
             requirement: (rm.item_master.opening_stock || 0) - rm_qty,
             bom_defined_qty: rm.quantity
