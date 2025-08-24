@@ -15,6 +15,7 @@
     <table class="min-w-full text-sm border border-gray-300 rounded">
       <thead class="bg-gray-100 text-gray-700 text-xs uppercase">
         <tr>
+          <th class="px-4 py-2 border text-center">Item Name</th>
           <th class="px-4 py-2 border text-center">SKU</th>
           <th class="px-4 py-2 border text-center">Order Quantity</th>
           <th class="px-4 py-2 border text-center">Stock</th>
@@ -24,6 +25,7 @@
       <tbody>
         <% @report_data.each do |row| %>
           <tr>
+            <td class="px-4 py-2 border text-center"><%= row[:item_name] %></td>
             <td class="px-4 py-2 border text-center"><%= row[:sku] %></td>
             <td class="px-4 py-2 border text-center"><%= row[:quantity] %></td>
             <td class="px-4 py-2 border text-center"><%= row[:stock] %></td>

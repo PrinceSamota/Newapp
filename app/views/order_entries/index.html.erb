@@ -42,7 +42,8 @@
         </div>
     
         <ul id="cartOrderList" class="mt-4 space-y-2"></ul>
-    
+        <div id="cartError" class="text-red-600 font-semibold mb-2 hidden"></div>
+
         <div class="mt-4 flex justify-end items-center gap-2">
           <%= form_with model: @dispatch, url: dispatches_path, method: :post, local: true do |f| %>
             <%= f.hidden_field :progress, value: "Shipment" %>
@@ -73,7 +74,7 @@
         <thead class="bg-gray-100 text-gray-700 text-xs uppercase sticky top-0 z-50">
           <tr>
             <th class="px-4 py-3 border-r border-gray-300 text-center">
-              #
+               <input type="checkbox" id="selectAll" class="w-4 h-4">
             </th>
             <th class="px-4 sticky left-0 bg-gray-100 z-10 text-center relative sticky-border" style="min-width:320px; height:52px;">
               <style>
@@ -206,33 +207,35 @@
 <script>
 document.addEventListener("turbo:load", function () {
   const topScroll = document.getElementById("topScroll");
-      const bottomScroll = document.getElementById("bottomScroll");
-      const scrollWidth = document.getElementById("scrollWidth");
+  const bottomScroll = document.getElementById("bottomScroll");
+  const scrollWidth = document.getElementById("scrollWidth");
 
-      function syncWidth() {
-        if (scrollWidth && bottomScroll) {
-          scrollWidth.style.width = bottomScroll.scrollWidth + "px";
-        }
-      }
+  function syncWidth() {
+    if (scrollWidth && bottomScroll) {
+      scrollWidth.style.width = bottomScroll.scrollWidth + "px";
+    }
+  }
 
-      if (topScroll && bottomScroll && scrollWidth) {
-        syncWidth();
+  if (topScroll && bottomScroll && scrollWidth) {
+    syncWidth();
 
-        topScroll.addEventListener("scroll", () => {
-          bottomScroll.scrollLeft = topScroll.scrollLeft;
-        });
-        bottomScroll.addEventListener("scroll", () => {
-          topScroll.scrollLeft = bottomScroll.scrollLeft;
-        });
+    topScroll.addEventListener("scroll", () => {
+      bottomScroll.scrollLeft = topScroll.scrollLeft;
+    });
+    bottomScroll.addEventListener("scroll", () => {
+      topScroll.scrollLeft = bottomScroll.scrollLeft;
+    });
 
-        window.addEventListener("resize", syncWidth);
-      }
+    window.addEventListener("resize", syncWidth);
+  }
+
   const cartIconWrapper = document.getElementById("cartIconWrapper");
   const cartModal = document.getElementById("cartModal");
   const closeCartModal = document.getElementById("closeCartModal");
   const cartOrderList = document.getElementById("cartOrderList");
   const hiddenFieldsContainer = document.getElementById("hiddenFieldsContainer");
   const selectAll = document.getElementById("selectAll");
+  const cartError = document.getElementById("cartError"); 
 
   let selectedOrders = JSON.parse(localStorage.getItem("selectedOrders")) || [];
 
@@ -289,10 +292,11 @@ document.addEventListener("turbo:load", function () {
 
     cartOrderList.innerHTML = "";
     hiddenFieldsContainer.innerHTML = "";
+    if (cartError) cartError.textContent = ""; 
 
     selectedOrders.forEach(order => {
       let li = document.createElement("li");
-      li.textContent = `Order ID: ${order.id} | Order No: ${order.orderNo}`;
+      li.textContent = `Order No: ${order.orderNo}`;
       cartOrderList.appendChild(li);
 
       ["order_entry_id", "order_no", "quantity"].forEach((field, i) => {
@@ -329,7 +333,7 @@ document.addEventListener("turbo:load", function () {
       cartModal.classList.add("hidden");
     }
   });
-  
+
   const reportButton = document.getElementById("reportButton");
   if (reportButton) {
     reportButton.addEventListener("click", function () {
@@ -340,9 +344,10 @@ document.addEventListener("turbo:load", function () {
 
       const ids = selectedOrders.map(o => o.id).join(",");
       const url = `/reports?order_ids=${ids}`;
-      window.open(url, "_blank");   
+      window.open(url, "_blank");
     });
   }
+
   const cartForm = document.querySelector("#cartModal form");
   if (cartForm) {
     cartForm.addEventListener("submit", function (e) {
@@ -359,8 +364,11 @@ document.addEventListener("turbo:load", function () {
       });
 
       if (invalidOrders.length > 0) {
-        e.preventDefault(); 
-        alert("Dispatch already exists for these orders:\n" + invalidOrders.join(", ") + "\n\nPlease unselect them.");
+        e.preventDefault();
+        if (cartError) {
+          cartError.textContent = "Dispatch already exists for these orders: " + invalidOrders.join(", ");
+          cartError.classList.remove("hidden");
+        }
       }
     });
   }
