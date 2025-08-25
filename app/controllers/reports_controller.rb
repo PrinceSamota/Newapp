@@ -33,22 +33,22 @@ class ReportsController < ApplicationController
 
   private
 
-  def expand_bom(sku_id, order_qty, visited = Set.new, parent_bom_qty = 1, top_level: true)
+  def expand_bom(sku_id, order_qty, visited = Set.new, parent_bom_qty = 1)
     return {} if visited.include?(sku_id)
 
     item = ItemMaster.find_by(sku_id: sku_id)
     return {} unless item
 
     stock = item.opening_stock || 0
-    effective_qty = top_level ? order_qty : order_qty * parent_bom_qty
+    effective_qty = order_qty * parent_bom_qty
 
     result = {
       sku_id => {
         sku: sku_id,
         item_name: item.item_name,
-        quantity: top_level ? 0 : effective_qty,
+        quantity: effective_qty,
         stock: stock,
-        requirement: stock - (top_level ? 0 : effective_qty),
+        requirement: stock - effective_qty,
         bom_defined_qty: parent_bom_qty
       }
     }
@@ -58,11 +58,12 @@ class ReportsController < ApplicationController
     bom = BillOfMaterial.joins(:finished_good).find_by(finished_goods: { sku_id: sku_id })
     return result unless bom
 
-    fg_qty = bom.finished_good.quantity.presence || 1
-    total_fg_qty = order_qty * parent_bom_qty
+    fg_defined_qty = bom.finished_good.quantity.presence || 1
+    total_fg_qty = effective_qty # This is the total quantity of the FG required
 
-    result[sku_id][:quantity] += total_fg_qty
-    result[sku_id][:requirement] = result[sku_id][:stock] - result[sku_id][:quantity]
+    # Update the current FG’s entry with the proper quantity
+    result[sku_id][:quantity] = total_fg_qty
+    result[sku_id][:requirement] = stock - total_fg_qty
 
     bom.bom_raw_material_items.each do |rm|
       next if rm.quantity.nil?
@@ -74,13 +75,13 @@ class ReportsController < ApplicationController
 
       rm_total_qty = rm.quantity * total_fg_qty
 
+      # Check if RM is also a FG (i.e. has its own BOM)
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
         child_result = expand_bom(
           rm_sku,
-          order_qty,
+          total_fg_qty, # Pass accumulated quantity down
           visited.dup,
-          rm.quantity * parent_bom_qty,
-          top_level: false
+          1 # We already accounted for rm.quantity above
         )
 
         child_result.each do |sku, data|
@@ -92,6 +93,7 @@ class ReportsController < ApplicationController
           end
         end
       else
+        # It's a pure raw material
         if result[rm_sku]
           result[rm_sku][:quantity] += rm_total_qty
           result[rm_sku][:requirement] = result[rm_sku][:stock] - result[rm_sku][:quantity]
