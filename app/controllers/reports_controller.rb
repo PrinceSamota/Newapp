@@ -35,13 +35,14 @@ class ReportsController < ApplicationController
 
   def expand_bom(sku_id, order_qty, visited = Set.new)
     return {} if visited.include?(sku_id)
-
+  
     item = ItemMaster.find_by(sku_id: sku_id)
     return {} unless item
-
+  
     stock = item.opening_stock || 0
     visited.add(sku_id)
-
+  
+    # Initialize result hash for FG SKU with order_qty only
     result = {
       sku_id => {
         sku: sku_id,
@@ -51,23 +52,23 @@ class ReportsController < ApplicationController
         requirement: stock - order_qty
       }
     }
-
+  
     bom = BillOfMaterial.joins(:finished_good).find_by(finished_goods: { sku_id: sku_id })
     return result unless bom
-
+  
     bom.bom_raw_material_items.each do |rm|
       next if rm.quantity.nil?
-
+  
       rm_sku = rm.item_master.sku_id
       rm_name = rm.item_master.item_name
       rm_stock = rm.item_master.opening_stock || 0
-
+  
       rm_total_qty = rm.quantity * order_qty
-
+  
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
-        # Recursive call for nested FG
+        # Recursively expand nested FG (like doors)
         child_result = expand_bom(rm_sku, rm_total_qty, visited.dup)
-
+  
         child_result.each do |sku, data|
           if result[sku]
             result[sku][:quantity] += data[:quantity]
@@ -77,7 +78,7 @@ class ReportsController < ApplicationController
           end
         end
       else
-        # Raw material accumulation
+        # Add raw materials directly (including glass under car)
         if result[rm_sku]
           result[rm_sku][:quantity] += rm_total_qty
           result[rm_sku][:requirement] = result[rm_sku][:stock] - result[rm_sku][:quantity]
@@ -92,7 +93,8 @@ class ReportsController < ApplicationController
         end
       end
     end
-
+  
     result
   end
+
 end
