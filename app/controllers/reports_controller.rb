@@ -69,6 +69,7 @@ class ReportsController < ApplicationController
       rm_total_qty = rm.quantity * effective_qty
   
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
+        # It's a finished good – recurse
         child_result = expand_bom(
           rm_sku,
           effective_qty,
@@ -85,6 +86,7 @@ class ReportsController < ApplicationController
           end
         end
       else
+        # It's a raw material – add directly
         if result[rm_sku]
           result[rm_sku][:quantity] += rm_total_qty
           result[rm_sku][:requirement] = result[rm_sku][:stock] - result[rm_sku][:quantity]
@@ -103,4 +105,5 @@ class ReportsController < ApplicationController
   
     result
   end
+
 end
