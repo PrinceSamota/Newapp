@@ -86,7 +86,9 @@ class ReportsController < ApplicationController
           end
         end
       else
-        # Raw material - add directly
+        # It's a raw material – add directly
+        Rails.logger.debug "Adding RM #{rm_name} (#{rm_sku}): qty #{rm_total_qty}"
+      
         if result[rm_sku]
           result[rm_sku][:quantity] += rm_total_qty
           result[rm_sku][:requirement] = result[rm_sku][:stock] - result[rm_sku][:quantity]
@@ -101,6 +103,7 @@ class ReportsController < ApplicationController
           }
         end
       end
+
     end
 
     result
