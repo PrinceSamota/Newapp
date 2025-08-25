@@ -78,11 +78,11 @@
         </div>
       <% end %>
   
-      <%= button_to update_stock_bill_of_material_path(@production_order.id),
+      <%= button_to update_stock_production_order_path(@production_order.id),
         method: :post,
         disabled: insufficient,
         class: "mt-1 mb-6 inline-flex items-center gap-2 font-semibold py-2 px-4 rounded 
-                #{insufficient ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'}" do %>
+                #{insufficient ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'}" do %>
         <i class="fa-solid fa-boxes-stacked"></i>
         <span>Update Stock</span>
       <% end %>

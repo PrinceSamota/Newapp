@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   resources :production_orders do
     member do
     get :bom_details
+    post :update_stock
     end
   end
   resources :clients, only: [:create]
