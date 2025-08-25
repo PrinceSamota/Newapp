@@ -32,45 +32,45 @@ class ReportsController < ApplicationController
   private
 
   def expand_bom(sku_id, qty_needed, visited = Set.new)
-    return {} if visited.include?(sku_id)
-    visited.add(sku_id)
-
     item = ItemMaster.find_by(sku_id: sku_id)
     return {} unless item
+    return {} if visited.include?(sku_id)
+
+    visited.add(sku_id)
 
     stock = item.opening_stock || 0
-
     result = {}
-    result[sku_id] = {
-      sku: sku_id,
-      item_name: item.item_name,
-      quantity: qty_needed,
-      stock: stock,
-      requirement: stock - qty_needed
-    }
 
     bom = BillOfMaterial.joins(:finished_good).find_by(finished_goods: { sku_id: sku_id })
-    return result unless bom
+
+    unless bom
+      result[sku_id] = {
+        sku: sku_id,
+        item_name: item.item_name,
+        quantity: qty_needed,
+        stock: stock,
+        requirement: stock - qty_needed
+      }
+      return result
+    end
 
     bom.bom_raw_material_items.each do |rm|
-      next if rm.quantity.nil?
+      next unless rm.quantity
 
       rm_item = rm.item_master
       rm_sku = rm_item.sku_id
       rm_name = rm_item.item_name
       rm_stock = rm_item.opening_stock || 0
-
       total_required_qty = qty_needed * rm.quantity
 
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
         child_results = expand_bom(rm_sku, total_required_qty, visited.dup)
-
-        child_results.each do |child_sku, child_data|
+        child_results.each do |child_sku, data|
           if result[child_sku]
-            result[child_sku][:quantity] += child_data[:quantity]
+            result[child_sku][:quantity] += data[:quantity]
             result[child_sku][:requirement] = result[child_sku][:stock] - result[child_sku][:quantity]
           else
-            result[child_sku] = child_data
+            result[child_sku] = data
           end
         end
       else
