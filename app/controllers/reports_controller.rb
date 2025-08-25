@@ -35,13 +35,13 @@ class ReportsController < ApplicationController
 
   def expand_bom(sku_id, order_qty, visited = Set.new, parent_bom_qty = 1)
     return {} if visited.include?(sku_id)
-
+  
     item = ItemMaster.find_by(sku_id: sku_id)
     return {} unless item
-
+  
     stock = item.opening_stock || 0
     effective_qty = order_qty * parent_bom_qty
-
+  
     result = {
       sku_id => {
         sku: sku_id,
@@ -52,38 +52,30 @@ class ReportsController < ApplicationController
         bom_defined_qty: parent_bom_qty
       }
     }
-
+  
     visited.add(sku_id)
-
+  
     bom = BillOfMaterial.joins(:finished_good).find_by(finished_goods: { sku_id: sku_id })
     return result unless bom
-
-    fg_defined_qty = bom.finished_good.quantity.presence || 1
-    total_fg_qty = effective_qty # This is the total quantity of the FG required
-
-    # Update the current FG’s entry with the proper quantity
-    result[sku_id][:quantity] = total_fg_qty
-    result[sku_id][:requirement] = stock - total_fg_qty
-
+  
     bom.bom_raw_material_items.each do |rm|
       next if rm.quantity.nil?
-
+  
       rm_item = rm.item_master
       rm_sku = rm_item.sku_id
       rm_name = rm_item.item_name
       rm_stock = rm_item.opening_stock || 0
-
-      rm_total_qty = rm.quantity * total_fg_qty
-
-      # Check if RM is also a FG (i.e. has its own BOM)
+  
+      rm_total_qty = rm.quantity * effective_qty
+  
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
         child_result = expand_bom(
           rm_sku,
-          total_fg_qty, # Pass accumulated quantity down
+          effective_qty,
           visited.dup,
-          1 # We already accounted for rm.quantity above
+          rm.quantity
         )
-
+  
         child_result.each do |sku, data|
           if result[sku]
             result[sku][:quantity] += data[:quantity]
@@ -93,7 +85,6 @@ class ReportsController < ApplicationController
           end
         end
       else
-        # It's a pure raw material
         if result[rm_sku]
           result[rm_sku][:quantity] += rm_total_qty
           result[rm_sku][:requirement] = result[rm_sku][:stock] - result[rm_sku][:quantity]
@@ -109,7 +100,7 @@ class ReportsController < ApplicationController
         end
       end
     end
-
+  
     result
   end
 end
