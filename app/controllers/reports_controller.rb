@@ -69,7 +69,6 @@ class ReportsController < ApplicationController
       rm_total_qty = rm.quantity * effective_qty
   
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
-        # ✅ FIXED: Correctly multiply down the quantity chain
         child_result = expand_bom(
           rm_sku,
           effective_qty,
