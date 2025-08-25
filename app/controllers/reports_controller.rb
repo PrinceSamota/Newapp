@@ -25,9 +25,9 @@ class ReportsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.xlsx {
+      format.xlsx do
         response.headers['Content-Disposition'] = 'attachment; filename="report.xlsx"'
-      }
+      end
     end
   end
 
@@ -35,13 +35,13 @@ class ReportsController < ApplicationController
 
   def expand_bom(sku_id, order_qty, visited = Set.new, parent_bom_qty = 1)
     return {} if visited.include?(sku_id)
-  
+
     item = ItemMaster.find_by(sku_id: sku_id)
     return {} unless item
-  
+
     stock = item.opening_stock || 0
     effective_qty = order_qty * parent_bom_qty
-  
+
     result = {
       sku_id => {
         sku: sku_id,
@@ -52,30 +52,31 @@ class ReportsController < ApplicationController
         bom_defined_qty: parent_bom_qty
       }
     }
-  
+
     visited.add(sku_id)
-  
+
     bom = BillOfMaterial.joins(:finished_good).find_by(finished_goods: { sku_id: sku_id })
     return result unless bom
-  
+
     bom.bom_raw_material_items.each do |rm|
       next if rm.quantity.nil?
-  
+
       rm_item = rm.item_master
       rm_sku = rm_item.sku_id
       rm_name = rm_item.item_name
       rm_stock = rm_item.opening_stock || 0
-  
+
       rm_total_qty = rm.quantity * effective_qty
-  
+
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
+        # Recurse for nested finished goods, passing correct quantities
         child_result = expand_bom(
           rm_sku,
           effective_qty,
           visited.dup,
           rm.quantity
         )
-  
+
         child_result.each do |sku, data|
           if result[sku]
             result[sku][:quantity] += data[:quantity]
@@ -85,6 +86,7 @@ class ReportsController < ApplicationController
           end
         end
       else
+        # Raw material - add directly
         if result[rm_sku]
           result[rm_sku][:quantity] += rm_total_qty
           result[rm_sku][:requirement] = result[rm_sku][:stock] - result[rm_sku][:quantity]
@@ -100,7 +102,7 @@ class ReportsController < ApplicationController
         end
       end
     end
-  
+
     result
   end
 end
