@@ -40,6 +40,9 @@ class ReportsController < ApplicationController
 
     stock = item.opening_stock || 0
 
+    # Determine how many need to be produced (if stock already satisfies some)
+    to_produce_qty = [qty_needed - stock, 0].max
+
     result = {}
     result[sku_id] = {
       sku: sku_id,
@@ -60,11 +63,12 @@ class ReportsController < ApplicationController
       rm_name = rm_item.item_name
       rm_stock = rm_item.opening_stock || 0
 
-      total_required_qty = qty_needed * rm.quantity
+      # Only compute raw material requirement based on actual production needed
+      total_required_qty = to_produce_qty * rm.quantity
 
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
         child_results = expand_bom(rm_sku, total_required_qty, visited.dup)
-
+  
         child_results.each do |child_sku, child_data|
           if result[child_sku]
             result[child_sku][:quantity] += child_data[:quantity]
@@ -88,7 +92,7 @@ class ReportsController < ApplicationController
         end
       end
     end
-
+  
     result
   end
 end

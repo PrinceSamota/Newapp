@@ -4,6 +4,18 @@ class ProductionOrdersController < ApplicationController
     @production_order.production_order_items.build
     @item_masters = ItemMaster.all
   end
+  def show
+    @production_order = ProductionOrder.find(params[:id])
+    @boms = @production_order.production_order_items.map do |item|
+      BillOfMaterial.find_by_bom_number(item.bom)
+    end.compact
+  
+    @quantity = params[:quantity] || @production_order.production_order_items.last&.quantity
+    @insufficient_stock_bom_ids = []
+  
+    render :bom_details 
+  end
+  
   
   def create
     clean_params = production_order_params
@@ -25,6 +37,44 @@ class ProductionOrdersController < ApplicationController
       @item_masters = ItemMaster.all
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def update_stock
+    @po = ProductionOrder.find(params[:id])
+    
+    production_order_item = @po.production_order_items.last if @po.production_order_items
+  
+    if production_order_item.nil?
+      redirect_to production_orders_path, alert: "Production Order Item not found."
+      return
+    end
+  
+    @bom = BillOfMaterial.find_by_bom_number(production_order_item.bom)
+    multiplier = production_order_item.quantity.to_f
+  
+    PaperTrail.request(controller_info: {
+      source_type: "ProductionOrder",
+      source_id: @po.id
+    }) do
+      if (fg = @bom.finished_good).present?
+        fg_item = ItemMaster.find_by(sku_id: fg.sku_id)
+        if fg_item
+          new_stock = fg_item.opening_stock.to_f + (fg.quantity.to_f * multiplier)
+          fg_item.update(opening_stock: new_stock)
+        end
+      end
+  
+      @bom.bom_raw_material_items.each do |rm|
+        rm_item = ItemMaster.find_by(sku_id: rm.sku_id)
+        if rm_item
+          new_stock = rm_item.opening_stock.to_f - (rm.quantity.to_f * multiplier)
+          rm_item.update(opening_stock: new_stock)
+        end
+      end
+    end
+  
+    @po.update(executed: true)
+    redirect_to production_orders_path, notice: "Stock updated successfully for Production Order ##{@po.id}."
   end
   
   def bom_details
@@ -73,9 +123,6 @@ class ProductionOrdersController < ApplicationController
   end
   
   
-  def show
-    @production_order = ProductionOrder.find(params[:id])
-  end
 
   private
 

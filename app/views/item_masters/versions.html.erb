@@ -94,7 +94,7 @@
                                 bill_of_material_path(version.source_id),
                                 class: "text-blue-600 underline hover:text-blue-800" %>
                   <% elsif version.source_type == "RawMaterialStockBatch" %>
-                    <%= link_to "Raw Material Stock Batch ( #{version.source_id} )",
+                    <%= link_to "Raw Material Stock ( #{version.source_id} )",
                                 raw_material_stock_batch_path(version.source_id),
                                 class: "text-green-600 underline hover:text-green-800" %>
                   <% else %>
