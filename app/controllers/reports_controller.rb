@@ -34,15 +34,15 @@ class ReportsController < ApplicationController
   def expand_bom(sku_id, qty_needed, visited = Set.new)
     return {} if visited.include?(sku_id)
     visited.add(sku_id)
-  
+
     item = ItemMaster.find_by(sku_id: sku_id)
     return {} unless item
-  
+
     stock = item.opening_stock || 0
-  
+
     # Determine how many need to be produced (if stock already satisfies some)
     to_produce_qty = [qty_needed - stock, 0].max
-  
+
     result = {}
     result[sku_id] = {
       sku: sku_id,
@@ -51,21 +51,21 @@ class ReportsController < ApplicationController
       stock: stock,
       requirement: stock - qty_needed
     }
-  
+
     bom = BillOfMaterial.joins(:finished_good).find_by(finished_goods: { sku_id: sku_id })
     return result unless bom
-  
+
     bom.bom_raw_material_items.each do |rm|
       next if rm.quantity.nil?
-  
+
       rm_item = rm.item_master
       rm_sku = rm_item.sku_id
       rm_name = rm_item.item_name
       rm_stock = rm_item.opening_stock || 0
-  
+
       # Only compute raw material requirement based on actual production needed
       total_required_qty = to_produce_qty * rm.quantity
-  
+
       if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
         child_results = expand_bom(rm_sku, total_required_qty, visited.dup)
   
