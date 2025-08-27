@@ -7,13 +7,14 @@ wb.add_worksheet(name: "Report") do |sheet|
 
   sheet.add_row []
   # Table Header
-  sheet.add_row ["Item Name", "SKU", "Quantity", "Stock", "Requirement"]
+  sheet.add_row ["Item Name", "SKU", "Category", "Quantity", "Stock", "Requirement"]
 
   # Table Data
   @report_data.each do |row|
     sheet.add_row [
       row[:item_name], 
       row[:sku],
+      row[""],
       row[:quantity],
       row[:stock],
       row[:requirement]
