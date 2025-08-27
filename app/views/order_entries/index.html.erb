@@ -118,6 +118,7 @@
             <th class="px-4 py-3 border-r border-gray-300"><%= sort_link(@q, :dispatch_no) %></th>
             <th class="px-4 py-3 border-r border-gray-300">Ship To</th>
             <th class="px-4 py-3 border-r border-gray-300">No Of Box</th>
+            <th class="px-4 py-3 border-r border-gray-300">Current Stock</th>
             <th class="px-4 py-3 border-r border-gray-300">Qty</th>
             <th class="px-4 py-3 border-r border-gray-300">Item Type</th>
             <th class="px-4 py-3 border-r border-gray-300">Profile</th>
@@ -133,8 +134,6 @@
             <th class="px-4 py-3 border-r border-gray-300">End Serial</th>
             <th class="px-4 py-3 border-r border-gray-300">MFG Date</th>
             <th class="px-4 py-3 border-r border-gray-300">Driver Rev. No</th>
-            <th class="px-4 py-3 border-r border-gray-300">Invoice No</th>
-            <th class="px-4 py-3 border-r border-gray-300">Tracking No</th>
             <th class="px-4 py-3 border-r border-gray-300">Remark</th>
             <th class="px-4 py-3">Status</th>
           </tr>
@@ -166,6 +165,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.dispatch_no || "-" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.location&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.box %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.item_master&.opening_stock || "-" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.item_type %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.profile %></td>
@@ -181,8 +181,6 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.end_serial_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.mfg_date %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision_no %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.invoice_no %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.tracking_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.remark %></td>
               <td class="px-4 py-3 text-center"><%= order.status %></td>
             </tr>
