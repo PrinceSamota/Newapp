@@ -42,10 +42,12 @@
                     class: "w-full border-gray-300 p-2 rounded-md border bg-gray-100 cursor-not-allowed" %>
                 </td>
                 <td class="px-4 py-2">
-                  <%= item_fields.text_field :item_name,
-                    readonly: true,
-                    class: "w-full border-gray-300 p-2 rounded-md border bg-gray-100 cursor-not-allowed" %>
-                </td>
+                <%= text_field_tag nil,
+                  item_fields.object.item_master&.item_name,
+                  readonly: true,
+                  class: "w-full border-gray-300 p-2 rounded-md border bg-gray-100 cursor-not-allowed" %>
+              </td>
+              
                 <td class="px-4 py-2">
                   <%= item_fields.text_field :receiving_quantity,
                   readonly: true, step: "0.01",

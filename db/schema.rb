@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_08_12_211602) do
+ActiveRecord::Schema[7.2].define(version: 2025_08_27_052112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -158,6 +158,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_12_211602) do
     t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "item_master_id"
   end
 
   create_table "fuse_types", force: :cascade do |t|

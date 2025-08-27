@@ -21,7 +21,7 @@
       field_name: f.object_name + '[item_name]',
       items: item_masters,
       value_method: :item_name,
-      selected_value: f.object.item_name,
+      selected_value: f.object.item_master&.item_name,
       input_class: "item-name-select",
       readonly: f.object.persisted? %>
   </div>
