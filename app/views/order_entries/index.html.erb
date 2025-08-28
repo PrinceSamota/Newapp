@@ -165,7 +165,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.dispatch_no || "-" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.location&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.box %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.item_master&.opening_stock || "-" %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= ItemMaster.find_by(sku_id: order.sku_number)&.opening_stock %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.qty %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.item_type %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.profile %></td>
