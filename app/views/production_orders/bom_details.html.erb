@@ -30,7 +30,7 @@
         <tr class="hover:bg-gray-50">
           <td class="px-6 py-3 border-r border-gray-200">1</td>
           <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.sku_id %></td>
-          <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.item_name %></td>
+          <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.item_master.item_name %></td>
           <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.quantity %></td>
           <td class="px-6 py-3 border-r border-gray-200"><%= @quantity %></td>
           <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.unit %></td>
@@ -58,7 +58,7 @@
           <tr class="hover:bg-gray-50">
             <td class="px-6 py-3 border-r border-gray-200"><%= rm_index + 1 %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.sku_id %></td>
-            <td class="px-6 py-3 border-r border-gray-200"><%= rm.item_name %></td>
+            <td class="px-6 py-3 border-r border-gray-200"><%= rm.item_master.item_name %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.item_master.opening_stock %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.quantity %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.quantity.to_f * @quantity.to_f %></td>

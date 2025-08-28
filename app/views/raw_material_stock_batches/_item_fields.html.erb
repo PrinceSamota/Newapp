@@ -4,7 +4,7 @@
 
 <!-- Dynamic Row -->
 <div class="grid grid-cols-7 gap-4 w-full items-center bg-white border border-gray-200 rounded-md px-4 py-3 mb-2 shadow-sm item-row">
-  
+
   <!-- SKU ID Dropdown -->
   <div class="col-span-2">
   <%= render 'shared/searchable_dropdown',
@@ -73,27 +73,27 @@
   }
 
   function selectLinkedDropdown(fieldId, element) {
-    const selectedText = element.textContent.trim();
-    const sku = element.dataset.sku;
-    const itemName = element.dataset.itemName;
+  const selectedText = element.textContent.trim();
+  const sku = element.dataset.sku;
+  const itemName = element.dataset.itemName;
 
-    document.getElementById(`${fieldId}_search`).value = selectedText;
-    document.getElementById(`${fieldId}_hidden`).value = fieldId.startsWith("sku_") ? sku : itemName;
-    document.getElementById(`${fieldId}_list`).classList.add('hidden');
+  document.getElementById(`${fieldId}_search`).value = selectedText;
+  document.getElementById(`${fieldId}_hidden`).value = fieldId.startsWith("sku_") ? sku : itemName;
+  document.getElementById(`${fieldId}_list`).classList.add('hidden');
 
-    const index = fieldId.split('_')[1]; // eg. sku_3 → 3
+  const index = fieldId.split('_')[1]; // eg. sku_3 → 3
 
-    const otherSkuId = `sku_${index}`;
-    const otherItemId = `item_${index}`;
+  const otherSkuId = `sku_${index}`;
+  const otherItemId = `item_${index}`;
 
-    if (fieldId.startsWith('sku_')) {
-      document.getElementById(`${otherItemId}_search`).value = itemName;
-      document.getElementById(`${otherItemId}_hidden`).value = itemName;
-    } else if (fieldId.startsWith('item_')) {
-      document.getElementById(`${otherSkuId}_search`).value = sku;
-      document.getElementById(`${otherSkuId}_hidden`).value = sku;
-    }
+  if (fieldId.startsWith('sku_')) {
+    document.getElementById(`${otherItemId}_search`).value = itemName;
+    document.getElementById(`${otherItemId}_hidden`).value = itemName;
+  } else if (fieldId.startsWith('item_')) {
+    document.getElementById(`${otherSkuId}_search`).value = sku;
+    document.getElementById(`${otherSkuId}_hidden`).value = sku;
   }
+}
 
   // Hide dropdown on click outside
   document.addEventListener("click", function(event) {
