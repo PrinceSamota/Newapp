@@ -30,7 +30,7 @@
         <tr class="hover:bg-gray-50">
           <td class="px-6 py-3 border-r border-gray-200">1</td>
           <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.sku_id %></td>
-          <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.item_master.item_name %></td>
+          <td class="px-6 py-3 border-r border-gray-200"><%= ItemMaster.find_by(sku_id: bom.finished_good.sku_id)&.item_name %></td>    
           <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.quantity %></td>
           <td class="px-6 py-3 border-r border-gray-200"><%= @quantity %></td>
           <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.unit %></td>
@@ -79,13 +79,13 @@
       <% end %>
   
       <%= button_to update_stock_production_order_path(@production_order.id),
-        method: :post,
-        disabled: insufficient,
-        class: "mt-1 mb-6 inline-flex items-center gap-2 font-semibold py-2 px-4 rounded 
-                #{insufficient ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'}" do %>
-        <i class="fa-solid fa-boxes-stacked"></i>
-        <span>Update Stock</span>
-      <% end %>
+  method: :post,
+  disabled: insufficient,
+  class: "mt-1 mb-6 inline-flex items-center gap-2 font-semibold py-2 px-4 rounded 
+          #{insufficient ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white cursor-pointer'}" do %>
+  <i class="fa-solid fa-boxes-stacked"></i>
+  <span>Update Stock</span>
+<% end %>
     <% else %>
       <div class="mt-4 mb-6 inline-flex items-center gap-2 text-green-600 font-semibold">
         <i class="fa-solid fa-check-circle"></i>

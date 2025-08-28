@@ -41,6 +41,8 @@
         <tr>
           <th class="px-4 py-3 text-left border-r border-gray-300">PID</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">BOM Number</th>
+          <th class="px-4 py-3 text-left border-r border-gray-300">SKU</th>
+          <th class="px-4 py-3 text-left border-r border-gray-300">current stock</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">Finished Good</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">Executed</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">Action</th>
@@ -60,8 +62,11 @@
                   <%= order.pid %>
                 <% end %>
               </td>
+              <% item_master = ItemMaster.find_by(id: item.item_master_id) %>
               <td class="px-4 py-3 border-r border-gray-300"><%= bom_number %></td>
-              <td class="px-4 py-3 border-r border-gray-300"><%= item.item_name %></td>
+              <td class="px-4 py-3 border-r border-gray-300"><%= item.sku_id %></td>
+              <td class="px-4 py-3 border-r border-gray-300"><%= item_master&.opening_stock %></td>
+              <td class="px-4 py-3 border-r border-gray-300"><%= item_master&.item_name %></td>
               <td class="px-4 py-3 border-r border-gray-300"><%= order.executed ? "Yes" : "No" %></td>
               <td class="px-4 py-3 border-r border-gray-300">
                 <% unless order.executed %>
