@@ -28,7 +28,7 @@
           <tr>
             <td class="px-4 py-2 border text-center"><%= row[:item_name] %></td>
             <td class="px-4 py-2 border text-center"><%= row[:sku] %></td>
-            <td class="px-4 py-2 border text-center">-</td>
+            <td class="px-4 py-2 border text-center"><%= row[:category] || "-" %></td>
             <td class="px-4 py-2 border text-center"><%= row[:quantity] %></td>
             <td class="px-4 py-2 border text-center"><%= row[:stock] %></td>
             <td class="px-4 py-2 border text-center 

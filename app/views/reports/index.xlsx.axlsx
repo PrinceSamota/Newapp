@@ -14,7 +14,7 @@ wb.add_worksheet(name: "Report") do |sheet|
     sheet.add_row [
       row[:item_name], 
       row[:sku],
-      row[""],
+      row[:category],
       row[:quantity],
       row[:stock],
       row[:requirement]

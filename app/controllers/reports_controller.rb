@@ -47,6 +47,7 @@ class ReportsController < ApplicationController
     result[sku_id] = {
       sku: sku_id,
       item_name: item.item_name,
+      category: item.category&.name,
       quantity: qty_needed,
       stock: stock,
       requirement: stock - qty_needed
@@ -85,6 +86,7 @@ class ReportsController < ApplicationController
           result[rm_sku] = {
             sku: rm_sku,
             item_name: rm_name,
+            category: rm_item.category&.name,
             quantity: total_required_qty,
             stock: rm_stock,
             requirement: rm_stock - total_required_qty
