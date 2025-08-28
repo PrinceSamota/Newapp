@@ -1,5 +1,6 @@
 class OrderEntry < ApplicationRecord
   belongs_to :client
+  belongs_to :item_master, optional: true
   belongs_to :location, optional: true
   attr_accessor :generate_serial
   before_create :generate_serial_numbers
