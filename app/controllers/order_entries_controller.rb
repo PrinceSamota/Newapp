@@ -110,7 +110,8 @@ class OrderEntriesController < ApplicationController
         :status,
         :remark,
         :extra,
-        :generate_sno
+        :generate_sno,
+        :item_master_id
       )
     end
     def order_entry_params_upload
