@@ -175,7 +175,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cct %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cover_type %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.fuse_type %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.loop %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center" style="background-color: <%= order.loop %>; color: <%= order.loop == 'black' ? 'white' : 'black' %>;"><%= order.loop %></td>            
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.extra %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.start_serial_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.end_serial_no %></td>
