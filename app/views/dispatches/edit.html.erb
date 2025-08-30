@@ -63,14 +63,19 @@
 <% end %>
     <!-- SUBMIT BUTTON or MESSAGE -->
     <% unless disabled %>
-      <div class="flex justify-end pt-6">
-        <%= f.submit "Update Dispatch", class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm cursor-pointer" %>
-      </div>
-    <% else %>
-      <div class="flex justify-end pt-6">
-        <%= f.submit "Update Dispatch Date", class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm cursor-pointer" %>
-      </div>
-    <% end %>
+    <div class="flex justify-end pt-6">
+      <button type="submit" name="commit_type" value="full" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm cursor-pointer">
+        Update Dispatch
+      </button>
+    </div>
+  <% else %>
+    <div class="flex justify-end pt-6">
+      <button type="submit" name="commit_type" value="date_only" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm cursor-pointer">
+        Update Dispatch Date
+      </button>
+    </div>
+  <% end %>
+  
   </div>
 <% end %>
 <script>
