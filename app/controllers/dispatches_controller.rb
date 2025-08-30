@@ -42,16 +42,13 @@ class DispatchesController < ApplicationController
   def update
     @dispatch = Dispatch.find(params[:id])
   
-    commit_type = params[:commit_type] 
-  
     ActiveRecord::Base.transaction do
       if @dispatch.update(dispatch_params_update)
         @dispatch.dispatch_items.each do |item|
           order = item.order_entry
           order.update(dispatch_no: @dispatch.d_id) if order.present?
         end
-  
-        if commit_type == "full" && @dispatch.progress == "Dispatched"
+        if @dispatch.progress == "Dispatched" && @dispatch.progress_previously_changed?
           PaperTrail.request(controller_info: {
             source_type: "Dispatch",
             source_id: @dispatch.id
@@ -73,13 +70,12 @@ class DispatchesController < ApplicationController
           end
         end
   
-        redirect_to dispatches_path, notice: "Dispatch updated#{' and stock adjusted' if commit_type == 'full'}."
+        redirect_to dispatches_path, notice: "Dispatch updated and stock adjusted."
       else
         render :edit
       end
     end
   end
-  
   def order_details
     @order_entry = OrderEntry.find_by(id: params[:order_entry_id])
     item_master = ItemMaster.find_by(sku_id: @order_entry.sku_number)
