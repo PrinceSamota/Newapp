@@ -24,7 +24,7 @@ class ItemMaster < ApplicationRecord
   validates :purchase_price, presence: true
   validates :sale_price, presence: true
   validates :minimum_stock_level, presence: true
-  has_one :finished_good, foreign_key: :sku_id, primary_key: :sku_id
+  has_one :finished_good, primary_key: :sku_id
   has_one :bill_of_material, through: :finished_good
   # BOM-specific validations
   with_options if: :is_bom? do
