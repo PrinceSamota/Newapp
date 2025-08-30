@@ -34,7 +34,6 @@
         onclick="selectArticle(this)"
         data-article="<%= item.article_number %>"
         data-sku="<%= item.sku_id %>"
-        data-id="<%= item.id %>"
         data-fuse="<%= item.fuse_type&.name %>"
         data-loop="<%= item.loop&.name %>"
         data-item-type="<%= item.item_type&.name %>"
@@ -51,7 +50,6 @@
   </div>
 
   <input type="hidden" name="order_entry[article_no]" id="selectedArticle">
-  <%= f.hidden_field :item_master_id, id: "item_master_id_field" %>
 </div>
 
         <div>
@@ -340,7 +338,6 @@ function selectArticle(el) {
   document.getElementById("cct_field").value = el.dataset.cct;
   document.getElementById("cover_type_field").value = el.dataset.coverType;
   document.getElementById("extra_field").value = el.dataset.extra;
-  document.getElementById("item_master_id_field").value = el.dataset.id;
   document.getElementById("articleDropdownList").classList.add("hidden");
   const clearBtn = document.getElementById("clearArticleBtn");
 clearBtn.classList.remove("hidden");
@@ -418,7 +415,6 @@ function clearSelectedArticle() {
   document.getElementById("cct_field").value = "";
   document.getElementById("cover_type_field").value = "";
   document.getElementById("extra_field").value = "";
-  document.getElementById("item_master_id_field").value = "";
 
   document.getElementById("clearArticleBtn").classList.add("hidden");
 }
