@@ -48,7 +48,7 @@ class DispatchesController < ApplicationController
           order = item.order_entry
           order.update(dispatch_no: @dispatch.d_id) if order.present?
         end
-        if @dispatch.progress == "Dispatched"
+        if @dispatch.progress == "Dispatched" && @dispatch.progress_previously_changed?
           PaperTrail.request(controller_info: {
             source_type: "Dispatch",
             source_id: @dispatch.id
