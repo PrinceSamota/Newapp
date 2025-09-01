@@ -141,15 +141,15 @@
 
         <tbody id="bomTableBody" class="bg-white divide-y divide-gray-100">
           <% @order_entries.each do |order| %>
-            <% row_color = @dispatch_color_map[order.dispatch_no&.strip] || 'bg-white' %>
-            <tr class="<%= row_color %>" data-order-id="<%= order.id %>">
+            <% row_color = @dispatch_color_map[order.dispatch_no&.strip] || '#FFFFFF' %>
+            <tr style="background-color: <%= row_color %>;" data-order-id="<%= order.id %>">
               <td class="px-4 py-3 border-r border-gray-300 text-center">
               <input type="checkbox" 
               class="order-checkbox w-4 h-4 disabled:opacity-50 disabled:cursor-not-allowed" 
               value="<%= order.id %>" 
               data-order-no="<%= order.order_no %>">            
                      </td>
-              <td class="px-4 sticky left-0 <%= row_color %>  z-10 text-center relative" style="width:320px; height:52px;">
+              <td class="px-4 sticky left-0   z-10 text-center relative" style="width:320px; height:52px; background-color: <%= row_color %>;">
                 <div class="sticky-border flex justify-between h-full">
                   <div class="pr-2 w-1/2 h-full flex items-center justify-center">
                     <%= link_to order.order_no, order_entry_path(order), class: "text-blue-600 hover:underline font-semibold" %>
@@ -175,7 +175,12 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cct %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.cover_type %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.fuse_type %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center" style="background-color: <%= order.loop %>; color: <%= order.loop == 'black' ? 'white' : 'black' %>;"><%= order.loop %></td>            
+              <% raw_color = order.loop.to_s.downcase %>
+              <% bg_color = raw_color == 'golden' ? 'gold' : raw_color %>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"
+                  style="background-color: <%= bg_color %>; color: <%= bg_color == 'black' ? 'white' : 'black' %>;">
+                <%= order.loop %>
+              </td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.extra %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.start_serial_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.end_serial_no %></td>

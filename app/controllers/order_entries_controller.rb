@@ -47,20 +47,34 @@ class OrderEntriesController < ApplicationController
         .order(params.dig(:q, :s) || 'dispatch_no ASC')
         .paginate(page: params[:page], per_page: 100)
     
-      color_classes = %w[bg-red-100 bg-green-100 bg-blue-100 bg-yellow-100 bg-purple-100 bg-pink-100]
-      @dispatch_color_map = {}
-      color_index = 0
-    
-      @order_entries.each do |order|
-        dispatch_no = order.dispatch_no&.strip
-        next unless dispatch_no.present?
 
-        
-        unless @dispatch_color_map[dispatch_no]
-          @dispatch_color_map[dispatch_no] = color_classes[color_index % color_classes.length]
-          color_index += 1
-        end
-      end
+digit_color_map = {
+  '1' => '#FF0000', 
+  '2' => '#0000FF', 
+  '3' => '#00FF00', 
+  '4' => '#FFFF00',
+  '5' => '#FFA500', 
+  '6' => '#800080',  
+  '7' => '#FF00FF',  
+  '8' => '#8B4513',  
+  '9' => '#FFC0CB', 
+  '0' => '#808080'  
+}
+
+@dispatch_color_map = {}
+
+@order_entries.each do |order|
+  dispatch_no = order.dispatch_no&.strip
+  next unless dispatch_no.present?
+
+  last_digit = dispatch_no[-1]  
+
+  if digit_color_map.key?(last_digit)
+    @dispatch_color_map[dispatch_no] = digit_color_map[last_digit]
+  else
+    @dispatch_color_map[dispatch_no] = '#000000' 
+  end
+end
       if session[:cart].present?
         @cart_orders = OrderEntry.where(id: session[:cart])
       else
