@@ -162,7 +162,15 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.client&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.dispatch_no || "-" %></td>
+              <% dispatch = Dispatch.find_by(d_id: order.dispatch_no) %>
+              <td class="px-4 py-3 border-r border-gray-300 text-center">
+                <% if dispatch.present? %>
+                  <%= link_to order.dispatch_no, edit_dispatch_path(dispatch), class: "text-blue-600 hover:underline" %>
+                <% else %>
+                  <%= order.dispatch_no || "-" %>
+                <% end %>
+              </td>
+
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.location&.name %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.box %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= ItemMaster.find_by(sku_id: order.sku_number)&.opening_stock %></td>
