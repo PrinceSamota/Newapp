@@ -112,6 +112,7 @@ class DispatchesController < ApplicationController
       :d_id,
       :track_no,
       :progress,
+      :invoice_no,
       dispatch_items_attributes: [:id, :order_no, :order_entry_id, :quantity, :_destroy]
     )
   end
