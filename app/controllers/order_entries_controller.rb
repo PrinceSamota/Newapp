@@ -49,17 +49,18 @@ class OrderEntriesController < ApplicationController
     
 
 digit_color_map = {
-  '1' => '#FF0000', 
-  '2' => '#0000FF', 
-  '3' => '#00FF00', 
-  '4' => '#FFFF00',
-  '5' => '#FFA500', 
-  '6' => '#800080',  
-  '7' => '#FF00FF',  
-  '8' => '#8B4513',  
-  '9' => '#FFC0CB', 
-  '0' => '#808080'  
+  '1' => '#FFB3B3',  # Light Red
+  '2' => '#B3D1FF',  # Light Blue
+  '3' => '#B3FFB3',  # Light Green
+  '4' => '#FFFFB3',  # Light Yellow
+  '5' => '#FFD9B3',  # Light Orange
+  '6' => '#D1B3FF',  # Light Purple
+  '7' => '#FFB3FF',  # Light Magenta
+  '8' => '#D2B48C',  # Light Brown (Tan)
+  '9' => '#FFD6E7',  # Light Pink
+  '0' => '#D3D3D3'   # Light Gray
 }
+
 
 @dispatch_color_map = {}
 
