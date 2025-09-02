@@ -135,7 +135,8 @@
             <th class="px-4 py-3 border-r border-gray-300">MFG Date</th>
             <th class="px-4 py-3 border-r border-gray-300">Driver Rev. No</th>
             <th class="px-4 py-3 border-r border-gray-300">Remark</th>
-            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3 border-r border-gray-300">Status</th>
+            <th class="px-4 py-3">Order Date</th>
           </tr>
         </thead>
 
@@ -182,7 +183,8 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.mfg_date %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.remark %></td>
-              <td class="px-4 py-3 text-center"><%= order.status %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.status %></td>
+              <td class="px-4 py-3 text-center"><%= order.created_at.strftime("%d-%m-%Y") %></td>
             </tr>
           <% end %>
         </tbody>
