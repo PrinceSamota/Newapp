@@ -10,7 +10,7 @@
         <%= select_tag "item_master[fuse_type_id]",
           options_from_collection_for_select(FuseType.where(org_id: current_user.org_id), :id, :name, selected_fuse_type_id),
           include_blank: "Select Fuse Type",
-          class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
       <% else %>
         <p class="text-red-500 text-sm">Please log in to select fuse type.</p>
       <% end %>

@@ -10,7 +10,7 @@
         <%= select_tag "item_master[extra_id]",
           options_from_collection_for_select(Extra.where(org_id: current_user.org_id), :id, :name, selected_extra_id),
           include_blank: "Select Extra",
-          class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
       <% else %>
         <p class="text-red-500 text-sm">Please log in to select extra.</p>
       <% end %>
