@@ -31,9 +31,9 @@ Rails.application.routes.draw do
   resources :voltages, only: [:index, :create]
   resources :wattages, only: [:index, :create]
   resources :production_orders do
-    member do
-    get :bom_details
+    member do   
     post :update_stock
+    post :bom_details
     end
   end
   resources :clients, only: [:create]
