@@ -113,7 +113,7 @@
               </div>
             </th>
             <th class="px-4 py-3 bg-gray-100 z-10 border-r border-gray-300">Client</th>
-            <th class="px-4 py-3 border-r border-gray-300"><%= sort_link(@q, :target_date) %></th>
+            <th class="px-6 py-3 border-r border-gray-300"><%= sort_link(@q, :target_date) %></th>
             <th class="px-4 py-3 border-r border-gray-300">SKU</th>
             <th class="px-4 py-3 border-r border-gray-300"><%= sort_link(@q, :dispatch_no) %></th>
             <th class="px-4 py-3 border-r border-gray-300">Ship To</th>
@@ -136,7 +136,7 @@
             <th class="px-4 py-3 border-r border-gray-300">Driver Rev. No</th>
             <th class="px-4 py-3 border-r border-gray-300">Remark</th>
             <th class="px-4 py-3 border-r border-gray-300">Status</th>
-            <th class="px-4 py-3"><%= sort_link(@q, :created_at, "Order Date") %></th>
+            <th class="px-6 py-3"><%= sort_link(@q, :created_at, "Order Date") %></th>
           </tr>
         </thead>
 
@@ -161,7 +161,7 @@
                 </div>
               </td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.client&.name %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.target_date&.strftime("%d-%m-%Y") || "-" %></td>
+              <td class="py-3 border-r border-gray-300 text-center"><%= order.target_date&.strftime("%d-%m-%Y") || "-" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
               <% dispatch = Dispatch.find_by(d_id: order.dispatch_no) %>
               <td class="px-4 py-3 border-r border-gray-300 text-center">
@@ -197,7 +197,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.remark %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.status %></td>
-              <td class="px-4 py-3 text-center"><%= order.created_at.strftime("%d-%m-%Y") %></td>
+              <td class="py-3 text-center"><%= order.created_at.strftime("%d-%m-%Y") %></td>
             </tr>
           <% end %>
         </tbody>
