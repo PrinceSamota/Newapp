@@ -3,7 +3,7 @@
     <span class="font-semibold">Back</span>
   <% end %>
 <div class="bg-white p-8 rounded-2xl shadow-xl max-w-full mx-auto  bg-gray-50 py-4 mt-5 text-center text-gray-700 p-8">
-  <h2 class="text-3xl font-bold text-gray-800 mb-10 text-center">Item Master</h2>
+  <h2 class="text-2xl font-bold text-gray-800 mb-10 text-left">New Item</h2>
 
   <%= form_with model: @item_master, url: item_masters_path, html: { id: "item-form" } do |f| %>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -63,14 +63,6 @@
         </div>
 
         <div>
-          <%= render partial: "uploads/fuse_type_dropdown", locals: { selected_fuse_type_id: @item_master.fuse_type_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-          <%= render partial: "uploads/loop_dropdown", locals: { selected_loop_id: @item_master.loop_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
           <%= render partial: "uploads/item_type_dropdown", locals: { selected_item_type_id: @item_master.item_type_id, show_form: false, errors: [] } %>
         </div>
 
@@ -79,15 +71,15 @@
         </div>
 
         <div>
-          <%= render partial: "uploads/wattage_dropdown", locals: { selected_wattage_id: @item_master.wattage_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
           <%= render partial: "uploads/voltage_dropdown", locals: { selected_voltage_id: @item_master.voltage_id, show_form: false, errors: [] } %>
         </div>
 
         <div>
-          <%= render partial: "uploads/length_dropdown", locals: { selected_length_id: @item_master.length_id, show_form: false, errors: [] } %>
+         <%= render partial: "uploads/wattage_dropdown", locals: { selected_wattage_id: @item_master.wattage_id, show_form: false, errors: [] } %>
+        </div>
+
+        <div>
+         <%= render partial: "uploads/length_dropdown", locals: { selected_length_id: @item_master.length_id, show_form: false, errors: [] } %>
         </div>
 
         <div>
@@ -95,7 +87,15 @@
         </div>
 
         <div>
-          <%= render partial: "uploads/cover_type_dropdown", locals: { selected_cover_type_id: @item_master.cover_type_id, show_form: false, errors: [] } %>
+         <%= render partial: "uploads/cover_type_dropdown", locals: { selected_cover_type_id: @item_master.cover_type_id, show_form: false, errors: [] } %>
+        </div>
+
+        <div>
+          <%= render partial: "uploads/fuse_type_dropdown", locals: { selected_fuse_type_id: @item_master.fuse_type_id, show_form: false, errors: [] } %>
+        </div>
+
+        <div>
+          <%= render partial: "uploads/loop_dropdown", locals: { selected_loop_id: @item_master.loop_id, show_form: false, errors: [] } %>
         </div>
 
         <div>
@@ -103,7 +103,7 @@
         </div>
       </div>
 
-      <div class="md:col-span-3 mt-10 text-center">
+      <div class="md:col-span-3 mt-10 text-right">
         <%= f.submit "Save", id: "item-master-save-btn", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300 cursor-pointer" %>
         <div id="save-tooltip" class="text-red-500 text-sm mt-2 hidden"></div>
       </div>
