@@ -161,7 +161,7 @@
                 </div>
               </td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.client&.name %></td>
-              <td class="py-3 border-r border-gray-300 text-center"><%= order.target_date&.strftime("%d-%m-%Y") || "-" %></td>
+              <td class="py-3 border-r border-gray-300 text-center"><%= order.target_date&.strftime("%d-%b-%Y") || "-" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.sku_number %></td>
               <% dispatch = Dispatch.find_by(d_id: order.dispatch_no) %>
               <td class="px-4 py-3 border-r border-gray-300 text-center">
@@ -197,7 +197,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.remark %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.status %></td>
-              <td class="py-3 text-center"><%= order.created_at.strftime("%d-%m-%Y") %></td>
+              <td class="py-3 text-center"><%= order.created_at.strftime("%d-%b-%Y") %></td>
             </tr>
           <% end %>
         </tbody>
