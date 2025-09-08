@@ -1,36 +1,32 @@
-
 <turbo-frame id="measurement_section">
-<div class="flex flex-col space-y-2">
-  <div class="flex justify-between items-center">
-    <label class="text-sm font-semibold text-gray-800"> Unit of Measurement</label>
-    <button type="button" onclick="document.getElementById('newMeasurementForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
-  </div>
-
-  <%= select_tag "item_master[measurement_id]",
-    options_from_collection_for_select(Measurement.where(org_id: current_user.org_id), :id, :name, selected_measurement_id),
-    include_blank: "Select Measurement",
-    class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
-
-  <!-- Add measurement input -->
-  <div id="newMeasurementForm" class="mt-2 <%= 'hidden' unless show_form %>">
-    <div class="flex gap-2">
-      <input id="new_measurement_name" type="text" placeholder="New measurement"
-        class="flex-1 rounded-md border px-3 py-2 text-sm" />
-      <button type="button" onclick="submitNewMeasurement()"
-        class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+  <div class="flex flex-col space-y-2">
+    <div class="flex justify-between items-center">
+      <label class="text-sm font-semibold text-gray-800"> Unit of Measurement</label>
+      <button type="button" onclick="document.getElementById('newMeasurementForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
     </div>
-    <div id="measurement-errors" class="text-red-600 text-sm mt-2"></div>
-  </div>
 
-  <% if errors.present? %>
-    <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
-      <% errors.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-    </ul>
-  <% end %>
-</div>
+    <%= select_tag "item_master[measurement_id]",
+      options_from_collection_for_select(Measurement.where(org_id: current_user.org_id), :id, :name, selected_measurement_id),
+      include_blank: "Select Measurement",
+      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
 
+    <div id="newMeasurementForm" class="mt-2 <%= 'hidden' unless show_form %>">
+      <div class="flex gap-2">
+        <input id="new_measurement_name" type="text" placeholder="New measurement"
+          class="flex-1 rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewMeasurement()"
+          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+      </div>
+      <div id="measurement-errors" class="text-red-600 text-sm mt-2"></div>
+    </div>
+
+    <% if errors.present? %>
+      <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+        <% errors.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    <% end %>
   </div>
 </turbo-frame>
 

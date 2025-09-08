@@ -24,12 +24,27 @@ class ItemMastersController < ApplicationController
         @item_master.org_id = current_user.org_id 
         respond_to do |format|
           if @item_master.save
-            format.html { redirect_to root_path, notice: "Item Master successfully created." }
-            format.js   # Looks for create.js.erb
+            format.html { redirect_to item_masters_path, notice: "Item Master successfully created." }
+            format.js   
           else
-            format.html { redirect_to uploads_path, alert: "Failed to create Item Master." }
-            format.js   # Handles failure via JS
+            format.html { redirect_to new_item_master_path, alert: "Failed to create Item Master." }
+            format.js   
           end
+        end
+      end
+      def new
+        if params[:clone_id].present?
+          original_item = ItemMaster.find_by(id: params[:clone_id])
+      
+          if original_item
+            @item_master = original_item.dup
+            @item_master.item_name = nil  
+          else
+            @item_master = ItemMaster.new
+          end
+        else
+          @item_master = ItemMaster.new
+          @item_master.is_bom = false
         end
       end
       def edit
