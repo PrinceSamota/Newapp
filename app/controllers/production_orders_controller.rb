@@ -79,9 +79,15 @@ class ProductionOrdersController < ApplicationController
   
   def bom_details
     @production_order = ProductionOrder.find(params[:id])
-    @p_items = @production_order.production_order_items.includes(:production_order)
-    @quantity = params[:quantity].to_f
   
+    if request.post?
+      session[:bom_quantity] = params[:quantity].to_f
+      redirect_to bom_details_production_order_path(@production_order)
+      return
+    end
+    
+    @quantity = session[:bom_quantity] || 1
+    @p_items = @production_order.production_order_items.includes(:production_order)
     @bom_ids = @p_items.flat_map { |item| JSON.parse(item.bom_ids || "[]") rescue [] }.uniq
     @boms = BillOfMaterial.where(id: @bom_ids)
   
@@ -97,10 +103,9 @@ class ProductionOrdersController < ApplicationController
     @boms.each do |bom|
       bom.bom_raw_material_items.each do |rm|
         required_quantity = rm.quantity.to_f * @quantity
-    
         item = ItemMaster.find_by(sku_id: rm.sku_id)
         current_stock = item&.opening_stock.to_f
-    
+  
         if current_stock < required_quantity
           @insufficient_stock_bom_ids << bom.id
           break

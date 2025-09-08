@@ -32,6 +32,7 @@ Rails.application.routes.draw do
   resources :wattages, only: [:index, :create]
   resources :production_orders do
     member do   
+    get :bom_details
     post :update_stock
     post :bom_details
     end
