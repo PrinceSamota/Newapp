@@ -53,15 +53,16 @@
           <% order.production_order_items.each do |item| %>
             <% bom_number, finished_good = item.bom.to_s.split(",", 2) %>
             <tr class="hover:bg-gray-50">
-              <td class="px-4 py-3 border-r border-gray-300">
-                <% if item.sku_id.present? && item.item_name.present? %>
-                  <%= link_to order.pid,
-                      bom_details_production_order_path(order.id, quantity: item.quantity),
-                      class: "text-blue-600 hover:underline" %>
-                <% else %>
-                  <%= order.pid %>
-                <% end %>
-              </td>
+            <td class="px-4 py-3 border-r border-gray-300">
+            <% if item.sku_id.present? && item.item_name.present? %>
+              <%= form_with url: bom_details_production_order_path(order.id), method: :post, class: "inline", data: { turbo: false } do %>
+              <%= hidden_field_tag :quantity, item.quantity %>
+              <%= submit_tag order.pid, class: "text-blue-600 hover:underline bg-transparent border-none p-0 cursor-pointer" %>
+            <% end %>
+            <% else %>
+              <%= order.pid %>
+            <% end %>
+          </td>        
               <% item_master = ItemMaster.find_by(id: item.item_master_id) %>
               <td class="px-4 py-3 border-r border-gray-300"><%= bom_number %></td>
               <td class="px-4 py-3 border-r border-gray-300"><%= item.sku_id %></td>
