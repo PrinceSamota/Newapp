@@ -9,7 +9,7 @@
   <!-- BOM Header -->
   <div class="mb-4 mt-10">
     <h2 class="text-lg font-semibold text-indigo-700">
-      BOM <%= index + 1 %>: <%= bom.bom_number %> - <%= bom.name %>
+      BOM <%= index + 1 %>: <%= link_to "#{bom.bom_number} - #{bom.name}", bill_of_material_path(bom), class: "text-indigo-700 hover:underline" %>
     </h2>
   </div>
 
@@ -29,7 +29,14 @@
       <tbody class="bg-white divide-y divide-gray-200 text-black font-medium">
         <tr class="hover:bg-gray-50">
           <td class="px-6 py-3 border-r border-gray-200">1</td>
-          <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.sku_id %></td>
+          <td class="px-6 py-3 border-r border-gray-200"> 
+              <% item = ItemMaster.find_by(sku_id: bom.finished_good.sku_id) %>
+              <% if item %>
+                <%= link_to bom.finished_good.sku_id, edit_item_master_path(item), class: "text-blue-600 hover:underline" %>
+              <% else %>
+                <%= bom.finished_good.sku_id %>
+              <% end %>
+          </td>
           <td class="px-6 py-3 border-r border-gray-200"><%= ItemMaster.find_by(sku_id: bom.finished_good.sku_id)&.item_name %></td>    
           <td class="px-6 py-3 border-r border-gray-200"><%= bom.finished_good.quantity %></td>
           <td class="px-6 py-3 border-r border-gray-200"><%= @quantity %></td>
@@ -46,7 +53,7 @@
     <table class="min-w-full divide-y divide-gray-200 text-sm border border-gray-300 shadow-xl rounded-lg">
       <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
         <tr>
-          <% ["#", "SKU ID", "Item Name","Current Stock", "Required Quantity", "Quantity for PO","Unit"].each_with_index do |header, index| %>
+          <% ["#", "SKU ID", "Item Name","Current Stock", "Required Quantity", "Quantity for PO", "Stock After PO", "Unit"].each_with_index do |header, index| %>
             <th class="px-6 py-3 text-left whitespace-nowrap border-r border-gray-300 <%= 'last:border-r-0' if index == 4 %>">
               <%= header %>
             </th>
@@ -57,11 +64,22 @@
         <% bom.bom_raw_material_items.each_with_index do |rm, rm_index| %>
           <tr class="hover:bg-gray-50">
             <td class="px-6 py-3 border-r border-gray-200"><%= rm_index + 1 %></td>
-            <td class="px-6 py-3 border-r border-gray-200"><%= rm.sku_id %></td>
+            <td class="px-6 py-3 border-r border-gray-200">
+                <% item = ItemMaster.find_by(sku_id: rm.sku_id) %>
+                <% if item %>
+                  <%= link_to rm.sku_id, edit_item_master_path(item), class: "text-blue-600 hover:underline" %>
+                <% else %>
+                  <%= rm.sku_id %>
+                <% end %>
+            </td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.item_master.item_name %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.item_master.opening_stock %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.quantity %></td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.quantity.to_f * @quantity.to_f %></td>
+            <% remaining_stock = rm.item_master.opening_stock - rm.quantity.to_f * @quantity.to_f %>
+            <td class="px-6 py-3 border-r border-gray-200 <%= 'text-red-600' if remaining_stock <= 0 %>">
+              <%= remaining_stock %>
+            </td>
             <td class="px-6 py-3 border-r border-gray-200"><%= rm.unit %></td>
           </tr>
         <% end %>
