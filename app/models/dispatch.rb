@@ -11,9 +11,18 @@ class Dispatch < ApplicationRecord
 
   ransacker :search_all do
     Arel.sql(
-      "CAST(d_id AS TEXT) || ' ' || COALESCE(courier_company, '') || ' ' || COALESCE(mode_of_shipment, '')"
+      "CAST(dispatches.d_id AS TEXT) || ' ' || " \
+      "COALESCE(dispatches.courier_company, '') || ' ' || " \
+      "COALESCE(dispatches.mode_of_shipment, '') || ' ' || " \
+      "COALESCE((" \
+        "SELECT STRING_AGG(order_entries.order_no, ' ') " \
+        "FROM dispatch_items " \
+        "JOIN order_entries ON order_entries.id = dispatch_items.order_entry_id " \
+        "WHERE dispatch_items.dispatch_id = dispatches.id" \
+      "), '')"
     )
   end
+  
 
   def self.ransackable_attributes(auth_object = nil)
     %w[d_id_str courier_company mode_of_shipment progress created_at updated_at search_all]
