@@ -3,14 +3,20 @@
     <div class="flex flex-col space-y-2">
       <div class="flex justify-between items-center">
         <label class="text-sm font-semibold text-gray-800">Loop</label>
-        <button type="button" onclick="document.getElementById('newLoopForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+        <button type="button"
+          onclick="document.getElementById('newLoopForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
       </div>
 
       <% if current_user.present? %>
         <%= select_tag "item_master[loop_id]",
-          options_from_collection_for_select(Loop.where(org_id: current_user.org_id), :id, :name, selected_loop_id),
+          options_from_collection_for_select(
+            Loop.where(org_id: current_user.org_id), :id, :name, selected_loop_id
+          ),
+          id: "loop-select",
           include_blank: "Select Loop",
-          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+          data: { placeholder: "Select Loop" } %>
       <% else %>
         <p class="text-red-500 text-sm">Please log in to select loop.</p>
       <% end %>
@@ -59,4 +65,26 @@
       console.error(error);
     });
   }
+
+  function initLoopSelect() {
+    const select = document.getElementById('loop-select');
+    if (select && !select.tomselect) {
+      let ts = new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Loop',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+
+      if (ts.getValue()) ts.clear(true);
+    }
+  }
+
+  document.addEventListener('turbo:load', initLoopSelect);
+  document.addEventListener('turbo:frame-load', initLoopSelect);
 </script>

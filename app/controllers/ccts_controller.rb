@@ -9,13 +9,15 @@ class CctsController < ApplicationController
           selected_cct_id: @cct.id,
           show_form: false,
           errors: []
-        }
+        },
+        formats: [:html]  
       else
         render partial: "uploads/cct_dropdown", locals: {
           selected_cct_id: nil,
           show_form: true,
           errors: @cct.errors.full_messages
-        }
+        },
+        formats: [:html]  
       end
     end
   

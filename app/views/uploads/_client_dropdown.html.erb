@@ -1,0 +1,104 @@
+<div>
+<turbo-frame id="client_section">
+  <div class="flex flex-col space-y-2 mt-4">
+    <div class="flex justify-between items-center">
+      <label class="text-sm font-semibold text-gray-800">Client</label>
+      <button type="button"
+        onclick="document.getElementById('newClientForm').classList.toggle('hidden')"
+        class="text-blue-600 text-xl font-bold">+</button>
+    </div>
+
+    <%= select_tag "order_entry[client_id]",
+    options_from_collection_for_select(
+      Client.where(org_id: current_user.org_id), :id, :name, selected_client_id
+    ),
+    id: "client-select",
+    include_blank: "Select Client",
+    class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+    data: { placeholder: "Select Client" } %>
+
+    <!-- Add New Client -->
+    <div id="newClientForm" class="mt-2 <%= 'hidden' unless show_form %>">
+      <div class="flex gap-2">
+        <input id="new_client_name" type="text" placeholder="New client name"
+          class="flex-1 rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewClient()"
+          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+      </div>
+      <div id="client-errors" class="text-red-600 text-sm mt-2"></div>
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>
+</div>
+<script>
+  function submitNewClient() {
+    const name = document.getElementById('new_client_name').value;
+    const errorsDiv = document.getElementById('client-errors');
+
+    if (!name) {
+      errorsDiv.textContent = "Client name cannot be blank.";
+      return;
+    }
+
+    fetch("/clients", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ client: { name } })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Error creating client");
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("client_section").innerHTML = html;
+
+      requestAnimationFrame(() => {
+        initClientSelect();
+
+        const select = document.getElementById("client-select");
+        if (select && select.options.length > 0) {
+          const lastOption = select.options[select.options.length - 1];
+          if (select.tomselect) {
+            select.tomselect.setValue(lastOption.value);  
+          } else {
+            select.value = lastOption.value;
+          }
+        }
+      });
+    })
+    .catch(() => {
+      errorsDiv.textContent = "Something went wrong.";
+    });
+  }
+
+  function initClientSelect() {
+    const select = document.getElementById('client-select');
+    if (select && !select.tomselect) {
+      new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Client',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+    }
+  }
+
+  document.addEventListener('turbo:load', initClientSelect);
+  document.addEventListener('turbo:frame-load', initClientSelect);
+</script>

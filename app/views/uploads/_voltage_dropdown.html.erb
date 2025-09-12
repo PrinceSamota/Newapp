@@ -3,14 +3,20 @@
     <div class="flex flex-col space-y-2">
       <div class="flex justify-between items-center">
         <label class="text-sm font-semibold text-gray-800">Voltage</label>
-        <button type="button" onclick="document.getElementById('newVoltageForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+        <button type="button"
+          onclick="document.getElementById('newVoltageForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
       </div>
 
       <% if current_user.present? %>
         <%= select_tag "item_master[voltage_id]",
-          options_from_collection_for_select(Voltage.where(org_id: current_user.org_id), :id, :name, selected_voltage_id),
+          options_from_collection_for_select(
+            Voltage.where(org_id: current_user.org_id), :id, :name, selected_voltage_id
+          ),
+          id: "voltage-select",
           include_blank: "Select Voltage",
-          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+          data: { placeholder: "Select Voltage" } %>
       <% else %>
         <p class="text-red-500 text-sm">Please log in to select voltage.</p>
       <% end %>
@@ -49,7 +55,6 @@
         "Accept": "text/vnd.turbo-stream.html"
       },
       body: JSON.stringify({ voltage: { name: value } })
-
     })
     .then(response => response.text())
     .then(html => {
@@ -60,4 +65,26 @@
       console.error(error);
     });
   }
+
+  function initVoltageSelect() {
+    const select = document.getElementById('voltage-select');
+    if (select && !select.tomselect) {
+      let ts = new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Voltage',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+
+      if (ts.getValue()) ts.clear(true);
+    }
+  }
+
+  document.addEventListener('turbo:load', initVoltageSelect);
+  document.addEventListener('turbo:frame-load', initVoltageSelect);
 </script>

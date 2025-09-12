@@ -1,15 +1,19 @@
 <turbo-frame id="measurement_section">
   <div class="flex flex-col space-y-2">
     <div class="flex justify-between items-center">
-      <label class="text-sm font-semibold text-gray-800"> Unit of Measurement</label>
+      <label class="text-sm font-semibold text-gray-800">Unit of Measurement</label>
       <button type="button" onclick="document.getElementById('newMeasurementForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
     </div>
 
     <%= select_tag "item_master[measurement_id]",
-      options_from_collection_for_select(Measurement.where(org_id: current_user.org_id), :id, :name, selected_measurement_id),
-      include_blank: "Select Measurement",
-      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+      options_from_collection_for_select(
+        Measurement.where(org_id: current_user.org_id), :id, :name, selected_measurement_id
+      ),
+      id: "measurement-select",
+      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+      data: { placeholder: "Select Measurement" } %>
 
+    <!-- Add measurement input -->
     <div id="newMeasurementForm" class="mt-2 <%= 'hidden' unless show_form %>">
       <div class="flex gap-2">
         <input id="new_measurement_name" type="text" placeholder="New measurement"
@@ -45,7 +49,6 @@
     })
     .then(response => response.text())
     .then(html => {
-      // replace turbo-frame content
       document.getElementById("measurement_section").innerHTML = html;
     })
     .catch(error => {
@@ -53,4 +56,26 @@
       console.error(error);
     });
   }
+  function initMeasurementSelect() {
+  const select = document.getElementById('measurement-select');
+  if (select && !select.tomselect) {
+    let ts = new TomSelect(select, {
+      create: false,
+      allowEmptyOption: false,
+      placeholder: select.dataset.placeholder || 'Select Measurement',
+      hidePlaceholder: true,
+      persist: false,
+      sortField: { field: 'text', direction: 'asc' },
+      onDropdownOpen: function() {
+        if (this.getValue()) this.clear(true);
+      }
+    });
+
+    if (ts.getValue()) ts.clear(true);
+  }
+}
+
+document.addEventListener('turbo:load', initMeasurementSelect);
+document.addEventListener('turbo:frame-load', initMeasurementSelect);
+
 </script>

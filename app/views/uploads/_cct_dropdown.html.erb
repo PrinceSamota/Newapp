@@ -2,52 +2,81 @@
   <div class="flex flex-col space-y-2">
     <div class="flex justify-between items-center">
       <label class="text-sm font-semibold text-gray-800">CCT</label>
-      <button type="button" onclick="document.getElementById('newCctForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+      <button type="button"
+        onclick="document.getElementById('newCctForm').classList.toggle('hidden')"
+        class="text-blue-600 text-xl font-bold">+</button>
     </div>
 
-    <select name="item_master[cct_id]" id="item_master_cct_id" class=" required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm">
-      <option value="">Select CCT</option>
-      <% Cct.where(org_id: current_user.org_id).each do |cct| %>
-        <option value="<%= cct.id %>" <%= "selected" if cct.id == selected_cct_id %>><%= cct.name %></option>
-      <% end %>
-    </select>
+    <%= select_tag "item_master[cct_id]",
+      options_from_collection_for_select(
+        Cct.where(org_id: current_user.org_id), :id, :name, selected_cct_id
+      ),
+      id: "cct-select",
+      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+      data: { placeholder: "Select CCT" } %>
 
     <!-- Add New CCT -->
-    <div id="newCctForm" class="<%= show_form ? '' : 'hidden' %> mt-2">
+    <div id="newCctForm" class="mt-2 <%= 'hidden' unless show_form %>">
       <div class="flex gap-2">
-        <input id="new_cct_name" type="text" placeholder="New CCT name" class="flex-1 rounded-md border px-3 py-2 text-sm" />
-        <button type="button" onclick="submitNewCct()" class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        <input id="new_cct_name" type="text" placeholder="New CCT name"
+          class="flex-1 rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewCct()"
+          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
       </div>
+      <div id="cct-errors" class="text-red-600 text-sm mt-2"></div>
       <% if errors.present? %>
-        <div class="text-red-600 text-sm mt-2">
-          <% errors.each do |error| %>
-            <p><%= error %></p>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
           <% end %>
-        </div>
+        </ul>
       <% end %>
     </div>
   </div>
 </turbo-frame>
 
 <script>
-function submitNewCct() {
-  const name = document.getElementById('new_cct_name').value;
-  fetch("/ccts", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
-      "Accept": "text/html"
-    },
-    body: JSON.stringify({ cct: { name } })
-  })
-  .then(response => response.text())
-  .then(html => {
-    document.getElementById("cct_type_section").innerHTML = html;
-  })
-  .catch(error => {
-    console.error(error);
-    alert("Something went wrong");
-  });
-}
+  function submitNewCct() {
+    const name = document.getElementById('new_cct_name').value;
+
+    fetch("/ccts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ cct: { name } })
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("cct_type_section").innerHTML = html;
+    })
+    .catch(error => {
+      document.getElementById("cct-errors").innerText = "Something went wrong.";
+      console.error(error);
+    });
+  }
+
+  function initCctSelect() {
+    const select = document.getElementById('cct-select');
+    if (select && !select.tomselect) {
+      let ts = new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select CCT',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+
+      if (ts.getValue()) ts.clear(true);
+    }
+  }
+
+  document.addEventListener('turbo:load', initCctSelect);
+  document.addEventListener('turbo:frame-load', initCctSelect);
 </script>

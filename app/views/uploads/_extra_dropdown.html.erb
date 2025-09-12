@@ -3,14 +3,19 @@
     <div class="flex flex-col space-y-2">
       <div class="flex justify-between items-center">
         <label class="text-sm font-semibold text-gray-800">Extra</label>
-        <button type="button" onclick="document.getElementById('newExtraForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+        <button type="button"
+          onclick="document.getElementById('newExtraForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
       </div>
 
       <% if current_user.present? %>
         <%= select_tag "item_master[extra_id]",
-          options_from_collection_for_select(Extra.where(org_id: current_user.org_id), :id, :name, selected_extra_id),
-          include_blank: "Select Extra",
-          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+          options_from_collection_for_select(
+            Extra.where(org_id: current_user.org_id), :id, :name, selected_extra_id
+          ),
+          id: "extra-select",
+          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+          data: { placeholder: "Select Extra" } %>
       <% else %>
         <p class="text-red-500 text-sm">Please log in to select extra.</p>
       <% end %>
@@ -59,4 +64,26 @@
       console.error(error);
     });
   }
+
+  function initExtraSelect() {
+    const select = document.getElementById('extra-select');
+    if (select && !select.tomselect) {
+      let ts = new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Extra',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+
+      if (ts.getValue()) ts.clear(true);
+    }
+  }
+
+  document.addEventListener('turbo:load', initExtraSelect);
+  document.addEventListener('turbo:frame-load', initExtraSelect);
 </script>
