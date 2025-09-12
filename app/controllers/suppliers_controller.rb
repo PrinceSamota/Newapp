@@ -1,23 +1,25 @@
 class SuppliersController < ApplicationController
-    def create
-      @supplier = Supplier.new(supplier_params)
-      @supplier.org_id = current_user.org_id
+  def create
+    @supplier = Supplier.new(supplier_params)
+    @supplier.org_id = current_user.org_id
   
-      if @supplier.save
-        respond_to do |format|
-          format.turbo_stream do
-            render turbo_stream: turbo_stream.append(
-              "raw_material_stock_batch_supplier_id",
-              partial: "suppliers/option",
-              locals: { supplier: @supplier }
-            )
-          end
+    if @supplier.save
+      @selected_supplier_id = @supplier.id
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "supplier_section",
+            partial: "uploads/supplier_dropdown",
+            locals: { selected_supplier_id: @selected_supplier_id, show_form: false  }
+          )
         end
-      else
-        flash[:supplier_errors] = @supplier.errors.full_messages
-        redirect_back fallback_location: root_path
       end
+    else
+      flash[:supplier_errors] = @supplier.errors.full_messages
+      redirect_back fallback_location: root_path
     end
+  end
+  
   
     private
   

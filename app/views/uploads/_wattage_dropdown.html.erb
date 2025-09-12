@@ -3,14 +3,20 @@
     <div class="flex flex-col space-y-2">
       <div class="flex justify-between items-center">
         <label class="text-sm font-semibold text-gray-800">Wattage</label>
-        <button type="button" onclick="document.getElementById('newWattageForm').classList.toggle('hidden')" class="text-blue-600 text-xl font-bold">+</button>
+        <button type="button"
+          onclick="document.getElementById('newWattageForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
       </div>
 
       <% if current_user.present? %>
         <%= select_tag "item_master[wattage_id]",
-          options_from_collection_for_select(Wattage.where(org_id: current_user.org_id), :id, :name, selected_wattage_id),
+          options_from_collection_for_select(
+            Wattage.where(org_id: current_user.org_id), :id, :name, selected_wattage_id
+          ),
+          id: "wattage-select",
           include_blank: "Select Wattage",
-          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm" %>
+          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+          data: { placeholder: "Select Wattage" } %>
       <% else %>
         <p class="text-red-500 text-sm">Please log in to select wattage.</p>
       <% end %>
@@ -49,7 +55,6 @@
         "Accept": "text/vnd.turbo-stream.html"
       },
       body: JSON.stringify({ wattage: { name: value } })
-
     })
     .then(response => response.text())
     .then(html => {
@@ -60,4 +65,26 @@
       console.error(error);
     });
   }
+
+  function initWattageSelect() {
+    const select = document.getElementById('wattage-select');
+    if (select && !select.tomselect) {
+      let ts = new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Wattage',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+
+      if (ts.getValue()) ts.clear(true);
+    }
+  }
+
+  document.addEventListener('turbo:load', initWattageSelect);
+  document.addEventListener('turbo:frame-load', initWattageSelect);
 </script>

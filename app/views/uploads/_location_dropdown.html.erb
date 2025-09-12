@@ -1,0 +1,106 @@
+<div>
+<turbo-frame id="location_section">
+  <div class="flex flex-col space-y-2 mt-4">
+    <div class="flex justify-between items-center">
+      <label class="text-sm font-semibold text-gray-800">Location</label>
+      <button type="button"
+        onclick="document.getElementById('newLocationForm').classList.toggle('hidden')"
+        class="text-blue-600 text-xl font-bold">+</button>
+    </div>
+
+    <%= select_tag "order_entry[location_id]",
+      options_from_collection_for_select(
+        Location.where(org_id: current_user.org_id), :id, :name, selected_location_id
+      ),
+      id: "location-select",
+      include_blank: "Select Location",
+      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+      data: { placeholder: "Select Location" } %>
+
+    <!-- Add New Location -->
+    <div id="newLocationForm" class="mt-2 <%= 'hidden' unless show_form %>">
+      <div class="flex gap-2">
+        <input id="new_location_name" type="text" placeholder="New location name"
+          class="flex-1 rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewLocation()"
+          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+      </div>
+      <div id="location-errors" class="text-red-600 text-sm mt-2"></div>
+
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>
+</div>
+
+<script>
+  function submitNewLocation() {
+    const name = document.getElementById('new_location_name').value;
+    const errorsDiv = document.getElementById('location-errors');
+
+    if (!name) {
+      errorsDiv.textContent = "Location name cannot be blank.";
+      return;
+    }
+
+    fetch("/locations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ location: { name } })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Error creating location");
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("location_section").innerHTML = html;
+
+      requestAnimationFrame(() => {
+        initLocationSelect();
+
+        const select = document.getElementById("location-select");
+        if (select && select.options.length > 0) {
+          const lastOption = select.options[select.options.length - 1];
+          if (select.tomselect) {
+            select.tomselect.setValue(lastOption.value);  
+          } else {
+            select.value = lastOption.value;
+          }
+        }
+      });
+    })
+    .catch(() => {
+      errorsDiv.textContent = "Something went wrong.";
+    });
+  }
+
+  function initLocationSelect() {
+    const select = document.getElementById('location-select');
+    if (select && !select.tomselect) {
+      new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Location',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+    }
+  }
+
+  document.addEventListener('turbo:load', initLocationSelect);
+  document.addEventListener('turbo:frame-load', initLocationSelect);
+</script>

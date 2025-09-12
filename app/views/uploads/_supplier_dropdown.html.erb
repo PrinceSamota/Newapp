@@ -1,0 +1,85 @@
+<turbo-frame id="supplier_section">
+  <div class="flex flex-col space-y-2">
+    <div class="flex justify-between items-center">
+      <label class="text-sm font-semibold text-gray-800">Supplier</label>
+      <button type="button"
+        onclick="document.getElementById('newSupplierForm').classList.toggle('hidden')"
+        class="text-blue-600 text-xl font-bold">+</button>
+    </div>
+
+    <%= select_tag "raw_material_stock_batch[supplier_id]",
+      options_from_collection_for_select(
+        Supplier.where(org_id: current_user.org_id), :id, :name, selected_supplier_id
+      ),
+      id: "supplier-select",
+      include_blank: "Select Supplier",
+      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+      data: { placeholder: "Select Supplier" } %>
+
+    <div id="newSupplierForm" class="mt-2 <%= 'hidden' unless show_form %>">
+      <div class="flex gap-2">
+        <input id="new_supplier_name" type="text" placeholder="New Supplier name"
+          class="flex-1 rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewSupplier()"
+          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+      </div>
+      <div id="supplier-errors" class="text-red-600 text-sm mt-2"></div>
+    </div>
+  </div>
+</turbo-frame>
+
+<script>
+  function submitNewSupplier() {
+    const name = document.getElementById('new_supplier_name').value.trim();
+    const errorsDiv = document.getElementById('supplier-errors');
+    if (!name) {
+      errorsDiv.textContent = "Supplier name cannot be blank.";
+      return;
+    }
+
+    fetch("/suppliers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ supplier: { name } })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Error creating supplier");
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("supplier_section").innerHTML = html;
+      initSupplierSelect(); 
+      document.getElementById('new_supplier_name').value = "";
+      errorsDiv.textContent = "";
+    })
+    .catch(() => {
+      errorsDiv.textContent = "Something went wrong.";
+    });
+  }
+
+  function initSupplierSelect() {
+    const select = document.getElementById('supplier-select');
+    if (select && !select.tomselect) {
+      let ts = new TomSelect(select, {
+        create: false, 
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Supplier',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+
+      if (ts.getValue()) ts.clear(true);
+    }
+  }
+
+  document.addEventListener('turbo:load', initSupplierSelect);
+  document.addEventListener('turbo:frame-load', initSupplierSelect);
+</script>
