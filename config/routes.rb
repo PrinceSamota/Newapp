@@ -14,6 +14,9 @@ Rails.application.routes.draw do
     get :new_item_row, on: :collection
     get :order_details, on: :collection
     get :new_item_row_edit, on: :collection
+    member do
+      get :download_pdf
+    end
   end
   resources :bill_of_materials, only: [:index, :new, :create, :show] do
     member do

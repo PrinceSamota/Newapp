@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dispatch PDF</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      padding: 20px;
+      color: #000;
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    h3 {
+      font-size: 16px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .section {
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 30px;
+    }
+
+    .summary-grid {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .summary-item {
+      width: 33.33%;
+      margin-bottom: 10px;
+    }
+
+    .label {
+      font-weight: bold;
+      display: block;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      table-layout: fixed;
+      word-wrap: break-word;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: left;
+      font-size: 10px;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="section">
+    <h2>Dispatch Summary</h2>
+    <div class="summary-grid">
+      <div class="summary-item"><span class="label">Dispatch Date:</span> <%= @dispatch.dispatch_date %></div>
+      <div class="summary-item"><span class="label">Delivery Date:</span> <%= @dispatch.delivery_date %></div>
+      <div class="summary-item"><span class="label">Mode of Shipment:</span> <%= @dispatch.mode_of_shipment %></div>
+      <div class="summary-item"><span class="label">Tracking No:</span> <%= @dispatch.track_no %></div>
+      <div class="summary-item"><span class="label">Invoice No:</span> <%= @dispatch.invoice_no %></div>
+      <div class="summary-item"><span class="label">Courier Company:</span> <%= @dispatch.courier_company %></div>
+      <div class="summary-item"><span class="label">Progress:</span> <%= @dispatch.progress %></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h3>Dispatch Items</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Order No</th>
+          <th>Article No</th>
+          <th>SKU Number</th>
+          <th>Quantity</th>
+          <th>Target Date</th>
+          <th>Start Serial</th>
+          <th>End Serial</th>
+          <th>Profile</th>
+          <th>Length</th>
+          <th>Wattage</th>
+          <th>Voltage</th>
+          <th>Loop</th>
+          <th>Item Type</th>
+          <th>Fuse Type</th>
+          <th>Cover Type</th>
+          <th>CCT</th>
+          <th>Remark</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @dispatch.dispatch_items.each do |item| %>
+          <% order = item.order_entry %>
+          <tr>
+            <td><%= item.order_no %></td>
+            <td><%= order&.article_no %></td>
+            <td><%= order&.sku_number %></td>
+            <td><%= item.quantity %></td>
+            <td><%= order&.target_date %></td>
+            <td><%= order&.start_serial_no %></td>
+            <td><%= order&.end_serial_no %></td>
+            <td><%= order&.profile %></td>
+            <td><%= order&.length %></td>
+            <td><%= order&.wattage %></td>
+            <td><%= order&.voltage %></td>
+            <td><%= order&.loop %></td>
+            <td><%= order&.item_type %></td>
+            <td><%= order&.fuse_type %></td>
+            <td><%= order&.cover_type %></td>
+            <td><%= order&.cct %></td>
+            <td><%= order&.remark %></td>
+            <td><%= order&.status %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>
