@@ -19,7 +19,6 @@ gem "pg"
 gem 'dotenv-rails'
 gem 'axlsx_rails'
 gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
 
 # PostgreSQL instead of SQLite
 group :development, :test do
