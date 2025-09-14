@@ -100,6 +100,21 @@ class DispatchesController < ApplicationController
     render partial: "dispatches/dispatch_item_fields", locals: { dispatch_item: @dispatch_item, index: @index, from_edit: @from_edit }
   end
 
+  def download_pdf
+    @dispatch = Dispatch.find(params[:id])
+  
+    respond_to do |format|
+      format.pdf do
+        render pdf: "dispatch_#{@dispatch.id}",
+               template: "dispatches/pdf",
+               layout: "pdf", 
+               formats: [:html],
+               encoding: "UTF-8",
+               show_as_html: params.key?('debug')
+      end
+    end
+  end
+  
   private
 
   def dispatch_params
