@@ -284,7 +284,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_08_28_211353) do
     t.string "client_id"
     t.date "target_date"
     t.integer "location_id"
-    t.decimal "qty"
+    t.integer "qty"
     t.string "sku_number"
     t.string "fuse_type"
     t.string "loop"
