@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       post :update_stock
     end
   end
+  resources :driver_revisions, only: [:create]
   resources :fuse_types, only: [:index, :create]
   resources :ccts, only: [:index, :create]
   resources :cover_types, only: [:index, :create]

@@ -42,12 +42,25 @@ class DispatchesController < ApplicationController
   def update
     @dispatch = Dispatch.find(params[:id])
   
+    removed_item_ids = dispatch_params_update[:dispatch_items_attributes]
+    &.to_h
+    &.select { |_, item| item[:_destroy] == '1' }
+    &.map { |_, item| item[:id].to_i } || []
+
     ActiveRecord::Base.transaction do
+      removed_item_ids.each do |item_id|
+        item = @dispatch.dispatch_items.find_by(id: item_id)
+        next unless item && item.order_entry.present?
+  
+        item.order_entry.update(dispatch_no: nil)
+      end
+  
       if @dispatch.update(dispatch_params_update)
         @dispatch.dispatch_items.each do |item|
           order = item.order_entry
           order.update(dispatch_no: @dispatch.d_id) if order.present?
         end
+  
         if @dispatch.progress == "Dispatched" && @dispatch.progress_previously_changed?
           PaperTrail.request(controller_info: {
             source_type: "Dispatch",
@@ -76,6 +89,7 @@ class DispatchesController < ApplicationController
       end
     end
   end
+  
   def order_details
     @order_entry = OrderEntry.find_by(id: params[:order_entry_id])
     item_master = ItemMaster.find_by(sku_id: @order_entry.sku_number)

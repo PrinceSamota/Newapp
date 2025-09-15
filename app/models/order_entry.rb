@@ -2,8 +2,10 @@ class OrderEntry < ApplicationRecord
   belongs_to :client
   belongs_to :item_master, optional: true
   belongs_to :location, optional: true
+  belongs_to :driver_revision, optional: true
   attr_accessor :generate_serial
   before_create :generate_serial_numbers
+  before_validation :generate_serial_numbers, if: -> { ActiveModel::Type::Boolean.new.cast(generate_sno) }
   has_many :dispatch_items, foreign_key: :order_no, primary_key: :order_no
   def dispatch_d_id
     dispatch_item = DispatchItem.find_by(order_no: self.order_no)
@@ -17,6 +19,10 @@ class OrderEntry < ApplicationRecord
     %w[client]
   end
   private
+
+  def generate_sno_changed_to_true?
+    generate_sno_changed? && ActiveModel::Type::Boolean.new.cast(generate_sno)
+  end
 
   def generate_serial_numbers
     if self.generate_sno
