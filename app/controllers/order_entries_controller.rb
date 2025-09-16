@@ -149,14 +149,15 @@ end
         :start_serial_no,
         :end_serial_no,
         :mfg_date,
-        :driver_revision_no,
+        :driver_revision_id,
         :invoice_no,
         :tracking_no,
         :dispatch_no,
         :status,
         :box,
         :extra,
-        :remark
+        :remark,
+        :generate_sno
       )
     end
     

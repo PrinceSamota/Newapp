@@ -129,6 +129,7 @@ class ItemMastersController < ApplicationController
           render json: { error: "Item not found" }, status: :not_found
         end
       end
+      
       def update_stock
         @item_master = ItemMaster.find(params[:id])
         stock_value = params[:stock_value].to_f

@@ -113,10 +113,27 @@
 </div>
 
 <!-- Driver Revision No -->
-<div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">Driver Revision No</label>
-  <%= f.text_field :driver_revision_no, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
-</div>
+<% if @order_entry.driver_revision_id.present? %>
+  <div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Driver Revision No</label>
+    <%= form_with model: @order_entry, local: true do |f| %>
+      <%= f.collection_select :driver_revision_id, 
+          DriverRevision.where(org_id: current_user.org_id), 
+          :id, :name, 
+          { prompt: 'Select Revision' }, 
+          class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+    <% end %>
+  </div>
+<% else %>
+  <div>
+    <%= render partial: "uploads/driver_dropdown", locals: {
+      selected_driver_revision_id: @order_entry.driver_revision_id,
+      show_form: false,
+      driver_revision_errors: []
+    } %>
+  </div>
+<% end %>
+
 
 <!-- Dispatch No -->
 <div>
@@ -141,6 +158,17 @@
   <label class="block text-sm font-medium text-gray-700 mb-1">Remark</label>
   <%= f.text_field :remark, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
 </div>
+
+<% if f.object.start_serial_no.blank? && f.object.end_serial_no.blank? %>
+  <div>
+    <%= f.label :generate_sno, "Generate SNO.", class: "block text-sm font-medium text-gray-700 mb-1" %>
+
+    <%= f.select :generate_sno, [["Yes", true], ["No", false]], 
+          { prompt: "Select Option", selected: f.object.generate_sno }, 
+          class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2" %>
+  </div>
+<% end %>
+
       </div>
   
       <div class="flex justify-end pt-4">
