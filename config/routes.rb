@@ -46,6 +46,7 @@ get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'
 # get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
 # config/routes.rb
 get "item_masters/fetch_by_article", to: "item_masters#fetch_by_article"
+get 'item_masters/fetch_by_sku', to: 'item_masters#fetch_by_sku'
 post '/manual_decode', to: 'order_entries#manual_decode', as: :manual_decode
 get '/manual_decode', to: 'order_entries#manual_decode'
 get 'bill_of_materials/:sku_id/:item_name/bom_details', to: 'bill_of_materials#bom_details', as: :bill_of_material_bom_details
