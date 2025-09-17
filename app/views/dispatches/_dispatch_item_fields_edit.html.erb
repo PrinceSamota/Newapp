@@ -45,6 +45,8 @@
     <div class="grid grid-cols-1 md:grid-cols-9 gap-3 bg-gray-50 border border-gray-200 rounded-b-xl p-4 text-sm">
       <div><label class="text-xs font-semibold text-gray-500">Article No</label><div><%= order.article_no %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">SKU Number</label><div><%= order.sku_number %></div></div>
+      <div><label class="text-xs font-semibold text-gray-500">Client</label><div><%= order.client&.name %></div></div>
+      <div><label class="text-xs font-semibold text-gray-500">Ship To</label><div><%= order.location&.name %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">Quantity</label><div><%= order.qty %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">Target Date</label><div><%= order.target_date %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">Start Serial</label><div><%= order.start_serial_no %></div></div>
