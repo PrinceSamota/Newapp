@@ -82,6 +82,8 @@
           <th>Order No</th>
           <th>Article No</th>
           <th>SKU Number</th>
+          <th>Client</th>
+          <th>Ship To</th>
           <th>Quantity</th>
           <th>Target Date</th>
           <th>Start Serial</th>
@@ -106,6 +108,8 @@
             <td><%= item.order_no %></td>
             <td><%= order&.article_no %></td>
             <td><%= order&.sku_number %></td>
+            <td><%= order.client&.name %></td>
+            <td><%= order.location&.name %></td>
             <td><%= item.quantity %></td>
             <td><%= order&.target_date %></td>
             <td><%= order&.start_serial_no %></td>
