@@ -1,0 +1,89 @@
+<div>
+  <turbo-frame id="driver_revision_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-sm font-semibold text-gray-800">Driver Revision No</label>
+        <button type="button"
+          onclick="document.getElementById('newDriverRevForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
+      </div>
+
+      <% if current_user.present? %>
+        <%= select_tag "order_entry[driver_revision_id]",
+          options_from_collection_for_select(
+            DriverRevision.where(org_id: current_user.org_id), :id, :name, selected_driver_revision_id
+          ),
+          id: "driver-revision-select",
+          include_blank: "Select Revision",
+          class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+          data: { placeholder: "Select Revision" } %>
+      <% else %>
+        <p class="text-red-500 text-sm">Please log in to select Driver Revision.</p>
+      <% end %>
+
+      <!-- Add New Driver Revision -->
+      <div id="newDriverRevForm" class="mt-2 hidden">
+        <div class="flex gap-2">
+          <input id="new_driver_revision_value" type="text" placeholder="e.g., DRV-001"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewDriverRevision()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+        <div id="driver-revision-errors" class="text-red-600 text-sm mt-2"></div>
+      </div>
+
+      <% if driver_revision_errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% driver_revision_errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </turbo-frame>
+</div>
+<script>
+  function submitNewDriverRevision() {
+    const value = document.getElementById('new_driver_revision_value').value;
+
+    fetch("/driver_revisions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ driver_revision: { name: value } })
+    })
+    .then(response => response.text())
+    .then(html => {
+      document.getElementById("driver_revision_section").innerHTML = html;
+    })
+    .catch(error => {
+      document.getElementById("driver-revision-errors").innerText = "Something went wrong.";
+      console.error(error);
+    });
+  }
+
+  function initDriverRevisionSelect() {
+    const select = document.getElementById('driver-revision-select');
+    if (select && !select.tomselect) {
+      let ts = new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Revision',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+
+      if (ts.getValue()) ts.clear(true);
+    }
+  }
+
+  document.addEventListener('turbo:load', initDriverRevisionSelect);
+  document.addEventListener('turbo:frame-load', initDriverRevisionSelect);
+</script>

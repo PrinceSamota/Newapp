@@ -129,7 +129,6 @@ class ItemMastersController < ApplicationController
           render json: { error: "Item not found" }, status: :not_found
         end
       end
-
       def fetch_by_sku
         item = ItemMaster.find_by(sku_id: params[:sku_id])
       

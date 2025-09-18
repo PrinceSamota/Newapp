@@ -194,7 +194,7 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.start_serial_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.end_serial_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.mfg_date %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision_no %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision&.name || "-" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.remark %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.status %></td>
               <td class="py-3 text-center"><%= order.created_at.strftime("%d-%b-%Y") %></td>
