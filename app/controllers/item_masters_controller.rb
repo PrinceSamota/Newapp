@@ -129,6 +129,27 @@ class ItemMastersController < ApplicationController
           render json: { error: "Item not found" }, status: :not_found
         end
       end
+      def fetch_by_sku
+        item = ItemMaster.find_by(sku_id: params[:sku_id])
+      
+        if item
+          render json: {
+            fuse_type: item.fuse_type&.name,
+            loop: item.loop&.name,
+            item_type: item.item_type&.name,
+            profile: item.profile&.name,
+            wattage: item.wattage&.name,
+            voltage: item.voltage&.name,
+            length: item.length&.name,
+            cct: item.cct&.name,
+            cover_type: item.cover_type&.name,
+            extra: item.extra&.name,
+            article_number: item.article_number
+          }
+        else
+          render json: { error: "Not found" }, status: :not_found
+        end
+      end
       
       def update_stock
         @item_master = ItemMaster.find(params[:id])
