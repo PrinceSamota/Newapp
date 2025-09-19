@@ -17,13 +17,13 @@ class OrderEntriesController < ApplicationController
     def create
       @order_entry = OrderEntry.new(order_entry_params)
       decode_article_fields
-  
+
       if @order_entry.save
         redirect_to order_entries_path, notice: "Order entry created successfully."
       else
-        @item_masters = ItemMaster.all 
+        @item_masters = ItemMaster.includes(:raw_material_stock_items,:category,:measurement,:fuse_type,:loop,:item_type,:profile,:wattage,:voltage,:length,:cct,:cover_type,:extra).all
         @item_articles = ItemMaster.pluck(:article_number).compact.uniq
-        render :new
+        render :new, status: :unprocessable_entity
       end
     end
     def index

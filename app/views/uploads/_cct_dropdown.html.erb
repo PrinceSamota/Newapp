@@ -12,6 +12,7 @@
         Cct.where(org_id: current_user.org_id), :id, :name, selected_cct_id
       ),
       id: "cct-select",
+      include_blank: "Select CCT",
       class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
       data: { placeholder: "Select CCT" } %>
 
@@ -69,11 +70,16 @@
         persist: false,
         sortField: { field: 'text', direction: 'asc' },
         onDropdownOpen: function() {
-          if (this.getValue()) this.clear(true);
+          const urlParams = new URLSearchParams(window.location.search);
+          const isClone = urlParams.has('clone_id');
+          if (!isClone && this.getValue()) this.clear(true);
         }
       });
 
-      if (ts.getValue()) ts.clear(true);
+      const selectedValue = select.value;
+      if (selectedValue) {
+        ts.setValue(selectedValue, true);
+      }
     }
   }
 

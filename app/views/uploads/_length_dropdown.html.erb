@@ -77,11 +77,16 @@
         persist: false,
         sortField: { field: 'text', direction: 'asc' },
         onDropdownOpen: function() {
-          if (this.getValue()) this.clear(true);
+          const urlParams = new URLSearchParams(window.location.search);
+          const isClone = urlParams.has('clone_id');
+          if (!isClone && this.getValue()) this.clear(true);
         }
       });
 
-      if (ts.getValue()) ts.clear(true);
+      const selectedValue = select.value;
+      if (selectedValue) {
+        ts.setValue(selectedValue, true);
+      }
     }
   }
 

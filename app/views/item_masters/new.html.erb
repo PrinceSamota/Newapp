@@ -293,4 +293,17 @@ document.addEventListener("turbo:load", () => {
 });
 
 const existingItemNames = <%= raw ItemMaster.pluck(:item_name).map(&:strip).map(&:downcase).to_json %>;
+
+const urlParams = new URLSearchParams(window.location.search);
+const isClone = urlParams.has('clone_id');
+
+if (isClone) {
+  window.skipTomSelect = true;
+  
+  document.querySelectorAll('select').forEach(select => {
+    if (select.value) {
+      select.style.display = 'block';
+    }
+  });
+}
 </script>
