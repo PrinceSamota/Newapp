@@ -4,6 +4,27 @@
 <% end %>
 
 <%= form_with(model: @dispatch, local: true) do |f| %>
+  <% if @dispatch.errors.any? %>
+    <div class="fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-md animate-pulse">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="flex items-center">
+            <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+            <strong>Error!</strong>
+          </div>
+          <div class="mt-2 text-sm">
+            <% @dispatch.errors.full_messages.each do |message| %>
+              <div><%= message %></div>
+            <% end %>
+          </div>
+        </div>
+        <button type="button" onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200 text-2xl cursor-pointer">
+          ×
+        </button>
+      </div>
+    </div>
+  <% end %>
+
   <% disabled = @dispatch.progress == "Dispatched" %>
 
   <div class="max-w-[100%] mx-auto mt-10 bg-white border border-gray-200 rounded-2xl shadow p-8 space-y-6">

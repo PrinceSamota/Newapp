@@ -29,17 +29,25 @@
     }
 
     .summary-grid {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 15px 30px;
     }
+    
     .summary-item {
-      width: 33.33%;
-      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
     }
-
-    .label {
+    
+    .summary-item .label {
       font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 4px;
       display: block;
+    }
+    
+    .summary-item .value {
+      font-size: 12px;
     }
 
     table {
@@ -58,77 +66,135 @@
     th {
       background-color: #f0f0f0;
     }
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .summary-table th {
+      font-weight: bold;
+      padding: 6px;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+    }
+
+    .summary-table td {
+      padding: 6px;
+      border: 1px solid #ccc;
+    }
+    .item-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+      font-size: 11px;
+    }
+
+    .item-table th {
+      background: #f9f9f9;
+      font-weight: bold;
+      border: 1px solid #ccc;
+      padding: 5px;
+      text-align: left;
+    }
+
+    .item-table td {
+      border: 1px solid #ccc;
+      padding: 5px;
+    }
+
   </style>
 </head>
 <body>
-  <div class="section">
-    <h2>Dispatch Summary</h2>
-    <div class="summary-grid">
-      <div class="summary-item"><span class="label">Dispatch Date:</span> <%= @dispatch.dispatch_date %></div>
-      <div class="summary-item"><span class="label">Delivery Date:</span> <%= @dispatch.delivery_date %></div>
-      <div class="summary-item"><span class="label">Mode of Shipment:</span> <%= @dispatch.mode_of_shipment %></div>
-      <div class="summary-item"><span class="label">Tracking No:</span> <%= @dispatch.track_no %></div>
-      <div class="summary-item"><span class="label">Invoice No:</span> <%= @dispatch.invoice_no %></div>
-      <div class="summary-item"><span class="label">Courier Company:</span> <%= @dispatch.courier_company %></div>
-      <div class="summary-item"><span class="label">Progress:</span> <%= @dispatch.progress %></div>
-    </div>
-  </div>
+<div class="section">
+  <h2>Dispatch Summary</h2>
+  <table class="summary-table">
+    <tr>
+      <th>Dispatch Date</th>
+      <th>Delivery Date</th>
+      <th>Mode of Shipment</th>
+      <th>Tracking No</th>
+    </tr>
+    <tr>
+      <td><%= @dispatch.dispatch_date %></td>
+      <td><%= @dispatch.delivery_date %></td>
+      <td><%= @dispatch.mode_of_shipment %></td>
+      <td><%= @dispatch.track_no %></td>
+    </tr>
+    <tr>
+      <th>Invoice No</th>
+      <th>Courier Company</th>
+      <th>Progress</th>
+      <th></th> <!-- last empty cell to maintain 4 cols -->
+    </tr>
+    <tr>
+      <td><%= @dispatch.invoice_no %></td>
+      <td><%= @dispatch.courier_company %></td>
+      <td><%= @dispatch.progress %></td>
+      <td></td>
+    </tr>
+  </table>
+</div>
 
-  <div class="section">
-    <h3>Dispatch Items</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Order No</th>
-          <th>Article No</th>
-          <th>SKU Number</th>
-          <th>Client</th>
-          <th>Ship To</th>
-          <th>Quantity</th>
-          <th>Target Date</th>
-          <th>Start Serial</th>
-          <th>End Serial</th>
-          <th>Profile</th>
-          <th>Length</th>
-          <th>Wattage</th>
-          <th>Voltage</th>
-          <th>Loop</th>
-          <th>Item Type</th>
-          <th>Fuse Type</th>
-          <th>Cover Type</th>
-          <th>CCT</th>
-          <th>Remark</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @dispatch.dispatch_items.each do |item| %>
-          <% order = item.order_entry %>
-          <tr>
-            <td><%= item.order_no %></td>
-            <td><%= order&.article_no %></td>
-            <td><%= order&.sku_number %></td>
-            <td><%= order.client&.name %></td>
-            <td><%= order.location&.name %></td>
-            <td><%= item.quantity %></td>
-            <td><%= order&.target_date %></td>
-            <td><%= order&.start_serial_no %></td>
-            <td><%= order&.end_serial_no %></td>
-            <td><%= order&.profile %></td>
-            <td><%= order&.length %></td>
-            <td><%= order&.wattage %></td>
-            <td><%= order&.voltage %></td>
-            <td><%= order&.loop %></td>
-            <td><%= order&.item_type %></td>
-            <td><%= order&.fuse_type %></td>
-            <td><%= order&.cover_type %></td>
-            <td><%= order&.cct %></td>
-            <td><%= order&.remark %></td>
-            <td><%= order&.status %></td>
-          </tr>
-        <% end %>
-      </tbody>
+<div class="section">
+  <h3>Dispatch Items</h3>
+  <% @dispatch.dispatch_items.each do |item| %>
+    <% order = item.order_entry %>
+    <table class="item-table">
+      <tr>
+        <th>Order No</th>
+        <th>Article No</th>
+        <th>SKU Number</th>
+        <th>Client</th>
+        <th>Ship To</th>
+        <th>Quantity</th>
+        <th>Target Date</th>
+        <th>Start Serial</th>
+        <th>End Serial</th>
+        <th>Profile</th>
+      </tr>
+      <tr>
+        <td><%= item.order_no %></td>
+        <td><%= order&.article_no %></td>
+        <td><%= order&.sku_number %></td>
+        <td><%= order.client&.name %></td>
+        <td><%= order.location&.name %></td>
+        <td><%= item.quantity %></td>
+        <td><%= order&.target_date %></td>
+        <td><%= order&.start_serial_no %></td>
+        <td><%= order&.end_serial_no %></td>
+        <td><%= order&.profile %></td>
+      </tr>
+
+      <tr>
+        <th>Length</th>
+        <th>Wattage</th>
+        <th>Voltage</th>
+        <th>Loop</th>
+        <th>Item Type</th>
+        <th>Fuse Type</th>
+        <th>Cover Type</th>
+        <th>CCT</th>
+        <th>Remark</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td><%= order&.length %></td>
+        <td><%= order&.wattage %></td>
+        <td><%= order&.voltage %></td>
+        <td><%= order&.loop %></td>
+        <td><%= order&.item_type %></td>
+        <td><%= order&.fuse_type %></td>
+        <td><%= order&.cover_type %></td>
+        <td><%= order&.cct %></td>
+        <td><%= order&.remark %></td>
+        <td><%= order&.status %></td>
+      </tr>
     </table>
-  </div>
+    <br>
+  <% end %>
+</div>
 </body>
 </html>

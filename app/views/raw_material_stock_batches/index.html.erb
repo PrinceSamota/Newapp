@@ -47,7 +47,7 @@
               <%= link_to (batch.supplier&.name.presence || "N/A"), raw_material_stock_batch_path(batch), class: "text-blue-600 hover:underline font-medium" %>
             </td>
             <td class="px-4 py-3 border-r border-gray-200">
-              <%= batch.receiving_date.present? ? batch.receiving_date.strftime('%d-%m-%Y') : "N/A" %>
+              <%= batch.receiving_date.present? ? batch.receiving_date.strftime("%d-%b-%Y") : "N/A" %>
             </td>
             <td class="px-4 py-3"><%= batch.supplier_invoice_number.presence || "N/A" %></td>
           </tr>
