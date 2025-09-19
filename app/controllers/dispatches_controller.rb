@@ -1,12 +1,20 @@
 class DispatchesController < ApplicationController
   def index
     @q = Dispatch.ransack(params[:q])
-    @dispatches = @q.result(distinct: true)
-                    .order(created_at: :desc)
-                    .paginate(page: params[:page], per_page: 100)
-  
+    dispatches = @q.result(distinct: true)
+
+    if params[:q].present? && params[:q][:search_all_cont].present?
+      serial = params[:q][:search_all_cont].strip
+      
+      if serial.match?(/^\d+$/) || serial.match?(/^S\d+$/)
+        dispatches = Dispatch.with_serial_in_range(serial)
+      end
+    end
+
+    @dispatches = dispatches.order(created_at: :desc).paginate(page: params[:page], per_page: 100)
     @dispatch = Dispatch.new
   end
+  
   
 
   def new
@@ -41,7 +49,7 @@ class DispatchesController < ApplicationController
   
   def update
     @dispatch = Dispatch.find(params[:id])
-  
+
     removed_item_ids = dispatch_params_update[:dispatch_items_attributes]
     &.to_h
     &.select { |_, item| item[:_destroy] == '1' }
@@ -51,16 +59,16 @@ class DispatchesController < ApplicationController
       removed_item_ids.each do |item_id|
         item = @dispatch.dispatch_items.find_by(id: item_id)
         next unless item && item.order_entry.present?
-  
+
         item.order_entry.update(dispatch_no: nil)
       end
-  
+
       if @dispatch.update(dispatch_params_update)
         @dispatch.dispatch_items.each do |item|
           order = item.order_entry
           order.update(dispatch_no: @dispatch.d_id) if order.present?
         end
-  
+
         if @dispatch.progress == "Dispatched" && @dispatch.progress_previously_changed?
           PaperTrail.request(controller_info: {
             source_type: "Dispatch",
@@ -82,10 +90,11 @@ class DispatchesController < ApplicationController
             end
           end
         end
-  
+
         redirect_to dispatches_path, notice: "Dispatch updated and stock adjusted."
       else
-        render :edit
+        flash.now[:alert] = @dispatch.errors.full_messages.join(", ")
+        render :edit, status: :unprocessable_entity
       end
     end
   end
