@@ -15,6 +15,7 @@
     Category.where(org_id: current_user.org_id), :id, :name, selected_category_id
   ),
   id: "category-select",
+  include_blank: "Select Category",
   class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
   data: { placeholder: "Select Category" } %>
 
@@ -82,14 +83,17 @@ function initCategorySelect() {
         direction: 'asc'
       },
       onDropdownOpen: function() {
-        if (this.getValue()) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const isClone = urlParams.has('clone_id');
+        if (!isClone && this.getValue()) {
           this.clear(true); 
         }
       }
     });
 
-    if (ts.getValue()) {
-      ts.clear(true);
+    const selectedValue = select.value;
+    if (selectedValue) {
+      ts.setValue(selectedValue, true);
     }
   }
 }

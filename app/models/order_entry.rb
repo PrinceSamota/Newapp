@@ -50,4 +50,17 @@ class OrderEntry < ApplicationRecord
   def self.ransackable_associations(auth_object = nil)
     %w[client dispatch_items]
   end
+  validates :order_no, presence: { message: "Order Number is required" }
+  validates :article_no, presence: { message: "Article Number is required" }
+  validates :target_date, presence: { message: "Target Date is required" }
+  validates :qty, presence: { message: "Quantity is required" }
+  validates :fuse_type, presence: { message: "Fuse Type is required" }
+  validates :loop, presence: { message: "Loop is required" }
+  validates :item_type, presence: { message: "Item Type is required" }
+  validates :profile, presence: { message: "Profile is required" }
+  validates :wattage, presence: { message: "Wattage is required" }
+  validates :voltage, presence: { message: "Voltage is required" }
+  validates :length, presence: { message: "Length is required" }
+  validates :cct, presence: { message: "CCT is required" }
+  validates :cover_type, presence: { message: "Cover Type is required" }
 end

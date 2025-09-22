@@ -10,6 +10,7 @@
         Measurement.where(org_id: current_user.org_id), :id, :name, selected_measurement_id
       ),
       id: "measurement-select",
+      include_blank: "Select Measurement",
       class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
       data: { placeholder: "Select Measurement" } %>
 
@@ -57,25 +58,30 @@
     });
   }
   function initMeasurementSelect() {
-  const select = document.getElementById('measurement-select');
-  if (select && !select.tomselect) {
-    let ts = new TomSelect(select, {
-      create: false,
-      allowEmptyOption: false,
-      placeholder: select.dataset.placeholder || 'Select Measurement',
-      hidePlaceholder: true,
-      persist: false,
-      sortField: { field: 'text', direction: 'asc' },
-      onDropdownOpen: function() {
-        if (this.getValue()) this.clear(true);
+    const select = document.getElementById('measurement-select');
+    if (select && !select.tomselect) {
+      let ts = new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Measurement',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const isClone = urlParams.has('clone_id');
+          if (!isClone && this.getValue()) this.clear(true);
+        }
+      });
+
+      const selectedValue = select.value;
+      if (selectedValue) {
+        ts.setValue(selectedValue, true);
       }
-    });
-
-    if (ts.getValue()) ts.clear(true);
+    }
   }
-}
 
-document.addEventListener('turbo:load', initMeasurementSelect);
-document.addEventListener('turbo:frame-load', initMeasurementSelect);
+  document.addEventListener('turbo:load', initMeasurementSelect);
+  document.addEventListener('turbo:frame-load', initMeasurementSelect);
 
 </script>
