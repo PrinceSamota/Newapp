@@ -53,10 +53,44 @@
         <!-- Right Navigation -->
         <div class="flex items-center space-x-4">
           <% if user_signed_in? %>
-            <span class="text-gray-500">Hi, <%= current_user.name %></span>
-            <%= button_to "Logout", destroy_user_session_path, method: :delete,
-                  class: "hover:bg-gray-300 px-4 py-1 text-black font-bold transition cursor-pointer ",
-                  form: { class: "inline" } %>
+            <!-- User Profile Dropdown -->
+            <div class="relative">
+              <button id="userMenuButton" class="flex items-center space-x-2 p-2 rounded-full hover:bg-gray-100 transition cursor-pointer">
+                <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                  <i class="fas fa-user text-gray-600"></i>
+                </div>
+              </button>
+              
+              <!-- Dropdown Menu -->
+              <div id="userDropdown" class="hidden absolute right-2 mt-2 w-64 bg-white rounded-md shadow-lg border border-gray-200 z-50">
+                <div class="py-2">
+                  <div class="px-4 py-3 border-b border-gray-200">
+                    <p class="text-sm font-medium text-black">Hi, <%= current_user.name %></p>
+                    <p class="text-xs text-gray-500"><%= current_user.email %></p>
+                  </div>
+                  <%= link_to "/users/#{current_user.id}/edit", class: "flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100" do %>
+                    <i class="fas fa-edit w-4 mr-2"></i>
+                    Edit Profile
+                  <% end %>
+                  <a href="#" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-headset w-4 mr-2"></i>
+                    Support
+                  </a>
+                  <a href="#" class="flex items-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                    <i class="fas fa-cog w-4 mr-2"></i>
+                    Other
+                  </a>
+                  <div class="border-t border-gray-200">
+                    <%= button_to destroy_user_session_path, method: :delete, 
+                          class: "flex items-center w-full px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition",
+                          form: { class: "w-full" } do %>
+                      <i class="fas fa-sign-out-alt w-4 mr-2"></i>
+                      Logout
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
           <% else %>
             <%= link_to "Login", new_user_session_path,
                   class: " px-4 py-1 text-black font-bold transition cursor-pointer" %>
@@ -119,45 +153,62 @@ document.addEventListener("turbo:load", function () {
   const mainContent = document.getElementById("mainContent");
   const toggleWrapper = document.getElementById("sidebarToggleWrapper");
 
-  toggleBtn.replaceWith(toggleBtn.cloneNode(true));
-  const newToggleBtn = document.getElementById("toggleSidebar");
+  if (toggleBtn) {
+    toggleBtn.replaceWith(toggleBtn.cloneNode(true));
+    const newToggleBtn = document.getElementById("toggleSidebar");
 
-  function collapseSidebar() {
-    sidebar.classList.remove("w-64");
-    sidebar.classList.add("w-16");
-    mainContent.classList.remove("ml-64");
-    mainContent.classList.add("ml-16");
-    toggleWrapper.classList.remove("justify-end");
-    toggleWrapper.classList.add("justify-center");
-    document.querySelectorAll(".sidebar-label").forEach(el => el.classList.add("hidden"));
-  }
-
-  function expandSidebar() {
-    sidebar.classList.remove("w-16");
-    sidebar.classList.add("w-64");
-    mainContent.classList.remove("ml-16");
-    mainContent.classList.add("ml-64");
-    toggleWrapper.classList.remove("justify-center");
-    toggleWrapper.classList.add("justify-end");
-    document.querySelectorAll(".sidebar-label").forEach(el => el.classList.remove("hidden"));
-  }
-
-  collapseSidebar();
-
-  newToggleBtn.addEventListener("click", () => {
-    const isCollapsed = sidebar.classList.contains("w-16");
-    if (isCollapsed) {
-      expandSidebar();
-    } else {
-      collapseSidebar();
+    function collapseSidebar() {
+      sidebar.classList.remove("w-64");
+      sidebar.classList.add("w-16");
+      mainContent.classList.remove("ml-64");
+      mainContent.classList.add("ml-16");
+      toggleWrapper.classList.remove("justify-end");
+      toggleWrapper.classList.add("justify-center");
+      document.querySelectorAll(".sidebar-label").forEach(el => el.classList.add("hidden"));
     }
-  });
 
-  document.querySelectorAll("#sidebar a").forEach(link => {
-    link.addEventListener("click", () => {
-      collapseSidebar();
+    function expandSidebar() {
+      sidebar.classList.remove("w-16");
+      sidebar.classList.add("w-64");
+      mainContent.classList.remove("ml-16");
+      mainContent.classList.add("ml-64");
+      toggleWrapper.classList.remove("justify-center");
+      toggleWrapper.classList.add("justify-end");
+      document.querySelectorAll(".sidebar-label").forEach(el => el.classList.remove("hidden"));
+    }
+
+    collapseSidebar();
+
+    newToggleBtn.addEventListener("click", () => {
+      const isCollapsed = sidebar.classList.contains("w-16");
+      if (isCollapsed) {
+        expandSidebar();
+      } else {
+        collapseSidebar();
+      }
     });
-  });
-});
 
+    document.querySelectorAll("#sidebar a").forEach(link => {
+      link.addEventListener("click", () => {
+        collapseSidebar();
+      });
+    });
+  }
+
+  const userMenuButton = document.getElementById("userMenuButton");
+  const userDropdown = document.getElementById("userDropdown");
+
+  if (userMenuButton && userDropdown) {
+    userMenuButton.addEventListener("click", (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+        userDropdown.classList.add("hidden");
+      }
+    });
+  }
+});
 </script>
