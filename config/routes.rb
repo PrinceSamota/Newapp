@@ -80,6 +80,7 @@ resources :locations, only: [:create]
   resources :uploads, only: [:index, :create, :show]
 get 'manual_decode_result', to: 'articles#manual_decode_result'
   devise_for :users
+  resources :users, only: [:edit, :update]
   resources :posts
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
