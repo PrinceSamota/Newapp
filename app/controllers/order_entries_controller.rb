@@ -32,9 +32,9 @@ class OrderEntriesController < ApplicationController
         .where(dispatches: { progress: 'Dispatched' })
         .pluck(:order_entry_id)
         .uniq
-    
 
-        @q = OrderEntry
+      @q = OrderEntry
+        .with_deleted
         .includes(:client)
         .left_joins(dispatch_items: :dispatch)
         .where.not(id: dispatched_order_entry_ids)
@@ -90,14 +90,41 @@ end
   
   
     def show
-      @order_entry = OrderEntry.find(params[:id])
+      @order_entry = OrderEntry.with_deleted.find(params[:id])
+    end
+    def edit
+      @order_entry = OrderEntry.with_deleted.find(params[:id])
+      @item_masters = ItemMaster.includes(:raw_material_stock_items,:category,:measurement,:fuse_type,:loop,:item_type,:profile,:wattage,:voltage,:length,:cct,:cover_type,:extra).all
+      @item_articles = ItemMaster.pluck(:article_number).compact.uniq
     end
     def update
-      @order_entry = OrderEntry.find(params[:id])
+      @order_entry = OrderEntry.with_deleted.find(params[:id])
+      
+      if @order_entry.deleted_at.present?
+        redirect_to @order_entry, alert: "Cannot update deleted order."
+        return
+      end
+      
       if @order_entry.update(order_entry_params_upload)
         redirect_to order_entries_path, notice: "Order updated successfully."
       else
         render :show
+      end
+    end
+
+    def archive
+      @order_entry = OrderEntry.find(params[:id])
+      @order_entry.destroy 
+      
+      respond_to do |format|
+        format.html { redirect_to order_entries_path, notice: "Order archived successfully." }
+        format.js { 
+          flash.now[:notice] = "Order archived successfully."
+          render js: "
+            document.querySelector('tr[data-order-id=\"#{@order_entry.id}\"]').style.display = 'none';
+            alert('Order archived successfully!');
+          "
+        }
       end
     end
 
