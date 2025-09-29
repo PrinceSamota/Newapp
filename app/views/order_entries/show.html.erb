@@ -1,8 +1,17 @@
+<% content_for(:title, "Order Management") %>
 <%= link_to order_entries_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 border border-gray-300" do %>
-    <i class="fa-solid fa-arrow-left"></i>
-    <span class="font-bold">Back</span>
-  <% end %>
-  <%= form_with(model: @order_entry, local: true) do |f| %>
+  <i class="fa-solid fa-arrow-left"></i>
+  <span class="font-bold">Back</span>
+<% end %>
+
+<% if @order_entry.deleted_at.present? %>
+  <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 flex items-center">
+    <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+    <span class="font-semibold">This order has been deleted and cannot be modified.</span>
+  </div>
+<% end %>
+
+<%= form_with(model: @order_entry, local: true) do |f| %>
     <div class="max-w-[100%] mx-auto mt-10 bg-white border border-gray-200 rounded-2xl shadow p-10 space-y-6">
       <h2 class="text-2xl font-bold text-gray-800">Edit Order</h2>
   
@@ -10,33 +19,47 @@
         <!-- Row 1 -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Order No</label>
-          <%= f.text_field :order_no, class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.text_field :order_no, 
+              readonly: @order_entry.deleted_at.present?,
+              class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?} focus:ring-blue-500 focus:border-blue-500" %>
         </div>
   
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Article No</label>
-          <%= f.text_field :article_no, class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.text_field :article_no, 
+              readonly: @order_entry.deleted_at.present?,
+              class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?} focus:ring-blue-500 focus:border-blue-500" %>
         </div>
   
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Client</label>
-          <%= f.collection_select :client_id, Client.all, :id, :name, { prompt: 'Select Client' }, class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.collection_select :client_id, Client.all, :id, :name, 
+              { prompt: 'Select Client' }, 
+              { disabled: @order_entry.deleted_at.present?,
+                class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?} focus:ring-blue-500 focus:border-blue-500" } %>
         </div>
   
         <!-- Row 2 -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Target Date</label>
-          <%= f.date_field :target_date, class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.date_field :target_date, 
+              readonly: @order_entry.deleted_at.present?,
+              class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?} focus:ring-blue-500 focus:border-blue-500" %>
         </div>
   
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Ship To Location</label>
-          <%= f.collection_select :location_id, Location.all, :id, :name, { prompt: 'Select Location' }, class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.collection_select :location_id, Location.all, :id, :name, 
+              { prompt: 'Select Location' }, 
+              { disabled: @order_entry.deleted_at.present?,
+                class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?} focus:ring-blue-500 focus:border-blue-500" } %>
         </div>
   
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
-          <%= f.number_field :qty, step: 1, class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.number_field :qty, 
+              readonly: @order_entry.deleted_at.present?,
+              class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?} focus:ring-blue-500 focus:border-blue-500" %>
         </div>
   
         <!-- Full width read-only field -->
@@ -47,47 +70,65 @@
         <!-- Row: Decoded Article Fields -->
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Fuse Type</label>
-  <%= f.text_field :fuse_type, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :fuse_type, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Loop</label>
-  <%= f.text_field :loop, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :loop, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Item Type</label>
-  <%= f.text_field :item_type, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :item_type, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Profile</label>
-  <%= f.text_field :profile, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :profile, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Wattage</label>
-  <%= f.text_field :wattage, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :wattage, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Voltage</label>
-  <%= f.text_field :voltage, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :voltage, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Length</label>
-  <%= f.text_field :length, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :length, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">CCT</label>
-  <%= f.text_field :cct, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :cct, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Cover Type</label>
-  <%= f.text_field :cover_type, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :cover_type, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <!-- Start Serial No -->
@@ -109,7 +150,9 @@
 <!-- MFG Date -->
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">MFG Date</label>
-  <%= f.date_field :mfg_date, class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+  <%= f.date_field :mfg_date, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?} focus:ring-blue-500 focus:border-blue-500" %>
 </div>
 
 <!-- Driver Revision No -->
@@ -121,7 +164,8 @@
           DriverRevision.where(org_id: current_user.org_id), 
           :id, :name, 
           { prompt: 'Select Revision' }, 
-          class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500" %>
+          { disabled: @order_entry.deleted_at.present?,
+            class: "w-full rounded-xl border border-gray-300 p-2.5 focus:ring-blue-500 focus:border-blue-500 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" } %>
     <% end %>
   </div>
 <% else %>
@@ -134,7 +178,6 @@
   </div>
 <% end %>
 
-
 <!-- Dispatch No -->
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Dispatch No</label>
@@ -144,36 +187,53 @@
 <!-- Status -->
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-  <%= f.text_field :status, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :status, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
+
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Number Of Box</label>
-  <%= f.text_field :box, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :box, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
+
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Extra</label>
-  <%= f.text_field :extra, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :extra, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
+
 <div>
   <label class="block text-sm font-medium text-gray-700 mb-1">Remark</label>
-  <%= f.text_field :remark, class: "w-full rounded-xl border border-gray-300 p-2.5" %>
+  <%= f.text_field :remark, 
+      readonly: @order_entry.deleted_at.present?,
+      class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" %>
 </div>
 
 <% if f.object.start_serial_no.blank? && f.object.end_serial_no.blank? %>
   <div>
     <%= f.label :generate_sno, "Generate SNO.", class: "block text-sm font-medium text-gray-700 mb-1" %>
-
     <%= f.select :generate_sno, [["Yes", true], ["No", false]], 
           { prompt: "Select Option", selected: f.object.generate_sno }, 
-          class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          { disabled: @order_entry.deleted_at.present?,
+            class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?}" } %>
   </div>
 <% end %>
 
       </div>
   
       <div class="flex justify-end pt-4">
-      <%= f.submit "Update Order", class: "inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition duration-200 cursor-pointer" %>
-    </div>
+        <% if @order_entry.deleted_at.present? %>
+          <button type="button" disabled class="inline-flex items-center px-4 py-2 bg-gray-400 text-white text-sm font-medium rounded-xl cursor-not-allowed opacity-50">
+            Order Deleted - Cannot Update
+          </button>
+        <% else %>
+          <%= f.submit "Update Order", class: "inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition duration-200 cursor-pointer" %>
+        <% end %>
+      </div>
     
     </div>
   <% end %>
