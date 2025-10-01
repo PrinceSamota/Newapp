@@ -42,7 +42,11 @@ Rails.application.routes.draw do
     end
   end
   resources :clients, only: [:index, :create, :edit, :update]
-  resources :order_entries 
+  resources :order_entries do
+    member do
+      patch :archive
+    end
+  end
 get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'
 # get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
 # config/routes.rb
