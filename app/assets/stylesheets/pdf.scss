@@ -1,0 +1,61 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    padding: 15px;
+    margin: 0;
+    color: #000;
+  }
+  
+  .main-container {
+    border: 2px solid #000;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Header */
+  .header {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 15px;
+    border-bottom: 1px solid #000;
+    position: relative;
+  }
+  .logo-box {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    width: 80px;
+    height: 50px;
+    border: 1px solid #000;
+  }
+  
+  /* Top 3 boxes */
+  .top-row { display: table; width: 100%; border-bottom: 1px solid #000; table-layout: fixed; }
+  .top-box { display: table-cell; border-right: 1px solid #000; padding: 10px; height: 60px; }
+  .top-box:last-child { border-right: none; }
+  
+  /* Middle 2 boxes */
+  .middle-row { display: table; width: 100%; border-bottom: 1px solid #000; table-layout: fixed; }
+  .middle-box { display: table-cell; border-right: 1px solid #000; padding: 10px; height: 250px; }
+  .middle-box:last-child { border-right: none; }
+  
+  /* Country 2 boxes */
+  .country-row { display: table; width: 100%; border-bottom: 1px solid #000; table-layout: fixed; }
+  .country-box { display: table-cell; border-right: 1px solid #000; padding: 10px; height: 100px; }
+  .country-box:last-child { border-right: none; }
+  
+  /* Items table */
+  .table-section { border-bottom: 1px solid #000; }
+  .items-table { width: 100%; border-collapse: collapse; }
+  .items-table th, .items-table td { border: 1px solid #000; height: 40px; }
+  
+  /* Bottom row */
+  .bottom-row { display: table; width: 100%; border-bottom: 1px solid #000; table-layout: fixed; }
+  .payment-box { display: table-cell; padding: 10px; height: 80px; }
+  .total-box { display: table-cell; border-left: 1px solid #000; padding: 10px; width: 150px; height: 80px; }
+  
+  /* Declaration & Signature */
+  .declaration-box { padding: 10px; height: 80px; border-bottom: 1px solid #000; }
+  .signature-box { padding: 15px; height: 150px; }
+  

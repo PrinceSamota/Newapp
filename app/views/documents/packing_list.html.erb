@@ -1,0 +1,45 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Generate Packing List</h1>
+  
+  <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, local: true, class: "space-y-6" do |form| %>
+    <%= form.hidden_field :document_type, value: @document_type %>
+    
+    <!-- Dispatch Selection -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold mb-4">Select Dispatch</h3>
+      <%= form.select :dispatch_id, 
+          options_from_collection_for_select(@dispatches, :id, :d_id), 
+          { prompt: "Select Dispatch" },
+          { class: "searchable w-full p-2 border rounded", id: "dispatch_select" } %>
+    </div>
+
+    <!-- Packing List Fields -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold mb-4">Packing Details</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <%= form.label :package_count, class: "block text-sm font-medium mb-1" %>
+          <%= form.number_field :package_count, class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= form.label :total_weight, class: "block text-sm font-medium mb-1" %>
+          <%= form.number_field :total_weight, step: 0.01, class: "w-full p-2 border rounded" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center">
+      <%= form.submit "Generate Packing List PDF", class: "bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 transition" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  new TomSelect('#dispatch_select', {
+    create: false,
+    sortField: { field: "text", direction: "asc" },
+    placeholder: "Search and select dispatch..."
+  });
+});
+</script>

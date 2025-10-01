@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     post :bom_details
     end
   end
-  resources :clients, only: [:create]
+  resources :clients, only: [:index, :create, :edit, :update]
   resources :order_entries 
 get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'
 # get "/production_orders/:sku_id/:item_name/bom_details", to: "production_orders#bom_details", as: :production_order_bom_details
@@ -93,5 +93,19 @@ get 'manual_decode_result', to: 'articles#manual_decode_result'
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   # Defines the root path route ("/")
-   
+  resources :documents, only: [:index] do
+    collection do
+      get :invoice
+      get :packing_list
+      get :new_si
+      get :value_letter
+      get :sheet_5
+      get :scomet
+      post :generate_pdf
+      get :get_order_details
+    end
+  end
+
+  resources :other, only: [:index]
+
 end

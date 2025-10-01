@@ -1,0 +1,22 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Edit Client</h1>
+  
+  <div class="bg-white p-6 rounded-lg shadow">
+    <%= form_with(model: @client, local: true, class: "space-y-4") do |f| %>
+      <div>
+        <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :name, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+      </div>
+      
+      <div>
+        <%= f.label :address, class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_area :address, class: "w-full border border-gray-300 rounded-lg px-4 py-2", rows: 3 %>
+      </div>
+      
+      <div class="flex gap-4 justify-end">
+        <%= link_to "Cancel", clients_path, class: "bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 cursor-pointer" %>
+        <%= f.submit "Update Client", class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer" %>
+      </div>
+    <% end %>
+  </div>
+</div>

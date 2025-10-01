@@ -1,0 +1,105 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Generate Invoice</h1>
+  
+  <%= form_tag generate_pdf_documents_path(format: :pdf), method: :post, class: "space-y-6", multipart: true, target: "_blank" do %>
+    <%= hidden_field_tag :document_type, @document_type %>
+    
+    <!-- Dispatch Selection -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold mb-4">Select Dispatch</h3>
+      <%= select_tag :dispatch_id, 
+          options_for_select(@dispatches.map { |dispatch| 
+            ["#{dispatch.d_id}", dispatch.id] 
+          }), 
+          prompt: "Select Dispatch", 
+          class: "w-full p-2 border rounded", 
+          id: "dispatch_select" %>
+    </div>
+
+    <!-- Logo and Signature Upload -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold mb-4">Upload Documents</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <%= label_tag :logo, "Company Logo", class: "block text-sm font-medium mb-1" %>
+          <%= file_field_tag :logo, accept: "image/*", class: "w-full p-2 border rounded" %>
+          <p class="text-xs text-gray-500 mt-1">Upload company logo (PNG, JPG)</p>
+        </div>
+        <div>
+          <%= label_tag :signature, "Authorized Signature", class: "block text-sm font-medium mb-1" %>
+          <%= file_field_tag :signature, accept: "image/*", class: "w-full p-2 border rounded" %>
+          <p class="text-xs text-gray-500 mt-1">Upload signature image (PNG, JPG)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Invoice Fields -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold mb-4">Details</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <%= label_tag :exportation_date, "Date of Exportation", class: "block text-sm font-medium mb-1" %>
+          <%= date_field_tag :exportation_date, "", class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= label_tag :invoice_date, "Invoice Date", class: "block text-sm font-medium mb-1" %>
+          <%= date_field_tag :invoice_date, "", class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+        <%= label_tag :country_of_export, "Country of Export", class: "block text-sm font-medium mb-1" %>
+        <%= text_field_tag :country_of_export, "", class: "w-full p-2 border rounded" %>
+      </div>
+      <div>
+        <%= label_tag :port_of_discharge, "Port of Discharge", class: "block text-sm font-medium mb-1" %>
+        <%= text_field_tag :port_of_discharge, "", class: "w-full p-2 border rounded" %>
+      </div>
+        <div>
+          <%= label_tag :country_of_origin, "Country of Origin of Goods", class: "block text-sm font-medium mb-1" %>
+          <%= text_field_tag :country_of_origin, "", class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= label_tag :port_of_loading, "Port of Loading", class: "block text-sm font-medium mb-1" %>
+          <%= text_field_tag :port_of_loading, "", class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= label_tag :country_of_ultimate_destination, "Country of Ultimate Destination", class: "block text-sm font-medium mb-1" %>
+          <%= text_field_tag :country_of_ultimate_destination, "", class: "w-full p-2 border rounded" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center space-x-4">
+      <%= submit_tag "Generate Invoice PDF", class: "bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition" %>
+      <%= link_to "Debug HTML", generate_pdf_documents_path(debug: true), 
+          onclick: "this.href = this.href + '&' + $('#invoice_form').serialize(); return true;",
+          target: "_blank", 
+          class: "bg-gray-600 text-white px-8 py-3 rounded-lg hover:bg-gray-700 transition" %>
+    </div>
+  <% end %>
+</div>
+
+<script>
+document.addEventListener('turbo:load', function() {
+  // Add form ID for debugging
+  document.querySelector('form').id = 'invoice_form';
+  
+  new TomSelect('#dispatch_select', {
+    create: false,
+    allowEmptyOption: false,
+    placeholder: 'Search and select dispatch...',
+    hidePlaceholder: true,
+    persist: false,
+    sortField: { field: 'text', direction: 'asc' },
+    searchField: ['text'],
+    maxOptions: null,
+    render: {
+      option: function(data, escape) {
+        return '<div class="py-2 px-3 border-b border-gray-100">' +
+               '<div class="font-medium">' + escape(data.text.split(' - ')[0]) + '</div>' +
+               '<div class="text-sm text-gray-600">' + escape(data.text.split(' - ')[1] || '') + '</div>' +
+               '</div>';
+      }
+    }
+  });
+});
+</script>

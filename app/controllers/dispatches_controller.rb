@@ -4,10 +4,12 @@ class DispatchesController < ApplicationController
     dispatches = @q.result(distinct: true)
 
     if params[:q].present? && params[:q][:search_all_cont].present?
-      serial = params[:q][:search_all_cont].strip
+      search_term = params[:q][:search_all_cont].strip
       
-      if serial.match?(/^\d+$/) || serial.match?(/^S\d+$/)
-        dispatches = Dispatch.with_serial_in_range(serial)
+      if search_term.match?(/^\d+$/) || search_term.match?(/^S\d+$/)
+        serial_results = Dispatch.with_serial_in_range(search_term)
+        dispatch_ids = dispatches.pluck(:id) + serial_results.pluck(:id)
+        dispatches = Dispatch.where(id: dispatch_ids.uniq)
       end
     end
 

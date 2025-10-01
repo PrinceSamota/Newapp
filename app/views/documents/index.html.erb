@@ -1,0 +1,24 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Document Management<strong class="text-red-600 bold"> (TESTING)</strong></h1>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% document_types = [
+      { name: "Invoice", path: invoice_documents_path, icon: "fa-file-invoice", color: "bg-gray-50", icon_color: "text-blue-600" },
+      { name: "Packing List", path: packing_list_documents_path, icon: "fa-list", color: "bg-gray-50", icon_color: "text-green-600" },
+      { name: "New SI", path: new_si_documents_path, icon: "fa-file-alt", color: "bg-gray-50", icon_color: "text-yellow-600" },
+      { name: "Value Letter", path: value_letter_documents_path, icon: "fa-envelope", color: "bg-gray-50", icon_color: "text-purple-600" },
+      { name: "Sheet 5", path: sheet_5_documents_path, icon: "fa-table", color: "bg-gray-50", icon_color: "text-red-600" },
+      { name: "Scomet", path: scomet_documents_path, icon: "fa-certificate", color: "bg-gray-50", icon_color: "text-indigo-600" }
+    ] %>
+    
+    <% document_types.each do |doc| %>
+      <%= link_to doc[:path], 
+          class: "#{doc[:color]} hover:bg-gray-100 text-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 border border-gray-200" do %>
+        <div class="text-center">
+          <i class="fas <%= doc[:icon] %> text-4xl mb-4 <%= doc[:icon_color] %>"></i>
+          <h3 class="text-xl font-semibold"><%= doc[:name] %></h3>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
