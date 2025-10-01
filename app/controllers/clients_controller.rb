@@ -1,4 +1,22 @@
 class ClientsController < ApplicationController
+  before_action :authenticate_user!
+  before_action :set_client, only: [:edit, :update]
+
+  def index
+    @clients = Client.where(org_id: current_user.org_id).order(created_at: :desc)
+  end
+
+  def edit
+  end
+
+  def update
+    if @client.update(client_params)
+      redirect_to clients_path, notice: 'Client updated successfully.'
+    else
+      render :edit
+    end
+  end
+
   def create
     @client = Client.new(client_params.merge(org_id: current_user.org_id))
   
@@ -17,7 +35,11 @@ class ClientsController < ApplicationController
 
   private
 
+  def set_client
+    @client = Client.find(params[:id])
+  end
+
   def client_params
-    params.require(:client).permit(:name)
+    params.require(:client).permit(:name, :address)
   end
 end

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Commercial Invoice</title>
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    padding: 15px;
+    margin: 0;
+    color: #000;
+  }
+  
+  .main-container {
+    border: 2px solid #000;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Header */
+  .header {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Merriweather', serif;
+    padding: 15px 0;
+    border-bottom: 1px solid #000;
+    position: relative;
+    height: 100px;
+  }
+  .logo-box {
+    position: absolute;
+    right: 15px;
+    top: 8px;
+    width: 170px;
+    height: 80px;
+  }
+  
+  /* Top 3 boxes */
+  .top-row { display: table; width: 100%; border-bottom: 1px solid #000; table-layout: fixed;  font-family: 'Merriweather', serif; font-size: 14px; }
+  .top-box { display: table-cell; border-right: 1px solid #000; padding: 10px; height: 60px; vertical-align: top; }
+  .top-box:last-child { border-right: none; }
+  .top-box:first-child { width: 50%; }
+  .top-box:nth-child(2), .top-box:nth-child(3) { width: 25%; }
+  
+  /* Middle 2 boxes */
+  .user-name {  font-family: 'Merriweather', serif; font-size: 14px; font-weight: bold; }
+  .middle-row { display: table; width: 100%; border-bottom: px solid #000; table-layout: fixed; }
+  .middle-box { display: table-cell; border-right: 1px solid #000; padding: 10px; height: 200px; vertical-align: top; }
+  .middle-box:last-child { border-right: none; }
+  
+  /* Country 2 boxes */
+  .country-row { display: table; width: 100%; border-bottom: 1px solid #000; table-layout: fixed; }
+  .country-box { display: table-cell; border-right: 1px solid #000; padding: 10px; height: 80px; vertical-align: top; }
+  .country-box:last-child { border-right: none; }
+  
+  /* Country single box */
+  .country-single-row { display: table; width: 100%; table-layout: fixed; }
+  .country-single-box { display: table-cell; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 10px; height: 80px; vertical-align: top; width: 50%; }
+  .country-empty-box { display: table-cell; padding: 10px; height: 80px; vertical-align: top; width: 50%; }
+  
+  /* Items table */
+  .table-section { border-bottom: 1px solid #000; }
+  .items-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 10%; }
+  .items-table th, .items-table td { border: 1px solid #000; height: 35px; }
+  .items-table th { font-weight: bold; text-align: center; }
+  
+  /* Bottom row */
+  .bottom-row { display: table; width: 100%; border-bottom: 1px solid #000; table-layout: fixed; }
+  .payment-box { display: table-cell; padding: 10px; height: 70px; vertical-align: top; }
+  .total-box { display: table-cell; border-left: 1px solid #000; padding: 10px; width: 180px; height: 70px; vertical-align: top; }
+  
+  /* Declaration & Signature */
+  .declaration-box { padding: 10px; height: 80px; border-bottom: 1px solid #000; }
+  .signature-box { padding: 15px; height: 100px; }
+  
+  </style>
+</head>
+<body>
+<div class="main-container">
+  <!-- Header -->
+  <div class="header">
+    COMMERCIAL INVOICE
+    <div class="logo-box">
+      <% if @logo_data.present? %>
+        <img src="data:image/png;base64,<%= @logo_data %>" style="width: 100%; height: 100%; object-fit: contain;" />
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Top Row - 3 boxes -->
+  <div class="top-row">
+    <div class="top-box"> DATE OF EXPORTATION: </br>
+      <% if @form_data[:exportation_date].present? %>
+        <%= Date.parse(@form_data[:exportation_date]).strftime("%-d-%b-%Y") %>
+      <% end %>
+    </div>
+    <div class="top-box">
+      INVOICE NO: </br>
+      <%= @dispatch.invoice_no.present? ? @dispatch.invoice_no : "N/A" %>
+    </div>
+    <div class="top-box">
+      INVOICE DATE: </br>
+      <% if @form_data[:invoice_date].present? %>
+        <%= Date.parse(@form_data[:invoice_date]).strftime("%-d-%b-%Y") %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Middle Row - 2 big boxes -->
+  <div class="middle-row">
+    <div class="middle-box">
+     <span class="user-name">SHIPPER/ EXPORTER</span> </br>
+     <%= @current_user&.name %></br>
+     <%= @current_user&.address %></br>
+    </div>
+    <div class="middle-box">
+      <span class="user-name">CONSIGNEE</span> </br>
+      <% @dispatch.dispatch_items.each do |item| %>
+        <%= item.order_no %><br>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Additional Country Row - 1 box left side only -->
+  <div class="country-single-row">
+    <div class="country-single-box"></div>
+    <div class="country-empty-box"></div>
+  </div>
+  <div class="country-single-row">
+    <div class="country-single-box">
+      <div style="float: left; width: 48%;">
+        <strong class="user-name">COUNTRY OF EXPORT:</strong><br>
+        <%= @form_data[:country_of_export] %>
+      </div>
+      <div style="float: right; width: 48%;">
+        <strong class="user-name">PORT OF DISCHARGE:</strong><br>
+        <%= @form_data[:port_of_discharge] %>
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+  <div class="country-empty-box"></div>
+</div>
+  <!-- Country Row - 4 boxes total -->
+  <div class="country-row">
+    <div class="country-box">
+      <div style="float: left; width: 48%;">
+        <strong class="user-name">COUNTRY OF ORIGIN OF GOODS:</strong><br>
+        <%= @form_data[:country_of_origin] %>
+      </div>
+      <div style="float: right; width: 48%;">
+        <strong class="user-name">PORT OF LOADING:</strong><br>
+        <%= @form_data[:port_of_loading] %>
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+    <div class="country-box"></div>
+  </div>
+  
+  <div class="country-row">
+    <div class="country-box">
+      <strong class="user-name">COUNTRY OF ULTIMATE DESTINATION:</strong><br>
+      <%= @form_data[:country_of_ultimate_destination] %>
+    </div>
+    <div class="country-box"></div>
+  </div>
+
+  <!-- Table Section -->
+  <div class="table-section">
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>Mark/No</th>
+          <th>No. of Packages</th>
+          <th>Complete Description of Goods</th>
+          <th>HSN</th>
+          <th>QTY pcs</th>
+          <th>Unit Value</th>
+          <th>Total Value</th>
+          <th>Currency USD</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td><td></td><td></td><td></td>
+          <td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <td colspan="1" style="border:none;"></td> 
+          <td></td> 
+
+          <td colspan="4" style="border:none;"></td> 
+
+          <td></td>
+          <td></td> 
+        </tr>
+        <tr>
+          <td colspan="1" style="border:none;"></td> 
+          <td></td> 
+
+          <td colspan="4" style="border:none;"></td> 
+
+          <td></td>
+          <td></td> 
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Declaration Box -->
+  <div class="declaration-box"></div>
+
+  <!-- Signature Box -->
+  <div class="signature-box">
+    <div style="display: table; width: 100%; height: 100%;">
+      <div style="display: table-cell; width: 50%; vertical-align: top; padding-right: 20px;">
+        <div style="border-bottom: 2px dotted #000; height: 60px; margin-bottom: 10px; padding: 5px;">
+          <% if @signature_data.present? %>
+            <img src="data:image/png;base64,<%= @signature_data %>" style="width: 100%; height: 100%; object-fit: contain;" />
+          <% end %>
+        </div>
+        <div style="text-align: center; font-size: 10px; font-weight: bold;">
+          SIGNATURE OF SHIPPER (Name, title & signature)
+        </div>
+      </div>
+      <div style="display: table-cell; width: 50%; vertical-align: top; text-align: right;">
+        <strong>DATE:</strong><br>
+        <% if @form_data[:invoice_date].present? %>
+          <%= Date.parse(@form_data[:invoice_date]).strftime("%-d-%b-%Y") %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

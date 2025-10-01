@@ -68,7 +68,14 @@ class Dispatch < ApplicationRecord
         Arel.sql(
           "CAST(d_id AS TEXT) || ' ' || " \
           "COALESCE(courier_company, '') || ' ' || " \
-          "COALESCE(mode_of_shipment, '')"
+          "COALESCE(mode_of_shipment, '') || ' ' || " \
+          "COALESCE(tracking_no, '') || ' ' || " \
+          "COALESCE(invoice_no, '') || ' ' || " \
+          "COALESCE((" \
+            "SELECT STRING_AGG(dispatch_items.order_no, ' ') " \
+            "FROM dispatch_items " \
+            "WHERE dispatch_items.dispatch_id = dispatches.id" \
+          "), '')"
         )
       }
     }
