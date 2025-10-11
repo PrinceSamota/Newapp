@@ -2,20 +2,193 @@
   <h1 class="text-2xl font-bold mb-6">Edit Client</h1>
   
   <div class="bg-white p-6 rounded-lg shadow">
-    <%= form_with(model: @client, local: true, class: "space-y-4") do |f| %>
+    <%= form_with(model: @client, local: true, multipart: true, class: "space-y-6") do |f| %>
+      
+      <!-- Basic Information -->
+      <div class="border-b pb-4">
+        <h3 class="text-lg font-medium mb-4">Basic Information</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :name, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :company_name, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :company_name, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :email, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.email_field :email, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :contact_no, "Contact Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :contact_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :website, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.url_field :website, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Address Information -->
+      <div class="border-b pb-4">
+        <h3 class="text-lg font-medium mb-4">Address Information</h3>
+        <div class="grid grid-cols-1 gap-4">
+          <div>
+            <%= f.label :address, "Main Address", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_area :address, class: "w-full border border-gray-300 rounded-lg px-4 py-2", rows: 2 %>
+          </div>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <%= f.label :address1, "Address Line 1", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.text_field :address1, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+            </div>
+            <div>
+              <%= f.label :address2, "Address Line 2", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.text_field :address2, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+            </div>
+            <div>
+              <%= f.label :address3, "Address Line 3", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.text_field :address3, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <%= f.label :pin_code, "PIN Code", class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.text_field :pin_code, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+            </div>
+            <div>
+              <%= f.label :country, class: "block text-sm font-medium text-gray-700 mb-1" %>
+              <%= f.text_field :country, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Information -->
+      <div class="border-b pb-4">
+        <h3 class="text-lg font-medium mb-4">Business Information</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <%= f.label :gst_no, "GST Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :gst_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :pan_no, "PAN Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :pan_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :iec_no, "IEC Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :iec_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :eori_no, "EORI Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :eori_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :lut_bond_no, "LUT Bond Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :lut_bond_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :ad_code, "AD Code", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :ad_code, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :rex_no, "REX Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :rex_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :rex_date, "REX Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.date_field :rex_date, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :advance_authorization_lic_no_and_date, "Advance Authorization LIC No. & Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :advance_authorization_lic_no_and_date, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :advance_authorization_file_no, "Advance Authorization File No", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :advance_authorization_file_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping Information -->
+      <div class="border-b pb-4">
+        <h3 class="text-lg font-medium mb-4">Shipping Information</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <%= f.label :port_of_loading, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :port_of_loading, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div>
+            <%= f.label :port_of_discharge, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :port_of_discharge, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+          <div class="col-span-2">
+            <%= f.label :shipping_terms, class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.text_field :shipping_terms, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Client Types -->
+      <div class="border-b pb-4">
+        <h3 class="text-lg font-medium mb-4">Client Types</h3>
+        <div class="grid grid-cols-3 gap-2">
+          <% Client::AVAILABLE_TYPES.each do |type| %>
+            <label class="flex items-center p-2 border rounded hover:bg-gray-50">
+              <%= check_box_tag "client[client_types][]", type, 
+                  (@client.client_types || []).include?(type), 
+                  class: "mr-2" %>
+              <span class="text-sm"><%= type.humanize %></span>
+            </label>
+          <% end %>
+        </div>
+        <%= hidden_field_tag "client[client_types][]", "" %>
+      </div>
+
+      <!-- File Uploads -->
+      <div class="border-b pb-4">
+        <h3 class="text-lg font-medium mb-4">Files</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <%= f.label :logo, "Company Logo", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.file_field :logo, accept: "image/*", class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+            <% if @client.logo.attached? %>
+              <div class="mt-2">
+                <%= image_tag @client.logo, class: "w-20 h-20 object-contain border rounded" %>
+                <p class="text-xs text-green-600">✓ Current logo</p>
+              </div>
+            <% end %>
+          </div>
+          
+          <div>
+            <%= f.label :qr_code, "QR Code", class: "block text-sm font-medium text-gray-700 mb-1" %>
+            <%= f.file_field :qr_code, accept: "image/*", class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+            <% if @client.qr_code.attached? %>
+              <div class="mt-2">
+                <%= image_tag @client.qr_code, class: "w-20 h-20 object-contain border rounded" %>
+                <p class="text-xs text-green-600">✓ Current QR code</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Remarks -->
       <div>
-        <%= f.label :name, class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_field :name, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+        <h3 class="text-lg font-medium mb-4">Additional Information</h3>
+        <div>
+          <%= f.label :remark, "Remarks", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_area :remark, class: "w-full border border-gray-300 rounded-lg px-4 py-2", rows: 4 %>
+        </div>
       </div>
       
-      <div>
-        <%= f.label :address, class: "block text-sm font-medium text-gray-700 mb-1" %>
-        <%= f.text_area :address, class: "w-full border border-gray-300 rounded-lg px-4 py-2", rows: 3 %>
-      </div>
-      
-      <div class="flex gap-4 justify-end">
-        <%= link_to "Cancel", clients_path, class: "bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400 cursor-pointer" %>
-        <%= f.submit "Update Client", class: "bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer" %>
+      <!-- Submit Buttons -->
+      <div class="flex gap-4 justify-end pt-4 border-t">
+        <%= link_to "Cancel", clients_path, class: "bg-gray-300 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-400 cursor-pointer" %>
+        <%= f.submit "Update Client", class: "bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 cursor-pointer" %>
       </div>
     <% end %>
   </div>

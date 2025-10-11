@@ -15,33 +15,35 @@ class DocumentsController < ApplicationController
 
   def new_si
     @document_type = "new_si"
-    @order_entries = OrderEntry.includes(:client, :location).all
+    @dispatches = Dispatch.all
   end
 
   def value_letter
     @document_type = "value_letter"
-    @order_entries = OrderEntry.includes(:client, :location).all
+    @dispatches = Dispatch.all
   end
 
   def sheet_5
     @document_type = "sheet_5"
-    @order_entries = OrderEntry.includes(:client, :location).all
+    @dispatches = Dispatch.all
   end
 
   def scomet
     @document_type = "scomet"
-    @order_entries = OrderEntry.includes(:client, :location).all
+    @dispatches = Dispatch.all
   end
 
   def generate_pdf
-    if params[:document_type] == "invoice" || params[:document_type] == "packing_list"
+    if params[:input_id].present?
+      @input = Input.find(params[:input_id])
+    elsif params[:document_type] == "invoice" || params[:document_type] == "packing_list" || params[:document_type] == "value_letter" || params[:document_type] == "scomet" || params[:document_type] == "sheet_5" || params[:document_type] == "new_si"
       @dispatch = Dispatch.find(params[:dispatch_id])
     else
       @order_entry = OrderEntry.find(params[:order_entry_id])
     end
     
     @document_type = params[:document_type]
-    @form_data = params.except(:dispatch_id, :order_entry_id, :document_type, :authenticity_token, :commit)
+    @form_data = params.except(:dispatch_id, :order_entry_id, :input_id, :document_type, :authenticity_token, :commit)
     
     # Handle file uploads for invoice only
     if @document_type == "invoice"
@@ -64,11 +66,19 @@ class DocumentsController < ApplicationController
                          "documents/invoice_pdf"
                        when "packing_list"
                          "documents/packing_list_pdf"
+                       when "new_si"
+                         "documents/new_si_pdf"
                        else
                          "documents/#{@document_type}_pdf"
                        end
         
-        render pdf: "#{@document_type}_#{@order_entry&.order_no || @dispatch&.d_id}",
+        pdf_filename = if @input
+                         "#{@document_type}_input_#{@input.id}"
+                       else
+                         "#{@document_type}_#{@order_entry&.order_no || @dispatch&.d_id}"
+                       end
+        
+        render pdf: pdf_filename,
                template: template_name,
                layout: "pdf",
                formats: [:html],

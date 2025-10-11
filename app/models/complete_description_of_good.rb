@@ -1,0 +1,3 @@
+class CompleteDescriptionOfGood < ApplicationRecord
+
+end

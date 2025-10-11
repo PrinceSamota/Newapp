@@ -138,7 +138,9 @@
             <th class="px-4 py-3 border-r border-gray-300">Remark</th>
             <th class="px-4 py-3 border-r border-gray-300">Status</th>
             <th class="px-4 py-3 border-r border-gray-300"><%= sort_link(@q, :created_at, "Order Date") %></th>
-            <th class="px-6 py-3">Action</th>
+            <% if current_user.admin? %>
+              <th class="px-6 py-3">Action</th>
+            <% end %>
           </tr>
         </thead>
 
@@ -199,28 +201,30 @@
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.extra %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.start_serial_no %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.end_serial_no %></td>
-              <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.mfg_date %></td>
+              <td class="px-4 py-3 border-r border-gray-300 text-center" style="min-width: 120px;"><%= order.mfg_date.present? ? Date.parse(order.mfg_date).strftime("%d-%b-%Y") : "-" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.driver_revision&.name || "-" %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.remark %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center"><%= order.status %></td>
               <td class="px-4 py-3 border-r border-gray-300 text-center" style="min-width: 150px;"><%= order.created_at.strftime("%d-%b-%Y") %></td>
-              <td class="px-4 py-3 text-center">
-                <% if order.deleted_at.present? %>
-                  <div class="flex items-center justify-center gap-2">
-                    <span class="text-xs bg-red-500 text-white px-2 py-1 rounded">Deleted</span>
-                  </div>
-                <% else %>
-                  <div class="flex items-center justify-center gap-2">
-                      <%= button_to archive_order_entry_path(order), 
-                      method: :patch,
-                      remote: true,
-                      class: "text-orange-600 hover:text-orange-800 bg-transparent border-none cursor-pointer",
-                      onclick: "return confirm('Are you sure you want to delete this order?')" do %>
-                    <i class="fa-solid fa-archive"></i>
+              <% if current_user.admin? %>
+                <td class="px-4 py-3 text-center">
+                  <% if order.deleted_at.present? %>
+                    <div class="flex items-center justify-center gap-2">
+                      <span class="text-xs bg-red-500 text-white px-2 py-1 rounded">Deleted</span>
+                    </div>
+                  <% else %>
+                    <div class="flex items-center justify-center gap-2">
+                        <%= button_to archive_order_entry_path(order), 
+                        method: :patch,
+                        remote: true,
+                        class: "text-orange-600 hover:text-orange-800 bg-transparent border-none cursor-pointer",
+                        onclick: "return confirm('Are you sure you want to delete this order?')" do %>
+                      <i class="fa-solid fa-archive"></i>
+                    <% end %>
+                    </div>
                   <% end %>
-                  </div>
-                <% end %>
-              </td>
+                </td>
+              <% end %>
             </tr>
           <% end %>
         </tbody>

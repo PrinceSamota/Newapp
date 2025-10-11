@@ -112,4 +112,19 @@ get 'manual_decode_result', to: 'articles#manual_decode_result'
 
   resources :other, only: [:index]
 
+  resources :labels, only: [:index] do
+    collection do
+      get :new_product_label
+      post :generate_pdf
+      get :get_item_details
+    end
+  end
+
+  resources :inputs
+  resources :description_of_goods, only: [:create]
+  resources :marks_nos, only: [:create]
+  resources :type_of_packages, only: [:create]
+  resources :complete_description_of_goods, only: [:create]
+  resources :hsns, only: [:create]
+
 end

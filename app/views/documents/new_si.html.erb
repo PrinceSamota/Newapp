@@ -1,16 +1,16 @@
 <div class="container mx-auto px-4 py-6">
   <h1 class="text-2xl font-bold mb-6">Generate New SI</h1>
   
-  <%= form_with url: generate_pdf_documents_path, method: :post, format: :pdf, local: true, class: "space-y-6" do |form| %>
+  <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, local: true, data: { turbo: false }, class: "space-y-6" do |form| %>
     <%= form.hidden_field :document_type, value: @document_type %>
     
-    <!-- Order Selection -->
+    <!-- Dispatch Selection -->
     <div class="bg-white p-6 rounded-lg shadow">
-      <h3 class="text-lg font-semibold mb-4">Select Order</h3>
-      <%= form.select :order_entry_id, 
-          options_from_collection_for_select(@order_entries, :id, :order_no), 
-          { prompt: "Select Order" },
-          { class: "searchable w-full p-2 border rounded", id: "order_select" } %>
+      <h3 class="text-lg font-semibold mb-4">Select Dispatch</h3>
+      <%= form.select :dispatch_id, 
+          options_from_collection_for_select(@dispatches, :id, :d_id), 
+          { prompt: "Select Dispatch" },
+          { class: "searchable w-full p-2 border rounded", id: "dispatch_select" } %>
     </div>
 
     <!-- SI Fields -->
@@ -29,17 +29,17 @@
     </div>
 
     <div class="text-center">
-      <%= form.submit "Generate New SI PDF", class: "bg-yellow-600 text-white px-8 py-3 rounded-lg hover:bg-yellow-700 transition" %>
+      <%= form.submit "Generate New SI PDF", class: "bg-yellow-600  px-8 py-3 rounded-lg hover:bg-yellow-700 transition" %>
     </div>
   <% end %>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  new TomSelect('#order_select', {
+  new TomSelect('#dispatch_select', {
     create: false,
     sortField: { field: "text", direction: "asc" },
-    placeholder: "Search and select order..."
+    placeholder: "Search and select dispatch..."
   });
 });
 </script>

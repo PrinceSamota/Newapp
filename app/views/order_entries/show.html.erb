@@ -14,7 +14,12 @@
 <%= form_with(model: @order_entry, local: true) do |f| %>
     <div class="max-w-[100%] mx-auto mt-10 bg-white border border-gray-200 rounded-2xl shadow p-10 space-y-6">
       <h2 class="text-2xl font-bold text-gray-800">Edit Order</h2>
-  
+     
+      <%= link_to new_product_label_labels_path(order_id: @order_entry.id), 
+          class: "flex items-center gap-2 text-white bg-purple-600 hover:bg-purple-700 rounded-md px-4 py-2 border shadow-md transition duration-200 mb-4" do %>
+        <i class="fa-solid fa-tag"></i>
+        <span class="font-bold">Create Label</span>
+      <% end %>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Row 1 -->
         <div>
@@ -225,7 +230,8 @@
 
       </div>
   
-      <div class="flex justify-end pt-4">
+
+        
         <% if @order_entry.deleted_at.present? %>
           <button type="button" disabled class="inline-flex items-center px-4 py-2 bg-gray-400 text-white text-sm font-medium rounded-xl cursor-not-allowed opacity-50">
             Order Deleted - Cannot Update

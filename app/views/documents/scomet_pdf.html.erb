@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>SCOMET Declaration</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }
+    .logo { float: right; width: 120px; }
+    .date { margin-top: 20px; }
+    .center { text-align: center; font-weight: bold; margin: 30px 0; font-size: 18px; text-decoration: underline; }
+    .signature { margin-top: 50px; }
+  </style>
+</head>
+<body>
+  <div>
+    <img src="/path/to/lcare_logo.png" class="logo" />
+  </div>
+
+  <div class="date">
+    Date: <%= Date.today.strftime("%d-%b-%Y") %>
+  </div>
+
+  <p>
+    TO,<br>
+    Assistant Commissioner Of Customs.- EXPORT<br>
+    Mumbai
+  </p>
+
+  <div class="center">SCOMET DECLARATION</div>
+
+  <p>
+    Reference: Our Invoice No: <%= @input.invoice_no %>,   Date <%= @input.invoice_date&.strftime("%d-%b-%Y") %> 
+  </p>
+
+  <p style="margin-top: 20px;">
+    We are exporting to  <b><%= @input.consignee_name.name %></b>
+  </p>
+
+  <p style="margin-top: 20px;">
+    We hereby declare that the <b><%= @input.complete_description_of_goods&.name %></b> are not covered in list of SCOMET items OR any other respective list of exports.  
+    It will be used for Lighting and Installing in the Railways.
+  </p>
+
+  <p style="margin-top: 20px;">
+    You are requested to complete shipping procedure and send to the destination at earliest.<br>
+    We request you to allow the same for export.
+  </p>
+
+  <p>Thanking you</p>
+
+  <div class="signature">
+    Yours faithfully<br>
+    For Living Care India<br><br>
+    <b>Authorised Signatory</b>
+  </div>
+</body>
+</html>

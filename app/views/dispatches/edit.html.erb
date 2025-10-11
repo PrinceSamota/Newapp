@@ -31,14 +31,20 @@
   <div class="max-w-[100%] mx-auto mt-10 bg-white border border-gray-200 rounded-2xl shadow p-8 space-y-6">
   <div class="flex justify-between mt-0">
     <h2 class="text-2xl font-bold text-gray-800">Edit Dispatch</h2>
-    <div class="flex justify-end mt-0">
-    <%= link_to download_pdf_dispatch_path(@dispatch, format: :pdf),
-    class: "flex items-center gap-2 text-white bg-red-600 hover:bg-red-700 rounded-md p-2 w-fit",
-    target: "_blank" do %>
-      <i class="fa-solid fa-file-pdf"></i>
-      <span class="font-bold">Download PDF</span>
-    <% end %>
-  </div>
+    <div class="flex justify-end mt-0 gap-3">
+      <%= link_to new_input_path(from_dispatch: true, dispatch_id: @dispatch.id), 
+          class: "flex items-center gap-2 text-white bg-green-600 hover:bg-green-700 rounded-md p-2 w-fit" do %>
+        <i class="fa-solid fa-file-import"></i>
+        <span class="font-bold">Create Input</span>
+      <% end %>
+      
+      <%= link_to download_pdf_dispatch_path(@dispatch, format: :pdf),
+          class: "flex items-center gap-2 text-white bg-red-600 hover:bg-red-700 rounded-md p-2 w-fit",
+          target: "_blank" do %>
+        <i class="fa-solid fa-file-pdf"></i>
+        <span class="font-bold">Download PDF</span>
+      <% end %>
+    </div>
   </div>
 
     <!-- TOP SECTION -->

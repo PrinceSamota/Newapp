@@ -46,7 +46,9 @@
           <th class="px-4 py-3 text-left border-r border-gray-300">current stock</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">Finished Good</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">Executed</th>
-          <th class="px-4 py-3 text-left border-r border-gray-300">Action</th>
+          <% if current_user.admin? %>
+            <th class="px-4 py-3 text-left border-r border-gray-300">Action</th>
+          <% end %>
         </tr>
       </thead>
       <tbody id="production-orders-table" class="bg-white divide-y divide-gray-100">
@@ -70,16 +72,18 @@
               <td class="px-4 py-3 border-r border-gray-300"><%= item_master&.opening_stock %></td>
               <td class="px-4 py-3 border-r border-gray-300"><%= item_master&.item_name %></td>
               <td class="px-4 py-3 border-r border-gray-300"><%= order.executed ? "Yes" : "No" %></td>
-              <td class="px-4 py-3 border-r border-gray-300">
-                <% unless order.executed %>
-                  <%= button_to production_order_path(order),
-                      method: :delete,
-                      data: { confirm: "Are you sure you want to delete this Production Order?" },
-                      class: "bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm cursor-pointer" do %>
-                    <i class="fa-solid fa-trash"></i> 
+              <% if current_user.admin? %>
+                <td class="px-4 py-3 border-r border-gray-300">
+                  <% unless order.executed %>
+                    <%= button_to production_order_path(order),
+                        method: :delete,
+                        data: { confirm: "Are you sure you want to delete this Production Order?" },
+                        class: "bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-full text-sm cursor-pointer" do %>
+                      <i class="fa-solid fa-trash"></i> 
+                    <% end %>
                   <% end %>
-                <% end %>
-              </td>
+                </td>
+              <% end %>
             </tr>
           <% end %>
         <% end %>

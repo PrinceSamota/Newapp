@@ -40,6 +40,14 @@ class ClientsController < ApplicationController
   end
 
   def client_params
-    params.require(:client).permit(:name, :address)
+    params.require(:client).permit(
+      :name, :address, :company_name, :email, :contact_no,
+      :address1, :address2, :address3, :pin_code, :country,
+      :eori_no, :gst_no, :iec_no, :lut_bond_no, :ad_code,
+      :rex_no, :rex_date, :pan_no, :website,
+      :port_of_discharge, :port_of_loading, :shipping_terms, :remark,
+      :advance_authorization_lic_no_and_date, :advance_authorization_file_no,
+      :logo, :qr_code, client_types: []
+    )
   end
 end
