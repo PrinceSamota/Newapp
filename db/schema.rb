@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_09_29_214932) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_08_180318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -110,9 +110,47 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_29_214932) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "address"
+    t.text "client_types"
+    t.string "company_name"
+    t.string "email"
+    t.string "contact_no"
+    t.string "address1"
+    t.string "address2"
+    t.string "address3"
+    t.string "pin_code"
+    t.string "country"
+    t.string "eori_no"
+    t.string "gst_no"
+    t.string "iec_no"
+    t.string "lut_bond_no"
+    t.string "ad_code"
+    t.string "rex_no"
+    t.date "rex_date"
+    t.string "pan_no"
+    t.string "website"
+    t.string "port_of_discharge"
+    t.string "port_of_loading"
+    t.string "shipping_terms"
+    t.text "remark"
+    t.string "advance_authorization_lic_no_and_date"
+    t.string "advance_authorization_file_no"
+  end
+
+  create_table "complete_description_of_goods", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "cover_types", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "description_of_goods", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
     t.datetime "created_at", null: false
@@ -174,6 +212,55 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_29_214932) do
     t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "hsns", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "input_items", force: :cascade do |t|
+    t.bigint "input_id", null: false
+    t.integer "no_of_boxes"
+    t.integer "description_of_goods_id"
+    t.decimal "qty_per_box", precision: 10, scale: 2
+    t.decimal "net_weight", precision: 10, scale: 2
+    t.decimal "gross_weight", precision: 10, scale: 2
+    t.decimal "length", precision: 10, scale: 2
+    t.decimal "width", precision: 10, scale: 2
+    t.decimal "height", precision: 10, scale: 2
+    t.string "order_no"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["input_id"], name: "index_input_items_on_input_id"
+  end
+
+  create_table "inputs", force: :cascade do |t|
+    t.string "invoice_no"
+    t.date "invoice_date"
+    t.bigint "shipper_name_id"
+    t.bigint "consignee_name_id"
+    t.bigint "importer_name_id"
+    t.string "order_no_from_dispatch"
+    t.string "currency"
+    t.string "fedex_awb_no"
+    t.integer "marks_no_id"
+    t.integer "no_of_packages"
+    t.integer "type_of_packages_id"
+    t.integer "complete_description_of_goods_id"
+    t.integer "hsn_id"
+    t.decimal "qty_pcs", precision: 10, scale: 2
+    t.decimal "price", precision: 10, scale: 2
+    t.integer "org_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["consignee_name_id"], name: "index_inputs_on_consignee_name_id"
+    t.index ["importer_name_id"], name: "index_inputs_on_importer_name_id"
+    t.index ["shipper_name_id"], name: "index_inputs_on_shipper_name_id"
+    t.index ["user_id"], name: "index_inputs_on_user_id"
   end
 
   create_table "item_masters", force: :cascade do |t|
@@ -242,6 +329,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_29_214932) do
   end
 
   create_table "loops", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "marks_nos", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
     t.datetime "created_at", null: false
@@ -439,6 +533,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_29_214932) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "type_of_packages", force: :cascade do |t|
+    t.string "name"
+    t.integer "org_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "uploaded_files", force: :cascade do |t|
     t.string "file"
     t.datetime "created_at", null: false
@@ -457,6 +558,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_29_214932) do
     t.datetime "updated_at", null: false
     t.string "phone"
     t.text "address"
+    t.integer "role"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -493,5 +595,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_09_29_214932) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "dispatch_items", "dispatches"
+  add_foreign_key "input_items", "inputs"
+  add_foreign_key "inputs", "clients", column: "consignee_name_id"
+  add_foreign_key "inputs", "clients", column: "importer_name_id"
+  add_foreign_key "inputs", "clients", column: "shipper_name_id"
+  add_foreign_key "inputs", "users"
   add_foreign_key "users", "organizations", column: "org_id"
 end

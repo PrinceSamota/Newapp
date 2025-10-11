@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Export Value Declaration</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }
+    .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px; }
+    .sub-header { text-align: center; font-weight: bold; margin-bottom: 10px; }
+    .form-section { margin: 15px 0; }
+    .form-row { margin-bottom: 10px; padding: 8px 0; }
+    .form-label { width: 60%; font-weight: bold; padding-right: 20px; }
+    .form-value { width: 40%; }
+    .declaration { margin-top: 20px; }
+    .signature { margin-top: 40px; text-align: right; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    Annexure-A <br>
+    EXPORT VALUE DECLARATION
+  </div>
+
+  <div class="sub-header">
+   (See Rule 7 of Customs Valuation (Determination of Value of Export Goods) Rules, 2007.)
+  </div>
+
+  <div class="form-section">
+    <div class="form-row">
+      <div class="form-label">1. Shipping Bill No. & Date:</div>
+      <div class="form-value"></div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">2. Invoice No. & Date:</div>
+      <div class="form-value"><%=@input.invoice_no %> &nbsp;&nbsp; <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">3. Nature of Transaction:</div>
+      <div class="form-value">Sale ☑ &nbsp;&nbsp; Sale on consignment basis ☐ &nbsp;&nbsp; Gift ☐ &nbsp;&nbsp; Sample ☐ &nbsp;&nbsp; Other ☐</div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">4. Method of Valuation:</div>
+      <div class="form-value">(See Export Valuation Rules)</div>
+      <div class="form-value">Rule 3 ☐ &nbsp;&nbsp; Rule 4 ☐ &nbsp;&nbsp; Rule 5 ☐&nbsp;&nbsp; Rule 6 ☐</div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">5. Whether seller and buyer are related:</div>
+      <div class="form-value">Yes ☑ &nbsp;&nbsp; No ☐</div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">6. If yes, whether relationship has influenced the price:</div>
+      <div class="form-value">Yes ☐ &nbsp;&nbsp; No ☐</div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">7. Terms of Payment:</div>
+      <div class="form-value">Advance</div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">8. Terms of Delivery:</div>
+      <div class="form-value">FOB</div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">9. Previous exports of identical/similar goods, if any:</div>
+      <div class="form-value">-</div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-label">10. Any other relevant information:(Attach separate sheet, if necessary)  </div>
+      <div class="form-value">-</div>
+    </div>
+  </div>
+
+  <div class="declaration">
+    <strong>DECLARATION</strong>
+    <ol>
+      <li>1. I/We hereby declare that the information furnished above is true, complete and correct in every respect.</li>
+      <li>2. I/We also undertake to bring to the notice of proper officer any particulars which subsequently come to my/our knowledge which will have bearing on a valuation.</li>
+    </ol>
+    <p><strong>Place:</strong> Thane</p>
+    <p><strong>Date:</strong> <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></p>
+  </div>
+
+  <div class="signature">
+    <p>For LIVING CARE INDIA</p>
+    <p><strong>Proprietor</strong></p>
+    <br><br>
+    <p>_________________________</p>
+    <p>Signature of the Exporter</p>
+  </div>
+</body>
+</html>

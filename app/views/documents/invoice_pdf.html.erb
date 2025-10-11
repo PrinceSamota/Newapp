@@ -46,6 +46,7 @@
   
   /* Middle 2 boxes */
   .user-name {  font-family: 'Merriweather', serif; font-size: 14px; font-weight: bold; }
+  .user-name_td {  font-family: 'Merriweather', serif;  font-weight: bold; }
   .middle-row { display: table; width: 100%; border-bottom: px solid #000; table-layout: fixed; }
   .middle-box { display: table-cell; border-right: 1px solid #000; padding: 10px; height: 200px; vertical-align: top; }
   .middle-box:last-child { border-right: none; }
@@ -58,7 +59,7 @@
   /* Country single box */
   .country-single-row { display: table; width: 100%; table-layout: fixed; }
   .country-single-box { display: table-cell; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 10px; height: 80px; vertical-align: top; width: 50%; }
-  .country-empty-box { display: table-cell; padding: 10px; height: 80px; vertical-align: top; width: 50%; }
+  .country-empty-box { display: table-cell; padding: 10px; border-top: 1px solid #000; height: 80px; vertical-align: top; width: 50%; }
   
   /* Items table */
   .table-section { border-bottom: 1px solid #000; }
@@ -72,7 +73,7 @@
   .total-box { display: table-cell; border-left: 1px solid #000; padding: 10px; width: 180px; height: 70px; vertical-align: top; }
   
   /* Declaration & Signature */
-  .declaration-box { padding: 10px; height: 80px; border-bottom: 1px solid #000; }
+  .declaration-box { padding: 10px; height: 80px; border-bottom: 1px solid #000; text-align: center; }
   .signature-box { padding: 15px; height: 100px; }
   
   </style>
@@ -92,19 +93,15 @@
   <!-- Top Row - 3 boxes -->
   <div class="top-row">
     <div class="top-box"> DATE OF EXPORTATION: </br>
-      <% if @form_data[:exportation_date].present? %>
-        <%= Date.parse(@form_data[:exportation_date]).strftime("%-d-%b-%Y") %>
-      <% end %>
+     <%= @input.invoice_date&.strftime("%-d-%b-%Y") %>
     </div>
     <div class="top-box">
       INVOICE NO: </br>
-      <%= @dispatch.invoice_no.present? ? @dispatch.invoice_no : "N/A" %>
+      <%= @input.invoice_no %>
     </div>
     <div class="top-box">
       INVOICE DATE: </br>
-      <% if @form_data[:invoice_date].present? %>
-        <%= Date.parse(@form_data[:invoice_date]).strftime("%-d-%b-%Y") %>
-      <% end %>
+      <%= @input.invoice_date&.strftime("%-d-%b-%Y") %>
     </div>
   </div>
 
@@ -112,31 +109,52 @@
   <div class="middle-row">
     <div class="middle-box">
      <span class="user-name">SHIPPER/ EXPORTER</span> </br>
-     <%= @current_user&.name %></br>
-     <%= @current_user&.address %></br>
+       <%= @input.shipper_name.name %></br>
+       <%= @input.shipper_name.address1 %></br>
+       <%= @input.shipper_name.address2 %></br>
+       <%= @input.shipper_name.address3 %></br>
+       <span class="user-name_td">Contact person: </span></br>
+       <span class="user-name_td">TEL. NO: </span><%= @input.shipper_name.contact_no %></br>
+       <span class="user-name_td">Email: </span><%= @input.shipper_name.email %></br>
+       <span class="user-name_td">GST: </span><%= @input.shipper_name.gst_no %></br>
+       <span class="user-name_td">IEC: </span><%= @input.shipper_name.iec_no %></br>
+       <span class="user-name_td">REX No: </span><%= @input.shipper_name.rex_no %></br>
+       <span class="user-name_td">LUT Bond No: </span><%= @input.shipper_name.lut_bond_no %></br>
+       <span class="user-name_td">AD Code: </span><%= @input.shipper_name.ad_code %></br>
     </div>
     <div class="middle-box">
       <span class="user-name">CONSIGNEE</span> </br>
-      <% @dispatch.dispatch_items.each do |item| %>
-        <%= item.order_no %><br>
-      <% end %>
+        <%= @input.consignee_name.name %></br>
+        <%= @input.consignee_name.address1 %></br>
+        <%= @input.consignee_name.address2 %></br>
+        <%= @input.consignee_name.address3 %></br>
+        <span class="user-name_td">Contact person: </span></br>
+        <span class="user-name_td">Email: </span><%= @input.consignee_name.email %></br>
+        <span class="user-name_td">Contact No: </span><%= @input.consignee_name.contact_no %></br>
+        <span class="user-name_td">EORI No: </span><%= @input.consignee_name.eori_no %></br>
     </div>
   </div>
 
   <!-- Additional Country Row - 1 box left side only -->
   <div class="country-single-row">
     <div class="country-single-box"></div>
-    <div class="country-empty-box"></div>
+    <div class="country-empty-box">
+      <span class="user-name">BUYER IF OTHER THAN CONSIGNEE:</span> </br>
+       <%= @input.importer_name.name %></br>
+       <%= @input.importer_name.address1 %></br>
+       <%= @input.importer_name.address2 %></br>
+       <%= @input.importer_name.address3 %></br>
+    </div>
   </div>
   <div class="country-single-row">
     <div class="country-single-box">
       <div style="float: left; width: 48%;">
         <strong class="user-name">COUNTRY OF EXPORT:</strong><br>
-        <%= @form_data[:country_of_export] %>
+        <%= @input.consignee_name.country %>
       </div>
       <div style="float: right; width: 48%;">
         <strong class="user-name">PORT OF DISCHARGE:</strong><br>
-        <%= @form_data[:port_of_discharge] %>
+        <%= @input.consignee_name.port_of_discharge %>
       </div>
       <div style="clear: both;"></div>
     </div>
@@ -147,21 +165,26 @@
     <div class="country-box">
       <div style="float: left; width: 48%;">
         <strong class="user-name">COUNTRY OF ORIGIN OF GOODS:</strong><br>
-        <%= @form_data[:country_of_origin] %>
+        <%= @input.shipper_name.country %>
       </div>
       <div style="float: right; width: 48%;">
         <strong class="user-name">PORT OF LOADING:</strong><br>
-        <%= @form_data[:port_of_loading] %>
+        <%= @input.shipper_name.port_of_loading %>
       </div>
       <div style="clear: both;"></div>
     </div>
-    <div class="country-box"></div>
+    <div class="country-box">
+      Buyer's Order No: </br>
+        <% if @input&.input_items&.any? %>
+          <%= @input.input_items.map(&:order_no).compact.join(", ") %>
+        <% end %>
+    </div>
   </div>
   
   <div class="country-row">
     <div class="country-box">
       <strong class="user-name">COUNTRY OF ULTIMATE DESTINATION:</strong><br>
-      <%= @form_data[:country_of_ultimate_destination] %>
+       <%= @input.consignee_name.country %>
     </div>
     <div class="country-box"></div>
   </div>
@@ -183,34 +206,49 @@
       </thead>
       <tbody>
         <tr>
-          <td></td><td></td><td></td><td></td>
-          <td></td><td></td><td></td><td></td>
+          <td><%= @input.marks_no&.name %></td>
+          <td><%= @input.no_of_packages %></td>
+          <td><%= @input.complete_description_of_goods&.name %></td>
+          <td><%= @input.hsn&.name %></td>
+          <td><%= @input.qty_pcs %></td>
+          <td><%= @input.price %></td>
+          <td><%= @input.price * @input.qty_pcs %></td>
+          <td><%= @input.currency %></td>
         </tr>
         <tr>
           <td colspan="1" style="border:none;"></td> 
-          <td></td> 
+          <td><span class="user-name">Total No of Pkgs.</span></td> 
 
           <td colspan="4" style="border:none;"></td> 
 
-          <td></td>
-          <td></td> 
+          <td><span class="user-name">Total Value</span></td>
+          <td><span class="user-name">Currency</span></td> 
         </tr>
         <tr>
           <td colspan="1" style="border:none;"></td> 
-          <td></td> 
+          <td><%= @input.no_of_packages %> BOX</td> 
 
           <td colspan="4" style="border:none;"></td> 
 
-          <td></td>
-          <td></td> 
+          <td><%= @input.price * @input.qty_pcs %></td>
+          <td><%= @input.currency %></td> 
         </tr>
-
+        <tr>
+          <td colspan="8" style="border:none; padding: 10px; text-align: left;">
+            <strong>Payment Terms:</strong> Advance<br>
+            Shipping Terms: <br>
+            I DECLARE ALL THE INFORMATION CONTAINED IN THIS INVOICE TO BE TRUE <br>
+            AND CORRECT.
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
 
   <!-- Declaration Box -->
-  <div class="declaration-box"></div>
+  <div class="declaration-box">
+  The exporter LIVING CARE INDIA, 240, Building - E5, Bhumi World - Industrial Park, Mumbai - Nashik Highway, Bhiwandi, Maharashtra 421302, India REX No:  INREX0316950076DG003, Date: 24/03/2022 of the products covered by this document declares that, except where otherwise clearly indicated, these products are of INDIA preferential origin according to rules of origin of the Generalised System of Preferences of the European Union and that the origin criterion met is W 8539 EU cumulation.
+  </div>
 
   <!-- Signature Box -->
   <div class="signature-box">
@@ -227,9 +265,7 @@
       </div>
       <div style="display: table-cell; width: 50%; vertical-align: top; text-align: right;">
         <strong>DATE:</strong><br>
-        <% if @form_data[:invoice_date].present? %>
-          <%= Date.parse(@form_data[:invoice_date]).strftime("%-d-%b-%Y") %>
-        <% end %>
+        <%= @input.invoice_date&.strftime("%-d-%b-%Y") %>
       </div>
     </div>
   </div>

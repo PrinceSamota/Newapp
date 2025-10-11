@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Shipper’s Letter of Instruction - Blank Layout</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      background: #fff;
+    }
+
+    .page {
+      width: 210mm;
+      height: 297mm;
+      border: 2px solid #000;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: 12mm auto 12mm; /* Left, Center, Right bars */
+      grid-template-rows: repeat(7, auto);
+      font-size: 10px;
+    }
+
+    /* Left + Right sidebars */
+    .left-bar, .right-bar {
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-weight: bold;
+    }
+
+    .right-bar {
+      writing-mode: vertical-lr;
+    }
+
+    /* Center main body */
+    .main {
+      border-left: 1px solid #000;
+      border-right: 1px solid #000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section {
+      border-bottom: 1px solid #000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      border-bottom: 1px solid #000;
+      flex: 1;
+    }
+
+    .row:last-child {
+      border-bottom: none;
+    }
+
+    .cell {
+      flex: 1;
+      border-right: 1px solid #000;
+      height: 22px;
+      box-sizing: border-box;
+    }
+
+    .cell:last-child {
+      border-right: none;
+    }
+
+    .tall { height: 35px; }
+    .wide { flex: 2; }
+    .narrow { flex: 0.5; }
+    .medium { flex: 1.5; }
+    .title-row {
+      height: 18px;
+      border-bottom: 1px solid #000;
+    }
+
+    .footer {
+      border-top: 1px solid #000;
+      height: 40px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="page">
+    <!-- Left Side Section Titles -->
+    <div class="left-bar">1. BASIC INFO</div>
+    <div class="main">
+      <!-- Section 1 -->
+      <div class="section">
+        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+        <div class="row"><div class="cell wide"></div><div class="cell"></div><div class="cell"></div></div>
+        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+      </div>
+      <!-- Section 2 -->
+      <div class="section">
+        <div class="row tall"><div class="cell wide"></div><div class="cell wide"></div></div>
+        <div class="row"><div class="cell wide"></div><div class="cell wide"></div></div>
+      </div>
+      <!-- Section 3 -->
+      <div class="section">
+        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+        <div class="row"><div class="cell wide"></div><div class="cell"></div></div>
+        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+      </div>
+      <!-- Section 4 -->
+      <div class="section">
+        <div class="row"><div class="cell"></div><div class="cell"></div></div>
+        <div class="row"><div class="cell wide"></div><div class="cell"></div></div>
+        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+      </div>
+      <!-- Section 5 -->
+      <div class="section">
+        <div class="row tall"><div class="cell"></div></div>
+        <div class="row"><div class="cell wide"></div><div class="cell"></div></div>
+      </div>
+      <!-- Section 6 -->
+      <div class="section">
+        <div class="row"><div class="cell"></div><div class="cell wide"></div></div>
+        <div class="row"><div class="cell"></div></div>
+      </div>
+      <!-- Section 7 -->
+      <div class="section">
+        <div class="row tall"><div class="cell"></div></div>
+        <div class="footer"></div>
+      </div>
+    </div>
+    <div class="right-bar">MANDATORY / IF REQUIRED</div>
+  </div>
+</body>
+</html>

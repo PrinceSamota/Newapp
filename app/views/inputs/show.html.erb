@@ -1,0 +1,184 @@
+<% content_for(:title, "Input Details") %>
+
+<div class="min-h-screen bg-gray-50 py-4 mt-5">
+  <div class="max-w-7xl mx-auto px-4">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-6">
+      <%= link_to inputs_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 w-22 border border-gray-300" do %>
+        <i class="fa-solid fa-arrow-left"></i>
+        <span class="font-bold">Back</span>
+      <% end %>
+      
+      <div class="flex gap-3">
+        <%= link_to edit_input_path(@input), class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg" do %>
+          <i class="fa-solid fa-edit mr-2"></i>Edit
+        <% end %>
+        
+        <%= link_to input_path(@input), method: :delete, 
+            confirm: "Are you sure?", 
+            class: "bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg" do %>
+          <i class="fa-solid fa-trash mr-2"></i>Delete
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Input Details -->
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Input Details</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Invoice Number</label>
+          <p class="text-gray-900 font-semibold"><%= @input.invoice_no || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Invoice Date</label>
+          <p class="text-gray-900"><%= @input.invoice_date&.strftime("%d-%b-%Y") || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Shipper name</label>
+          <p class="text-gray-900"><%= @input.shipper_name&.name || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Consignee name</label>
+          <p class="text-gray-900"><%= @input.consignee_name&.name || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Importer name</label>
+          <p class="text-gray-900"><%= @input.importer_name&.name || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Order No from Dispatch</label>
+          <p class="text-gray-900"><%= @input.order_no_from_dispatch || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+          <p class="text-gray-900"><%= @input.currency || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">FedEx AWB No</label>
+          <p class="text-gray-900"><%= @input.fedex_awb_no || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">No of Packages</label>
+          <p class="text-gray-900"><%= @input.no_of_packages || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Qty PCB</label>
+          <p class="text-gray-900"><%= @input.qty_pcs || "—" %></p>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Price</label>
+          <p class="text-gray-900"><%= @input.price || "—" %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Input Items -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-6">Input Items</h3>
+      
+      <% if @input.input_items.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order No</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Boxes</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty per Box</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Net Weight</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gross Weight</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dimensions (L×W×H)</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @input.input_items.each do |item| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <%= item.order_no || "—" %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= item.no_of_boxes || "—" %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= item.description_of_good&.name || "—" %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= item.qty_per_box || "—" %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= item.net_weight || "—" %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= item.gross_weight || "—" %>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <%= "#{item.length}×#{item.width}×#{item.height}" if item.length && item.width && item.height %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center py-8 text-gray-500">
+          <i class="fa-solid fa-box-open text-4xl mb-4"></i>
+          <p>No input items found</p>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- PDF Generation Section -->
+    <div class="bg-blue-50 p-6 rounded-xl shadow-sm mt-8">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">Generate Documents</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
+          <%= f.hidden_field :input_id, value: @input.id %>
+          <%= f.hidden_field :document_type, value: "invoice" %>
+          <%= f.submit "Invoice PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #2563eb;" %>
+        <% end %>
+        
+        <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
+          <%= f.hidden_field :input_id, value: @input.id %>
+          <%= f.hidden_field :document_type, value: "packing_list" %>
+          <%= f.submit "Packing List PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #16a34a;" %>
+        <% end %>
+        
+        <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
+          <%= f.hidden_field :input_id, value: @input.id %>
+          <%= f.hidden_field :document_type, value: "new_si" %>
+          <%= f.submit "New SI PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #ca8a04;" %>
+        <% end %>
+        
+        <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
+          <%= f.hidden_field :input_id, value: @input.id %>
+          <%= f.hidden_field :document_type, value: "value_letter" %>
+          <%= f.submit "Value Letter PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #9333ea;" %>
+        <% end %>
+        
+        <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
+          <%= f.hidden_field :input_id, value: @input.id %>
+          <%= f.hidden_field :document_type, value: "sheet_5" %>
+          <%= f.submit "Sheet 5 PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #dc2626;" %>
+        <% end %>
+        
+        <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
+          <%= f.hidden_field :input_id, value: @input.id %>
+          <%= f.hidden_field :document_type, value: "scomet" %>
+          <%= f.submit "Scomet PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #4f46e5;" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

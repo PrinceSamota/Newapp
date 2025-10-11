@@ -1,0 +1,73 @@
+<div class="border border-gray-200 shadow-sm rounded-md p-6 bg-gray-50 input-item-row relative">
+  
+  <div class="grid grid-cols-3 gap-4 mb-4">
+    <!-- No of Boxes -->
+    <div>
+      <%= f.label :no_of_boxes, class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :no_of_boxes, min: 1, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+
+    <!-- Description of Good -->
+    <div id="description-dropdown-container">
+      <%= render "inputs/description_dropdown", 
+          f: f, 
+          item_index: f.index,
+          selected_description_id: f.object.description_of_goods_id %>
+    </div>
+  
+  
+    <!-- Qty per Box -->
+    <div>
+      <%= f.label :qty_per_box, class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :qty_per_box, step: 0.01, min: 0.01, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4 mb-4">
+    <!-- Net Weight -->
+    <div>
+      <%= f.label :net_weight, class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :net_weight, step: 0.01, min: 0.01, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+
+    <!-- Gross Weight -->
+    <div>
+      <%= f.label :gross_weight, class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :gross_weight, step: 0.01, min: 0.01, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+
+    <!-- Length -->
+    <div>
+      <%= f.label :length, class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :length, step: 0.01, min: 0.01, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4">
+    <!-- Width -->
+    <div>
+      <%= f.label :width, class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :width, step: 0.01, min: 0.01, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+
+    <!-- Height -->
+    <div>
+      <%= f.label :height, class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :height, step: 0.01, min: 0.01, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+
+    <!-- Order No -->
+    <div>
+      <%= f.label :order_no, class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.text_field :order_no, class: "required-field w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+  </div>
+
+  <%= f.hidden_field :_destroy %>
+
+  <!-- Remove Button -->
+  <button type="button"
+    class="remove-input-item absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
+    ✕
+  </button>
+</div>

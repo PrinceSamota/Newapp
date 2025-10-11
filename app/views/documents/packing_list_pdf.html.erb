@@ -18,27 +18,29 @@
       vertical-align: top;
       font-size: 11px;
     }
+    .user-name {  font-family: 'Merriweather', serif; font-size: 14px; font-weight: bold; }
+
+    .user-name_td {  font-family: 'Merriweather', serif;  font-weight: bold; }
 
     .title {
       text-align: center;
       font-weight: bold;
       font-size: 16px;
       border: 1px solid #000;
-      height: 35px;
+      height: 70px;
+      font-family: 'Merriweather', serif;
     }
 
     .logo {
       float: right;
-      border: 1px solid #000;
+     
       width: 100px;
-      height: 30px;
       text-align: center;
       font-weight: bold;
     }
 
     .section-title {
-      font-weight: bold;
-      font-size: 11px;
+
     }
 
     .items th, .items td {
@@ -63,56 +65,126 @@
     <!-- Title -->
     <tr>
       <td colspan="3" class="title">
-        PACKING LIST
-        <div class="logo">LOGO</div>
+        <div style="text-align: center; position: relative; display: flex; align-items: center; justify-content: center; height: 100%;">
+          PACKING LIST
+          <div class="logo" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
+            LOGO
+        </div>
+        </div>
       </td>
     </tr>
 
     <!-- Exporter / Invoice / Date -->
     <tr>
-      <td style="width:50%; height:120px;">
-        <div class="section-title">Exporter</div>
-        <!-- Exporter details dynamically -->
-      </td>
-      <td style="width:25%; height:120px;">
-        <div class="section-title">INVOICE NO:</div>
-        <!-- Invoice No -->
-      </td>
-      <td style="width:25%; height:120px;">
-        <div class="section-title">INVOICE DATE:</div>
-        <!-- Date -->
-      </td>
-    </tr>
+    <!-- Exporter -->
+    <td style="width:35%; height:150px; vertical-align:top;" rowspan="2">
+      <div class="user-name">Exporter</div>
+      <%= @input.shipper_name.name %></br>
+      <%= @input.shipper_name.address1 %></br>
+      <%= @input.shipper_name.address2 %></br>
+      <%= @input.shipper_name.address3 %></br>
+      <span class="user-name_td">Contact person: </span></br>
+      <span class="user-name_td">TEL. NO: </span><%= @input.shipper_name.contact_no %></br>
+      <span class="user-name_td">Email: </span><%= @input.shipper_name.email %></br>
+      <span class="user-name_td">GST: </span><%= @input.shipper_name.gst_no %></br>
+      <span class="user-name_td">IEC: </span><%= @input.shipper_name.iec_no %></br>
+      <span class="user-name_td">REX No: </span><%= @input.shipper_name.rex_no %></br>
+      <span class="user-name_td">LUT Bond No: </span><%= @input.shipper_name.lut_bond_no %></br>
+      <span class="user-name_td">AD Code: </span><%= @input.shipper_name.ad_code %></br>
+    </td>
+  
+    <!-- Invoice No -->
+    <td style="width:20%; height:50px; vertical-align:top;">
+      <div class="section-title">INVOICE NO:</div></br>
+      <%= @input.invoice_no %>
+      <!-- Invoice No -->
+    </td>
+  
+    <!-- Invoice Date -->
+    <td style="width:45%; height:50px; vertical-align:top;">
+      <div class="section-title">INVOICE DATE:</div></br>
+      <%= @input.invoice_date&.strftime("%-d-%b-%Y") %>
+      <!-- Date -->
+    </td>
+  </tr>
+  
+  <!-- ✅ New Row below Invoice No + Date -->
+  <tr>
+    <td colspan="2" style="height:60px; vertical-align:top;">
+
+      <div class="section-title">Buyer's Order No:</div></br>
+       <% if @input&.input_items&.any? %>
+        <%= @input.input_items.map(&:order_no).compact.join(", ") %>
+      <% end %>
+      <!-- Your extra content here -->
+    </td>
+  </tr>
+  
 
     <!-- Consignee / Buyer -->
     <tr>
-      <td style="height:100px;">
-        <div class="section-title">Consignee</div>
-        <!-- Consignee details -->
-      </td>
-      <td colspan="2" style="height:100px;">
-        <div class="section-title">Buyer (If other than Consignee)</div>
-        <!-- Buyer + Country + Payment -->
-      </td>
-    </tr>
+    <!-- Consignee -->
+    <td style="height:350px; vertical-align:top; position:relative; border:1px solid #000; padding:0;">
+      <div class="section-title" style="padding:5px;">   
+        <span class="user-name">CONSIGNEE</span> </br>
+        <%= @input.consignee_name.name %></br>
+        <%= @input.consignee_name.address1 %></br>
+        <%= @input.consignee_name.address2 %></br>
+        <%= @input.consignee_name.address3 %></br>
+        <span class="user-name_td">Contact person: </span></br>
+        <span class="user-name_td">Email: </span><%= @input.consignee_name.email %></br>
+        <span class="user-name_td">Contact No: </span><%= @input.consignee_name.contact_no %></br>
+        <span class="user-name_td">EORI No: </span><%= @input.consignee_name.eori_no %></br>
+      </div>
+      <!-- Consignee details -->
+      <table style="width:100%; border:none; position:absolute; bottom:0; left:0; right:0;">
+        <tr>
+          <td style="border:1px solid #000; height:48px; width:50%; border-left:none;">
+            <strong>COUNTRY OF EXPORT:</strong><br>
+            <%= @input.consignee_name.country %>
+          </td>
+          <td style="border:1px solid #000; height:48px; width:50%; border-right:none;">
+           <strong>PORT OF DISCHARGE:</strong><br>
+           <%= @input.consignee_name.port_of_discharge %>
+          </td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #000; height:48px; width:50%; border-bottom:none; border-left:none;">
+           <strong>COUNTRY OF ORIGIN OF GOODS:</strong><br>
+           <%= @input.shipper_name.country %>
+          </td>
+          <td style="border:1px solid #000; height:48px; width:50%; border-bottom:none;">
+            <strong>PORT OF LOADING:</strong><br>
+            <%= @input.shipper_name.port_of_loading %>
+          </td>
+        </tr>
+        <tr>
+          <td style="border:1px solid #000; height:48px; width:50%; border-bottom:none; border-left:none; border-right:none;">
+            <strong>Country of Ultimate Destination:</strong><br>
+            <%= @input.consignee_name.country %>
+          </td>
+          <td style="border:1px solid #000; height:48px; width:50%; border-bottom:none; border-left:none;"></td>
+        </tr>
+      </table>
+    </td>
+  
+    <!-- Buyer -->
+    <td colspan="2" style="height: 250px; vertical-align:top; border:1px solid #000; padding:0; position:relative;">
+      <div class="section-title" style="padding:5px; hight:100px;">
+       <span class="user-name">BUYER IF OTHER THAN CONSIGNEE:</span> </br>
+       <%= @input.importer_name.name %></br>
+       <%= @input.importer_name.address1 %></br>
+       <%= @input.importer_name.address2 %></br>
+       <%= @input.importer_name.address3 %></br></div>
+      <!-- Buyer + Country + Payment -->
+      <table style="width:100%; border:none; position:absolute; bottom:0; left:0; right:0;">
 
-    <!-- Vessel / Port -->
-    <tr>
-      <td colspan="3" style="height:60px;">
-        <table style="width:100%; border:none;">
-          <tr>
-            <td style="border:1px solid #000; width:33%;"><div class="section-title">Vessel/ Flight No.</div></td>
-            <td style="border:1px solid #000; width:33%;"><div class="section-title">Port of Loading</div></td>
-            <td style="border:1px solid #000; width:34%;"><div class="section-title">Place of Discharge / Place of Delivery</div></td>
-          </tr>
-          <tr>
-            <td style="border:1px solid #000; height:25px;"></td>
-            <td style="border:1px solid #000;"></td>
-            <td style="border:1px solid #000;"></td>
-          </tr>
-        </table>
-      </td>
-    </tr>
+        <tr>
+        <td style="border:1px solid #000; height:100px; width:50%; border-left:none;"></td>
+      </tr>
+      </table>
+    </td>
+  </tr>
 
     <!-- Items Table -->
     <tr>
@@ -135,9 +207,54 @@
           </thead>
           <tbody>
             <!-- Dynamic rows here -->
-            <tr>
-              <td colspan="11" style="text-align:right; font-weight:bold;">Total</td>
-            </tr>
+            <% if @input&.input_items&.any? %>
+              <% @input.input_items.each do |item| %>
+                <tr class="item-row">
+                  <td></td>
+                  <td><%= item.no_of_boxes %></td>
+                  <td><%= item.description_of_good&.name %></td>
+                  <td><%= item.qty_per_box %></td>
+                  <td><%= (item.no_of_boxes.to_i * item.qty_per_box.to_i) if item.no_of_boxes && item.qty_per_box %></td>
+                  <td><%= item.net_weight %></td>
+                  <td><%= item.gross_weight %></td>
+                  <td><%= (item.no_of_boxes.to_i * item.net_weight.to_f).round(2) if item.no_of_boxes && item.net_weight %></td>
+                  <td><%= (item.no_of_boxes.to_i * item.gross_weight.to_f).round(2) if item.no_of_boxes && item.gross_weight %></td>
+                  <td><%= "#{item.length}×#{item.width}×#{item.height}" if item.length && item.width && item.height %></td>
+                  <td><%= item.order_no %></td>
+                </tr>
+    
+              <% end %>
+                 <tr class="item-row">
+                  <td>Total</td>
+                  <td>  
+                    <% total_boxes = @input.input_items.sum { |item| item.no_of_boxes.to_i } %>
+                    <%= total_boxes %>
+                  </td>
+                  <td></td>
+                  <td> 
+                      <% total_qty_per_box = @input.input_items.sum { |item| item.qty_per_box.to_f } %>
+                      <%= total_qty_per_box %>
+                  </td>
+                  <td></td>
+                  <td>
+                    <% total_net_weight = @input.input_items.sum { |item| item.net_weight.to_f } %>
+                    <%= total_net_weight %>
+                  </td>
+                  <td>
+                    <% total_net_weight = @input.input_items.sum { |item| item.net_weight.to_f } %>
+                    <%= total_net_weight %>
+                  </td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
+            <% else %>
+              <tr class="item-row">
+                <td></td><td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td><td></td><td></td>
+              </tr>
+            <% end %>
           </tbody>
         </table>
       </td>
@@ -146,8 +263,8 @@
     <!-- Totals + Signature -->
     <tr>
       <td style="height:80px;">
-        <div class="section-title">Total Gross Weight:</div>
-        <div class="section-title">Total Net Wt:</div>
+        <div class="section-title">Total Gross Weight:<% total_net_weight = @input.input_items.sum { |item| item.net_weight.to_f } %><%= total_net_weight %></div>
+        <div class="section-title">Total Net Wt:<% total_net_weight = @input.input_items.sum { |item| item.net_weight.to_f } %><%= total_net_weight %></div>
       </td>
       <td colspan="2" class="signature">
         Signature & Date<br><br>

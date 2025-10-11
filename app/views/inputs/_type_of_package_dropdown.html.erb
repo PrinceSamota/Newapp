@@ -1,0 +1,71 @@
+<div>
+<turbo-frame id="type_of_package_section">
+  <div class="flex flex-col space-y-2">
+    <div class="flex justify-between items-center">
+      <label class="text-sm font-semibold text-gray-800">Type of Package</label>
+      <button type="button"
+        onclick="document.getElementById('newTypeOfPackageForm').classList.toggle('hidden')"
+        class="text-blue-600 text-xl font-bold">+</button>
+    </div>
+
+    <%= select_tag "input[type_of_packages_id]",
+      options_from_collection_for_select(
+        TypeOfPackage.where(org_id: current_user.org_id), :id, :name, selected_type_of_package_id
+      ),
+      id: "type-of-package-select",
+      include_blank: "Select Type of Package",
+      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+      data: { placeholder: "Select Type of Package" } %>
+
+    <!-- Add New Type of Package -->
+    <div id="newTypeOfPackageForm" class="mt-2 <%= 'hidden' unless show_form %>">
+      <div class="flex gap-2">
+        <input id="new_type_of_package_name" type="text" placeholder="New type of package"
+          class="flex-1 rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewTypeOfPackage()"
+          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+      </div>
+      <div id="type-of-package-errors" class="text-red-600 text-sm mt-2"></div>
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>
+</div>
+
+<script>
+  function submitNewTypeOfPackage() {
+    const name = document.getElementById('new_type_of_package_name').value;
+    const errorsDiv = document.getElementById('type-of-package-errors');
+
+    if (!name) {
+      errorsDiv.textContent = "Type of Package cannot be blank.";
+      return;
+    }
+
+    fetch("/type_of_packages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ type_of_package: { name } })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Error creating type of package");
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("type_of_package_section").innerHTML = html;
+    })
+    .catch(() => {
+      errorsDiv.textContent = "Something went wrong.";
+    });
+  }
+</script>

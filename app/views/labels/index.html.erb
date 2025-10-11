@@ -1,0 +1,20 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Label Management <strong class="text-red-600 bold"> (TESTING)</strong></h1>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <% label_types = [
+      { name: "Product Label", path: new_product_label_labels_path, icon: "fa-tag", color: "bg-blue-50", icon_color: "text-blue-600" }
+    ] %>
+    
+    <% label_types.each do |item| %>
+      <%= link_to item[:path], 
+          class: "#{item[:color]} hover:bg-gray-100 text-gray-800 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 border border-gray-200" do %>
+        <div class="text-center">
+          <i class="fas <%= item[:icon] %> text-4xl mb-4 <%= item[:icon_color] %>"></i>
+          <h3 class="text-xl font-semibold"><%= item[:name] %></h3>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>
+new

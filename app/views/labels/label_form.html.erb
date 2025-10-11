@@ -1,0 +1,67 @@
+<div class="container mx-auto px-4 py-6">
+  <h1 class="text-2xl font-bold mb-6">Generate <%= @label_type.humanize %> Label</h1>
+  
+  <%= form_with url: generate_pdf_labels_path(format: :pdf), method: :post, local: true, class: "space-y-6" do |form| %>
+    <%= form.hidden_field :label_type, value: @label_type %>
+    
+
+
+    <!-- Sticker Information -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold mb-4">Sticker Information</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <%= form.label :sticker_date, "Sticker Date", class: "block text-sm font-medium mb-1" %>
+          <%= form.date_field :sticker_date,  class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= form.label :sticker_quantity, "Sticker Quantity", class: "block text-sm font-medium mb-1" %>
+          <%= form.number_field :sticker_quantity,  class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= form.label :qr_code, "QR Code Data", class: "block text-sm font-medium mb-1" %>
+          <%= form.text_field :qr_code, placeholder: "Enter QR code data", class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= form.label :distribution, "Distribution", class: "block text-sm font-medium mb-1" %>
+          <%= form.text_field :distribution, class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= form.label :frame_colour, "Frame Colour", class: "block text-sm font-medium mb-1" %>
+          <%= form.text_field :frame_colour, class: "w-full p-2 border rounded" %>
+        </div>
+        <div>
+          <%= form.label :language, "Language", class: "block text-sm font-medium mb-1" %>
+          <%= form.select :language, 
+              options_for_select([
+                ["English", "english"],
+                ["Hindi", "hindi"],
+                ["German", "german"],
+                ["French", "french"],
+                ["Spanish", "spanish"]
+              ]), 
+              { prompt: "Select Language" },
+              { class: "w-full p-2 border rounded" } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manufacturer Selection -->
+    <div class="bg-white p-6 rounded-lg shadow">
+      <h3 class="text-lg font-semibold mb-4">Manufacturer</h3>
+      <%= form.select :manufacturer_id, 
+          options_from_collection_for_select(
+            Client.where(org_id: current_user.org_id).select { |c| c.has_type?("manufacturer") }, 
+            :id, :name
+          ), 
+          { prompt: "Select Manufacturer" },
+          { class: "w-full p-2 border rounded" } %>
+    </div>
+
+    <div class="text-center">
+      <%= form.submit "Generate #{@label_type.humanize} Label PDF", class: " px-8 py-3 rounded-lg hover:bg-purple-700 transition" %>
+    </div>
+  <% end %>
+</div>
+
+

@@ -1,0 +1,96 @@
+class InputsController < ApplicationController
+  before_action :set_input, only: [:show, :edit, :update, :destroy]
+
+  def index
+    @q = Input.order(created_at: :desc).ransack(params[:q])
+    @inputs = @q.result(distinct: true).paginate(page: params[:page], per_page: 100)
+  end
+
+  def show
+    @input = Input.find(params[:id])
+  end
+
+  def new
+    @input = Input.new
+    @input.input_items.build
+    
+    # Dispatch se values pass karne ke liye
+    if params[:from_dispatch].present? && params[:dispatch_id].present?
+      @dispatch = Dispatch.find(params[:dispatch_id])
+      prefill_from_dispatch
+    end
+  end
+
+  def create
+    @input = Input.new(input_params)
+    @input.user = current_user
+    @input.org_id = current_user.org_id
+
+    if @input.save
+      redirect_to input_path(@input), notice: 'Input was successfully created.'
+    else
+      render :new, status: :unprocessable_entity
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    if @input.update(input_params)
+      redirect_to inputs_path, notice: 'Input updated successfully.'
+    else
+      render :edit
+    end
+  end
+
+  def destroy
+    @input.destroy
+    redirect_to inputs_path, notice: 'Input deleted successfully.'
+  end
+
+  private
+
+  def set_input
+    @input = Input.find(params[:id])
+  end
+
+  def input_params
+    params.require(:input).permit(
+      :shipper_name_id,
+      :consignee_name_id,
+      :importer_name_id,
+      :invoice_no,
+      :invoice_date,
+      :order_no_from_dispatch,
+      :currency,
+      :fedex_awb_no,
+      :marks_no_id,
+      :no_of_packages,
+      :type_of_packages_id,
+      :complete_description_of_goods_id,
+      :hsn_id,
+      :qty_pcs,
+      :price,
+      input_items_attributes: [
+        :id,
+        :no_of_boxes,
+        :description_of_goods_id,
+        :qty_per_box,
+        :net_weight,
+        :gross_weight,
+        :length,
+        :width,
+        :height,
+        :order_no,
+        :_destroy
+      ]
+    )
+  end
+  
+  def prefill_from_dispatch
+    # Basic dispatch info
+    @input.invoice_no = @dispatch.invoice_no if @dispatch.invoice_no.present?
+
+  end
+end
