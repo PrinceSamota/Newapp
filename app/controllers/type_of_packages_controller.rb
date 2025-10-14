@@ -4,17 +4,13 @@ class TypeOfPackagesController < ApplicationController
     @type_of_package.org_id = current_user.org_id
 
     if @type_of_package.save
-      render turbo_stream: turbo_stream.update("type_of_package_section", partial: "inputs/type_of_package_dropdown", locals: {
-        selected_type_of_package_id: @type_of_package.id,
-        show_form: false,
-        errors: []
-      })
+      render partial: 'inputs/type_of_package_dropdown',
+             locals: { selected_type_of_package_id: @type_of_package.id, show_form: false, errors: [] },
+             formats: [:html]
     else
-      render turbo_stream: turbo_stream.update("type_of_package_section", partial: "inputs/type_of_package_dropdown", locals: {
-        selected_type_of_package_id: nil,
-        show_form: true,
-        errors: @type_of_package.errors.full_messages
-      })
+      render partial: 'inputs/type_of_package_dropdown',
+             locals: { selected_type_of_package_id: nil, show_form: true, errors: @type_of_package.errors.full_messages },
+             formats: [:html]
     end
   end
 

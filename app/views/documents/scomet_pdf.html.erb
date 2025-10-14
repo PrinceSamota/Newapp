@@ -14,7 +14,11 @@
 </head>
 <body>
   <div>
-    <img src="/path/to/lcare_logo.png" class="logo" />
+    <% if @logo_data.present? %>
+    <img src="data:image/png;base64,<%= @logo_data %>" 
+         style="width: 120px; height: 80px; object-fit: contain;", class="logo" />
+  <% end %>
+  
   </div>
 
   <div class="date">
@@ -38,7 +42,9 @@
   </p>
 
   <p style="margin-top: 20px;">
-    We hereby declare that the <b><%= @input.complete_description_of_goods&.name %></b> are not covered in list of SCOMET items OR any other respective list of exports.  
+    We hereby declare that the <b><% @input.input_details.each_with_index do |detail, index| %>
+      <%= detail.complete_description_of_good&.name %><%= ', ' unless index == @input.input_details.size - 1 %>
+    <% end %></b> are not covered in list of SCOMET items OR any other respective list of exports.  
     It will be used for Lighting and Installing in the Railways.
   </p>
 
@@ -48,11 +54,26 @@
   </p>
 
   <p>Thanking you</p>
+<div class="signature" style="text-align: left; margin-top: 20px; width: 250px;">
+  <!-- Top Text -->
+  <div>
+    <span>Yours faithfully</span><br>
+    <span>For Living Care India</span>
+  </div>
 
-  <div class="signature">
-    Yours faithfully<br>
-    For Living Care India<br><br>
+  <!-- Signature Image -->
+  <div style="height: 60px; margin: 10px 0; padding: 5px;">
+    <% if @signature_data.present? %>
+      <img src="data:image/png;base64,<%= @signature_data %>" 
+           style="width: 100%; height: 100%; object-fit: contain;" />
+    <% end %>
+  </div>
+
+  <!-- Authorised Signatory -->
+  <div>
     <b>Authorised Signatory</b>
   </div>
+</div>
+
 </body>
 </html>

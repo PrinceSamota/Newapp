@@ -7,20 +7,30 @@
     @page { size: A4; margin: 15mm; }
     body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }
     .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px; }
-    .sub-header { text-align: center; font-weight: bold; margin-bottom: 10px; }
+    .sub-header { text-align: center; font-weight: bold; margin-bottom: 10px; margin-top: 50px; }
     .form-section { margin: 15px 0; }
     .form-row { margin-bottom: 10px; padding: 8px 0; }
     .form-label { width: 60%; font-weight: bold; padding-right: 20px; }
     .form-value { width: 40%; }
-    .declaration { margin-top: 20px; }
-    .signature { margin-top: 40px; text-align: right; }
+     .signature { margin-top: 40px; text-align: right; }
+    .signature img { width: auto; height: 60px; object-fit: contain; display: block; margin-bottom: 5px; margin-right: 10px; }
   </style>
 </head>
 <body>
-  <div class="header">
-    Annexure-A <br>
-    EXPORT VALUE DECLARATION
-  </div>
+<div class="header" style="position: relative; text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">
+<!-- Logo on top-right -->
+<% if @logo_data.present? %>
+  <img src="data:image/png;base64,<%= @logo_data %>" 
+       style="position: absolute; top: 0; right: 10px; width: 120px; height: 80px; object-fit: contain;" />
+<% end %>
+
+<!-- Centered header text -->
+<div>
+  Annexure-A <br>
+  EXPORT VALUE DECLARATION
+</div>
+</div>
+
 
   <div class="sub-header">
    (See Rule 7 of Customs Valuation (Determination of Value of Export Goods) Rules, 2007.)
@@ -88,13 +98,20 @@
     <p><strong>Place:</strong> Thane</p>
     <p><strong>Date:</strong> <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></p>
   </div>
-
-  <div class="signature">
-    <p>For LIVING CARE INDIA</p>
-    <p><strong>Proprietor</strong></p>
-    <br><br>
-    <p>_________________________</p>
-    <p>Signature of the Exporter</p>
+<div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: 40px;">
+  <div style="margin-right: 50px;">
+  <% if @signature_data.present? %>
+    <img src="data:image/png;base64,<%= @signature_data %>" 
+         alt="Signature" 
+         style="height: 60px; object-fit: contain; margin-bottom: 5px;" />
+  <% end %>
   </div>
+  <p style="margin: 0;">_________________________</p>
+  <p style="margin: 0;">Signature of the Exporter</p>
+</div>
+
+
+
+
 </body>
 </html>

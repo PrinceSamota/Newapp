@@ -13,6 +13,7 @@ class InputsController < ApplicationController
   def new
     @input = Input.new
     @input.input_items.build
+    @input.input_details.build
     
     # Dispatch se values pass karne ke liye
     if params[:from_dispatch].present? && params[:dispatch_id].present?
@@ -57,33 +58,15 @@ class InputsController < ApplicationController
 
   def input_params
     params.require(:input).permit(
-      :shipper_name_id,
-      :consignee_name_id,
-      :importer_name_id,
-      :invoice_no,
-      :invoice_date,
-      :order_no_from_dispatch,
-      :currency,
-      :fedex_awb_no,
-      :marks_no_id,
-      :no_of_packages,
-      :type_of_packages_id,
-      :complete_description_of_goods_id,
-      :hsn_id,
-      :qty_pcs,
-      :price,
+      :invoice_no, :invoice_date, :shipper_name_id, :consignee_name_id, 
+      :importer_name_id, :order_no_from_dispatch, :currency, :fedex_awb_no,
       input_items_attributes: [
-        :id,
-        :no_of_boxes,
-        :description_of_goods_id,
-        :qty_per_box,
-        :net_weight,
-        :gross_weight,
-        :length,
-        :width,
-        :height,
-        :order_no,
-        :_destroy
+        :id, :no_of_boxes, :description_of_goods_id, :qty_per_box, 
+        :net_weight, :gross_weight, :length, :width, :height, :order_no, :_destroy
+      ],
+      input_details_attributes: [
+        :id, :marks_no_id, :no_of_packages, :type_of_package_id, 
+        :complete_description_of_good_id, :hsn_id, :qty_pcs, :price, :_destroy
       ]
     )
   end

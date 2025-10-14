@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_08_180318) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_13_124035) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -221,6 +221,20 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_08_180318) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "input_details", force: :cascade do |t|
+    t.bigint "input_id", null: false
+    t.integer "marks_no_id"
+    t.integer "no_of_packages"
+    t.integer "type_of_package_id"
+    t.integer "complete_description_of_good_id"
+    t.integer "hsn_id"
+    t.decimal "qty_pcs", precision: 10, scale: 2
+    t.decimal "price", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["input_id"], name: "index_input_details_on_input_id"
+  end
+
   create_table "input_items", force: :cascade do |t|
     t.bigint "input_id", null: false
     t.integer "no_of_boxes"
@@ -246,13 +260,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_08_180318) do
     t.string "order_no_from_dispatch"
     t.string "currency"
     t.string "fedex_awb_no"
-    t.integer "marks_no_id"
-    t.integer "no_of_packages"
-    t.integer "type_of_packages_id"
-    t.integer "complete_description_of_goods_id"
-    t.integer "hsn_id"
-    t.decimal "qty_pcs", precision: 10, scale: 2
-    t.decimal "price", precision: 10, scale: 2
     t.integer "org_id"
     t.bigint "user_id"
     t.datetime "created_at", null: false
@@ -595,6 +602,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_08_180318) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "dispatch_items", "dispatches"
+  add_foreign_key "input_details", "inputs"
   add_foreign_key "input_items", "inputs"
   add_foreign_key "inputs", "clients", column: "consignee_name_id"
   add_foreign_key "inputs", "clients", column: "importer_name_id"

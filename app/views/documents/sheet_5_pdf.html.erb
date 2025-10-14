@@ -14,7 +14,15 @@
   </style>
 </head>
 <body>
-  <div class="header">DECLARATION</div>
+<div style="display: flex; justify-content: center; align-items: center; position: relative; width: 100%;">
+  <div class="header" style="font-weight: bold; text-align: center; flex: 1;">DECLARATION</div>
+  
+  <% if @logo_data.present? %>
+    <img src="data:image/png;base64,<%= @logo_data %>" 
+         style="width: 120px; height: 80px; object-fit: contain; position: absolute; right: 0;" />
+  <% end %>
+</div>
+
 
   <div class="content">
     <p>I / We declare that the particulars given herein above are true, correct and complete.</p>
@@ -51,11 +59,18 @@
 
     <p>I/We undertake to abide by the provisions of Foreign Exchange Management Act, 1999, as amended from time to time, including realisation or repatriation of foreign exchange to or from India.</p>
     <p><em>* To be submitted with the exports goods in the warehouse.</em></p>
+<div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: 40px;">
+  <div style="margin-right: 50px;">
+  <% if @signature_data.present? %>
+    <img src="data:image/png;base64,<%= @signature_data %>" 
+         alt="Signature" 
+         style="height: 60px; object-fit: contain; margin-bottom: 5px;" />
+  <% end %>
+  </div>
+  <p style="margin: 0;">Signature..............................</p>
+</div>
 
-    <div style="margin-top:40px; text-align:right;">
-      <p></p>
-      <p style="margin-top:30px;">Signature............................;</p>
-    </div>
+
 
     <p>Date: <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></p>
     <p>(ii) APPENDIX-1 shall be omitted.</p>
