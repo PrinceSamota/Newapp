@@ -1,25 +1,45 @@
 <div class="container mx-auto px-4 py-6">
   <div class="flex items-center mb-6">
-    <%= link_to inputs_path, class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 border border-gray-300 mr-4" do %>
-      <i class="fa-solid fa-arrow-left"></i>
-      <span class="font-bold">Back</span>
-    <% end %>
-    <h1 class="text-2xl font-bold">New Input</h1>
+  <% back_path =
+  if params[:from_dispatch].present? && params[:dispatch_id].present?
+    edit_dispatch_path(params[:dispatch_id])
+  else
+    inputs_path
+  end
+%>
+
+<%= link_to back_path,
+  class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 border border-gray-300 mr-4" do %>
+<i class="fa-solid fa-arrow-left"></i>
+<span class="font-bold">Back</span>
+<% end %>
+
   </div>
   
   <div class="bg-white p-8 rounded-2xl shadow-xl max-w-6xl mx-auto">
     <%= form_with(model: @input, local: true, class: "space-y-6") do |f| %>
       
-      <% if @input.errors.any? %>
-        <div class="bg-red-50 border border-red-200 rounded p-4">
-          <h4 class="text-red-800 font-medium">Please fix the following errors:</h4>
-          <ul class="text-red-600 text-sm mt-2">
-            <% @input.errors.full_messages.each do |message| %>
-              <li><%= message %></li>
-            <% end %>
-          </ul>
-        </div>
+<% if @input.errors.any? %>
+  <div id="error-box" class="relative bg-red-50 border border-red-200 rounded p-4">
+    <!-- Close button -->
+    <button 
+      type="button" 
+      onclick="document.getElementById('error-box').remove()" 
+      class="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold text-2xl cursor-pointer"
+      aria-label="Close"
+    >
+      ×
+    </button>
+
+    <h4 class="text-red-800 font-medium">Please fix the following errors:</h4>
+    <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+      <% @input.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
       <% end %>
+    </ul>
+  </div>
+<% end %>
+
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
@@ -35,48 +55,17 @@
 
         <div>
           <%= f.label :order_no_from_dispatch, "Order No from Dispatch", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.text_field :order_no_from_dispatch, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.text_field :order_no_from_dispatch, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
         </div>
 
         <div>
           <%= f.label :currency, "Currency", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.text_field :currency, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.text_field :currency, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
         </div>
 
         <div>
           <%= f.label :fedex_awb_no, "FedEx AWB Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.text_field :fedex_awb_no, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
-        </div>
-
-        <div id="marks_no_section">
-          <%= render "inputs/marks_no_dropdown", selected_marks_no_id: @input.marks_no_id, show_form: false, errors: [] %>
-        </div>
-
-        <div>
-          <%= f.label :no_of_packages, "No of Packages", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.number_field :no_of_packages, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
-        </div>
-
-        <div id="type_of_package_section">
-          <%= render "inputs/type_of_package_dropdown", selected_type_of_package_id: @input.type_of_packages_id, show_form: false, errors: [] %>
-        </div>
-
-        <div id="complete_description_section">
-          <%= render "inputs/complete_description_dropdown", selected_complete_description_id: @input.complete_description_of_goods_id, show_form: false, errors: [] %>
-        </div>
-
-        <div id="hsn_section">
-          <%= render "inputs/hsn_dropdown", selected_hsn_id: @input.hsn_id, show_form: false, errors: [] %>
-        </div>
-
-        <div>
-          <%= f.label :qty_pcb, "Qty PCS", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.number_field :qty_pcs, step: 0.01, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
-        </div>
-
-        <div>
-          <%= f.label :price, "Price", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.number_field :price, step: 0.01, class: "w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= f.text_field :fedex_awb_no, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
         </div>
 
         <div>
@@ -113,6 +102,30 @@
         </div>
       </div>
 
+      <!-- Input Details Section -->
+      <div class="bg-blue-50 p-6 rounded-xl shadow-sm mt-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Input Details</h3>
+
+        <div id="input-details" class="space-y-4">
+          <%= f.fields_for :input_details do |detail_form| %>
+            <%= render 'input_detail_fields', f: detail_form %>
+          <% end %>
+        </div>
+
+        <button type="button" id="add-input-detail" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md cursor-pointer">
+          + Add Input Detail
+        </button>
+      </div>
+
+      <!-- Template for new input detail row -->
+      <div id="input-detail-template" class="hidden">
+        <% new_detail = InputDetail.new %>
+        <% detail_index = "NEW_DETAIL_INDEX" %>
+        <%= f.fields_for :input_details, new_detail, child_index: detail_index do |detail_form| %>
+          <%= render 'input_detail_fields', f: detail_form %>
+        <% end %>
+      </div>
+
       <!-- Input Items Section -->
       <div class="bg-green-50 p-6 rounded-xl shadow-sm mt-8">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Input Items</h3>
@@ -143,86 +156,55 @@
     <% end %>
   </div>
 </div>
-
 <script>
 function initInputForm() {
-  const container = document.getElementById("input-items");
-  if (!container || container.dataset.initialized === "true") return;
-  container.dataset.initialized = "true";
+  const itemContainer = document.getElementById("input-items");
+  const detailContainer = document.getElementById("input-details");
+  if (!itemContainer || itemContainer.dataset.initialized === "true") return;
 
-  const template = document.getElementById("input-item-template")?.innerHTML;
-  const addButton = document.getElementById("add-input-item");
-  const form = document.querySelector("form");
+  itemContainer.dataset.initialized = "true";
 
-  let index = container.querySelectorAll(".input-item-row").length;
+  const itemTemplate = document.getElementById("input-item-template")?.innerHTML;
+  const detailTemplate = document.getElementById("input-detail-template")?.innerHTML;
 
-  // Add input item row
-  function addRow() {
-    if (!template) return;
-    const html = template.replace(/NEW_INDEX/g, index);
-    container.insertAdjacentHTML("beforeend", html);
-    
-    // Naye row mein description dropdown ko properly initialize karo
-    const newRow = container.lastElementChild;
-    const descriptionSelect = newRow.querySelector('select[name*="description_of_goods_id"]');
-    if (descriptionSelect) {
-      console.log('New description field added:', descriptionSelect.name);
-    }
-    
-    index++;
-  }
+  const addItemButton = document.getElementById("add-input-item");
+  const addDetailButton = document.getElementById("add-input-detail");
 
-  // Form submit se pehle cleanup
-  form?.addEventListener("submit", (e) => {
-    console.log('Form submitting...');
-    
-    // NEW_INDEX fields ko remove karo
-    const newIndexFields = form.querySelectorAll('[name*="NEW_INDEX"]');
-    console.log('Removing NEW_INDEX fields:', newIndexFields.length);
-    newIndexFields.forEach(field => field.remove());
-    
-    // Description fields check karo
-    const descriptionFields = form.querySelectorAll('select[name*="description_of_goods_id"]:not([name*="NEW_INDEX"])');
-    console.log('Description fields found:', descriptionFields.length);
-    
-    descriptionFields.forEach((field, i) => {
-      console.log(`Field ${i}: name="${field.name}", value="${field.value}"`);
-      if (!field.value) {
-        console.log('Empty description field found!');
-        field.style.border = '2px solid red';
-      }
-    });
-    
-    normalizeFieldNames();
+  let itemIndex = itemContainer.querySelectorAll(".input-item-row").length;
+  let detailIndex = detailContainer.querySelectorAll(".input-detail-row").length;
+
+  // ✅ Add Input Item Row
+  addItemButton?.addEventListener("click", function () {
+    if (!itemTemplate) return;
+    const newRow = itemTemplate.replace(/NEW_INDEX/g, itemIndex);
+    itemContainer.insertAdjacentHTML("beforeend", newRow);
+    itemIndex++;
   });
 
-  function normalizeFieldNames() {
-    const rows = container.querySelectorAll(".input-item-row");
-    console.log('Normalizing field names for', rows.length, 'rows');
-    
-    rows.forEach((row, i) => {
-      const inputs = row.querySelectorAll("input, select, textarea");
-      inputs.forEach((input) => {
-        const oldName = input.name;
-        if (input.name && !input.name.includes("NEW_INDEX")) {
-          input.name = input.name.replace(/\[input_items_attributes\]\[[^\]]+\]/, `[input_items_attributes][${i}]`);
-          console.log(`Renamed: ${oldName} -> ${input.name}`);
-        }
-      });
-    });
-  }
+  // ✅ Add Input Detail Row
+  addDetailButton?.addEventListener("click", function () {
+    if (!detailTemplate) return;
+    const newDetail = detailTemplate.replace(/NEW_DETAIL_INDEX/g, detailIndex);
+    detailContainer.insertAdjacentHTML("beforeend", newDetail);
+    detailIndex++;
+  });
 
-  addButton?.addEventListener("click", addRow);
-  container?.addEventListener("click", removeRow);
-
-  function removeRow(event) {
-    if (event.target.classList.contains("remove-input-item")) {
-      const row = event.target.closest(".input-item-row");
-      row?.remove();
+  // ✅ Remove Input Item Row
+  itemContainer?.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-input-item")) {
+      e.target.closest(".input-item-row")?.remove();
     }
-  }
+  });
+
+  // ✅ Remove Input Detail Row
+  detailContainer?.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-input-detail")) {
+      e.target.closest(".input-detail-row")?.remove();
+    }
+  });
 }
 
+// ✅ Works both on Turbo and normal load
 document.addEventListener("turbo:load", initInputForm);
-document.addEventListener("turbo:frame-load", initInputForm);
+document.addEventListener("DOMContentLoaded", initInputForm);
 </script>

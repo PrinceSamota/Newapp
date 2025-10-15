@@ -24,7 +24,6 @@
     font-size: 22px;
     font-weight: bold;
     font-family: 'Merriweather', serif;
-    padding: 15px 0;
     border-bottom: 1px solid #000;
     position: relative;
     height: 100px;
@@ -81,12 +80,14 @@
 <body>
 <div class="main-container">
   <!-- Header -->
-  <div class="header">
+  <div class="header" style="text-align: center; position: relative; display: flex; align-items: center; justify-content: center; height: 100px; ">
     COMMERCIAL INVOICE
     <div class="logo-box">
-      <% if @logo_data.present? %>
-        <img src="data:image/png;base64,<%= @logo_data %>" style="width: 100%; height: 100%; object-fit: contain;" />
-      <% end %>
+    <% if @logo_data.present? %>
+    <img src="data:image/png;base64,<%= @logo_data %>" 
+         style="width: 120px; height: 80px; object-fit: contain;" />
+  <% end %>
+  
     </div>
   </div>
 
@@ -109,11 +110,11 @@
   <div class="middle-row">
     <div class="middle-box">
      <span class="user-name">SHIPPER/ EXPORTER</span> </br>
-       <%= @input.shipper_name.name %></br>
+       <%= @input.shipper_name.company_name %></br>
        <%= @input.shipper_name.address1 %></br>
        <%= @input.shipper_name.address2 %></br>
        <%= @input.shipper_name.address3 %></br>
-       <span class="user-name_td">Contact person: </span></br>
+       <span class="user-name_td">Contact person: <%= @input.shipper_name.name %></span></br>
        <span class="user-name_td">TEL. NO: </span><%= @input.shipper_name.contact_no %></br>
        <span class="user-name_td">Email: </span><%= @input.shipper_name.email %></br>
        <span class="user-name_td">GST: </span><%= @input.shipper_name.gst_no %></br>
@@ -201,20 +202,22 @@
           <th>QTY pcs</th>
           <th>Unit Value</th>
           <th>Total Value</th>
-          <th>Currency USD</th>
+          <th>Currency</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td><%= @input.marks_no&.name %></td>
-          <td><%= @input.no_of_packages %></td>
-          <td><%= @input.complete_description_of_goods&.name %></td>
-          <td><%= @input.hsn&.name %></td>
-          <td><%= @input.qty_pcs %></td>
-          <td><%= @input.price %></td>
-          <td><%= @input.price * @input.qty_pcs %></td>
-          <td><%= @input.currency %></td>
-        </tr>
+     <% @input.input_details.each do |detail| %>
+    <tr>
+      <td><%= detail.marks_no&.name.presence || "—" %></td>
+      <td><%= detail.no_of_packages.presence || "—" %></td>
+      <td><%= detail.complete_description_of_good&.name.presence || "—" %></td>
+      <td><%= detail.hsn&.name.presence || "—" %></td>
+      <td><%= detail.qty_pcs.presence || "—" %></td>
+      <td><%= detail.price.presence || "—" %></td>
+      <td><%= (detail.price && detail.qty_pcs) ? (detail.price * detail.qty_pcs) : "—" %></td>
+      <td><%= @input.currency.presence || "USD" %></td>
+    </tr>
+  <% end %>
         <tr>
           <td colspan="1" style="border:none;"></td> 
           <td><span class="user-name">Total No of Pkgs.</span></td> 
@@ -226,11 +229,11 @@
         </tr>
         <tr>
           <td colspan="1" style="border:none;"></td> 
-          <td><%= @input.no_of_packages %> BOX</td> 
+          <td> <%= @input.input_details.sum(&:no_of_packages) %> BOX</td> 
 
           <td colspan="4" style="border:none;"></td> 
 
-          <td><%= @input.price * @input.qty_pcs %></td>
+          <td> <%= @input.input_details.sum { |d| (d.price.to_f * d.qty_pcs.to_f) } %></td>
           <td><%= @input.currency %></td> 
         </tr>
         <tr>

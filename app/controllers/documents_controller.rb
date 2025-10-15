@@ -44,18 +44,64 @@ class DocumentsController < ApplicationController
     
     @document_type = params[:document_type]
     @form_data = params.except(:dispatch_id, :order_entry_id, :input_id, :document_type, :authenticity_token, :commit)
-    
-    # Handle file uploads for invoice only
+
     if @document_type == "invoice"
-      @logo_data = nil
-      @signature_data = nil
-      
-      if params[:logo].present?
-        @logo_data = Base64.encode64(params[:logo].read)
+      if @input&.shipper_name&.logo&.attached?
+        logo_file = @input.shipper_name.logo.download
+        @logo_data = Base64.strict_encode64(logo_file)
       end
-      
-      if params[:signature].present?
-        @signature_data = Base64.encode64(params[:signature].read)
+
+      if @input&.shipper_name&.signature&.attached?
+        signature_file = @input.shipper_name.signature.download
+        @signature_data = Base64.strict_encode64(signature_file)
+      end
+    end
+
+
+    if @document_type == "packing_list"
+      if @input&.shipper_name&.logo&.attached?
+        logo_file = @input.shipper_name.logo.download
+        @logo_data = Base64.strict_encode64(logo_file)
+      end
+    
+      if @input&.shipper_name&.signature&.attached?
+        signature_file = @input.shipper_name.signature.download
+        @signature_data = Base64.strict_encode64(signature_file)
+      end
+    end
+
+    if @document_type == "value_letter"
+      if @input&.shipper_name&.logo&.attached?
+        logo_file = @input.shipper_name.logo.download
+        @logo_data = Base64.strict_encode64(logo_file)
+      end
+    
+      if @input&.shipper_name&.signature&.attached?
+        signature_file = @input.shipper_name.signature.download
+        @signature_data = Base64.strict_encode64(signature_file)
+      end
+    end
+
+    if @document_type == "sheet_5"
+      if @input&.shipper_name&.logo&.attached?
+        logo_file = @input.shipper_name.logo.download
+        @logo_data = Base64.strict_encode64(logo_file)
+      end
+    
+      if @input&.shipper_name&.signature&.attached?
+        signature_file = @input.shipper_name.signature.download
+        @signature_data = Base64.strict_encode64(signature_file)
+      end
+    end
+    if @document_type == "scomet"
+      if @input&.shipper_name&.logo&.attached?
+        logo_file = @input.shipper_name.logo.download
+        @logo_data = Base64.strict_encode64(logo_file)
+      end
+    
+      if @input&.shipper_name&.signature&.attached?
+        signature_file = @input.shipper_name.signature.download
+        @signature_data = Base64.strict_encode64(signature_file)
       end
     end
 

@@ -13,7 +13,7 @@
         <% @clients.each do |client| %>
           <tr>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-              <%= link_to client.name, edit_client_path(client), class: "text-blue-600 hover:underline" %>
+              <%= link_to client.company_name || "N/A", edit_client_path(client), class: "text-blue-600 hover:underline" %>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= client.address %></td>
           </tr>

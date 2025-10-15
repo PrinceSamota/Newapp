@@ -1,41 +1,41 @@
 <div>
-<turbo-frame id="marks_no_section">
-  <div class="flex flex-col space-y-2">
-    <div class="flex justify-between items-center">
-      <label class="text-sm font-semibold text-gray-800">Marks No</label>
-      <button type="button"
-        onclick="document.getElementById('newMarksNoForm').classList.toggle('hidden')"
-        class="text-blue-600 text-xl font-bold">+</button>
-    </div>
-
-    <%= select_tag "input[marks_no_id]",
-      options_from_collection_for_select(
-        MarksNo.where(org_id: current_user.org_id), :id, :name, selected_marks_no_id
-      ),
-      id: "marks-no-select",
-      include_blank: "Select Marks No",
-      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
-      data: { placeholder: "Select Marks No" } %>
-
-    <!-- Add New Marks No -->
-    <div id="newMarksNoForm" class="mt-2 <%= 'hidden' unless show_form %>">
-      <div class="flex gap-2">
-        <input id="new_marks_no_name" type="text" placeholder="New marks no"
-          class="flex-1 rounded-md border px-3 py-2 text-sm" />
-        <button type="button" onclick="submitNewMarksNo()"
-          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+  <turbo-frame id="marks_no_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-xs font-medium text-gray-700 block mb-1">Marks No</label>
+        <button type="button"
+          onclick="document.getElementById('newMarksNoForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
       </div>
-      <div id="marks-no-errors" class="text-red-600 text-sm mt-2"></div>
-      <% if errors.present? %>
-        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
-          <% errors.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      <% end %>
+
+      <%= select_tag "input[input_details_attributes][#{local_assigns[:detail_index] || 0}][marks_no_id]",
+        options_from_collection_for_select(
+          MarksNo.where(org_id: current_user.org_id), :id, :name, local_assigns[:selected_marks_no_id]
+        ),
+        id: "marks-no-select-#{local_assigns[:detail_index] || 0}",
+        include_blank: "Select Marks No",
+        class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+        data: { placeholder: "Select Marks No" } %>
+
+      <!-- Add New Marks No -->
+      <div id="newMarksNoForm" class="mt-2 <%= 'hidden' unless local_assigns[:show_form] %>">
+        <div class="flex gap-2">
+          <input id="new_marks_no_name" type="text" placeholder="New marks no"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewMarksNo()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+        <div id="marks-no-errors" class="text-red-600 text-sm mt-2"></div>
+        <% if local_assigns[:errors].present? %>
+          <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+            <% local_assigns[:errors].each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
     </div>
-  </div>
-</turbo-frame>
+  </turbo-frame>
 </div>
 
 <script>

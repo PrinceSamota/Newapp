@@ -8,17 +8,18 @@
         class="text-blue-600 text-xl font-bold">+</button>
     </div>
 
-    <%= select_tag "input[complete_description_of_goods_id]",
-      options_from_collection_for_select(
-        CompleteDescriptionOfGood.where(org_id: current_user.org_id), :id, :name, selected_complete_description_id
-      ),
-      id: "complete-description-select",
-      include_blank: "Select Complete Description",
-      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
-      data: { placeholder: "Select Complete Description" } %>
+    <%= select_tag "input[input_details_attributes][#{local_assigns[:detail_index] || 0}][complete_description_of_good_id]",
+    options_from_collection_for_select(
+      CompleteDescriptionOfGood.where(org_id: current_user.org_id), :id, :name, local_assigns[:selected_complete_description_id]
+    ),
+    id: "complete-description-select-#{local_assigns[:detail_index] || 0}",
+    include_blank: "Select Complete Description",
+    class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+    data: { placeholder: "Select Complete Description" } %>
+
 
     <!-- Add New Complete Description -->
-    <div id="newCompleteDescriptionForm" class="mt-2 <%= 'hidden' unless show_form %>">
+    <div id="newCompleteDescriptionForm" class="mt-2 <%= 'hidden' unless local_assigns[:show_form] %>">
       <div class="flex gap-2">
         <textarea id="new_complete_description_name" placeholder="New complete description"
           class="flex-1 rounded-md border px-3 py-2 text-sm" rows="3"></textarea>
@@ -26,9 +27,9 @@
           class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
       </div>
       <div id="complete-description-errors" class="text-red-600 text-sm mt-2"></div>
-      <% if errors.present? %>
+      <% if local_assigns[:errors].present? %>
         <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
-          <% errors.each do |msg| %>
+          <% local_assigns[:errors].each do |msg| %>
             <li><%= msg %></li>
           <% end %>
         </ul>

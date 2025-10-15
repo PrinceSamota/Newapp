@@ -1,47 +1,49 @@
 <div>
-<turbo-frame id="hsn_section">
-  <div class="flex flex-col space-y-2">
-    <div class="flex justify-between items-center">
-      <label class="text-sm font-semibold text-gray-800">HSN</label>
-      <button type="button"
-        onclick="document.getElementById('newHsnForm').classList.toggle('hidden')"
-        class="text-blue-600 text-xl font-bold">+</button>
-    </div>
-
-    <%= select_tag "input[hsn_id]",
-      options_from_collection_for_select(
-        Hsn.where(org_id: current_user.org_id), :id, :name, selected_hsn_id
-      ),
-      id: "hsn-select",
-      include_blank: "Select HSN",
-      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
-      data: { placeholder: "Select HSN" } %>
-
-    <!-- Add New HSN -->
-    <div id="newHsnForm" class="mt-2 <%= 'hidden' unless show_form %>">
-      <div class="flex gap-2">
-        <input id="new_hsn_name" type="text" placeholder="New HSN code"
-          class="flex-1 rounded-md border px-3 py-2 text-sm" />
-        <button type="button" onclick="submitNewHsn()"
-          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+  <turbo-frame id="hsn_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-xs font-medium text-gray-700 block mb-1">HSN</label>
+        <button type="button"
+          onclick="document.getElementById('newHsnForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
       </div>
-      <div id="hsn-errors" class="text-red-600 text-sm mt-2"></div>
-      <% if errors.present? %>
-        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
-          <% errors.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      <% end %>
+
+      <%= select_tag "input[input_details_attributes][#{local_assigns[:detail_index] || 0}][hsn_id]",
+        options_from_collection_for_select(
+          Hsn.where(org_id: current_user.org_id), :id, :name, local_assigns[:selected_hsn_id]
+        ),
+        id: "hsn-select-#{local_assigns[:detail_index] || 0}",
+        include_blank: "Select HSN",
+        class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+        data: { placeholder: "Select HSN" } %>
+
+      <!-- Add New HSN -->
+      <div id="newHsnForm" class="mt-2 <%= 'hidden' unless local_assigns[:show_form] %>">
+        <div class="flex gap-2">
+          <input id="new_hsn_name" type="text" placeholder="New HSN code"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewHsn()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+        <div id="hsn-errors" class="text-red-600 text-sm mt-2"></div>
+
+        <% if local_assigns[:errors].present? %>
+          <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+            <% local_assigns[:errors].each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
     </div>
-  </div>
-</turbo-frame>
+  </turbo-frame>
 </div>
 
 <script>
   function submitNewHsn() {
-    const name = document.getElementById('new_hsn_name').value;
+    const name = document.getElementById('new_hsn_name').value.trim();
     const errorsDiv = document.getElementById('hsn-errors');
+    errorsDiv.textContent = "";
 
     if (!name) {
       errorsDiv.textContent = "HSN cannot be blank.";
@@ -65,7 +67,7 @@
       document.getElementById("hsn_section").innerHTML = html;
     })
     .catch(() => {
-      errorsDiv.textContent = "Something went wrong.";
+      errorsDiv.textContent = "Something went wrong. Please try again.";
     });
   }
 </script>

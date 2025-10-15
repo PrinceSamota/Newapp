@@ -1,0 +1,58 @@
+<div class="input-detail-row relative bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+  
+  <div class="grid grid-cols-3 gap-4 mb-4">
+    <!-- Marks No -->
+
+  
+  <div id="marks_no_section">
+  <%= render "inputs/marks_no_dropdown", 
+      f: f, 
+      detail_index: f.index,
+      selected_marks_no_id: f.object.marks_no_id %>
+</div>
+    <!-- No of Packages -->
+    <div>
+      <%= f.label :no_of_packages, "No of Packages", class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :no_of_packages, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+
+    <!-- Type of Package -->
+    <div id="type_of_package_section">
+      <%= render "inputs/type_of_package_dropdown", f: f, detail_index: f.index, selected_type_of_package_id: f.object.type_of_package_id %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-3 gap-4 mb-4">
+    <!-- Complete Description -->
+    <div id="complete_description_section">
+      <%= render "inputs/complete_description_dropdown", f: f, detail_index: f.index, selected_complete_description_id: f.object.complete_description_of_good_id %>
+    </div>
+
+    <!-- HSN -->
+    <div id="hsn_section">
+      <%= render "inputs/hsn_dropdown", f: f, detail_index: f.index, selected_hsn_id: f.object.hsn_id %>
+    </div>
+
+    <!-- Qty PCS -->
+    <div>
+      <%= f.label :qty_pcs, "Qty PCS", class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :qty_pcs, step: 0.01, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4">
+    <!-- Price -->
+    <div>
+      <%= f.label :price, "Price", class: "text-xs font-medium text-gray-700 block mb-1" %>
+      <%= f.number_field :price, step: 0.01, class: "w-full rounded-md border border-gray-300 px-3 py-2 text-sm" %>
+    </div>
+  </div>
+
+  <%= f.hidden_field :_destroy %>
+
+  <!-- Remove Button -->
+  <button type="button"
+    class="remove-input-detail absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
+    ✕
+  </button>
+</div>

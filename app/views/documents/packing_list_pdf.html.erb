@@ -25,7 +25,7 @@
     .title {
       text-align: center;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 22px;
       border: 1px solid #000;
       height: 70px;
       font-family: 'Merriweather', serif;
@@ -65,10 +65,13 @@
     <!-- Title -->
     <tr>
       <td colspan="3" class="title">
-        <div style="text-align: center; position: relative; display: flex; align-items: center; justify-content: center; height: 100%;">
+        <div style="text-align: center; position: relative; display: flex; align-items: center; justify-content: center; height: 100px; ">
           PACKING LIST
           <div class="logo" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%);">
-            LOGO
+          <% if @logo_data.present? %>
+          <img src="data:image/png;base64,<%= @logo_data %>" 
+               style="width: 120px; height: 80px; object-fit: contain;" />
+        <% end %>
         </div>
         </div>
       </td>
@@ -79,11 +82,11 @@
     <!-- Exporter -->
     <td style="width:35%; height:150px; vertical-align:top;" rowspan="2">
       <div class="user-name">Exporter</div>
-      <%= @input.shipper_name.name %></br>
+      <%= @input.shipper_name.company_name %></br>
       <%= @input.shipper_name.address1 %></br>
       <%= @input.shipper_name.address2 %></br>
       <%= @input.shipper_name.address3 %></br>
-      <span class="user-name_td">Contact person: </span></br>
+      <span class="user-name_td">Contact person: <%= @input.shipper_name.name %></span></br>
       <span class="user-name_td">TEL. NO: </span><%= @input.shipper_name.contact_no %></br>
       <span class="user-name_td">Email: </span><%= @input.shipper_name.email %></br>
       <span class="user-name_td">GST: </span><%= @input.shipper_name.gst_no %></br>
@@ -267,9 +270,12 @@
         <div class="section-title">Total Net Wt:<% total_net_weight = @input.input_items.sum { |item| item.net_weight.to_f } %><%= total_net_weight %></div>
       </td>
       <td colspan="2" class="signature">
-        Signature & Date<br><br>
-        For LIVING CARE INDIA<br><br>
-        Authorised Signatory
+        Signature & Date</br>
+        <span> For </span></br>
+        <% if @signature_data.present? %>
+        <img src="data:image/png;base64,<%= @signature_data %>" style="width: 100%; height: 100%; object-fit: contain;" />
+      <% end %>
+      <span>Authorised Signatory</span>
       </td>
     </tr>
   </table>
