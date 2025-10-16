@@ -36,7 +36,7 @@ class DocumentsController < ApplicationController
   def generate_pdf
     if params[:input_id].present?
       @input = Input.find(params[:input_id])
-    elsif params[:document_type] == "invoice" || params[:document_type] == "packing_list" || params[:document_type] == "value_letter" || params[:document_type] == "scomet" || params[:document_type] == "sheet_5" || params[:document_type] == "new_si"
+    elsif params[:document_type] == "invoice" || params[:document_type] == "packing_list" || params[:document_type] == "value_letter" || params[:document_type] == "scomet" || params[:document_type] == "sheet_5" || params[:document_type] == "new_si" || params[:document_type] == "anx"
       @dispatch = Dispatch.find(params[:dispatch_id])
     else
       @order_entry = OrderEntry.find(params[:order_entry_id])
@@ -93,7 +93,20 @@ class DocumentsController < ApplicationController
         @signature_data = Base64.strict_encode64(signature_file)
       end
     end
+
     if @document_type == "scomet"
+      if @input&.shipper_name&.logo&.attached?
+        logo_file = @input.shipper_name.logo.download
+        @logo_data = Base64.strict_encode64(logo_file)
+      end
+    
+      if @input&.shipper_name&.signature&.attached?
+        signature_file = @input.shipper_name.signature.download
+        @signature_data = Base64.strict_encode64(signature_file)
+      end
+    end
+
+    if @document_type == "anx"
       if @input&.shipper_name&.logo&.attached?
         logo_file = @input.shipper_name.logo.download
         @logo_data = Base64.strict_encode64(logo_file)

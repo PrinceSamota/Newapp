@@ -1,146 +1,386 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Shipper’s Letter of Instruction - Blank Layout</title>
-  <style>
-    @page {
-      size: A4;
-      margin: 0;
-    }
+<meta charset="utf-8" />
+<title>Shipper’s Letter of Instruction - FedEx Style (A4)</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+  /* A4 print-ready */
+  @page { size: A4; margin: 0; }
+  html,body { height: 100%; margin: 0; padding: 0; background: #ffffff; -webkit-print-color-adjust: exact; }
+  body { display:flex; justify-content:center; padding:12mm 0; font-family: "Arial", Helvetica, sans-serif; }
 
-    body {
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      background: #fff;
-    }
+  /* Page container */
+  .sheet {
+    width:210mm;
+    height:297mm;
+    box-sizing: border-box;
+    border: 2px solid #000;
+    display: grid;
+    grid-template-columns: 18mm auto 18mm; /* left bar, main, right bar */
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    background: #fff;
+  }
 
-    .page {
-      width: 210mm;
-      height: 297mm;
-      border: 2px solid #000;
-      box-sizing: border-box;
-      display: grid;
-      grid-template-columns: 12mm auto 12mm; /* Left, Center, Right bars */
-      grid-template-rows: repeat(7, auto);
-      font-size: 10px;
-    }
+  /* Top banner across center columns */
+  .top-banner {
+    grid-column: 1 / 4;
+    background: #b56be6; /* purple */
+    color: #000;
+    padding: 4px 6px;
+    font-weight: 700;
+    font-size: 11px;
+    text-align: center;
+    box-sizing: border-box;
+    border-bottom: 3px solid #000;
+  }
+  .top-banner small { font-weight:600; font-size:10px; display:block; }
 
-    /* Left + Right sidebars */
-    .left-bar, .right-bar {
-      border-left: 1px solid #000;
-      border-right: 1px solid #000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      font-weight: bold;
-    }
+  /* Left vertical bar and right vertical bar */
+  .left-bar, .right-bar {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:10px;
+    padding:4px;
+    box-sizing:border-box;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+  }
 
-    .right-bar {
-      writing-mode: vertical-lr;
-    }
+  .left-bar { background: #f7eefc; color:#000; }
+  .right-bar { background: #e6e6ea; color:#000; writing-mode: vertical-lr; }
 
-    /* Center main body */
-    .main {
-      border-left: 1px solid #000;
-      border-right: 1px solid #000;
-      display: flex;
-      flex-direction: column;
-    }
+  /* Main area */
+  .main {
+    padding: 6px;
+    box-sizing: border-box;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+  }
 
-    .section {
-      border-bottom: 1px solid #000;
-      display: flex;
-      flex-direction: column;
-    }
+  /* Top header area with FedEx left and Check List box right */
+  .header {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap:8px;
+    align-items:start;
+  }
 
-    .row {
-      display: flex;
-      flex-direction: row;
-      border-bottom: 1px solid #000;
-      flex: 1;
-    }
+  .logo-box {
+    height:72px;
+    border:1px solid #000;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    padding:6px;
+    box-sizing:border-box;
+  }
+  .logo-box .placeholder {
+    width:110px;
+    height:42px;
+    border:1px dashed #999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:10px;
+    color:#666;
+  }
 
-    .row:last-child {
-      border-bottom: none;
-    }
+  .doc-title {
+    border:1px solid #000;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding:6px;
+  }
+  .doc-title .title { font-size:12px; font-weight:800; }
+  .doc-title .subtitle { font-size:9px; color:#333; margin-top:4px; }
 
-    .cell {
-      flex: 1;
-      border-right: 1px solid #000;
-      height: 22px;
-      box-sizing: border-box;
-    }
+  /* Check list required box */
+  .checklist {
+    border:1px solid #000;
+    background: #fffbe6;
+    padding:6px;
+    box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+  }
+  .checklist .big { font-size:18px; font-weight:800; color:#000; }
+  .checklist .small { font-size:10px; margin-top:4px; }
 
-    .cell:last-child {
-      border-right: none;
-    }
+  /* Grid / fields area - replicate the big multi-row form */
+  .form {
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    border: 1px solid #000;
+    padding:6px;
+    box-sizing:border-box;
+  }
 
-    .tall { height: 35px; }
-    .wide { flex: 2; }
-    .narrow { flex: 0.5; }
-    .medium { flex: 1.5; }
-    .title-row {
-      height: 18px;
-      border-bottom: 1px solid #000;
-    }
+  /* Row style */
+  .f-row { display:flex; gap:6px; }
+  .f-col { border:1px solid #000; padding:6px; box-sizing:border-box; background:#fff; font-size:11px; }
 
-    .footer {
-      border-top: 1px solid #000;
-      height: 40px;
-    }
+  /* Specific column widths */
+  .col-1 { width:120px; }   /* small label column */
+  .col-2 { flex:1; }        /* main content */
+  .col-3 { width:100px; }   /* small */
+  .col-4 { width:160px; }   /* medium */
 
-  </style>
+  /* Two-column big block (Shipper / Consignee / Buyer) */
+  .big-block { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; }
+  .block { border:1px solid #000; padding:8px; box-sizing:border-box; min-height:96px; background:#f3f7f3; font-size:11px; }
+
+  /* Label rows inside blocks */
+  .block .label { font-weight:700; font-size:11px; margin-bottom:6px; }
+  .block p { margin:2px 0; font-size:10px; }
+
+  /* Middle sections with checkboxes / currency table style */
+  .table-like { display:grid; grid-template-columns: repeat(6, 1fr); gap:4px; }
+  .cell { border:1px solid #000; padding:6px; font-size:11px; background:#fff; box-sizing:border-box; }
+
+  /* Footer signature area */
+  .signature {
+    display:flex;
+    gap:6px;
+    align-items:center;
+    border:1px solid #000;
+    padding:8px;
+    box-sizing:border-box;
+  }
+  .sig-left { flex:1; border-right:1px solid #000; padding-right:8px; }
+  .sig-right { width:260px; padding-left:8px; }
+
+  /* Make small grey "MANDATORY" / "IF REQUIRED" labels on right vertical strip */
+  .right-bar { font-size:11px; font-weight:800; color:#fff; background: linear-gradient(180deg,#b35be6,#a04be0); color:#fff; border-left: 3px solid #000; border-right:3px solid #000; }
+
+  /* Adjust print styles so colors show */
+  @media print {
+    .sheet { border: none; }
+    body { padding:0; }
+  }
+
+  /* Specific tiny text boxes to emulate the original */
+  .tiny-row { display:flex; gap:6px; align-items:center; }
+  .tiny { border:1px solid #000; padding:4px 6px; font-size:10px; min-width:48px; text-align:center; background:#fff; }
+
+  /* emphasize some fields with yellow background like the image */
+  .highlight { background: #fff2a8; }
+
+  /* small muted helper */
+  .muted { font-size:9px; color:#333; }
+
+</style>
 </head>
 <body>
-  <div class="page">
-    <!-- Left Side Section Titles -->
+  <div class="sheet" role="document" aria-label="FedEx Shipper's Letter">
+
+    <!-- left vertical label -->
     <div class="left-bar">1. BASIC INFO</div>
+
+    <!-- main content -->
     <div class="main">
-      <!-- Section 1 -->
-      <div class="section">
-        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
-        <div class="row"><div class="cell wide"></div><div class="cell"></div><div class="cell"></div></div>
-        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+      <!-- top purple banner text -->
+      <div class="top-banner">
+        Advance Paperwork to be forwarded to : For BOM Clearance @ bom-hvexp@mail.fedex.com / For AMD Clearance @ amdexport@mail.fedex.com / For PNQ Clearance @ pnq-hvexports@mail.fedex.com
       </div>
-      <!-- Section 2 -->
-      <div class="section">
-        <div class="row tall"><div class="cell wide"></div><div class="cell wide"></div></div>
-        <div class="row"><div class="cell wide"></div><div class="cell wide"></div></div>
+
+      <!-- header: left logo + doc title + checklist -->
+      <div class="header">
+        <div style="display:flex; gap:8px; align-items:flex-start;">
+          <div class="logo-box" style="min-width:260px;">
+            <!-- logo placeholder - left blank as requested -->
+            <div class="placeholder">FedEx Logo (leave blank)</div>
+            <div style="margin-left:12px; font-size:11px; line-height:1;">
+              <div style="font-weight:800">SHIPPER'S LETTER OF INSTRUCTION</div>
+              <div style="font-size:10px; color:#333; margin-top:6px;">For export documentary instructions</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div class="doc-title">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div class="title">Date: <strong style="margin-left:6px;">1-Oct-2023</strong></div>
+                <div class="subtitle">FedEx A/C No. <strong>800914932</strong></div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-weight:800; font-size:10px;">Invoice No.</div>
+                <div style="font-weight:800; font-size:12px; margin-top:6px;">INV-25-26-0049</div>
+              </div>
+            </div>
+            <div style="margin-top:6px; display:flex; gap:6px; align-items:center;">
+              <div class="muted">Destination</div>
+              <div class="tiny highlight" style="min-width:110px;">Germany</div>
+              <div class="muted">IEc No.</div>
+              <div class="tiny">0318590705</div>
+            </div>
+          </div>
+
+          <div class="checklist">
+            <div class="big">Check List Required</div>
+            <div class="small">FedEx AWB No. <strong style="display:inline-block;margin-left:6px;background:#fff;padding:2px 6px;border:1px solid #000;">884253964856</strong></div>
+          </div>
+        </div>
       </div>
-      <!-- Section 3 -->
-      <div class="section">
-        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
-        <div class="row"><div class="cell wide"></div><div class="cell"></div></div>
-        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+      <!-- Section: shipper / consignee / buyer -->
+      <div class="big-block" style="margin-top:6px;">
+        <div class="block">
+          <div class="label">Shipper</div>
+          <p><strong>Living Care India</strong></p>
+          <p>240-E3, Bhumi World - Industrial Park</p>
+          <p>Mumbai - Nashik Highway</p>
+          <p>Bhiwandi, Maharashtra</p>
+          <p>Tel No. +919022750007</p>
+          <p>Email Address: deepak@lcareindia.com</p>
+        </div>
+
+        <div class="block">
+          <div class="label">Consignee</div>
+          <p><strong>Crous Rail Service GmbH</strong></p>
+          <p>Mercatorstrasse 3d</p>
+          <p>Wesel</p>
+          <p>Germany</p>
+          <p>Tel: +49 1510 4018683</p>
+          <p>Email: daniel.mehler@crous.ch</p>
+        </div>
+
+        <div class="block">
+          <div class="label">Buyer / If other than Consignee</div>
+          <p><strong>Crous Chemicals GmbH</strong></p>
+          <p>Industrie Allee 30</p>
+          <p>Fulenbach</p>
+          <p>Switzerland</p>
+          <p>Tel: +49 1510 4018683</p>
+          <p>Email: daniel.mehler@crous.ch</p>
+        </div>
       </div>
-      <!-- Section 4 -->
-      <div class="section">
-        <div class="row"><div class="cell"></div><div class="cell"></div></div>
-        <div class="row"><div class="cell wide"></div><div class="cell"></div></div>
-        <div class="row"><div class="cell"></div><div class="cell"></div><div class="cell"></div></div>
+
+      <!-- Mandatory / PSD / delivery -->
+      <div style="display:flex; gap:6px;">
+        <div style="flex:1; border:1px solid #000; padding:8px; box-sizing:border-box; background:#fff;">
+          <div style="font-weight:800; margin-bottom:6px;">Mandatory if PSD / EDP delivery address other than IEC Add.</div>
+          <div style="display:flex; gap:8px;">
+            <div style="flex:1;">
+              <div style="font-weight:700">Post shipment document / EDI delivery instructions</div>
+              <div style="font-size:10px; margin-top:6px;">Contact person: Deepak Sharma</div>
+              <div style="font-size:10px;">Telephone / Mobile: +919022750007</div>
+              <div style="font-size:10px;">Address 1: 240-E3, Bhumi World - Industrial Park</div>
+              <div style="font-size:10px;">Address 2: Mumbai - Nashik Highway</div>
+              <div style="font-size:10px;">City: Bhiwandi</div>
+              <div style="font-size:10px;">Pin Code: 421302</div>
+            </div>
+            <div style="width:220px; border-left:1px solid #000; padding-left:8px;">
+              <div style="font-weight:800;">Email Id for e-PSD</div>
+              <div style="font-size:10px; margin-top:6px;">deepak@lcareindia.com</div>
+              <div style="margin-top:10px;" class="muted">Check List Required</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- Section 5 -->
-      <div class="section">
-        <div class="row tall"><div class="cell"></div></div>
-        <div class="row"><div class="cell wide"></div><div class="cell"></div></div>
+
+      <!-- Shipment & Contract block (simplified replica) -->
+      <div class="form">
+        <div style="display:flex; gap:6px;">
+          <div class="f-col col-1"><strong>Contract Type (tick one)</strong></div>
+          <div class="f-col col-2">
+            <div style="display:flex; gap:8px; align-items:center;">
+              <div class="tiny">X</div> <div class="muted">Ex-Works</div>
+              <div style="width:1px; background:#000; height:18px; margin-left:6px;"></div>
+              <div class="tiny">X</div> <div class="muted">FOB</div>
+            </div>
+          </div>
+          <div class="f-col col-3">
+            <div style="font-weight:800;">Currency</div>
+            <div style="margin-top:6px;" class="tiny">USD</div>
+            <div class="muted" style="margin-top:4px;">9,236.84</div>
+          </div>
+          <div class="f-col col-4">
+            <div style="font-weight:800;">Type of Shipping Bill (tick one)</div>
+            <div class="muted" style="margin-top:6px;">Dut Drawback / EPCG / Advance Authorization (example)</div>
+          </div>
+        </div>
+
+        <!-- small table-like grid of documents enclosed -->
+        <div style="display:flex; gap:6px;">
+          <div style="flex:1; border:1px solid #000; padding:6px; box-sizing:border-box;">
+            <div style="font-weight:800;">Documents Enclosed (tick where applicable)</div>
+            <div style="display:flex; gap:6px; margin-top:6px;">
+              <div style="flex:1; border:1px solid #000; padding:6px; text-align:center;">FedEx AWB (duly complete) <div class="muted">X</div></div>
+              <div style="flex:1; border:1px solid #000; padding:6px; text-align:center;">Invoice (3 copies) <div class="muted">X</div></div>
+              <div style="flex:1; border:1px solid #000; padding:6px; text-align:center;">Packing List (3 copies) <div class="muted">X</div></div>
+            </div>
+          </div>
+          <div style="width:260px; border:1px solid #000; padding:6px; box-sizing:border-box; background:#f6f6f6;">
+            <div style="font-weight:800;">SDF / FEMA declaration</div>
+            <div style="margin-top:6px;" class="muted">Annexure C1 (for 100% EOU shipments)</div>
+          </div>
+        </div>
       </div>
-      <!-- Section 6 -->
-      <div class="section">
-        <div class="row"><div class="cell"></div><div class="cell wide"></div></div>
-        <div class="row"><div class="cell"></div></div>
+
+      <!-- IF REQUIRED section (Duty Drawback / EPCG area) -->
+      <div style="display:flex; gap:6px;">
+        <div style="flex:1; border:1px solid #000; padding:8px; box-sizing:border-box; background:#fff7f0;">
+          <div style="font-weight:800;">Duty Drawback / EPCG</div>
+          <div style="display:flex; gap:8px; margin-top:6px;">
+            <div style="flex:1;">
+              <div style="font-size:11px;"><strong>Bank Details :</strong></div>
+              <div style="font-size:10px; margin-top:6px;">ICICI Bank</div>
+              <div style="font-size:10px;">Account No: 3520 0500 0895</div>
+              <div style="font-size:10px;">IFSC Code: ICIC0003525</div>
+            </div>
+            <div style="width:300px;">
+              <div style="font-size:11px;"><strong>Description of Goods :</strong></div>
+              <div style="font-size:10px; margin-top:6px;">LED Lighting Fixture for Train</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- Section 7 -->
-      <div class="section">
-        <div class="row tall"><div class="cell"></div></div>
-        <div class="footer"></div>
+
+      <!-- Declaration & signature area -->
+      <div class="signature" style="margin-top:6px;">
+        <div class="sig-left">
+          <div style="font-weight:800;">Declaration</div>
+          <div style="font-size:10px; margin-top:6px;">
+            We hereby appoint M/s Jeena & Company/IFS Freight Services Pvt. Ltd/FedEx Express Transportation Supply Chain Services (India) Pvt. Ltd/Umpex Clearing & Shipping Agency Pvt Ltd as our authorized Customs Broker to prepare documents on our behalf and procuring or arrange clearance as per the documents and information provided to them by us. We hereby also declare that the information in the subject invoice is true as per our knowledge.
+          </div>
+          <div style="margin-top:8px; font-weight:700;">For LIVING CARE INDIA</div>
+          <div style="margin-top:10px;">Proprietor: Noopur Dhiman</div>
+        </div>
+        <div class="sig-right">
+          <div style="font-weight:800;">Shipper Signature and Stamp</div>
+          <div style="height:64px; border:1px solid #000; margin-top:8px;"></div>
+          <div style="margin-top:8px; font-size:10px;">Contact Details: 0091 9022750007</div>
+        </div>
       </div>
+
+      <!-- small blue footer box with shipper name and proprietor (mirroring image) -->
+      <div style="margin-top:6px; border:1px solid #000; padding:6px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-weight:800;">For LIVING CARE INDIA</div>
+        <div style="font-size:10px;">Noopur Dhiman / Proprietor</div>
+        <div style="font-size:10px;">Contact Details: 0091 9022750007</div>
+      </div>
+
     </div>
+
+    <!-- right vertical label -->
     <div class="right-bar">MANDATORY / IF REQUIRED</div>
+
   </div>
 </body>
 </html>

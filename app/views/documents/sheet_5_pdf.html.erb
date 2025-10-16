@@ -15,11 +15,11 @@
 </head>
 <body>
 <div style="display: flex; justify-content: center; align-items: center; position: relative; width: 100%;">
-  <div class="header" style="font-weight: bold; text-align: center; flex: 1;">DECLARATION</div>
+  <div class="header" style="font-weight: bold; text-align: center; flex: 1; margin-top: 40px;"><span style="font-size: 20px; font-family: 'Merriweather">DECLARATION</span></div>
   
   <% if @logo_data.present? %>
     <img src="data:image/png;base64,<%= @logo_data %>" 
-         style="width: 120px; height: 80px; object-fit: contain; position: absolute; right: 0;" />
+         style="width: 120px; height: 120px; object-fit: contain; position: absolute; right: 0;" />
   <% end %>
 </div>
 
@@ -59,22 +59,30 @@
 
     <p>I/We undertake to abide by the provisions of Foreign Exchange Management Act, 1999, as amended from time to time, including realisation or repatriation of foreign exchange to or from India.</p>
     <p><em>* To be submitted with the exports goods in the warehouse.</em></p>
-<div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: 40px;">
-  <div style="margin-right: 50px;">
-  <% if @signature_data.present? %>
-    <img src="data:image/png;base64,<%= @signature_data %>" 
-         alt="Signature" 
-         style="height: 60px; object-fit: contain; margin-bottom: 5px;" />
-  <% end %>
+<div style="display: flex; justify-content: space-between; margin-top: 40px;">
+
+  <!-- Left side: Date & Appendix -->
+  <div style="text-align: left;">
+    <p style="margin: 0;">Date: <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></p>
+    <p style="margin: 0;">(ii) APPENDIX-1 shall be omitted.</p>
+    <p style="margin: 0;">[F. No. 450/25/2013- Cus IV (Pt)]</p>
   </div>
-  <p style="margin: 0;">Signature..............................</p>
+
+  <!-- Right side: Signature -->
+  <div style="text-align: center;">
+    <% if @signature_data.present? %>
+      <img src="data:image/png;base64,<%= @signature_data %>" 
+           alt="Signature" 
+           style="height: 120px; object-fit: contain; display: block; margin: 0 auto 5px auto;" />
+    <% end %>
+
+    <% if @input.shipper_name.signatory.present? %>
+      <p style="margin: 2px 0; font-weight: bold; font-size: 14px;"><%= @input.shipper_name.signatory %></p>
+    <% end %>
+    <p style="margin: 2px 0; font-size: 14px;">Signature..............................</p>
+  </div>
+
 </div>
 
-
-
-    <p>Date: <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></p>
-    <p>(ii) APPENDIX-1 shall be omitted.</p>
-    <p>[F. No. 450/25/2013- Cus IV (Pt)]</p>
-  </div>
 </body>
 </html>
