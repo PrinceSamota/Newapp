@@ -324,9 +324,12 @@
             <% if @input&.input_items&.any? %>
               <% total_net_weight_sum = @input.input_items.sum { |item| item.no_of_boxes.to_i * item.net_weight.to_f }
               total_gross_weight_sum = @input.input_items.sum { |item| item.no_of_boxes.to_i * item.gross_weight.to_f } %>
+              <% start_mark = 1 %>
               <% @input.input_items.each do |item| %>
+                 <% boxes = item.no_of_boxes.to_i %>
+                 <% end_mark = start_mark + boxes - 1 %>
                 <tr class="item-row">
-                  <td></td>
+                  <td><%= "#{start_mark}-#{end_mark}" %></td>
                   <td><%= item.no_of_boxes %></td>
                   <td><%= item.description_of_good&.name %></td>
                   <td><%= item.qty_per_box %></td>
@@ -338,6 +341,7 @@
                   <td><%= "#{item.length}×#{item.width}×#{item.height}" if item.length && item.width && item.height %></td>
                   <td><%= ((item.length.to_f * item.width.to_f * item.height.to_f / 1000000) * item.no_of_boxes.to_i).round(2) if item.length && item.width && item.height && item.no_of_boxes %></td>
                   <td><%= item.order_no %></td>
+                  <% start_mark = end_mark + 1 %>
                 </tr>
     
               <% end %>
