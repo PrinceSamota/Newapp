@@ -73,7 +73,7 @@
           <%= f.select :shipper_name_id, 
               options_from_collection_for_select(
                 Client.where(org_id: current_user.org_id).select { |c| c.has_type?("shipper") }, 
-                :id, :name, @input.shipper_name_id
+                :id, :company_name, @input.shipper_name_id
               ),
               { include_blank: "Select Shipper" },
               { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" } %>
@@ -84,7 +84,7 @@
           <%= f.select :consignee_name_id, 
               options_from_collection_for_select(
                 Client.where(org_id: current_user.org_id).select { |c| c.has_type?("consignee") }, 
-                :id, :name, @input.consignee_name_id
+                :id, :company_name, @input.consignee_name_id
               ),
               { include_blank: "Select Consignee" },
               { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" } %>
@@ -95,7 +95,7 @@
           <%= f.select :importer_name_id, 
               options_from_collection_for_select(
                 Client.where(org_id: current_user.org_id).select { |c| c.has_type?("buyer") }, 
-                :id, :name, @input.importer_name_id
+                :id, :company_name, @input.importer_name_id
               ),
               { include_blank: "Select Importer" },
               { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" } %>

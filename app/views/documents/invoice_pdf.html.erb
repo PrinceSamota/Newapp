@@ -74,7 +74,7 @@
   /* Declaration & Signature */
   .declaration-box { padding: 10px; height: 80px; border-bottom: 1px solid #000; text-align: center; }
   .signature-box {
-    margin-top: 30px;
+    margin-top: 0px;
     border-top: 1px solid #ccc;
     padding-top: 15px;
     font-family: 'Arial', sans-serif;
@@ -180,12 +180,12 @@
     </div>
     <div class="middle-box">
       <span class="user-name">CONSIGNEE</span> </br>
-        <%= @input.consignee_name.name %></br>
+        <%= @input.consignee_name.company_name %></br>
         <%= @input.consignee_name.address1 %></br>
         <%= @input.consignee_name.address2 %></br>
         <%= @input.consignee_name.address3 %></br>
         <%= @input.consignee_name.country %></br>
-        <span class="user-name_td">Contact person: </span></br>
+        <span class="user-name_td">Contact person: <%= @input.consignee_name.name %> </span></br>
         <span class="user-name_td">Email: </span><%= @input.consignee_name.email %></br>
         <span class="user-name_td">Contact No: </span><%= @input.consignee_name.contact_no %></br>
         <span class="user-name_td">EORI No: </span><%= @input.consignee_name.eori_no %></br>
@@ -197,7 +197,7 @@
     <div class="country-single-box"></div>
     <div class="country-empty-box">
       <span class="user-name">BUYER IF OTHER THAN CONSIGNEE:</span> </br>
-       <%= @input.importer_name.name %></br>
+       <%= @input.importer_name.company_name %></br>
        <%= @input.importer_name.address1 %></br>
        <%= @input.importer_name.address2 %></br>
        <%= @input.importer_name.address3 %></br>
@@ -252,12 +252,12 @@
     <table class="items-table">
       <thead>
         <tr>
-          <th>Mark/No</th>
+          <th style="width: 10%;">Mark/No</th>
           <th>No. of Packages</th>
-          <th>Complete Description of Goods</th>
-          <th>HSN</th>
-          <th>QTY pcs</th>
-          <th>Unit Value</th>
+          <th style="width: 30%;">Complete Description of Goods</th>
+          <th style="width: 10%;">HSN</th>
+          <th style="width: 10%;">QTY pcs</th>
+          <th style="width: 10%;">Unit Value</th>
           <th>Total Value</th>
           <th>Currency</th>
         </tr>
@@ -324,7 +324,7 @@
       <% if @input.shipper_name.signatory.present? %>
         <div class="signature-name"><%= @input.shipper_name.signatory %></div>
       <% end %>
-      <div class="signature-label">SIGNATURE OF SHIPPER (Name, title & signature)</div>
+      <div class="signature-label">Authorised Signatory</div>
     </div>
 
     <!-- RIGHT SIDE (Date) -->
