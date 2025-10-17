@@ -76,8 +76,8 @@
     <div class="form-row">
       <div class="form-label">5. Whether seller and buyer are related:</div>
       <div class="form-value" style="line-height: 2;">
-      <span style="vertical-align: middle;">Yes</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2611;</span> &nbsp;&nbsp;
-      <span style="vertical-align: middle;">No</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span>
+      <span style="vertical-align: middle;">Yes</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span> &nbsp;&nbsp;
+      <span style="vertical-align: middle;">No</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2611;</span>
     </div>
 
     </div>
@@ -95,12 +95,12 @@
     
     <div class="form-row">
       <div class="form-label">7. Terms of Payment:</div>
-      <div class="form-value">Advance</div>
+      <div class="form-value"><%= @input.shipper_name.payment_terms %></div>
     </div>
     
     <div class="form-row">
       <div class="form-label">8. Terms of Delivery:</div>
-      <div class="form-value">FOB</div>
+      <div class="form-value"><%= @input.shipper_name.shipping_terms %></div>
     </div>
     
     <div class="form-row">
@@ -135,7 +135,7 @@
       <% if @input.shipper_name.signatory.present? %>
         <p style="margin: 2px 0; font-weight: bold; font-size: 14px;"><%= @input.shipper_name.signatory %></p>
       <% end %>
-      <p style="margin: 2px 0; font-size: 14px; ">Signature of the Exporter</p>
+      <p style="margin: 2px 0; font-size: 14px; ">Authorised Signatory</p>
     </div>
   </div>
 </div>
