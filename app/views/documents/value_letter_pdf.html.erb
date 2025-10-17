@@ -5,30 +5,30 @@
   <title>Export Value Declaration</title>
   <style>
     @page { size: A4; margin: 15mm; }
-    body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }
+    body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; margin-left: 70px; }
     .header { text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px; }
     .sub-header { text-align: center; font-weight: bold; margin-bottom: 10px; margin-top: 50px; }
     .form-section { margin: 15px 0; }
     .form-row { margin-bottom: 10px; padding: 8px 0; }
     .form-label { width: 60%; font-weight: bold; padding-right: 20px; }
-    .form-value { width: 40%; }
+    .form-value { width: 100%; }
      .signature { margin-top: 40px; text-align: right; }
     .signature img { width: auto; height: 60px; object-fit: contain; display: block; margin-bottom: 5px; margin-right: 10px; }
   </style>
 </head>
 <body>
-<div class="header" style="position: relative; text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 20px;">
-<!-- Logo on top-right -->
-<% if @logo_data.present? %>
-  <img src="data:image/png;base64,<%= @logo_data %>" 
-       style="position: absolute; top: 0; right: 10px; width: 120px; height: 80px; object-fit: contain;" />
-<% end %>
+<div class="header" style="position: relative; text-align: center; font-weight: bold; font-size: 16px; margin-bottom: 30px; line-height: 1.2;">
+  <!-- Logo on top-right -->
+  <% if @logo_data.present? %>
+    <img src="data:image/png;base64,<%= @logo_data %>" 
+         style="position: absolute; margin-top: -50px; right: 10px; width: 120px; height: 120px; object-fit: contain;" />
+  <% end %>
 
-<!-- Centered header text -->
-<div>
-  Annexure-A <br>
-  EXPORT VALUE DECLARATION
-</div>
+  <!-- Centered header text -->
+  <div style="margin-top: 40px; font-size: 18px; line-height: 1.3; text-transform: uppercase;">
+    Annexure-A <br>
+    EXPORT VALUE DECLARATION
+  </div>
 </div>
 
 
@@ -42,30 +42,55 @@
       <div class="form-value"></div>
     </div>
     
-    <div class="form-row">
-      <div class="form-label">2. Invoice No. & Date:</div>
-      <div class="form-value"><%=@input.invoice_no %> &nbsp;&nbsp; <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></div>
-    </div>
+  <div class="form-row" style="display: flex; align-items: center; gap: 10px;">
+    <div class="form-label" style="font-weight: bold;">2. Invoice No. & Date:</div>
+      <div class="form-value" style="display: inline-block;">
+        <span><%= @input.invoice_no %></span> &nbsp; | &nbsp; 
+        <span><%= @input.invoice_date&.strftime("%-d-%b-%Y") %></span>
+      </div>
+  </div>
+
     
     <div class="form-row">
       <div class="form-label">3. Nature of Transaction:</div>
-      <div class="form-value">Sale ☑ &nbsp;&nbsp; Sale on consignment basis ☐ &nbsp;&nbsp; Gift ☐ &nbsp;&nbsp; Sample ☐ &nbsp;&nbsp; Other ☐</div>
+      <div class="form-value" style="line-height: 2;">
+        <span style="vertical-align: middle;">Sale</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2611;</span> &nbsp;&nbsp;
+        <span style="vertical-align: middle;">Sale on consignment basis</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span> &nbsp;&nbsp;
+        <span style="vertical-align: middle;">Gift</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span> &nbsp;&nbsp;
+        <span style="vertical-align: middle;">Sample</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span> &nbsp;&nbsp;
+        <span style="vertical-align: middle;">Other</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span>
+      </div>
     </div>
     
     <div class="form-row">
       <div class="form-label">4. Method of Valuation:</div>
       <div class="form-value">(See Export Valuation Rules)</div>
-      <div class="form-value">Rule 3 ☐ &nbsp;&nbsp; Rule 4 ☐ &nbsp;&nbsp; Rule 5 ☐&nbsp;&nbsp; Rule 6 ☐</div>
+      <div class="form-value" style="line-height: 2;">
+      <span style="vertical-align: middle;">Rule 3</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span> &nbsp;&nbsp;
+      <span style="vertical-align: middle;">Rule 4</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span> &nbsp;&nbsp;
+      <span style="vertical-align: middle;">Rule 5</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span> &nbsp;&nbsp;
+      <span style="vertical-align: middle;">Rule 6</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span>
+    </div>    
     </div>
     
     <div class="form-row">
       <div class="form-label">5. Whether seller and buyer are related:</div>
-      <div class="form-value">Yes ☑ &nbsp;&nbsp; No ☐</div>
+      <div class="form-value" style="line-height: 2;">
+      <span style="vertical-align: middle;">Yes</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2611;</span> &nbsp;&nbsp;
+      <span style="vertical-align: middle;">No</span> <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span>
+    </div>
+
     </div>
     
     <div class="form-row">
       <div class="form-label">6. If yes, whether relationship has influenced the price:</div>
-      <div class="form-value">Yes ☐ &nbsp;&nbsp; No ☐</div>
+      <div class="form-value" style="line-height: 2;">
+      <span style="vertical-align: middle;">Yes</span> 
+      <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span> &nbsp;&nbsp;
+      <span style="vertical-align: middle;">No</span> 
+      <span style="font-size:20px; color:#000; vertical-align: middle;">&#x2610;</span>
+    </div>
+
     </div>
     
     <div class="form-row">
@@ -80,12 +105,10 @@
     
     <div class="form-row">
       <div class="form-label">9. Previous exports of identical/similar goods, if any:</div>
-      <div class="form-value">-</div>
     </div>
     
     <div class="form-row">
       <div class="form-label">10. Any other relevant information:(Attach separate sheet, if necessary)  </div>
-      <div class="form-value">-</div>
     </div>
   </div>
 
@@ -98,17 +121,25 @@
     <p><strong>Place:</strong> Thane</p>
     <p><strong>Date:</strong> <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></p>
   </div>
-<div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: 40px;">
+  <div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: 40px;">
+  <!-- Signature Image -->
   <div style="margin-right: 50px;">
-  <% if @signature_data.present? %>
-    <img src="data:image/png;base64,<%= @signature_data %>" 
-         alt="Signature" 
-         style="height: 60px; object-fit: contain; margin-bottom: 5px;" />
-  <% end %>
+    <% if @signature_data.present? %>
+      <img src="data:image/png;base64,<%= @signature_data %>" 
+           alt="Signature" 
+           style="height: 120px; object-fit: contain; display: block; margin: 0 auto 5px auto;" />
+    <% end %>
+    
+    <!-- Centered text below the image -->
+    <div style="text-align: center;">
+      <% if @input.shipper_name.signatory.present? %>
+        <p style="margin: 2px 0; font-weight: bold; font-size: 14px;"><%= @input.shipper_name.signatory %></p>
+      <% end %>
+      <p style="margin: 2px 0; font-size: 14px; ">Signature of the Exporter</p>
+    </div>
   </div>
-  <p style="margin: 0;">_________________________</p>
-  <p style="margin: 0;">Signature of the Exporter</p>
 </div>
+
 
 
 

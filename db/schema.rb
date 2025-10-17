@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_13_124035) do
+ActiveRecord::Schema[7.2].define(version: 2025_10_16_074201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -134,6 +134,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_13_124035) do
     t.text "remark"
     t.string "advance_authorization_lic_no_and_date"
     t.string "advance_authorization_file_no"
+    t.string "payment_terms"
+    t.string "signatory"
   end
 
   create_table "complete_description_of_goods", force: :cascade do |t|

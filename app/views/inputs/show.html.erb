@@ -43,10 +43,49 @@
         <% end %>
       </div>
     </div>
+   <!-- Input Details Section -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Invoice Input</h3>
+      <% if @input.input_details.any? %>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marks No</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Packages</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type of Package</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description of Goods</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HSN</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty PCS</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <% @input.input_details.each do |detail| %>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.marks_no&.name.presence || "—" %></td>
+                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.no_of_packages.presence || "—" %></td>
+                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.type_of_package&.name.presence || "—" %></td>
+                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.complete_description_of_good&.name.presence || "—" %></td>
+                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.hsn&.name.presence || "—" %></td>
+                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.qty_pcs.presence || "—" %></td>
+                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.price.presence || "—" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="text-center py-8 text-gray-500">
+          <i class="fa-solid fa-box-open text-4xl mb-4"></i>
+          <p>No input details found</p>
+        </div>
+      <% end %>
+    </div>
 
     <!-- Input Items Section -->
-    <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Input Items</h3>
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-6 mt-8">
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Packing List Input</h3>
       <% if @input.input_items.any? %>
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
@@ -84,84 +123,46 @@
       <% end %>
     </div>
 
-    <!-- Input Details Section -->
-    <div class="bg-white rounded-lg shadow-lg p-8">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Input Details</h3>
-      <% if @input.input_details.any? %>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marks No</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Packages</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type of Package</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description of Goods</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HSN</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty PCS</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <% @input.input_details.each do |detail| %>
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.marks_no&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.no_of_packages.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.type_of_package&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.complete_description_of_good&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.hsn&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.qty_pcs.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.price.presence || "—" %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <div class="text-center py-8 text-gray-500">
-          <i class="fa-solid fa-box-open text-4xl mb-4"></i>
-          <p>No input details found</p>
-        </div>
-      <% end %>
-    </div>
+ 
     <div class="bg-blue-50 p-6 rounded-xl shadow-sm mt-8">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">Generate Documents</h3>
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-      <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
-        <%= f.hidden_field :input_id, value: @input.id %>
-        <%= f.hidden_field :document_type, value: "invoice" %>
-        <%= f.submit "Invoice PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #2563eb;" %>
-      <% end %>
-      
-      <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
-        <%= f.hidden_field :input_id, value: @input.id %>
-        <%= f.hidden_field :document_type, value: "packing_list" %>
-        <%= f.submit "Packing List PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #16a34a;" %>
-      <% end %>
-      
-      <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
-        <%= f.hidden_field :input_id, value: @input.id %>
-        <%= f.hidden_field :document_type, value: "new_si" %>
-        <%= f.submit "New SI PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #ca8a04;" %>
-      <% end %>
-      
-      <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
-        <%= f.hidden_field :input_id, value: @input.id %>
-        <%= f.hidden_field :document_type, value: "value_letter" %>
-        <%= f.submit "Value Letter PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #9333ea;" %>
-      <% end %>
-      
-      <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
-        <%= f.hidden_field :input_id, value: @input.id %>
-        <%= f.hidden_field :document_type, value: "sheet_5" %>
-        <%= f.submit "Sheet 5 PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #dc2626;" %>
-      <% end %>
-      
-      <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "inline" do |f| %>
-        <%= f.hidden_field :input_id, value: @input.id %>
-        <%= f.hidden_field :document_type, value: "scomet" %>
-        <%= f.submit "Scomet PDF", class: "text-white px-4 py-3 rounded-lg transition text-center w-full", style: "background-color: #4f46e5;" %>
-      <% end %>
-    </div>
-  </div>
+  <h3 class="text-lg font-semibold text-gray-800 mb-6">Generate Documents</h3>
+
+  <ul class="space-y-4"> <!-- Increased space between list items -->
+    <% docs = [
+      { type: "invoice", label: "Invoice", color: "#2563eb" },
+      { type: "packing_list", label: "Packing List", color: "#16a34a" },
+      { type: "new_si", label: "Shipping Instructions", color: "#ca8a04" },
+      { type: "value_letter", label: "EVD", color: "#9333ea" },
+      { type: "sheet_5", label: "Declaration", color: "#dc2626" },
+      { type: "scomet", label: "Scomet", color: "#4f46e5" },
+      { type: "anx", label: "ANX", color: "#0ea5e9" }
+    ] %>
+
+    <% docs.each do |doc| %>
+      <li>
+        <%= form_with url: generate_pdf_documents_path(format: :pdf), method: :post, target: "_blank", local: true, class: "block w-full" do |f| %>
+          <%= f.hidden_field :input_id, value: @input.id %>
+          <%= f.hidden_field :document_type, value: doc[:type] %>
+
+          <button 
+            type="submit" 
+            class="flex items-center justify-between w-full text-white px-5 py-3.5 rounded-lg shadow-md transition-transform hover:scale-[1.02] hover:opacity-95 cursor-pointer"
+            style="background-color: <%= doc[:color] %>;"
+          >
+            <span class="flex items-center space-x-3 p-4">
+              <!-- Heroicon Download Icon -->
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4" />
+              </svg>
+              <span class="font-medium text-sm md:text-base"><%= doc[:label] %></span>
+            </span>
+            <span class="text-xs md:text-sm opacity-90 italic p-4">(Download PDF)</span>
+          </button>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+</div>
+
   </div>
 </div>

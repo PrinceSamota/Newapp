@@ -52,26 +52,35 @@
 
 <!-- Add Item Template Script -->
 <script>
-  document.addEventListener("turbo:load", () => {
-    const addItemBtn = document.getElementById("add-item");
-    if (addItemBtn && !addItemBtn.dataset.listenerAttached) {
-      addItemBtn.dataset.listenerAttached = "true"; // prevent multiple attachments
+document.addEventListener("turbo:load", () => {
+  const addItemBtn = document.getElementById("add-item");
+  const form = document.getElementById("po-form");
 
-      addItemBtn.addEventListener("click", () => {
-        const template = document.getElementById("item-template").innerHTML;
-        const container = document.getElementById("items");
-        container.insertAdjacentHTML("beforeend", template.replace(/TEMPLATE/g, new Date().getTime()));
-      });
-    }
+  // === ADD ITEM BUTTON ===
+  if (addItemBtn && !addItemBtn.dataset.listenerAttached) {
+    addItemBtn.dataset.listenerAttached = "true"; // prevent multiple bindings
+    addItemBtn.addEventListener("click", () => {
+      const template = document.getElementById("item-template").innerHTML;
+      const container = document.getElementById("items");
+      container.insertAdjacentHTML("beforeend", template.replace(/TEMPLATE/g, new Date().getTime()));
+      initSearchableInputs(); // reinit for new row
     });
-    document.addEventListener("turbo:load", () => {
-    const form = document.getElementById("po-form");
-    if (!form) return;
-  
+  }
+
+  // === REMOVE ITEM ROW ===
+  document.body.addEventListener("click", function (e) {
+    if (e.target.closest(".remove-raw-material")) {
+      const row = e.target.closest(".production-order-row");
+      if (row) row.remove();
+    }
+  });
+
+  // === VALIDATION ON SUBMIT ===
+  if (form) {
     form.addEventListener("submit", (e) => {
       let isValid = true;
-  
-      // Remove previous errors
+
+      // Clear previous errors
       form.querySelectorAll(".required-field").forEach((field) => {
         field.classList.remove("border-red-500");
         const next = field.nextElementSibling;
@@ -79,32 +88,140 @@
           next.remove();
         }
       });
-  
+
       // Validate fields
       form.querySelectorAll(".required-field").forEach((field) => {
-  if (field.offsetParent !== null && !field.value.trim()) {
-    isValid = false;
-    field.classList.add("border-red-500");
-  
-    const error = document.createElement("p");
-    error.textContent = "This field is required";
-    error.className = "text-red-500 text-xs mt-1";
-    field.insertAdjacentElement("afterend", error);
-  }
-  });
-  
-      // Only prevent if validation fails
-      if (!isValid) {
-        e.preventDefault();
-      }
-    });
-  });
-  document.addEventListener("turbo:load", () => {
-    document.body.addEventListener("click", function (e) {
-      if (e.target.closest(".remove-raw-material")) {
-        const row = e.target.closest(".production-order-row");
-        if (row) row.remove();
-      }
-    });
+        if (field.offsetParent !== null && !field.value.trim()) {
+          isValid = false;
+          field.classList.add("border-red-500");
+
+          const error = document.createElement("p");
+          error.textContent = "This field is required";
+          error.className = "text-red-500 text-xs mt-1";
+          field.insertAdjacentElement("afterend", error);
+        }
       });
+
+      if (!isValid) e.preventDefault();
+    });
+  }
+
+  // === INITIALIZE SEARCHABLE INPUT + BOM LOGIC ===
+  initSearchableInputs();
+
+  function initSearchableInputs() {
+    document.querySelectorAll('[data-role="searchable-input"]').forEach(input => {
+      if (input.dataset.listenerAttached) return; // prevent duplicate listeners
+      input.dataset.listenerAttached = "true";
+
+      const wrapper = input.closest(".searchable-wrapper");
+      const dropdown = wrapper.querySelector('[data-role="searchable-dropdown"]');
+      const clearBtn = wrapper.querySelector(".clear-search-input");
+
+      if (input.value.trim() !== "") clearBtn.classList.remove("hidden");
+
+      input.addEventListener("input", () => {
+        const filter = input.value.toLowerCase();
+        dropdown.querySelectorAll("li").forEach(li => {
+          li.style.display = li.textContent.toLowerCase().includes(filter) ? "" : "none";
+        });
+        dropdown.classList.remove("hidden");
+        clearBtn.classList.remove("hidden");
+      });
+
+      input.addEventListener("focus", () => dropdown.classList.remove("hidden"));
+      input.addEventListener("blur", () => setTimeout(() => dropdown.classList.add("hidden"), 200));
+
+      dropdown.querySelectorAll("li").forEach(li => {
+        li.addEventListener("click", () => {
+          input.value = li.textContent;
+          dropdown.classList.add("hidden");
+          clearBtn.classList.remove("hidden");
+        
+          const row = input.closest(".production-order-row");
+          const skuInput = row.querySelector(".sku-input");
+          const itemInput = row.querySelector(".item-name-input");
+          const stockField = row.querySelector("#current-stock-field");
+          const itemMasterIdField = row.querySelector(".item-master-id-field");
+        
+          const sku = li.dataset.skuId;
+          const itemName = li.dataset.itemName;
+          const stock = li.dataset.stock;
+          const itemId = li.dataset.itemId;
+        
+          skuInput.value = sku;
+          itemInput.value = itemName;
+          skuInput.readOnly = true;
+          itemInput.readOnly = true;
+        
+          stockField.value = stock;
+          itemMasterIdField.value = itemId;
+        
+          checkBOMUsage(row, sku);
+        });
+      });
+
+      clearBtn?.addEventListener("click", (e) => {
+        e.preventDefault();
+        const row = clearBtn.closest(".production-order-row");
+        const skuInput = row.querySelector(".sku-input");
+        const itemInput = row.querySelector(".item-name-input");
+        const stockField = row.querySelector("#current-stock-field");
+        const itemMasterIdField = row.querySelector(".item-master-id-field");
+        const bomField = row.querySelector(".bom-field");
+        const bomIdContainer = row.querySelector(".bom-id-container");
+        const createBtn = row.querySelector(".create-bom-btn");
+
+        skuInput.value = "";
+        itemInput.value = "";
+        stockField.value = "";
+        itemMasterIdField.value = "";
+
+        skuInput.readOnly = false;
+        itemInput.readOnly = false;
+
+        bomField.value = "";
+        bomIdContainer.innerHTML = "";
+
+        createBtn?.classList.add("hidden");
+        clearBtn.classList.add("hidden");
+      });
+    });
+  }
+
+  // === BOM FETCH FUNCTION ===
+  function checkBOMUsage(row, sku) {
+    const bomField = row.querySelector(".bom-field");
+    const bomWrapper = row.querySelector(".bom-input-wrapper");
+    const createBtn = row.querySelector(".create-bom-btn");
+    const bomIdContainer = row.querySelector(".bom-id-container");
+
+    const inputField = row.querySelector('[name*="[sku_id]"]');
+    const itemIndex = inputField?.name?.match(/\[(\d+)\]/)?.[1];
+
+    fetch(`/check_bom_usage?sku_id=${sku}`)
+      .then(res => res.json())
+      .then(data => {
+        bomIdContainer.innerHTML = "";
+
+        if (data.used) {
+          bomField.value = data.bom_names.join(", ");
+          data.bom_ids.forEach(id => {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = `production_order[production_order_items_attributes][${itemIndex}][bom_ids][]`;
+            input.value = id;
+            input.classList.add("bom-id-field");
+            bomIdContainer.appendChild(input);
+          });
+          bomWrapper.classList.remove("hidden");
+          createBtn.classList.add("hidden");
+        } else {
+          bomField.value = "";
+          bomWrapper.classList.add("hidden");
+          createBtn.classList.remove("hidden");
+        }
+      });
+  }
+});
 </script>

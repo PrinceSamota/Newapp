@@ -62,9 +62,9 @@
   
   /* Items table */
   .table-section { border-bottom: 1px solid #000; }
-  .items-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 10%; }
+  .items-table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 2%; }
   .items-table th, .items-table td { border: 1px solid #000; height: 35px; }
-  .items-table th { font-weight: bold; text-align: center; }
+  .items-table th, .items-table td { text-align: center; }
   
   /* Bottom row */
   .bottom-row { display: table; width: 100%; border-bottom: 1px solid #000; table-layout: fixed; }
@@ -73,19 +73,73 @@
   
   /* Declaration & Signature */
   .declaration-box { padding: 10px; height: 80px; border-bottom: 1px solid #000; text-align: center; }
-  .signature-box { padding: 15px; height: 100px; }
+  .signature-box {
+    margin-top: 30px;
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+    font-family: 'Arial', sans-serif;
+  }
+
+  .signature-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .signature-left {
+    width: 60%;
+  }
+
+  .signature-line {
+    border-bottom: 2px dotted #000;
+    height: 140px;
+    margin-bottom: 6px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .signature-line img {
+    max-height: 120px;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .signature-label {
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 4px;
+  }
+
+  .signature-name {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #222;
+    margin-top: 2px;
+  }
+
+  .signature-right {
+    text-align: right;
+    font-size: 12px;
+    font-weight: 600;
+    color: #333;
+  }
   
   </style>
 </head>
 <body>
 <div class="main-container">
   <!-- Header -->
-  <div class="header" style="text-align: center; position: relative; display: flex; align-items: center; justify-content: center; height: 100px; ">
+  <div class="header" style="text-align: center; position: relative; display: flex; align-items: center; justify-content: center; height: 130px; ">
     COMMERCIAL INVOICE
     <div class="logo-box">
     <% if @logo_data.present? %>
     <img src="data:image/png;base64,<%= @logo_data %>" 
-         style="width: 120px; height: 80px; object-fit: contain;" />
+         style="width: 120px; height: 120px; object-fit: contain;" />
   <% end %>
   
     </div>
@@ -114,6 +168,7 @@
        <%= @input.shipper_name.address1 %></br>
        <%= @input.shipper_name.address2 %></br>
        <%= @input.shipper_name.address3 %></br>
+       <%= @input.shipper_name.country %></br>
        <span class="user-name_td">Contact person: <%= @input.shipper_name.name %></span></br>
        <span class="user-name_td">TEL. NO: </span><%= @input.shipper_name.contact_no %></br>
        <span class="user-name_td">Email: </span><%= @input.shipper_name.email %></br>
@@ -129,6 +184,7 @@
         <%= @input.consignee_name.address1 %></br>
         <%= @input.consignee_name.address2 %></br>
         <%= @input.consignee_name.address3 %></br>
+        <%= @input.consignee_name.country %></br>
         <span class="user-name_td">Contact person: </span></br>
         <span class="user-name_td">Email: </span><%= @input.consignee_name.email %></br>
         <span class="user-name_td">Contact No: </span><%= @input.consignee_name.contact_no %></br>
@@ -145,6 +201,7 @@
        <%= @input.importer_name.address1 %></br>
        <%= @input.importer_name.address2 %></br>
        <%= @input.importer_name.address3 %></br>
+       <%= @input.importer_name.country %></br>
     </div>
   </div>
   <div class="country-single-row">
@@ -238,8 +295,8 @@
         </tr>
         <tr>
           <td colspan="8" style="border:none; padding: 10px; text-align: left;">
-            <strong>Payment Terms:</strong> Advance<br>
-            Shipping Terms: <br>
+            Payment Terms: <%= @input.shipper_name.payment_terms %><br>
+            Shipping Terms: <%= @input.shipper_name.shipping_terms %> <br>
             I DECLARE ALL THE INFORMATION CONTAINED IN THIS INVOICE TO BE TRUE <br>
             AND CORRECT.
           </td>
@@ -254,24 +311,29 @@
   </div>
 
   <!-- Signature Box -->
-  <div class="signature-box">
-    <div style="display: table; width: 100%; height: 100%;">
-      <div style="display: table-cell; width: 50%; vertical-align: top; padding-right: 20px;">
-        <div style="border-bottom: 2px dotted #000; height: 60px; margin-bottom: 10px; padding: 5px;">
-          <% if @signature_data.present? %>
-            <img src="data:image/png;base64,<%= @signature_data %>" style="width: 100%; height: 100%; object-fit: contain;" />
-          <% end %>
-        </div>
-        <div style="text-align: center; font-size: 10px; font-weight: bold;">
-          SIGNATURE OF SHIPPER (Name, title & signature)
-        </div>
+  
+<div class="signature-box">
+  <div class="signature-section">
+    <!-- LEFT SIDE (Signature + Name + Label) -->
+    <div class="signature-left">
+      <div class="signature-line">
+        <% if @signature_data.present? %>
+          <img src="data:image/png;base64,<%= @signature_data %>" alt="Signature" style="height: 120px; object-fit: contain;" />
+        <% end %>
       </div>
-      <div style="display: table-cell; width: 50%; vertical-align: top; text-align: right;">
-        <strong>DATE:</strong><br>
-        <%= @input.invoice_date&.strftime("%-d-%b-%Y") %>
-      </div>
+      <% if @input.shipper_name.signatory.present? %>
+        <div class="signature-name"><%= @input.shipper_name.signatory %></div>
+      <% end %>
+      <div class="signature-label">SIGNATURE OF SHIPPER (Name, title & signature)</div>
+    </div>
+
+    <!-- RIGHT SIDE (Date) -->
+    <div class="signature-right">
+      <%= @input.invoice_date&.strftime("%-d-%b-%Y") %><br>
+      <strong style="margin-right: 25px;">DATE</strong>
     </div>
   </div>
+</div>
 </div>
 </body>
 </html>

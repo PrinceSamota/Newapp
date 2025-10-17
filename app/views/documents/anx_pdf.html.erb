@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Declaration</title>
+  <style>
+    @page { size: A4; margin: 15mm; }
+    body { font-family: Arial, sans-serif; font-size: 16px; line-height: 1.6; }
+    .header { text-align: center; font-weight: bold; font-size: 20px; margin-bottom: 20px; }
+    .content { margin: 20px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    td, th { border: 1px solid #000; padding: 6px; text-align: center; }
+    .signature { margin-top: 50px; text-align: right; }
+    .invoice-details {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+  
+    .invoice-details li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+  
+    .invoice-details span {
+      font-weight: bold;
+      margin-left: 20px; /* gap between text and span */
+      min-width: 250px; /* adjust as per your layout */
+      text-align: left;
+    }
+  
+    .invoice-header p {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: normal;
+    }
+  
+    .invoice-header span {
+      font-weight: bold;
+      margin-left: 20px;
+    }
+  </style>
+</head>
+<body>
+<div style="display: flex; justify-content: center; align-items: center; position: relative; width: 100%;">
+  <div class="header" style="font-weight: bold; text-align: center; flex: 1; margin-top: 60px;">Annexure for Advance Authorization </div>
+  
+  <% if @logo_data.present? %>
+    <img src="data:image/png;base64,<%= @logo_data %>" 
+         style="width: 120px; height: 120px; object-fit: contain; position: absolute; right: 0;" />
+  <% end %>
+</div>
+
+
+  <div class="content">
+    <p>ANNEXURE - A ATTACHED WITH </p>
+
+<ol class="invoice-details">
+ <li>
+    INVOICE NO:
+    <span><%= @input.invoice_no %></span>
+  </li>
+  <li>
+    INVOICE DATE:
+    <span><%= @input.invoice_date&.strftime("%-d-%b-%Y") %></span>
+  </li>
+  <li>
+    EXPORT UNDER ADVANCE LICENCE NO:
+    <span><%= @input.shipper_name.advance_authorization_lic_no_and_date %></span>
+  </li>
+  <li>
+    FILE NO:
+    <span><%= @input.shipper_name.advance_authorization_file_no %></span>
+  </li>
+  <li>
+    Export item as per custom invoice:
+    <% if @input&.input_details&.any? %>
+    <% total_qty_pcs = @input.input_details.sum { |item| item.qty_pcs.to_i } %>
+    <span><%= total_qty_pcs %></span>
+    <% end %>
+  </li>
+  <li>
+    Export order quantity:
+    <span></span>
+  </li>
+</ol>
+
+    <!-- Text above the table -->
+<!-- Text right above the table with no spacing -->
+<span style="display: block; margin-top: 40px; padding: 0; font-weight: bold;">
+  Exematated material used for manufacturing these products:
+</span>
+
+<!-- Table immediately below -->
+<table border="1" cellpadding="5" cellspacing="0" style="margin: 0; border-collapse: collapse;">
+  <tr>
+    <td style="width: 500px;">List of Inputs </td>
+    <td>Input in export product</td>
+    <td>Input consumed</td>
+    <td>UOM (NOS/Set) </td>
+  </tr>
+  <tr>
+    <td>Aluminium Profile Set with PC cover and End Caps</td>
+    <td>1</td>
+    <td><%= total_qty_pcs %></td>
+    <td>PCS</td>
+  </tr>
+  <tr>
+    <td>PCBA for LED Fixture for Train</td>
+    <td>2</td>
+    <td><%= total_qty_pcs*2 %></td>
+    <td>PCS</td>
+  </tr>
+  <tr>
+    <td>DC to DC Converter PCBA for LED Fixture for Train</td>
+    <td>1</td>
+    <td><%= total_qty_pcs %></td>
+    <td>PCS</td>
+  </tr>
+    <tr>
+    <td>PC Cover Set for DC to DC Converter PCBA</td>
+    <td>1</td>
+    <td><%= total_qty_pcs %></td>
+    <td>PCS</td>
+  </tr>
+</table>
+
+
+
+<div style="display: flex; flex-direction: column; align-items: flex-end; margin-top: 40px;">
+  <% if @signature_data.present? %>
+    <div style="margin-right: 50px; display: flex; flex-direction: column; align-items: center;">
+      <!-- Signature Image -->
+      <img src="data:image/png;base64,<%= @signature_data %>" 
+           alt="Signature" 
+           style="height: 120px; object-fit: contain; margin-bottom: 10px;" />
+
+      <!-- Signatory Name -->
+      <% if @input.shipper_name.signatory.present? %>
+        <p style="margin: 0; font-weight: bold; font-size: 14px;"><%= @input.shipper_name.signatory %></p>
+      <% end %>
+
+      <!-- Signature Line -->
+      <p style="margin: 0; font-size: 14px;">Signature..............................</p>
+    </div>
+  <% end %>
+</div>
+
+
+
+</body>
+</html>

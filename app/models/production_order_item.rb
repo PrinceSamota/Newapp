@@ -2,6 +2,9 @@ class ProductionOrderItem < ApplicationRecord
   belongs_to :production_order
   belongs_to :bill_of_material, optional: true
   belongs_to :item_master
+  validates :sku_id, presence: true
+  validates :quantity, presence: true
+  validates :bom_ids, presence: true
 
 
   validates :quantity, presence: true
