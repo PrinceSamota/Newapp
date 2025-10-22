@@ -117,6 +117,17 @@ class DocumentsController < ApplicationController
         @signature_data = Base64.strict_encode64(signature_file)
       end
     end
+    if @document_type == "new_si"
+      if @input&.shipper_name&.logo&.attached?
+        logo_file = @input.shipper_name.logo.download
+        @logo_data = Base64.strict_encode64(logo_file)
+      end
+    
+      if @input&.shipper_name&.signature&.attached?
+        signature_file = @input.shipper_name.signature.download
+        @signature_data = Base64.strict_encode64(signature_file)
+      end
+    end
 
     respond_to do |format|
       format.pdf do
