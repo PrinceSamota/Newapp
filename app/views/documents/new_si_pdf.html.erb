@@ -19,8 +19,8 @@ body{
 /* ---- base container ---- */
 .sheet{
   position:relative;
-  width:210mm;
-  height:297mm;
+  width:100%;
+  height:100%;
   border:2px solid #000;
   box-sizing:border-box;
   background:#fff;
@@ -76,16 +76,18 @@ body{
   background: #e7d4fa;
   padding: 3px 5px;
   margin: 2px 0;
-  border:1px solid #000;
   font-weight:700;
-  font-size:9.5px;
+  font-size:10px;
   text-align:center;
+  width: 100%;
+    white-space: nowrap;   /* ✨ prevents line break */
+  letter-spacing: 0.5px;
 }
 /* ---- main page content ---- */
 .main{
   position:absolute;
   top:0; left:18mm; right:18mm; bottom:0;
-  padding:6px;
+ 
   display:flex;
   flex-direction:column;
   gap:6px;
@@ -101,16 +103,82 @@ body{
   font-size:11px;
   text-align:center;
   border-bottom:2px solid #000;
+  width: 930px; position: relative; left: -18mm; 
 }
 
 /* tables */
-table{width:100%;border-collapse:collapse;font-size:10px;}
+table{width:100%;border-collapse:collapse;font-size:8px;}
 th,td{border:1px solid #000;padding:3px 4px;vertical-align:top;}
 th{background:#f3f3f3;font-weight:bold;text-align:left;}
+td{text-align: center;}
 .center{text-align:center;}
 .highlight-yellow{background:#fff2a8;}
-.section-head{background:#d9c3f9;font-weight:700;text-align:left;padding:3px;}
+.section-head{background:grey;font-weight:700;text-align:left;padding:3px; width: 863px; position: relative; left: -18mm; border: 1px solid #000; color: grey;}
 .footer{border:1px solid #000;padding:4px;margin-top:6px;display:flex;justify-content:space-between;font-size:10px;}
+.signature-box {
+    margin-top: 0px;
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+    font-family: 'Arial', sans-serif;
+  }
+
+  .signature-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .signature-left {
+    width: 30%;
+  }
+
+  .signature-line {
+    height: 140px;
+    margin-bottom: 6px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .signature-line img {
+    max-height: 120px;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .signature-label {
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 4px;
+  }
+
+  .signature-name {
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: #222;
+    margin-top: 2px;
+  }
+
+  .heading{
+    width: 930px; position: relative; left: -18mm; 
+    background:white;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 10px 0;
+    border-bottom: 2px solid #000;
+  }
+  .checklist{
+    text-align: center;
+    font-weight: bold;
+    font-size: 15px;
+    padding-top: 8px;
+  }
+  
 </style>
 </head>
 <body>
@@ -119,10 +187,10 @@ th{background:#f3f3f3;font-weight:bold;text-align:left;}
   <!-- Left full bar -->
   <!-- Left bar -->
   <div class="left-bar">
-    <div class="bar-item">1. Basic Info</div>
-    <div class="bar-item">2. Shipper & Consignee</div>
-    <div class="bar-item">3. Shipping Bill & Contract</div>
-    <div class="bar-item">4. Misc. Info</div>
+    <div class="bar-item" style="margin-top: 20px;">1. Basic Info</div>
+    <div class="bar-item" style="margin-top: 40px;">2. Shipper & Consignee</div>
+    <div class="bar-item" style="margin-top: 0px; margin-bottom: 10px;">3. Shipping Bill & <br> Contract</div>
+    <div class="bar-item" style=" margin-top: -120px; padding: o">4. Misc. <br> Info</div>
     <div class="bar-item">5. Drawback / EPCG</div>
     <div class="bar-item">6. GSP</div>
     <div class="bar-item">7. Declaration</div>
@@ -138,120 +206,312 @@ th{background:#f3f3f3;font-weight:bold;text-align:left;}
       Advance Paperwork to be forwarded to : For BOM Clearance @ bom-hvexp@mail.fedex.com / For AMD Clearance @ amdexport@mail.fedex.com / For PNQ Clearance @ pnq-hvexports@mail.fedex.com
     </div>
 
+    <div class="heading">SHIPPER’S LETTER OF INSTRUCTION</div>
     <table>
-      <tr class="highlight-yellow center" style="font-size:15px;font-weight:bold;">
-        <td colspan="8">SHIPPER’S LETTER OF INSTRUCTION</td>
-      </tr>
-      <tr>
-        <th>Date</th><td>1-Oct-2025</td>
-        <th>Invoice No.</th><td>INV-25-26-0049</td>
-        <th>Destination</th><td>Germany</td>
-        <th>LUT</th><td>AD2705250540357</td>
-      </tr>
-      <tr>
-        <th>FedEx A/c No.</th><td>806914932</td>
-        <th>Date</th><td>1-Oct-2025</td>
-        <th>IEC No.</th><td>0316950076</td>
-        <th>Inv. Type</th><td>Under IGST Paid</td>
-      </tr>
-      <tr>
-        <th>No. of Pkgs</th><td>17</td>
-        <th>Marks & Numbers</th><td>CLED</td>
-        <th>PAN No.</th><td>ATYPD0195J</td>
-        <th>GSTIN</th><td>27ATYPD0195J1Z6</td>
-      </tr>
-      <tr>
-        <th>EIN No.</th><td></td>
-        <th>Net Wt.</th><td>251.00</td>
-        <th>AD Code No.</th><td>6393718</td>
-        <th>State Code</th><td>27</td>
-      </tr>
-      <tr>
-        <th>FedEx AWB No.</th><td>884253964856</td>
-        <th>Gross Wt.</th><td>285.00</td>
-        <th>End Use Code</th><td>GNX200</td>
-        <th>GSTIN Type</th><td>Regular</td>
-      </tr>
-    </table>
+    <tr>
+      <th>Date</th><td><%= @input.invoice_date&.strftime("%-d-%b-%Y") %></td>
+      <th>Invoice No.</th><td><%= @input.invoice_no %></td>
+      <th>Destination</th><td>Germany</td>
+      <th class="gstn-title" rowspan="2">Payment<br>Type</th>
+      <td class="gstn-box" rowspan="2">
+        <table>
+          <tr><th>LUT</th><td>27ATYPD0195J1Z6</td></tr>
+          <tr><th>Under IGST Paid</th><td></td></tr>
+          
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <th>FedEx A/c No.</th><td>806914932</td>
+      <th>Date</th><td>1-Oct-2025</td>
+      <th>IEC No.</th><td>0316950076</td>
+     
+    </tr>
+    <tr>
+      <th class="checklist" colspan="2" rowspan="2">Check List Required</th>
+      <th>No.Of Pkgs</th><td>17</td>
+      <th>IEC Branch Code</th><td>0</td>
+      <th></th><td></td>
+     
+    </tr>
+    <tr>
+     
+      <th>Marks & Numbers</th><td>CLED</td>
+      <th>PAN No.</th><td>ATYPD0195J</td>
+      <th class="gstn-title" rowspan="3">GSTN<br>DETAILS</th>
+      <td class="gstn-box" rowspan="3">
+        <table>
+          <tr><th>GSTN No.</th><td>27ATYPD0195J1Z6</td></tr>
+          <tr><th>State Code</th><td>27</td></tr>
+          <tr><th>GSTIN Type</th><td>Regular</td></tr>
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <th>EIN No.</th><td></td>
+      <th>Net Wt.</th><td>251.00</td>
+      <th>AD Code No.</th><td>6393718</td>
+    </tr>
+    <tr>
+      <th>FedEx AWB No.</th><td>884253964856</td>
+      <th>Gross Wt.</th><td>285.00</td>
+      <th>End Use Code</th><td>GNX200</td>
+      
+    </tr>
+  </table>
+  
+  
 
-    <div class="section-head">2. Shipper / Consignee / Buyer</div>
+    <div class="section-head">1</div>
     <table>
-      <tr>
-        <th>Shipper</th><th>Consignee</th><th>Buyer (if other than Consignee)</th>
-      </tr>
-      <tr>
-        <td>
-          <strong>Living Care India</strong><br>
-          240-E5, Bhumi World - Industrial Park<br>
-          Mumbai - Nashik Highway<br>
-          Bhiwandi, Maharashtra<br>
-          Tel No. +91 9022756007<br>
-          Email Address: deepak@lcareindia.com
-        </td>
-        <td>
-          <strong>Crous Rail Service GmbH</strong><br>
-          Mercatorstrasse 36d<br>
-          Wesel – Germany<br>
-          Tel: +49 1516 4018683<br>
-          Email: daniel.melcher@crous.ch
-        </td>
-        <td>
-          <strong>Crous Chemicals GmbH</strong><br>
-          Industrie Allmend 30<br>
-          Fulenbach – Switzerland<br>
-          Tel: +49 1516 4018683<br>
-          Email: daniel.melcher@crous.ch
-        </td>
-      </tr>
-    </table>
+    <tr>
+      <th style="text-align: center;">Shipper</th>
+      <th style="text-align: center;">Consignee</th>
+      <th style="text-align: center;">Buyer, if other than Consignee</th>
+      <th style="text-align: center;">Mandatory if PSD / EP copy delivery address other than IEC Add.</th>
+    </tr>
+  
+    <tr class="section">
+      <td>
+        <strong><%= @input.shipper_name.company_name %></strong><br>
+        <%= @input.shipper_name.address1 %><br>
+        <%= @input.shipper_name.address2 %><br>
+        <%= @input.shipper_name.address3 %><br>
+      </td>
+      <td>
+        <strong><%= @input.consignee_name.company_name %></strong><br>
+        <%= @input.consignee_name.address1 %><br>
+        <%= @input.consignee_name.address2 %><br>
+        <%= @input.consignee_name.address3 %><br>
+      </td>
+      <td>
+        <strong><%= @input.importer_name.company_name %></strong><br>
+          <%= @input.importer_name.address1 %><br>
+          <%= @input.importer_name.address2 %><br>
+          <%= @input.importer_name.address3 %><br>
+      </td>
+      <td>
+        <strong>Post shipment document / EP delivery instructions</strong><br><br>
+        <strong>Contact person:</strong> Deepak Sharma<br>
+        <strong>Telephone / Mobile:</strong> +91 9022756007<br>
+        <strong>Address 1:</strong> 240-E5, Bhumi World - Industrial Park<br>
+        <strong>Address 2:</strong> Mumbai - Nashik Highway<br>
+        <strong>City:</strong> Bhiwandi, Maharashtra<br>
+        <strong>Pin Code:</strong> 421302
+      </td>
+    </tr>
+  
+    <tr>
+    <th>
+    Tel No.<span style="display:inline-block; margin-left:8px; gap: 10px; font-weight:normal;"><%= @input.shipper_name.contact_no %></span>
+  </th>
+  
+      <td class="section"><%= @input.consignee_name.contact_no %></td>
+      <td class="section"><%= @input.importer_name.contact_no %></td>
+      <td class="section">+49 1516 4018683</td>
+    </tr>
+  
+    <tr>
+      <th>Email Address <span style="display:inline-block; margin-left:8px; gap: 10px; font-weight:normal;"><%= @input.shipper_name.email %></span></th>
+      <td class="section"><%= @input.consignee_name.email %></td>
+      <td class="section"><%= @input.importer_name.email %></td>
+      <td class="highlight">Email id for e-PSD: deepak@lcareindia.com</td>
+    </tr>
+  
+    <tr>
+      <th>Fax No.</th>
+      <td class="section"></td>
+      <td class="section"></td>
+      <td class="section"><strong>Any other instructions on PSD/EP delivery:</strong> Check List Required</td>
+    </tr>
+  </table>
+
+
+
 
     <div class="section-head">3. Shipping Bill & Contract Details</div>
     <table>
-      <tr>
-        <th>Contract Type (tick one)</th>
-        <th>Currency / Amount</th>
-        <th>Type of Shipping Bill (tick one)</th>
-        <th>Documents Enclosed (tick where applicable)</th>
-      </tr>
-      <tr>
-        <td>Ex-Works<br>FOB ✔<br>C&F<br>CIF</td>
-        <td>USD 9,256.84</td>
-        <td>Duty Drawback ✔<br>EPCG (Zero Duty)<br>Advance Authorisation ✔<br>RoDTEP Scheme</td>
-        <td>
-          FedEx AWB ✔<br>Invoice (5 copies) ✔<br>Packing List (5 copies) ✔<br>Export Value Declaration ✔<br>SDF / FEMA Declaration ✔
-        </td>
-      </tr>
-    </table>
+  <tr>
+    <th>Contract Type (tick one)</th>
+    <th>Currency / Amount</th>
+    <th>Type of Shipping Bill (tick one)</th>
+    <th>Documents Enclosed (tick where applicable)</th>
+  </tr>
 
+  <!-- Row for Contract Type / Shipping Bill / Documents -->
+  <tr>
+    <td>
+      <table width="100%">
+        <tr>
+          <td class="grey">Ex-Works</td>
+        </tr>
+        <tr>
+          <td class="grey">X FOB</td>
+        </tr>
+        <tr>
+          <td class="grey">C &amp; F (breakup)</td>
+        </tr>
+        <tr>
+          <td>Cost</td>
+        </tr>
+        <tr>
+          <td>Freight</td>
+        </tr>
+        <tr>
+          <td>Other – Please specify</td>
+        </tr>
+      </table>
+    </td>
+
+    <td>
+      <table width="100%">
+        <tr><td>Currency</td><td>USD</td></tr>
+        <tr><td class="center bold" colspan="2">9,256.84</td></tr>
+      </table>
+    </td>
+
+    <td>
+      <table width="100%">
+        <tr><td class="grey">Duty Drawback</td></tr>
+        <tr><td>Non Drawback</td></tr>
+        <tr><td class="grey">X Advance Authorisation</td></tr>
+        <tr><td>(Drawback / ROSCTL)</td></tr>
+        <tr><td>Commercial exports by courier - value ≤ INR25K (FOB)</td></tr>
+        <tr><td class="green bold">RoDTEP Scheme</td></tr>
+      </table>
+    </td>
+
+    <td class="docs">
+      FedEx AWB (duly complete) <strong>X</strong><br>
+      Invoice (5 copies) <strong>X</strong><br>
+      Packing List (5 copies) <strong>X</strong><br>
+      Export Value Declaration (EVD) <strong>X</strong><br>
+      SDF / FEMA declaration <strong>X</strong><br>
+      Annexure C1 (For 100% EOU shipments)<br>
+      GSP / Certificate of Origin Form<br>
+      Original, Duplicate Visa (with 2 copies)<br>
+      Bank Certificate (GR waiver)
+    </td>
+  </tr>
+
+  <!-- RoDTEP Note -->
+  <tr>
+    <td colspan="4" class="green">
+      <strong>RoDTEP box is ticked in type of shipping bill please mention on the Shipping Bill as under:</strong>
+      “We intend to claim Export scheme under RoDTEP.”
+    </td>
+  </tr>
+
+  <!-- Details Section -->
+  <tr>
+    <td colspan="4" class="beige" style="position: relative;">
+      Detail of Preferential Agreements under which the goods are being exported wherever applicable (If the agreement applies to all the items)
+      <span style="position:absolute; top:0; left:-19mm; width: calc(100% + 20mm); border-top: 1px solid #000;"></span>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4" class="beige">
+      Standard Unit Quantity Code (SQC) for that CTH as per the first schedule for the customs Tariff Act 1975. (If the SQC applies to all the items)
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4" class="beige">
+      State of Origin of Goods. (If the State of origin applies to all the items in the invoice. Else attach the Item details in sheet Details Itemwise.)
+    </td>
+  </tr>
+  <tr>
+    <td colspan="4" class="beige">
+      District or Origin of goods (If the District of origin applies to all the items in the invoice. Else attach the Item details in sheet Details Itemwise.)
+    </td>
+  </tr>
+</table>
     <div class="section-head">5. Drawback / EPCG Information</div>
     <table>
-      <tr><th>Bank Details</th><th>Description of Goods</th></tr>
-      <tr>
-        <td>
-          ICICI Bank<br>
-          Current A/c No. 3525 0550 0695<br>
-          IFSC Code ICIC0003525
-        </td>
-        <td>LED Lighting Fixture for Train</td>
-      </tr>
-    </table>
+    <tr>
+      <td><strong>Bank Details :</strong></td>
+      <td class="blue-cell">ICICI Bank</td>
+      <td><strong>Description of Goods :</strong></td>
+      <td class="blue-cell">LED Lighting Fixture for Train</td>
+    </tr>
+    <tr>
+      <td><strong>Current A/c No. :</strong></td>
+      <td class="blue-cell">3525 0550 0695</td>
+      <td><strong>Additional Instructions:</strong></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><strong>IFSC Code :</strong></td>
+      <td class="blue-cell">ICIC0003525</td>
+      <td colspan="2"></td>
+    </tr>
+  </table>
+
+  <br>
+
+  <table>
+    <tr>
+      <td colspan="6"><strong>Advance Authorization / EPCG Details</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Inv Item No</strong></td>
+      <td></td>
+      <td><strong>REG No</strong></td>
+      <td></td>
+      <td><strong>Date</strong></td>
+      <td class="blue-cell">Advance Authorization / EPCG File No., LIC No. & Date: 0311037859 dt: 11/10/2024</td>
+    </tr>
+  </table>
+
+  <br>
+
+  <table>
+    <tr>
+      <td><strong>Any Other Documents:</strong></td>
+    </tr>
+  </table>
+
+  <br>
+
+  <table>
+    <tr>
+      <td colspan="4">
+        <strong>Other Handling Information - Certificate of Origin (COI):</strong>
+      </td>
+    </tr>
+    <tr>
+      <td><strong>COI REQUIRED?</strong></td>
+      <td>If YES - (It will be prepared by broker. Normal / Tatkal (Same Day) (Please tick any one)</td>
+      <td class="yellow-cell"></td>
+      <td>If NO - Please provide the GSP (if applicable).</td>
+    </tr>
+  </table>
 
     <div class="section-head">7. Declaration</div>
     <table>
       <tr><td>
-        We hereby appoint M/s Jeena & Company / JFS Freight Services Pvt Ltd / FedEx Express Transportation Supply Chain Services (India) Pvt Ltd / Sun Impex Clearing & Shipping Agency Pvt Ltd as our authorized Customs Broker to prepare documents on our behalf and get our cargo cleared as per the documents and information provided to them by us. We declare that the information in the invoice is true and correct. Neither Customs Broker nor carrier shall be held responsible for any contradiction found during custom examination.
-        <br><br>
-        <strong>For LIVING CARE INDIA</strong><br>
-        Proprietor : Noopur Dhiman<br>
-        Contact : 0091 9022756007
+      We hereby appoint M/s Jeena & Company/JFS Freight Services Pvt. Ltd/Fedex Express Transportation Supply Chain Services (India) Pvt.Ltd/Sun Impex Clearing & Shipping Agency Pvt Ltd as our authorized Customs Broker to prepare documents on our behalf and getting our cargo cleared as per the documents and information provided to them by us. We hereby also declare that the information in the subject invoice is as per our knowledge, true and correct and if during custom examination anything found contradictory, objectionable in the shipment, neither Customs Broker nor the carrier would be held responsible        <br><br>
+      <p>I/ We declare that the particulars given herein are true, correct and complete. </p></br>
+      <p>“I/We undertake to abide by provisions of Foreign Exchange Management Act, 1999, as amended from time to time, including realization / repatriation of foreign exchange to / from India.</p>
       </td></tr>
     </table>
 
-    <div class="footer">
-      <div><strong>For LIVING CARE INDIA</strong></div>
-      <div>Noopur Dhiman / Proprietor</div>
-      <div>Contact : 0091 9022756007</div>
+    <div class="signature-box">
+    <div class="signature-section">
+      <!-- LEFT SIDE (Signature + Name + Label) -->
+      <div class="signature-left">
+        <div class="signature-line">
+          <% if @signature_data.present? %>
+            <img src="data:image/png;base64,<%= @signature_data %>" alt="Signature" style="height: 120px; object-fit: contain;" />
+          <% end %>
+        </div>
+        <% if @input.shipper_name.signatory.present? %>
+          <div class="signature-name"><%= @input.shipper_name.signatory %></div>
+        <% end %>
+        <div class="signature-label">Authorised Signatory</div>
+      </div>
+
     </div>
+  </div>
   </div>
 
 </div>

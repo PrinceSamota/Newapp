@@ -10,7 +10,7 @@
 
     <%= select_tag "order_entry[client_id]",
     options_from_collection_for_select(
-      Client.where(org_id: current_user.org_id), :id, :name, selected_client_id
+      Client.where(org_id: current_user.org_id), :id, :company_name, selected_client_id
     ),
     id: "client-select",
     include_blank: "Select Client",
