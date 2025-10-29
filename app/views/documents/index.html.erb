@@ -3,12 +3,7 @@
   
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     <% document_types = [
-      { name: "Invoice", path: invoice_documents_path, icon: "fa-file-invoice", color: "bg-gray-50", icon_color: "text-blue-600" },
-      { name: "Packing List", path: packing_list_documents_path, icon: "fa-list", color: "bg-gray-50", icon_color: "text-green-600" },
-      { name: "New SI", path: new_si_documents_path, icon: "fa-file-alt", color: "bg-gray-50", icon_color: "text-yellow-600" },
-      { name: "Value Letter", path: value_letter_documents_path, icon: "fa-envelope", color: "bg-gray-50", icon_color: "text-purple-600" },
-      { name: "Sheet 5", path: sheet_5_documents_path, icon: "fa-table", color: "bg-gray-50", icon_color: "text-red-600" },
-      { name: "Scomet", path: scomet_documents_path, icon: "fa-certificate", color: "bg-gray-50", icon_color: "text-indigo-600" }
+      { name: "Import", path: inputs_path, icon: "fa-file-import", color: "bg-gray-50", icon_color: "text-blue-600" }
     ] %>
     
     <% document_types.each do |doc| %>

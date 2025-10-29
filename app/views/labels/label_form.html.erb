@@ -43,6 +43,14 @@
               { prompt: "Select Language" },
               { class: "w-full p-2 border rounded" } %>
         </div>
+        <%= form.hidden_field :order_id, value: @order_details[:order_id] %>
+<%= form.hidden_field :article_no, value: @order_details[:article_no] %>
+<%= form.hidden_field :sku_number, value: @order_details[:sku_number] %>
+<%= form.hidden_field :qty, value: @order_details[:qty] %>
+<%= form.hidden_field :type, value: @order_details[:type] %>
+<%= form.hidden_field :length, value: @order_details[:length] %>
+<%= form.hidden_field :voltage, value: @order_details[:voltage] %>
+<%= form.hidden_field :wattage, value: @order_details[:wattage] %>
       </div>
     </div>
 
