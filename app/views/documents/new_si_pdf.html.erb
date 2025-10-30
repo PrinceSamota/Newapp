@@ -171,12 +171,26 @@ td{text-align: center;}
     font-size: 14px;
     padding: 10px 0;
     border-bottom: 2px solid #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;  /* Centers items vertically */
+  justify-content: center;
   }
   .checklist{
     text-align: center;
     font-weight: bold;
     font-size: 15px;
     padding-top: 8px;
+  }
+  .fedex-logo {
+    position: absolute;
+    left: 10px;          /* keeps logo to the far left */
+    top: 50%;            /* vertically center */
+    transform: translateY(-50%); /* adjust vertical centering */
+    height: 100px;
+    width: auto;
   }
   
 </style>
@@ -206,16 +220,23 @@ td{text-align: center;}
       Advance Paperwork to be forwarded to : For BOM Clearance @ bom-hvexp@mail.fedex.com / For AMD Clearance @ amdexport@mail.fedex.com / For PNQ Clearance @ pnq-hvexports@mail.fedex.com
     </div>
 
-    <div class="heading">SHIPPER’S LETTER OF INSTRUCTION</div>
+    <div class="heading">
+<%= wicked_pdf_image_tag "fedex.png", alt: "FedEx Logo", class: "fedex-logo" %>
+    SHIPPER’S LETTER OF INSTRUCTION
+  </div>
     <table>
+    <% if @input&.input_items&.any? %>
+              <% total_net_weight_sum = @input.input_items.sum { |item| item.no_of_boxes.to_i * item.net_weight.to_f }
+              total_gross_weight_sum = @input.input_items.sum { |item| item.no_of_boxes.to_i * item.gross_weight.to_f } %>
+    <% end %>
     <tr>
       <th>Date</th><td><%= @input.invoice_date&.strftime("%-d-%b-%Y") %></td>
       <th>Invoice No.</th><td><%= @input.invoice_no %></td>
-      <th>Destination</th><td>????</td>
+      <th>Destination</th><td><%= @input.consignee_name.country %></td>
       <th class="gstn-title" rowspan="2">Payment<br>Type</th>
       <td class="gstn-box" rowspan="2">
         <table>
-          <tr><th>LUT</th><td>????</td></tr>
+          <tr><th>LUT</th><td><%= @input.shipper_name.lut_bond_no %></td></tr>
           <tr><th>Under IGST Paid</th><td></td></tr>
           
         </table>
@@ -224,13 +245,13 @@ td{text-align: center;}
     <tr>
       <th>FedEx A/c No.</th><td>806914932</td>
       <th>Date</th><td><%= @input.invoice_date&.strftime("%-d-%b-%Y") %></td>
-      <th>IEC No.</th><td>????</td>
+      <th>IEC No.</th><td><%= @input.shipper_name.iec_no %></td>
      
     </tr>
     <tr>
       <th class="checklist" colspan="2" rowspan="2">Check List Required</th>
-      <th>No.Of Pkgs</th><td>To Do</td>
-      <th>IEC Branch Code</th><td>????</td>
+      <th>No.Of Pkgs</th><td><%= @input.input_details.sum(&:no_of_packages) %></td>
+      <th>IEC Branch Code</th><td>0</td>
       <th></th><td></td>
      
     </tr>
@@ -249,13 +270,13 @@ td{text-align: center;}
     </tr>
     <tr>
       <th>EIN No.</th><td></td>
-      <th>Net Wt.</th><td>TO DO</td>
+      <th>Net Wt.</th><td><%= total_net_weight_sum.round(2) %></td>
       <th>AD Code No.</th><td>6393718</td>
     </tr>
     <tr>
-      <th>FedEx AWB No.</th><td>????</td>
-      <th>Gross Wt.</th><td>TO DO</td>
-      <th>End Use Code</th><td>????</td>
+      <th>FedEx AWB No.</th><td><%= @input.fedex_awb_no %></td>
+      <th>Gross Wt.</th><td><%= total_gross_weight_sum.round(2) %></td>
+      <th>End Use Code</th><td>GNX200</td>
       
     </tr>
   </table>

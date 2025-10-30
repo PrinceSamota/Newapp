@@ -4,21 +4,25 @@ class LabelsController < ApplicationController
   end
 
   def generate_pdf
-    @form_data = params.except(:authenticity_token, :commit)
-    
+    # Convert all params safely into a regular hash
+    @form_data = params.to_unsafe_h.except(:authenticity_token, :commit, :controller, :action, :format)
+  
+    # Debug line — optional (to verify what’s coming in)
+    Rails.logger.info "🧾 PDF PARAMS => #{@form_data.inspect}"
+  
     respond_to do |format|
       format.pdf do
-        render pdf: "label_#{@form_data[:custom_article_no] || @form_data[:article_number] || Time.current.to_i}",
+        render pdf: "label_#{@form_data["custom_article_no"] || @form_data["article_number"] || Time.current.to_i}",
                template: "labels/label_pdf",
                layout: "pdf",
                formats: [:html],
                page_size: 'A4',
                encoding: "UTF-8",
-               show_as_html: params.key?('debug')
+               show_as_html: params.key?("debug")
       end
     end
   end
-
+  
   def get_item_details
     @item_master = ItemMaster.find(params[:item_master_id])
     render json: {
@@ -36,15 +40,24 @@ class LabelsController < ApplicationController
   def new_product_label
     @label_type = "product"
     @item_masters = ItemMaster.all
-    
-    # Order details from params
-    @order_details = {
-      order_id: params[:order_id],
-      article_no: params[:article_no],
-      sku_number: params[:sku_number],
-      qty: params[:qty]
-    }
-    
+  
+    if params[:order_id].present?
+      order = OrderEntry.find(params[:order_id])
+      @order_details = {
+        order_id: order.id,
+        article_no: order.article_no,
+        sku_number: order.sku_number,
+        wattage: order.wattage,
+        qty: order.qty,
+        type: order.item_type,
+        length: order.length,
+        voltage: order.voltage
+      }
+    else
+      @order_details = {}
+    end
+  
     render :label_form
   end
+  
 end

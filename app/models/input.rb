@@ -12,8 +12,6 @@ class Input < ApplicationRecord
   validates :invoice_date, presence: true
   validates :shipper_name_id, presence: true
   validates :consignee_name_id, presence: true
-  validates :importer_name_id, presence: true
   validates :order_no_from_dispatch, presence: true
   validates :currency, presence: true
-  validates :fedex_awb_no, presence: true
 end

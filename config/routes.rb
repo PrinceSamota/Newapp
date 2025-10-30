@@ -106,6 +106,7 @@ get 'manual_decode_result', to: 'articles#manual_decode_result'
       get :sheet_5
       get :scomet
       post :generate_pdf
+      get  :generate_pdf
       get :get_order_details
     end
   end
