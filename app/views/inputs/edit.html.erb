@@ -32,7 +32,7 @@
           <!-- Shipper -->
           <div>
             <%= f.label :shipper_name_id, "Shipper", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.collection_select :shipper_name_id, Client.all, :id, :name,
+            <%= f.collection_select :shipper_name_id, Client.all, :id, :company_name,
                 { prompt: "Select Shipper" },
                 class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
           </div>
@@ -40,7 +40,7 @@
           <!-- Consignee -->
           <div>
             <%= f.label :consignee_name_id, "Consignee", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.collection_select :consignee_name_id, Client.all, :id, :name,
+            <%= f.collection_select :consignee_name_id, Client.all, :id, :company_name,
                 { prompt: "Select Consignee" },
                 class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
           </div>
@@ -48,7 +48,7 @@
           <!-- Importer -->
           <div>
             <%= f.label :importer_name_id, "Importer", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.collection_select :importer_name_id, Client.all, :id, :name,
+            <%= f.collection_select :importer_name_id, Client.all, :id, :company_name,
                 { prompt: "Select Importer" },
                 class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
           </div>

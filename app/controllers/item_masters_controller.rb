@@ -21,17 +21,19 @@ class ItemMastersController < ApplicationController
       
       def create
         @item_master = ItemMaster.new(item_master_params)
-        @item_master.org_id = current_user.org_id 
+        @item_master.org_id = current_user.org_id
+      
         respond_to do |format|
           if @item_master.save
             format.html { redirect_to item_masters_path, notice: "Item Master successfully created." }
-            format.js   
+            format.js
           else
-            format.html { redirect_to new_item_master_path, alert: "Failed to create Item Master." }
-            format.js   
+            format.html { render :new, status: :unprocessable_entity }
+            format.js
           end
         end
       end
+      
       def new
         if params[:clone_id].present?
           original_item = ItemMaster.find_by(id: params[:clone_id])

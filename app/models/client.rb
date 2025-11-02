@@ -6,6 +6,8 @@ class Client < ApplicationRecord
   has_one_attached :logo
   has_one_attached :qr_code
   has_one_attached :signature
+  has_one_attached :emc
+  has_one_attached :distribution_logo
   
   def self.ransackable_attributes(auth_object = nil)
     %w[name email company_name contact_no gst_no]
