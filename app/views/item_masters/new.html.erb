@@ -1,12 +1,64 @@
 <% content_for(:title, "Item Master") %>
+
 <%= link_to item_masters_path, class: "inline-flex items-center gap-2 text-gray-700 hover:bg-gray-200 rounded-md px-3 py-2 border border-gray-300 shadow-sm" do %>
-    <i class="fa-solid fa-arrow-left"></i>
-    <span class="font-semibold">Back</span>
-  <% end %>
-<div class="bg-white p-8 rounded-2xl shadow-xl max-w-full mx-auto  bg-gray-50 py-4 mt-5 text-center text-gray-700 p-8">
+  <i class="fa-solid fa-arrow-left"></i>
+  <span class="font-semibold">Back</span>
+<% end %>
+
+<div class="bg-white p-8 rounded-2xl shadow-xl max-w-full mx-auto bg-gray-50 py-4 mt-5 text-center text-gray-700">
   <h2 class="text-2xl font-bold text-gray-800 mb-10 text-left">New Item</h2>
 
+  <% if @item_master&.errors&.any? %>
+  <div id="error-alert" class="fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-md animate-slide-in">
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="flex items-center">
+          <i class="fa-solid fa-exclamation-triangle mr-2 text-white"></i>
+          <strong class="text-lg">Error!</strong>
+        </div>
+        <div class="mt-2 text-sm space-y-1">
+          <% @item_master.errors.full_messages.each do |message| %>
+            <div>• <%= message %></div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- ❌ Close button -->
+      <button 
+        type="button"
+        onclick="document.getElementById('error-alert')?.remove()"
+        class="ml-4 text-white hover:text-gray-200 text-2xl cursor-pointer leading-none"
+        aria-label="Close"
+      >
+        &times;
+      </button>
+    </div>
+  </div>
+
+  <!-- ✅ Smooth slide-in animation -->
+  <style>
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-slide-in {
+      animation: slideIn 0.3s ease-out;
+    }
+  </style>
+<% end %>
+
   <%= form_with model: @item_master, url: item_masters_path, html: { id: "item-form" } do |f| %>
+
+    <!-- ✅ Hidden field to remember BOM status after validation failure -->
+    <input type="hidden" id="is_bom_value" value="<%= @item_master.is_bom? %>">
+
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
 
       <div>
@@ -36,7 +88,7 @@
       </div>
 
       <div class="flex items-center gap-4 mt-2" id="is_bom_radio_group">
-       <%= f.label :is_bom, "BOM", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.label :is_bom, "BOM", class: "block text-sm font-medium text-gray-700" %>
         <div class="flex gap-4 ml-4">
           <label class="inline-flex items-center">
             <%= f.radio_button :is_bom, true, id: "is_bom_yes", class: "form-radio text-blue-600" %>
@@ -48,81 +100,53 @@
           </label>
         </div>
       </div>
-    
 
       <div class="md:col-span-1">
         <%= render partial: "uploads/measurement_dropdown", locals: { selected_measurement_id: @item_master.measurement_id, show_form: false, errors: [] } %>
       </div>
-        <div class="md:col-span-3">
-         <%= render partial: "uploads/category_dropdown", locals: { selected_category_id: @item_master.category_id, show_form: false, errors: [] } %>
-        </div>
+
+      <div class="md:col-span-3">
+        <%= render partial: "uploads/category_dropdown", locals: { selected_category_id: @item_master.category_id, show_form: false, errors: [] } %>
+      </div>
     </div>
-  <div id="bom-fields" class="hidden col-span-4 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div>
-            <%= f.label :article_number, "Article Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.text_field :article_number, placeholder: "Enter article number", class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2" %>
-          </div>
 
-        <div>
-          <%= render partial: "uploads/item_type_dropdown", locals: { selected_item_type_id: @item_master.item_type_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-          <%= render partial: "uploads/profile_dropdown", locals: { selected_profile_id: @item_master.profile_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-          <%= render partial: "uploads/voltage_dropdown", locals: { selected_voltage_id: @item_master.voltage_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-         <%= render partial: "uploads/wattage_dropdown", locals: { selected_wattage_id: @item_master.wattage_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-         <%= render partial: "uploads/length_dropdown", locals: { selected_length_id: @item_master.length_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-          <%= render partial: "uploads/cct_dropdown", locals: { selected_cct_id: @item_master.cct_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-         <%= render partial: "uploads/cover_type_dropdown", locals: { selected_cover_type_id: @item_master.cover_type_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-          <%= render partial: "uploads/fuse_type_dropdown", locals: { selected_fuse_type_id: @item_master.fuse_type_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-          <%= render partial: "uploads/loop_dropdown", locals: { selected_loop_id: @item_master.loop_id, show_form: false, errors: [] } %>
-        </div>
-
-        <div>
-          <%= render partial: "uploads/extra_dropdown", locals: { selected_extra_id: @item_master.extra_id, show_form: false, errors: [] } %>
-        </div>
+    <!-- BOM fields -->
+    <div id="bom-fields" class="hidden col-span-4 grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div>
+        <%= f.label :article_number, "Article Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :article_number, placeholder: "Enter article number", class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2" %>
       </div>
 
-      <div class="md:col-span-3 mt-10 text-right">
-        <%= f.submit "Save", id: "item-master-save-btn", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300 cursor-pointer" %>
-        <div id="save-tooltip" class="text-red-500 text-sm mt-2 hidden"></div>
-      </div>
-    
+      <div><%= render partial: "uploads/item_type_dropdown", locals: { selected_item_type_id: @item_master.item_type_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/profile_dropdown", locals: { selected_profile_id: @item_master.profile_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/voltage_dropdown", locals: { selected_voltage_id: @item_master.voltage_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/wattage_dropdown", locals: { selected_wattage_id: @item_master.wattage_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/length_dropdown", locals: { selected_length_id: @item_master.length_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/cct_dropdown", locals: { selected_cct_id: @item_master.cct_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/cover_type_dropdown", locals: { selected_cover_type_id: @item_master.cover_type_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/fuse_type_dropdown", locals: { selected_fuse_type_id: @item_master.fuse_type_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/loop_dropdown", locals: { selected_loop_id: @item_master.loop_id, show_form: false, errors: [] } %></div>
+      <div><%= render partial: "uploads/extra_dropdown", locals: { selected_extra_id: @item_master.extra_id, show_form: false, errors: [] } %></div>
+    </div>
+
+    <div class="md:col-span-3 mt-10 text-right">
+      <%= f.submit "Save", id: "item-master-save-btn", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition duration-300 cursor-pointer" %>
+      <div id="save-tooltip" class="text-red-500 text-sm mt-2 hidden"></div>
+    </div>
+
   <% end %>
 </div>
 
 <script>
-document.addEventListener("turbo:load", () => {
+function initItemMasterForm() {
   const itemNameField = document.getElementById("item_name_field");
   const saveBtn = document.getElementById("item-master-save-btn");
   const tooltip = document.getElementById("save-tooltip");
-  const form = document.getElementById("item-form");
   const itemNameError = document.getElementById("item-name-error");
 
   const bomYes = document.getElementById("is_bom_yes");
   const bomNo = document.getElementById("is_bom_no");
-
+  const bomValueInput = document.getElementById("is_bom_value");
   const bomFieldsSection = document.getElementById("bom-fields");
 
   const dropdownIds = [
@@ -141,22 +165,17 @@ document.addEventListener("turbo:load", () => {
       const el = document.getElementById(id);
       return el?.options[el.selectedIndex]?.text?.trim() || null;
     };
-
     const nameParts = dropdownIds.map(getText).filter(Boolean);
     itemNameField.value = nameParts.join("_");
   }
 
   function toggleBOMFields() {
     const isBom = bomYes.checked;
-
-    if (bomFieldsSection) {
-      bomFieldsSection.classList.toggle("hidden", !isBom);
-    }
+    if (bomFieldsSection) bomFieldsSection.classList.toggle("hidden", !isBom);
 
     itemNameField.readOnly = isBom;
     itemNameField.value = "";
     itemNameField.placeholder = isBom ? "Will be auto-generated" : "Enter Item Name";
-    console.log("BOM is", isBom, "=> Placeholder:", itemNameField.placeholder);
     itemNameField.classList.toggle("bg-gray-100", isBom);
     itemNameField.classList.toggle("cursor-not-allowed", isBom);
 
@@ -169,142 +188,29 @@ document.addEventListener("turbo:load", () => {
       }
     });
 
-    if (isBom) {
-      generateItemName();
-    }
+    if (isBom) generateItemName();
   }
 
-  function validateItemName() {
-    const name = itemNameField.value.trim().toLowerCase();
-  
-    if (bomNo.checked) {
-      if (existingItemNames.includes(name)) {
-        itemNameField.classList.add("border-red-500");
-        tooltip.innerText = "This Item Name already exists.";
-        tooltip.classList.remove("hidden");
-        itemNameError.classList.remove("hidden");
-        if (saveBtn) saveBtn.disabled = true;
-        return false;
-      } else {
-        itemNameField.classList.remove("border-red-500");
-        tooltip.classList.add("hidden");
-        tooltip.innerText = "";
-        itemNameError.classList.add("hidden");
-        if (saveBtn) saveBtn.disabled = false;
-        return true;
-      }
-    }
-  
-    itemNameField.classList.remove("border-red-500");
-    tooltip.classList.add("hidden");
-    itemNameError.classList.add("hidden");
-    saveBtn.disabled = false;
-    return true;
+  // ✅ Restore BOM section after validation failure
+  if (bomValueInput && bomValueInput.value === "true") {
+    bomYes.checked = true;
+    toggleBOMFields();
+  } else {
+    bomNo.checked = true;
+    toggleBOMFields();
   }
-  
 
   if (bomYes && bomNo) {
     bomYes.addEventListener("change", toggleBOMFields);
     bomNo.addEventListener("change", toggleBOMFields);
   }
-
-  if (itemNameField) {
-    itemNameField.addEventListener("input", validateItemName);
-  }
-
-  if (form) {
-    form.addEventListener("submit", function (e) {
-      let isValid = true;
-  
-      const isBom = bomYes.checked;
-  
-      form.querySelectorAll(".required-field").forEach((field) => {
-        field.classList.remove("border-red-500");
-        const next = field.nextElementSibling;
-        if (next && next.classList.contains("text-red-500") && next.textContent === "This field is required") {
-          next.remove();
-        }
-      });
-  
-      form.querySelectorAll(".required-field").forEach((field) => {
-        if (field.id === "item_name_field" && bomYes.checked) {
-            return; // skip validation
-          }
-        if (field.offsetParent !== null && !field.value.trim()) {
-          isValid = false;
-          field.classList.add("border-red-500");
-  
-          const error = document.createElement("p");
-          error.textContent = "This field is required";
-          error.className = "text-red-500 text-xs mt-1";
-          field.insertAdjacentElement("afterend", error);
-        }
-      });
-  
-      if (isBom) {
-        const bomFields = [
-          "article_number", "fuse_type_id", "loop_id", "item_type_id",
-          "profile_id", "wattage_id", "voltage_id", "length_id",
-          "cct_id", "cover_type_id", "extra_id"
-        ];
-  
-        bomFields.forEach(id => {
-          const field = document.getElementById(id);
-          if (field && field.offsetParent !== null && !field.value.trim()) {
-            isValid = false;
-            field.classList.add("border-red-500");
-  
-            const error = document.createElement("p");
-            error.textContent = "This field is required";
-            error.className = "text-red-500 text-xs mt-1";
-            field.insertAdjacentElement("afterend", error);
-          }
-        });
-      }
-  
-      if (!validateItemName()) {
-        isValid = false;
-      }
-  
-      if (!isValid) {
-        e.preventDefault();
-        tooltip.classList.remove("hidden");
-        tooltip.innerText = "Please fix the errors before submitting.";
-      }
-    });
-  }
-  
-
-
-  dropdownIds.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("change", () => {
-        if (bomYes.checked) {
-  generateItemName();
-
-} else {
-  validateItemName(); 
 }
-      });
-    }
-  });
 
-  toggleBOMFields();
-});
+// ✅ Run when Turbo loads or re-renders the form
+document.addEventListener("turbo:load", initItemMasterForm);
+document.addEventListener("turbo:render", initItemMasterForm);
+document.addEventListener("DOMContentLoaded", initItemMasterForm);
 
+// Existing items list
 const existingItemNames = <%= raw ItemMaster.pluck(:item_name).map(&:strip).map(&:downcase).to_json %>;
-
-const urlParams = new URLSearchParams(window.location.search);
-const isClone = urlParams.has('clone_id');
-
-if (isClone) {
-  window.skipTomSelect = true;
-  
-  document.querySelectorAll('select').forEach(select => {
-    if (select.value) {
-      select.style.display = 'block';
-    }
-  });
-}
 </script>

@@ -185,6 +185,29 @@
           <% end %>
         </div>
 
+
+        <div>
+        <%= f.label :emc, "EMC/EMV logo", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.file_field :emc, accept: "image/*", class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+        <% if @client.emc.attached? %>
+          <div class="mt-2">
+            <%= image_tag @client.emc, class: "w-20 h-20 object-contain border rounded" %>
+            <p class="text-xs text-green-600">✓ Current EMC/EMV logo</p>
+          </div>
+        <% end %>
+      </div>
+
+      <div>
+      <%= f.label :distribution_logo, "Distribution Logo", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.file_field :distribution_logo, accept: "image/*", class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+      <% if @client.distribution_logo.attached? %>
+        <div class="mt-2">
+          <%= image_tag @client.distribution_logo, class: "w-20 h-20 object-contain border rounded" %>
+          <p class="text-xs text-green-600">✓ Current Distribution Logo</p>
+        </div>
+      <% end %>
+    </div>
+
         <div>
         <%= f.label :signatory, "Signatory", class: "block text-sm font-medium text-gray-700 mb-1" %>
         <%= f.text_field :signatory, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>

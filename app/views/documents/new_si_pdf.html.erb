@@ -329,7 +329,7 @@ td{text-align: center;}
   
       <td class="section"><%= @input.consignee_name.contact_no %></td>
       <td class="section"><%= @input.importer_name.contact_no %></td>
-      <td class="section">+49 1516 4018683</td>
+      <td class="section"><%= @input.shipper_name.contact_no %></td>
     </tr>
   
     <tr>
@@ -364,22 +364,22 @@ td{text-align: center;}
     <td>
       <table width="100%">
         <tr>
-          <td class="grey">Ex-Works</td>
+        <td width="20%"></td> <td class="grey">Ex-Works</td>
         </tr>
         <tr>
-          <td class="grey">X FOB</td>
+        <td width="20%">X </td> <td class="grey">FOB</td>
         </tr>
         <tr>
-          <td class="grey">C &amp; F (breakup)</td>
+        <td width="20%"></td>  <td class="grey">C &amp; F (breakup)</td>
         </tr>
         <tr>
-          <td>Cost</td>
+        <td width="20%"></td> <td>Cost</td>
         </tr>
         <tr>
-          <td>Freight</td>
+        <td width="20%"></td> <td>Freight</td>
         </tr>
         <tr>
-          <td>Other – Please specify</td>
+        <td width="20%"></td> <td>Other – Please specify</td>
         </tr>
       </table>
     </td>
@@ -393,26 +393,28 @@ td{text-align: center;}
 
     <td>
       <table width="100%">
-        <tr><td class="grey">Duty Drawback</td></tr>
-        <tr><td>Non Drawback</td></tr>
-        <tr><td class="grey">X Advance Authorisation</td></tr>
-        <tr><td>(Drawback / ROSCTL)</td></tr>
-        <tr><td>Commercial exports by courier - value ≤ INR25K (FOB)</td></tr>
-        <tr><td class="green bold">RoDTEP Scheme</td></tr>
+        <tr><td width="20%"></td><td class="grey">Duty Drawback</td></tr>
+        <tr><td width="20%"></td><td>Non Drawback</td></tr>
+        <tr><td width="20%">X </td><td class="grey">Advance Authorisation</td></tr>
+        <tr><td width="20%"></td><td>(Drawback / ROSCTL)</td></tr>
+        <tr><td width="20%"></td><td>Commercial exports by courier - value ≤ INR25K (FOB)</td></tr>
+        <tr><td width="20%">X </td><td class="green bold">RoDTEP Scheme</td></tr>
       </table>
     </td>
 
-    <td class="docs">
-      FedEx AWB (duly complete) <strong>X</strong><br>
-      Invoice (5 copies) <strong>X</strong><br>
-      Packing List (5 copies) <strong>X</strong><br>
-      Export Value Declaration (EVD) <strong>X</strong><br>
-      SDF / FEMA declaration <strong>X</strong><br>
-      Annexure C1 (For 100% EOU shipments)<br>
-      GSP / Certificate of Origin Form<br>
-      Original, Duplicate Visa (with 2 copies)<br>
-      Bank Certificate (GR waiver)
-    </td>
+    <td>
+    <table width="100%" style="border: none;" >
+      <tr><td class="grey">FedEx AWB (duly complete)</td><td width="20%" style=" border-left: 1px solid #000;">X </td></tr>
+      <tr><td style=" padding: 0.5px; ">Invoice (5 copies)</td><td width="20%" style=" padding: 0.5px; border-left: 1px solid #000;">X </td></tr>
+      <tr><td class="grey" style=" padding: 0.5px;">Packing List (5 copies)</td><td width="20%" style=" padding: 0.5px; border-left: 1px solid #000;">X </td></tr>
+      <tr><td style=" padding: 0.5px;">Export Value Declaration (EVD)</td><td width="20%" style=" padding: 0.5px;   border-left: 1px solid #000;">X </td></tr>
+      <tr><td style=" padding: 0.5px;">SDF / FEMA declaration</td><td width="20%" style=" padding: 0.5px; border-left: 1px solid #000;"> X </td></tr>
+      <tr><td class="green bold" style=" padding: 0.5px;">Annexure C1 (For 100% EOU shipments)</td><td width="20%" style=" padding: 0.5px;  border-left: 1px solid #000;"></td></tr>
+      <tr><td class="green bold" style=" padding: 0.5px;">GSP / Certificate of Origin Form</td><td width="20%" style=" padding: 0.5px; border-left: 1px solid #000;"></td></tr>
+      <tr><td class="green bold" style=" padding: 0.5px;">Original, Duplicate Visa (with 2 copies)</td><td width="20%" style=" padding: 0.5px; border-left: 1px solid #000;"></td></tr>
+      <tr><td class="green bold" style=" padding: 0.5px;">Bank Certificate (GR waiver)</td><td width="20%" style=" padding: 0.5px; border-left: 1px solid #000;"></td></tr>
+    </table>
+  </td>
   </tr>
 
   <!-- RoDTEP Note -->
