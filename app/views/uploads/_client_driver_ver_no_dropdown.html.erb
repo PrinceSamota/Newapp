@@ -1,0 +1,103 @@
+<turbo-frame id="client_driver_ver_no_section">
+  <div class="flex flex-col space-y-2 mt-4">
+    <div class="flex justify-between items-center">
+      <label class="text-sm font-semibold text-gray-800">Client Driver Ver No</label>
+      <button type="button"
+        onclick="document.getElementById('newClientDriverVerNoForm').classList.toggle('hidden')"
+        class="text-blue-600 text-xl font-bold">+</button>
+    </div>
+
+    <%= select_tag "dispatch[client_driver_var_no_id]",
+      options_from_collection_for_select(
+        ClientDriverVarNo.all, :id, :name, selected_client_driver_var_no_id
+      ),
+      id: "client-driver-verno-select",
+      include_blank: "Select Driver Ver No",
+      class: "w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+      data: { placeholder: "Select Driver Ver No" } %>
+
+    <!-- Add New Driver Ver No -->
+    <div id="newClientDriverVerNoForm" class="mt-2 <%= 'hidden' unless show_form %>">
+      <div class="flex gap-2">
+        <input id="new_client_driver_ver_no_name" type="text" placeholder="New Driver Ver No"
+          class="flex-1 rounded-md border px-3 py-2 text-sm" />
+        <button type="button" onclick="submitNewClientDriverVerNo()"
+          class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+      </div>
+      <div id="client-driver-verno-errors" class="text-red-600 text-sm mt-2"></div>
+      <% if errors.present? %>
+        <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+          <% errors.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>
+
+<script>
+  function submitNewClientDriverVerNo() {
+    const name = document.getElementById('new_client_driver_ver_no_name').value;
+    const errorsDiv = document.getElementById('client-driver-verno-errors');
+
+    if (!name) {
+      errorsDiv.textContent = "Name cannot be blank.";
+      return;
+    }
+
+    fetch("/client_driver_var_nos", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ client_driver_var_no: { name } })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Error creating record");
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("client_driver_ver_no_section").innerHTML = html;
+
+      requestAnimationFrame(() => {
+        initClientDriverVerNoSelect();
+
+        const select = document.getElementById("client-driver-verno-select");
+        if (select && select.options.length > 0) {
+          const lastOption = select.options[select.options.length - 1];
+          if (select.tomselect) {
+            select.tomselect.setValue(lastOption.value);
+          } else {
+            select.value = lastOption.value;
+          }
+        }
+      });
+    })
+    .catch(() => {
+      errorsDiv.textContent = "Something went wrong.";
+    });
+  }
+
+  function initClientDriverVerNoSelect() {
+    const select = document.getElementById('client-driver-verno-select');
+    if (select && !select.tomselect) {
+      new TomSelect(select, {
+        create: false,
+        allowEmptyOption: false,
+        placeholder: select.dataset.placeholder || 'Select Driver Ver No',
+        hidePlaceholder: true,
+        persist: false,
+        sortField: { field: 'text', direction: 'asc' },
+        onDropdownOpen: function() {
+          if (this.getValue()) this.clear(true);
+        }
+      });
+    }
+  }
+
+  document.addEventListener('turbo:load', initClientDriverVerNoSelect);
+  document.addEventListener('turbo:frame-load', initClientDriverVerNoSelect);
+</script>

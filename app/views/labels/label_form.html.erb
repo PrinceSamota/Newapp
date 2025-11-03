@@ -23,6 +23,10 @@
           <%= form.text_field :qr_code, placeholder: "Enter QR code data", class: "w-full p-2 border rounded" %>
         </div>
         <div>
+        <%= form.label :custom_article_no, "Custom Article No.", class: "block text-sm font-medium mb-1" %>
+        <%= form.text_field :custom_article_no, placeholder: "Enter custom article no.", class: "w-full p-2 border rounded" %>
+      </div>
+        <div>
           <%= form.label :distribution, "Distribution", class: "block text-sm font-medium mb-1" %>
           <%= form.text_field :distribution, class: "w-full p-2 border rounded" %>
         </div>
@@ -60,7 +64,7 @@
       <%= form.select :manufacturer_id, 
           options_from_collection_for_select(
             Client.where(org_id: current_user.org_id).select { |c| c.has_type?("manufacturer") }, 
-            :id, :name
+            :id, :company_name
           ), 
           { prompt: "Select Manufacturer" },
           { class: "w-full p-2 border rounded" } %>
