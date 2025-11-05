@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_02_200038) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_05_020614) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -158,6 +158,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_02_200038) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "currencies", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "description_of_goods", force: :cascade do |t|
     t.string "name"
     t.integer "org_id"
@@ -276,6 +282,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_02_200038) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "currency_id"
     t.index ["consignee_name_id"], name: "index_inputs_on_consignee_name_id"
     t.index ["importer_name_id"], name: "index_inputs_on_importer_name_id"
     t.index ["shipper_name_id"], name: "index_inputs_on_shipper_name_id"

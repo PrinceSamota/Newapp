@@ -36,7 +36,7 @@
           ["Consignee", @input.consignee_name&.name],
           ["Importer", @input.importer_name&.name],
           ["Order No from Dispatch", @input.order_no_from_dispatch],
-          ["Currency", @input.currency],
+          ["Currency", @input.currency&.name],
           ["FedEx AWB No", @input.fedex_awb_no]
         ].each do |label, value| %>
           <div>

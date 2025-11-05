@@ -128,6 +128,7 @@ get 'manual_decode_result', to: 'articles#manual_decode_result'
   resources :complete_description_of_goods, only: [:create]
   resources :hsns, only: [:create]
   resources :client_driver_var_nos, only: [:create]
+  resources :currencies, only: [:create]
 
 
 end

@@ -1,0 +1,73 @@
+<div>
+  <turbo-frame id="currency_section">
+    <div class="flex flex-col space-y-2">
+      <div class="flex justify-between items-center">
+        <label class="text-xs font-medium text-gray-700 block mb-1">Currency</label>
+        <button type="button"
+          onclick="document.getElementById('newCurrencyForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
+      </div>
+
+      <%= select_tag "input[currency_id]",
+        options_from_collection_for_select(
+          Currency.all, :id, :name, local_assigns[:selected_currency_id]
+        ),
+        id: "currency-select",
+        include_blank: "Select Currency",
+        class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+        data: { placeholder: "Select Currency" } %>
+
+      <!-- Add New Currency -->
+      <div id="newCurrencyForm" class="mt-2 <%= 'hidden' unless local_assigns[:show_form] %>">
+        <div class="flex gap-2">
+          <input id="new_currency_name" type="text" placeholder="New Currency"
+            class="flex-1 rounded-md border px-3 py-2 text-sm" />
+          <button type="button" onclick="submitNewCurrency()"
+            class="bg-green-600 text-white px-3 py-2 rounded text-sm">Add</button>
+        </div>
+
+        <div id="currency-errors" class="text-red-600 text-sm mt-2"></div>
+
+        <% if local_assigns[:errors].present? %>
+          <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+            <% local_assigns[:errors].each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
+  </turbo-frame>
+</div>
+
+<script>
+  function submitNewCurrency() {
+    const name = document.getElementById('new_currency_name').value;
+    const errorsDiv = document.getElementById('currency-errors');
+
+    if (!name) {
+      errorsDiv.textContent = "Currency cannot be blank.";
+      return;
+    }
+
+    fetch("/currencies", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+        "Accept": "text/vnd.turbo-stream.html"
+      },
+      body: JSON.stringify({ currency: { name } })
+    })
+    .then(response => {
+      if (!response.ok) throw new Error("Error creating currency");
+      return response.text();
+    })
+    .then(html => {
+      document.getElementById("currency_section").innerHTML = html;
+    })
+    .catch(() => {
+      errorsDiv.textContent = "Something went wrong.";
+    });
+  }
+</script>

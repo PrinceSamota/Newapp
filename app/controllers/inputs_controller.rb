@@ -59,7 +59,7 @@ class InputsController < ApplicationController
   def input_params
     params.require(:input).permit(
       :invoice_no, :invoice_date, :shipper_name_id, :consignee_name_id, 
-      :importer_name_id, :order_no_from_dispatch, :currency, :fedex_awb_no,
+      :importer_name_id, :order_no_from_dispatch, :currency_id, :fedex_awb_no,
       input_items_attributes: [
         :id, :no_of_boxes, :description_of_goods_id, :qty_per_box, 
         :net_weight, :gross_weight, :length, :width, :height, :order_no, :_destroy
