@@ -31,7 +31,7 @@ class ItemMaster < ApplicationRecord
   with_options if: :is_bom? do
     validates :article_number, presence: true
     validates :fuse_type_id, :loop_id, :item_type_id, :profile_id, :wattage_id,
-              :voltage_id, :length_id, :cct_id, :cover_type_id, :extra_id,
+              :voltage_id, :length_id, :cct_id, :cover_type_id,
               presence: true
   end
 
