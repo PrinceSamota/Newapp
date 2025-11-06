@@ -47,6 +47,7 @@ class DispatchesController < ApplicationController
     if @dispatch.dispatch_items.empty?
       @dispatch.dispatch_items.build
     end
+    @input = Input.find_by(dispatch_id: @dispatch.id)
   end
   
   def update

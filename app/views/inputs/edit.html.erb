@@ -13,156 +13,98 @@
       <h2 class="text-2xl font-bold text-gray-800">Edit Input</h2>
     </div>
 
-    <!-- Edit Input Form -->
-    <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
-      <%= form_with(model: @input, local: true, class: "space-y-6") do |f| %>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Invoice Number -->
-          <div>
-            <%= f.label :invoice_no, "Invoice Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.text_field :invoice_no, class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
+    <!-- ✅ Single Form Starts -->
+    <%= form_with(model: @input, local: true, class: "space-y-6 bg-white rounded-lg shadow-lg p-8") do |f| %>
 
-          <!-- Invoice Date -->
-          <div>
-            <%= f.label :invoice_date, "Invoice Date", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.date_field :invoice_date, class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
+      <% if @input.errors.any? %>
+        <div id="error-box" class="relative bg-red-50 border border-red-200 rounded p-4 mb-6">
+          <button type="button" onclick="document.getElementById('error-box').remove()" class="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold text-2xl cursor-pointer">×</button>
+          <h4 class="text-red-800 font-medium">Please fix the following errors:</h4>
+          <ul class="text-red-600 text-sm mt-2 list-disc pl-5">
+            <% @input.errors.full_messages.each do |message| %>
+              <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
 
-          <!-- Shipper -->
-          <div>
-            <%= f.label :shipper_name_id, "Shipper", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.collection_select :shipper_name_id, Client.all, :id, :company_name,
-                { prompt: "Select Shipper" },
-                class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
-
-          <!-- Consignee -->
-          <div>
-            <%= f.label :consignee_name_id, "Consignee", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.collection_select :consignee_name_id, Client.all, :id, :company_name,
-                { prompt: "Select Consignee" },
-                class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
-
-          <!-- Importer -->
-          <div>
-            <%= f.label :importer_name_id, "Importer", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.collection_select :importer_name_id, Client.all, :id, :company_name,
-                { prompt: "Select Importer" },
-                class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
-
-          <!-- Order No -->
-          <div>
-            <%= f.label :order_no_from_dispatch, "Order No from Dispatch", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.text_field :order_no_from_dispatch, class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
-
-          <!-- Currency -->
-          <div>
-            <%= f.label :currency, "Currency", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.text_field :currency, class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
-
-          <!-- FedEx AWB No -->
-          <div>
-            <%= f.label :fedex_awb_no, "FedEx AWB No", class: "block text-sm font-medium text-gray-700 mb-1" %>
-            <%= f.text_field :fedex_awb_no, class: "w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
-          </div>
+      <!-- 🧾 Basic Info -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <%= f.label :invoice_no, "Invoice Number" %>
+          <%= f.text_field :invoice_no, class: "w-full border border-gray-300 rounded-lg p-2" %>
         </div>
 
-        <!-- Submit Buttons -->
-        <div class="flex justify-end gap-4 mt-8 ">
-          <%= link_to input_path(@input), class: "bg-gray-200 hover:bg-gray-300 text-gray-800 p-3 rounded-lg font-medium flex items-center gap-2" do %>
-            <i class="fa-solid fa-xmark"></i>
-            Cancel
+        <div>
+          <%= f.label :invoice_date, "Invoice Date" %>
+          <%= f.date_field :invoice_date, class: "w-full border border-gray-300 rounded-lg p-2" %>
+        </div>
+
+        <div>
+          <%= f.label :shipper_name_id, "Shipper" %>
+          <%= f.collection_select :shipper_name_id, Client.all, :id, :company_name, { prompt: "Select Shipper" }, class: "w-full border border-gray-300 rounded-lg p-2" %>
+        </div>
+
+        <div>
+          <%= f.label :consignee_name_id, "Consignee" %>
+          <%= f.collection_select :consignee_name_id, Client.all, :id, :company_name, { prompt: "Select Consignee" }, class: "w-full border border-gray-300 rounded-lg p-2" %>
+        </div>
+
+        <div>
+          <%= f.label :importer_name_id, "Importer" %>
+          <%= f.collection_select :importer_name_id, Client.all, :id, :company_name, { prompt: "Select Importer" }, class: "w-full border border-gray-300 rounded-lg p-2" %>
+        </div>
+
+        <div>
+          <%= f.label :order_no_from_dispatch, "Order No from Dispatch" %>
+          <%= f.text_field :order_no_from_dispatch, class: "w-full border border-gray-300 rounded-lg p-2" %>
+        </div>
+
+        <div>
+          <%= f.label :currency_id, "Currency" %>
+          <%= f.collection_select :currency_id, Currency.all, :id, :name, { prompt: "Select Currency" }, class: "w-full border border-gray-300 rounded-lg p-2" %>
+        </div>
+
+        <div>
+          <%= f.label :fedex_awb_no, "FedEx AWB No" %>
+          <%= f.text_field :fedex_awb_no, class: "w-full border border-gray-300 rounded-lg p-2" %>
+        </div>
+      </div>
+
+      <!-- Input Details -->
+      <div class="mt-10">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Input Details</h3>
+        <div id="input-details" class="space-y-4">
+          <%= f.fields_for :input_details do |detail_form| %>
+            <%= render 'input_detail_fields', f: detail_form, show_remove_button: false %>
           <% end %>
+        </div>
+      </div>
 
-          <%= f.submit "Update Input", class: "bg-blue-600 hover:bg-blue-700 text-white p-3  rounded-lg font-medium flex items-center gap-2 shadow-md transition-transform hover:scale-[1.02]" %>
+      <!-- Input Items -->
+      <div class="mt-10">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Input Items</h3>
+        <div id="input-items" class="space-y-4">
+          <%= f.fields_for :input_items do |item_form| %>
+            <%= render 'input_item_fields', f: item_form, show_remove_button: false %>
+          <% end %>
         </div>
-      <% end %>
-    </div>
+      </div>
 
-    <!-- Input Details Section -->
-    <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Invoice Input Details</h3>
-      <% if @input.input_details.any? %>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marks No</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Packages</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type of Package</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description of Goods</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">HSN</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty PCS</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <% @input.input_details.each do |detail| %>
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.marks_no&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.no_of_packages.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.type_of_package&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.complete_description_of_good&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.hsn&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.qty_pcs.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= detail.price.presence || "—" %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <div class="text-center py-8 text-gray-500">
-          <i class="fa-solid fa-box-open text-4xl mb-4"></i>
-          <p>No input details found</p>
-        </div>
-      <% end %>
-    </div>
+      <!-- Submit Buttons -->
+      <div class="flex justify-end gap-4 mt-8">
+        <%= link_to input_path(@input), class: "bg-gray-200 hover:bg-gray-300 text-gray-800 p-3 rounded-lg font-medium flex items-center gap-2" do %>
+          <i class="fa-solid fa-xmark"></i> Cancel
+        <% end %>
 
-    <!-- Input Items Section -->
-    <div class="bg-white rounded-lg shadow-lg p-8 mb-6">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Packing List Input Items</h3>
-      <% if @input.input_items.any? %>
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-              <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order No</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No of Boxes</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qty per Box</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Net Weight</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gross Weight</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dimensions (L×W×H)</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <% @input.input_items.each do |item| %>
-                <tr class="hover:bg-gray-50">
-                  <td class="px-6 py-4 text-sm font-medium text-gray-900"><%= item.order_no.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= item.no_of_boxes.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= item.description_of_good&.name.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= item.qty_per_box.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= item.net_weight.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= item.gross_weight.presence || "—" %></td>
-                  <td class="px-6 py-4 text-sm text-gray-500"><%= [item.length, item.width, item.height].all? ? "#{item.length}×#{item.width}×#{item.height}" : "—" %></td>
-                </tr>
-              <% end %>
-            </tbody>
-          </table>
-        </div>
-      <% else %>
-        <div class="text-center py-8 text-gray-500">
-          <i class="fa-solid fa-box-open text-4xl mb-4"></i>
-          <p>No input items found</p>
-        </div>
-      <% end %>
-    </div>
+        <%= f.submit "Save Draft",
+      name: "save_draft",
+      class: "bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded-lg font-medium flex items-center gap-2 cursor-pointer" %>
+
+        <%= f.submit "Update & Finalize", class: "bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg font-medium flex items-center gap-2 cursor-pointer" %>
+      </div>
+
+    <% end %> 
 
   </div>
 </div>

@@ -18,6 +18,9 @@ class InputsController < ApplicationController
     # Dispatch se values pass karne ke liye
     if params[:from_dispatch].present? && params[:dispatch_id].present?
       @dispatch = Dispatch.find(params[:dispatch_id])
+      @input.dispatch_id = @dispatch.id
+      order_numbers = @dispatch.dispatch_items.pluck(:order_no)
+      @input.order_no_from_dispatch = order_numbers.join(", ")
       prefill_from_dispatch
     end
   end
@@ -26,24 +29,50 @@ class InputsController < ApplicationController
     @input = Input.new(input_params)
     @input.user = current_user
     @input.org_id = current_user.org_id
-
-    if @input.save
-      redirect_to input_path(@input), notice: 'Input was successfully created.'
+  
+    @input.dispatch_id = params[:dispatch_id] if params[:dispatch_id].present?
+  
+    if params[:save_draft].present?
+      @input.status = "draft"
+      if @input.save(validate: false)
+        redirect_to edit_input_path(@input), notice: 'Draft saved successfully!'
+      else
+        redirect_to new_input_path, alert: 'Unable to save draft.'
+      end
     else
-      render :new, status: :unprocessable_entity
+      @input.status = "completed"
+      if @input.save
+        redirect_to input_path(@input), notice: 'Input was successfully created.'
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
   end
+  
+  
 
   def edit
   end
 
   def update
-    if @input.update(input_params)
-      redirect_to inputs_path, notice: 'Input updated successfully.'
+    if params[:save_draft].present?
+      @input.assign_attributes(input_params)
+      @input.status = "draft"
+      if @input.save(validate: false)  
+        redirect_to input_path(@input), notice: 'Draft updated successfully!'
+      else
+        redirect_to edit_input_path(@input), alert: 'Unable to save draft.'
+      end
     else
-      render :edit
+      @input.status = "completed"
+      if @input.update(input_params)   
+        redirect_to input_path(@input), notice: 'Input was successfully updated.'
+      else
+        render :edit, status: :unprocessable_entity
+      end
     end
   end
+
 
   def destroy
     @input.destroy
@@ -59,7 +88,7 @@ class InputsController < ApplicationController
   def input_params
     params.require(:input).permit(
       :invoice_no, :invoice_date, :shipper_name_id, :consignee_name_id, 
-      :importer_name_id, :order_no_from_dispatch, :currency_id, :fedex_awb_no,
+      :importer_name_id, :order_no_from_dispatch, :currency_id, :dispatch_id, :fedex_awb_no,
       input_items_attributes: [
         :id, :no_of_boxes, :description_of_goods_id, :qty_per_box, 
         :net_weight, :gross_weight, :length, :width, :height, :order_no, :_destroy
@@ -72,7 +101,6 @@ class InputsController < ApplicationController
   end
   
   def prefill_from_dispatch
-    # Basic dispatch info
     @input.invoice_no = @dispatch.invoice_no if @dispatch.invoice_no.present?
 
   end

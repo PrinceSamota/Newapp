@@ -32,11 +32,31 @@
   <div class="flex justify-between mt-0">
     <h2 class="text-2xl font-bold text-gray-800">Edit Dispatch</h2>
     <div class="flex justify-end mt-0 gap-3">
-      <%= link_to new_input_path(from_dispatch: true, dispatch_id: @dispatch.id), 
-          class: "flex items-center gap-2 text-white bg-green-600 hover:bg-green-700 rounded-md p-2 w-fit" do %>
-        <i class="fa-solid fa-file-import"></i>
-        <span class="font-bold">Create Input</span>
+    <% if @input.present? %>
+    <% if @input.status == "draft" %>
+      <!-- If input is a draft -->
+      <%= link_to edit_input_path(@input), 
+          class: "flex items-center gap-2 text-white bg-yellow-600 hover:bg-yellow-600 rounded-md p-2 w-fit" do %>
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span class="font-bold">View Draft</span>
       <% end %>
+    <% else %>
+      <!-- If input is completed -->
+      <%= link_to input_path(@input), 
+          class: "flex items-center gap-2 text-white bg-blue-600 hover:bg-blue-700 rounded-md p-2 w-fit" do %>
+        <i class="fa-solid fa-eye"></i>
+        <span class="font-bold">View Input</span>
+      <% end %>
+    <% end %>
+  <% else %>
+    <!-- If no input exists yet -->
+    <%= link_to new_input_path(from_dispatch: true, dispatch_id: @dispatch.id), 
+        class: "flex items-center gap-2 text-white bg-green-600 hover:bg-green-700 rounded-md p-2 w-fit" do %>
+      <i class="fa-solid fa-file-import"></i>
+      <span class="font-bold">Create Input</span>
+    <% end %>
+  <% end %>
+  
       
       <%= link_to download_pdf_dispatch_path(@dispatch, format: :pdf),
           class: "flex items-center gap-2 text-white bg-red-600 hover:bg-red-700 rounded-md p-2 w-fit",

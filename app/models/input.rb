@@ -4,14 +4,17 @@ class Input < ApplicationRecord
   belongs_to :consignee_name, class_name: 'Client', optional: true
   belongs_to :importer_name, class_name: 'Client', optional: true
   belongs_to :currency, optional: true
-  has_many :input_items, dependent: :destroy
-  has_many :input_details, dependent: :destroy
+  belongs_to :dispatch, optional: true
+
+  has_many :input_items, dependent: :destroy, inverse_of: :input
+  has_many :input_details, dependent: :destroy, inverse_of: :input
+
   accepts_nested_attributes_for :input_items, allow_destroy: true
   accepts_nested_attributes_for :input_details, allow_destroy: true
-  
-  validates :invoice_no, presence: true
-  validates :invoice_date, presence: true
-  validates :shipper_name_id, presence: true
-  validates :consignee_name_id, presence: true
-  validates :order_no_from_dispatch, presence: true
+
+  validates_associated :input_items
+  validates_associated :input_details
+
+  validates :invoice_no, :invoice_date, :shipper_name_id, 
+            :consignee_name_id, :order_no_from_dispatch, presence: true
 end

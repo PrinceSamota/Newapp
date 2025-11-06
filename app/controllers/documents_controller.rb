@@ -142,11 +142,18 @@ class DocumentsController < ApplicationController
                          "documents/#{@document_type}_pdf"
                        end
         
-        pdf_filename = if @input
-                         "#{@document_type}_input_#{@input.id}"
-                       else
-                         "#{@document_type}_#{@order_entry&.order_no || @dispatch&.d_id}"
-                       end
+                       pdf_filename = if @input
+                        invoice_no = @input.invoice_no.to_s
+                        last_4_digits = invoice_no[-4..-1] || invoice_no
+                        "#{@document_type}_#{last_4_digits}"
+                      elsif @order_entry
+                        "#{@document_type}_#{@order_entry.order_no}"
+                      elsif @dispatch
+                        "#{@document_type}_#{@dispatch.d_id}"
+                      else
+                        @document_type
+                      end
+   
         
         render pdf: pdf_filename,
                template: template_name,
