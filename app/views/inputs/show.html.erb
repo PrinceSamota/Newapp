@@ -36,7 +36,7 @@
           ["Consignee", @input.consignee_name&.name],
           ["Importer", @input.importer_name&.name],
           ["Order No from Dispatch", @input.order_no_from_dispatch],
-          ["Currency", @input.currency],
+          ["Currency", @input.currency&.name],
           ["FedEx AWB No", @input.fedex_awb_no]
         ].each do |label, value| %>
           <div>
@@ -126,7 +126,7 @@
       <% end %>
     </div>
 
- 
+ <% if @input.status == "completed" %>
     <div class="bg-blue-50 p-6 rounded-xl shadow-sm mt-8">
   <h3 class="text-lg font-semibold text-gray-800 mb-6">Generate Documents</h3>
 
@@ -160,6 +160,7 @@
     <% end %>
   </ul>
 </div>
+<% end %>
 
   </div>
 </div>

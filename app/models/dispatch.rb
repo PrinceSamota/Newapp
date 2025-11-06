@@ -1,5 +1,6 @@
 class Dispatch < ApplicationRecord
   belongs_to :location, optional: true
+  has_one :input, dependent: :destroy
   before_create :generate_d_id
   has_many :dispatch_items, dependent: :destroy
   belongs_to :client_driver_var_no, optional: true

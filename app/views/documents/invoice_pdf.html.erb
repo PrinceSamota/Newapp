@@ -272,7 +272,7 @@
       <td><%= detail.qty_pcs.presence || "—" %></td>
       <td><%= detail.price.presence || "—" %></td>
       <td><%= (detail.price && detail.qty_pcs) ? (detail.price * detail.qty_pcs) : "—" %></td>
-      <td><%= @input.currency.presence || "USD" %></td>
+      <td><%= @input.currency&.name.presence || "-" %></td>
     </tr>
   <% end %>
         <tr>
@@ -291,7 +291,7 @@
           <td colspan="4" style="border:none;"></td> 
 
           <td> <%= @input.input_details.sum { |d| (d.price.to_f * d.qty_pcs.to_f) } %></td>
-          <td><%= @input.currency %></td> 
+          <td><%= @input.currency&.name %></td> 
         </tr>
         <tr>
           <td colspan="8" style="border:none; padding: 10px; text-align: left;">

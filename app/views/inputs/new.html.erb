@@ -54,14 +54,15 @@
 
 
         <div>
-          <%= f.label :order_no_from_dispatch, "Order No from Dispatch", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.text_field :order_no_from_dispatch, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
-        </div>
+        <%= f.label :order_no_from_dispatch, "Order No from Dispatch", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= f.text_field :order_no_from_dispatch, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+      </div>
+      
 
-        <div>
-          <%= f.label :currency, "Currency", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.text_field :currency, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
-        </div>
+        <div id="currency_section">
+        <%= render "inputs/currency_dropdown", f: f, detail_index: f.index, selected_currency_id: f.object.currency_id %>
+      </div>
+      
 
         <div>
           <%= f.label :fedex_awb_no, "FedEx AWB Number", class: "block text-sm font-medium text-gray-700 mb-1" %>
@@ -108,7 +109,7 @@
 
         <div id="input-details" class="space-y-4">
           <%= f.fields_for :input_details do |detail_form| %>
-            <%= render 'input_detail_fields', f: detail_form %>
+            <%= render 'input_detail_fields', f: detail_form, show_remove_button: true %>
           <% end %>
         </div>
 
@@ -132,7 +133,7 @@
 
         <div id="input-items" class="space-y-4">
           <%= f.fields_for :input_items do |item_form| %>
-            <%= render 'input_item_fields', f: item_form %>
+            <%= render 'input_item_fields', f: item_form, show_remove_button: true %>
           <% end %>
         </div>
 
@@ -149,10 +150,20 @@
           <%= render 'input_item_fields', f: item_form %>
         <% end %>
       </div>
+      <%= f.hidden_field :dispatch_id, value: params[:dispatch_id] || @input.dispatch_id %>
 
       <div class="flex justify-end space-x-4 mt-8">
-        <%= f.submit "Create Input", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl text-lg cursor-pointer" %>
-      </div>
+  <!-- Save Draft Button -->
+  <%= f.submit "Save Draft", 
+      name: "save_draft", 
+      class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl text-lg cursor-pointer" %>
+
+  <!-- Normal Submit Button -->
+  <%= f.submit "Create Input", 
+      name: "commit", 
+      class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl text-lg cursor-pointer" %>
+</div>
+
     <% end %>
   </div>
 </div>
