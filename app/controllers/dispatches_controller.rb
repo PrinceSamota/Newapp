@@ -154,9 +154,6 @@ class DispatchesController < ApplicationController
       :track_no,
       :progress,
       :invoice_no,
-      :client_driver_var_no_id,
-      :mfg_date,
-      :order_receiving_date,
       dispatch_items_attributes: [:id, :order_no, :order_entry_id, :quantity, :_destroy]
     )
   end
@@ -171,9 +168,6 @@ class DispatchesController < ApplicationController
       :track_no,
       :progress,
       :invoice_no,
-      :client_driver_var_no_id,
-      :mfg_date,
-      :order_receiving_date,
       dispatch_items_attributes: [:id, :order_no, :order_entry_id, :quantity, :_destroy]
     )
   end
