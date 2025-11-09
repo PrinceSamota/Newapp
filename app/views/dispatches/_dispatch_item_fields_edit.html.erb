@@ -55,6 +55,46 @@
     <div class="grid grid-cols-1 md:grid-cols-9 gap-3 bg-gray-50 border border-gray-200 rounded-b-xl p-4 text-sm <%= 'opacity-75' if order.deleted_at.present? %>">
       <div><label class="text-xs font-semibold text-gray-500">Article No</label><div><%= order.article_no %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">SKU Number</label><div><%= order.sku_number %></div></div>
+      <div>
+        <label class="text-xs font-semibold text-gray-500">MFG Date</label>
+        <div data-field="mfg-date">
+          <% formatted_mfg_date =
+            if order.mfg_date.present?
+              begin
+                Date.parse(order.mfg_date.to_s).strftime("%d-%b-%Y")
+              rescue
+                order.mfg_date
+              end
+            else
+              "-"
+            end %>
+          <%= formatted_mfg_date %>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-gray-500">Order Receiving Date</label>
+        <div data-field="order-receiving-date">
+          <% formatted_order_receiving_date =
+            if order.order_receiving_date.present?
+              begin
+                Date.parse(order.order_receiving_date.to_s).strftime("%d-%b-%Y")
+              rescue
+                order.order_receiving_date
+              end
+            else
+              "-"
+            end %>
+          <%= formatted_order_receiving_date %>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-gray-500">VAR No</label>
+        <div data-field="var-no">
+          <%= order.driver_revision&.name.presence || '-' %>
+        </div>
+      </div>
       <div><label class="text-xs font-semibold text-gray-500">Client</label><div><%= order.client&.name %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">Ship To</label><div><%= order.location&.name %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">Quantity</label><div><%= order.qty %></div></div>
@@ -72,6 +112,7 @@
       <div><label class="text-xs font-semibold text-gray-500">Fuse Type</label><div><%= order.fuse_type %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">Remark</label><div><%= order.remark %></div></div>
       <div><label class="text-xs font-semibold text-gray-500">Status</label><div><%= order.status %></div></div>
+
       <% if item_master.present? %>
       <% unless @dispatch.progress == "Dispatched" %>
       <% if item_master.opening_stock < order.qty %>
@@ -90,4 +131,6 @@
   <% else %>
         <div class="text-red-500 text-sm mt-2">No order found for Order No: <%= f.object.order_no %></div>
   <% end %>
+        <p id="dispatch-warning-message" class="text-red-600 text-sm mt-2 hidden"></p>
+
 </div>

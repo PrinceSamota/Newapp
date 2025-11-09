@@ -176,6 +176,7 @@ end
         :start_serial_no,
         :end_serial_no,
         :mfg_date,
+        :order_receiving_date,
         :driver_revision_id,
         :invoice_no,
         :tracking_no,

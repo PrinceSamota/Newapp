@@ -94,20 +94,6 @@
     <%= f.text_field :courier_company, class: "w-full rounded-xl border border-gray-300 p-2.5", disabled: disabled %>
   </div>
 
-  <div>
-    <%= render partial: "uploads/client_driver_ver_no_dropdown",
-              locals: { selected_client_driver_var_no_id: @dispatch.client_driver_var_no_id, show_form: false, errors: [] } %>
-  </div>
-
-<div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">MFG Date</label>
-  <%= f.date_field :mfg_date, class: "w-full rounded-xl border border-gray-300 p-2.5", disabled: disabled %>
-</div>
-
-<div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">Order Receiving Date</label>
-  <%= f.date_field :order_receiving_date, class: "w-full rounded-xl border border-gray-300 p-2.5", disabled: disabled %>
-</div>
 
       <div>
         <%= f.label :progress, "Progress", class: "block text-sm font-medium text-gray-700 mb-1" %>
@@ -122,7 +108,7 @@
     <!-- DISPATCH ITEMS SECTION -->
     <h3 class="text-lg font-semibold text-gray-700 pt-4">Dispatch Items</h3>
 
- 
+    <p id="dispatch-warning-message" class="text-red-600 text-sm mt-2 hidden"></p>
     <div id="dispatch-items">
     <%= f.fields_for :dispatch_items do |dispatch_item_form| %>
       <%= render 'dispatch_item_fields_edit', f: dispatch_item_form %>
@@ -147,20 +133,19 @@
     <% end %>
   </div>
 <% end %>
+
 <script>
-  document.addEventListener("turbo:load", function () {
-    const addItemBtn = document.getElementById("add-item");
-    const container = document.getElementById("dispatch-items");
-    if (!addItemBtn || !container) return;
+document.addEventListener("turbo:load", function () {
+  const addItemBtn = document.getElementById("add-item");
+  const container = document.getElementById("dispatch-items");
 
-    if (addItemBtn.dataset.listenerAttached === "true") return;
+  if (addItemBtn && container && addItemBtn.dataset.listenerAttached !== "true") {
     addItemBtn.dataset.listenerAttached = "true";
-
     let index = container.querySelectorAll(".dispatch-item").length;
 
     addItemBtn.addEventListener("click", function () {
       fetch("<%= new_item_row_dispatches_path %>?index=" + index)
-        .then(response => response.text())
+        .then(r => r.text())
         .then(html => {
           container.insertAdjacentHTML("beforeend", html);
           index++;
@@ -180,129 +165,150 @@
         }
       }
     });
-  });
-
-  // ======================
-  // Disable button logic
-  // ======================
-  document.addEventListener("turbo:load", function () {
-    const checkStockAndToggleButton = () => {
-      const errorBlocks = document.querySelectorAll("[data-insufficient-stock='true']");
-      const submitBtn = document.querySelector("input[type='submit']");
-      const progressSelect = document.querySelector("select[name='dispatch[progress]']");
-      const clientDriverInput = document.querySelector("input[name='dispatch[client_driver_ver_no]']");
-      const mfgDateInput = document.querySelector("input[name='dispatch[mfg_date]']");
-      const orderReceivingInput = document.querySelector("input[name='dispatch[order_receiving_date]']");
-
-      if (!submitBtn || !progressSelect) return;
-
-      const isDispatching = progressSelect.value === "Dispatched";
-
-      // Check missing fields
-      const isMissingRequired =
-        !clientDriverInput?.value.trim() ||
-        !mfgDateInput?.value.trim() ||
-        !orderReceivingInput?.value.trim();
-
-      // Red border highlight for missing fields when Dispatched
-      if (isDispatching) {
-        [clientDriverInput, mfgDateInput, orderReceivingInput].forEach((field) => {
-          if (field && !field.value.trim()) {
-            field.classList.add("border-red-500");
-          } else {
-            field?.classList.remove("border-red-500");
-          }
-        });
-      } else {
-        [clientDriverInput, mfgDateInput, orderReceivingInput].forEach((field) =>
-          field?.classList.remove("border-red-500")
-        );
-      }
-
-      // Disable button if stock error OR missing required
-      if ((isDispatching && errorBlocks.length > 0) || (isDispatching && isMissingRequired)) {
-        submitBtn.disabled = true;
-        submitBtn.classList.add("opacity-50", "cursor-not-allowed");
-        submitBtn.title = "Cannot update: Missing required fields or insufficient stock.";
-      } else {
-        submitBtn.disabled = false;
-        submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
-        submitBtn.title = "";
-      }
-    };
-
-    checkStockAndToggleButton();
-
-    const container = document.getElementById("dispatch-items");
-    if (container) {
-      const observer = new MutationObserver(() => {
-        setTimeout(checkStockAndToggleButton, 200);
-      });
-      observer.observe(container, { childList: true, subtree: true });
-    }
-
-    const progressSelect = document.querySelector("select[name='dispatch[progress]']");
-    const clientDriverInput = document.querySelector("input[name='dispatch[client_driver_ver_no]']");
-    const mfgDateInput = document.querySelector("input[name='dispatch[mfg_date]']");
-    const orderReceivingInput = document.querySelector("input[name='dispatch[order_receiving_date]']");
-
-    [progressSelect, clientDriverInput, mfgDateInput, orderReceivingInput].forEach((el) => {
-      if (el) {
-        el.addEventListener("input", checkStockAndToggleButton);
-        el.addEventListener("change", checkStockAndToggleButton);
-      }
-    });
-  });
-
-  // ======================
-  // Searchable dropdown logic
-  // ======================
-  document.addEventListener("turbo:load", initSearchableDropdowns);
-  document.addEventListener("turbo:frame-load", initSearchableDropdowns);  
-
-  function initSearchableDropdowns() {
-    document.querySelectorAll("[data-role='searchable-input']:not([data-bound='true'])").forEach((input) => {
-      input.dataset.bound = "true";
-      const wrapper = input.closest(".searchable-wrapper");
-      const dropdown = wrapper.querySelector("[data-role='searchable-dropdown']");
-      const hiddenIdField = wrapper.querySelector(".order-entry-id-field");
-
-      input.addEventListener("focus", () => {
-        dropdown.classList.remove("hidden");
-      });
-
-      input.addEventListener("input", () => {
-        const searchTerm = input.value.toLowerCase();
-        let hasMatch = false;
-        dropdown.querySelectorAll("li").forEach((item) => {
-          const match = item.textContent.toLowerCase().includes(searchTerm);
-          item.style.display = match ? "block" : "none";
-          if (match) hasMatch = true;
-        });
-        dropdown.classList.toggle("hidden", !hasMatch);
-      });
-
-      dropdown.querySelectorAll("li").forEach((item) => {
-        item.addEventListener("click", () => {
-          input.value = item.dataset.value;
-          hiddenIdField.value = item.dataset.id;
-          dropdown.classList.add("hidden");
-          fetch(`/dispatches/order_details?order_entry_id=${item.dataset.id}`, {
-            headers: { "Accept": "text/vnd.turbo-stream.html" }
-          })
-          .then(response => response.text())
-          .then(html => {
-            wrapper.closest(".dispatch-item").querySelector(".order-details-container").innerHTML = html;
-          });
-        });
-      });
-
-      input.addEventListener("blur", () => {
-        setTimeout(() => dropdown.classList.add("hidden"), 200);
-      });
-    });
   }
 
-  document.addEventListener("turbo:load", initSearchableDropdowns);
-  document.addEventListener("turbo:frame-load", initSearchableDropdowns);
+function checkDispatchValidation() {
+  const submitBtn = document.querySelector("input[type='submit']");
+  const progressSelect = document.querySelector("select[name='dispatch[progress]']");
+  const warningMessage = document.getElementById("dispatch-warning-message");
+
+  if (!submitBtn || !progressSelect || !warningMessage) return;
+
+  const isDispatching = progressSelect.value?.trim().toLowerCase() === "dispatched";
+
+  const orderItems = Array.from(document.querySelectorAll(".dispatch-item"));
+  let hasMissingMfgDate = false;
+  let hasMissingVarNo = false;
+  let hasMissingReceivingDate = false;
+
+  orderItems.forEach(item => {
+    const mfgEl = item.querySelector("[data-field='mfg-date']");
+    const varEl = item.querySelector("[data-field='var-no']");
+    const recvEl = item.querySelector("[data-field='order-receiving-date']");
+
+    const mfgText = mfgEl ? mfgEl.textContent.trim() : "";
+    const varText = varEl ? varEl.textContent.trim() : "";
+    const recvText = recvEl ? recvEl.textContent.trim() : "";
+
+    const mfgMissing = !mfgText || mfgText === "-" || mfgText.toLowerCase() === "null";
+    const varMissing = !varText || varText === "-" || varText.toLowerCase() === "null";
+    const recvMissing = !recvText || recvText === "-" || recvText.toLowerCase() === "null";
+
+    if (mfgMissing) {
+      hasMissingMfgDate = true;
+      mfgEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
+    } else {
+      mfgEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
+    }
+
+    if (varMissing) {
+      hasMissingVarNo = true;
+      varEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
+    } else {
+      varEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
+    }
+
+    if (recvMissing) {
+      hasMissingReceivingDate = true;
+      recvEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
+    } else {
+      recvEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
+    }
+  });
+
+  const shouldDisable = isDispatching && (hasMissingMfgDate || hasMissingVarNo || hasMissingReceivingDate);
+
+  let message = "";
+  if (shouldDisable) {
+    if (hasMissingMfgDate && hasMissingVarNo && hasMissingReceivingDate) {
+      message = "⚠️ Please fill MFG Date, VAR No, and Order Receiving Date for all Dispatch items before dispatch.";
+    } else if (hasMissingMfgDate && hasMissingVarNo) {
+      message = "⚠️ Please fill MFG Date and VAR No for all Dispatch items before dispatch.";
+    } else if (hasMissingMfgDate && hasMissingReceivingDate) {
+      message = "⚠️ Please fill MFG Date and Order Receiving Date for all Dispatch items before dispatch.";
+    } else if (hasMissingVarNo && hasMissingReceivingDate) {
+      message = "⚠️ Please fill VAR No and Order Receiving Date for all Dispatch items before dispatch.";
+    } else if (hasMissingMfgDate) {
+      message = "⚠️ Please fill MFG Date for all Dispatch items before dispatch.";
+    } else if (hasMissingVarNo) {
+      message = "⚠️ Please fill VAR No for all Dispatch items before dispatch.";
+    } else if (hasMissingReceivingDate) {
+      message = "⚠️ Please fill Order Receiving Date for all Dispatch items before dispatch.";
+    }
+  }
+
+  if (shouldDisable) {
+    submitBtn.disabled = true;
+    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+    warningMessage.classList.remove("hidden");
+    warningMessage.textContent = message;
+  } else {
+    submitBtn.disabled = false;
+    submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+    warningMessage.classList.add("hidden");
+    warningMessage.textContent = "";
+  }
+}
+
+  
+
+  checkDispatchValidation();
+
+  const dispatchItemsContainer = document.getElementById("dispatch-items");
+  if (dispatchItemsContainer) {
+    const observer = new MutationObserver(() => setTimeout(checkDispatchValidation, 200));
+    observer.observe(dispatchItemsContainer, { childList: true, subtree: true });
+  }
+
+  const progressSelect = document.querySelector("select[name='dispatch[progress]']");
+  progressSelect?.addEventListener("change", checkDispatchValidation);
+
+  if (typeof initSearchableDropdowns === "function") {
+    initSearchableDropdowns();
+  }
+});
+
+
+function initSearchableDropdowns() {
+  document.querySelectorAll("[data-role='searchable-input']:not([data-bound='true'])").forEach((input) => {
+    input.dataset.bound = "true";
+    const wrapper = input.closest(".searchable-wrapper");
+    const dropdown = wrapper.querySelector("[data-role='searchable-dropdown']");
+    const hiddenIdField = wrapper.querySelector(".order-entry-id-field");
+
+    input.addEventListener("focus", () => dropdown.classList.remove("hidden"));
+
+    input.addEventListener("input", () => {
+      const searchTerm = input.value.toLowerCase();
+      let hasMatch = false;
+      dropdown.querySelectorAll("li").forEach((item) => {
+        const match = item.textContent.toLowerCase().includes(searchTerm);
+        item.style.display = match ? "block" : "none";
+        if (match) hasMatch = true;
+      });
+      dropdown.classList.toggle("hidden", !hasMatch);
+    });
+
+    dropdown.querySelectorAll("li").forEach((item) => {
+      item.addEventListener("click", () => {
+        input.value = item.dataset.value;
+        hiddenIdField.value = item.dataset.id;
+        dropdown.classList.add("hidden");
+
+        fetch(`/dispatches/order_details?order_entry_id=${item.dataset.id}`, {
+          headers: { "Accept": "text/vnd.turbo-stream.html" }
+        })
+        .then(response => response.text())
+        .then(html => {
+          wrapper.closest(".dispatch-item").querySelector(".order-details-container").innerHTML = html;
+        });
+      });
+    });
+
+    input.addEventListener("blur", () => setTimeout(() => dropdown.classList.add("hidden"), 200));
+  });
+}
+
+document.addEventListener("turbo:load", initSearchableDropdowns);
+document.addEventListener("turbo:frame-load", initSearchableDropdowns);
 </script>
