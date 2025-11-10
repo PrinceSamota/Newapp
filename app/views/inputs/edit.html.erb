@@ -71,24 +71,49 @@
         </div>
       </div>
 
-      <!-- Input Details -->
-      <div class="mt-10">
+      <div class="bg-blue-50 p-6 rounded-xl shadow-sm mt-8">
         <h3 class="text-lg font-semibold text-gray-800 mb-4">Input Details</h3>
+
         <div id="input-details" class="space-y-4">
           <%= f.fields_for :input_details do |detail_form| %>
-            <%= render 'input_detail_fields', f: detail_form, show_remove_button: false %>
+            <%= render 'input_detail_fields', f: detail_form, show_remove_button: true %>
           <% end %>
         </div>
+
+        <button type="button" id="add-input-detail" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md cursor-pointer">
+          + Add Input Detail
+        </button>
       </div>
 
-      <!-- Input Items -->
-      <div class="mt-10">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">Input Items</h3>
+      <!-- Template for new input detail row -->
+      <div id="input-detail-template" class="hidden">
+        <% new_detail = InputDetail.new %>
+        <% detail_index = "NEW_DETAIL_INDEX" %>
+        <%= f.fields_for :input_details, new_detail, child_index: detail_index do |detail_form| %>
+          <%= render 'input_detail_fields', f: detail_form %>
+        <% end %>
+      </div>
+
+      <div class="bg-green-50 p-6 rounded-xl shadow-sm mt-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Input Items</h3>
+
         <div id="input-items" class="space-y-4">
           <%= f.fields_for :input_items do |item_form| %>
-            <%= render 'input_item_fields', f: item_form, show_remove_button: false %>
+            <%= render 'input_item_fields', f: item_form, show_remove_button: true %>
           <% end %>
         </div>
+
+        <button type="button" id="add-input-item" class="mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md cursor-pointer">
+          + Add Input Item
+        </button>
+      </div>
+
+      <div id="input-item-template" class="hidden">
+        <% new_object = InputItem.new %>
+        <% index = "NEW_INDEX" %>
+        <%= f.fields_for :input_items, new_object, child_index: index do |item_form| %>
+          <%= render 'input_item_fields', f: item_form %>
+        <% end %>
       </div>
 
       <!-- Submit Buttons -->
@@ -108,3 +133,54 @@
 
   </div>
 </div>
+<script>
+function initInputForm() {
+  const itemContainer = document.getElementById("input-items");
+  const detailContainer = document.getElementById("input-details");
+  if (!itemContainer || itemContainer.dataset.initialized === "true") return;
+
+  itemContainer.dataset.initialized = "true";
+
+  const itemTemplate = document.getElementById("input-item-template")?.innerHTML;
+  const detailTemplate = document.getElementById("input-detail-template")?.innerHTML;
+
+  const addItemButton = document.getElementById("add-input-item");
+  const addDetailButton = document.getElementById("add-input-detail");
+
+  let itemIndex = itemContainer.querySelectorAll(".input-item-row").length;
+  let detailIndex = detailContainer.querySelectorAll(".input-detail-row").length;
+
+  addItemButton?.addEventListener("click", function () {
+    if (!itemTemplate) return;
+    const newRow = itemTemplate.replace(/NEW_INDEX/g, itemIndex);
+    itemContainer.insertAdjacentHTML("beforeend", newRow);
+    itemIndex++;
+  });
+
+  addDetailButton?.addEventListener("click", function () {
+    if (!detailTemplate) return;
+    const newDetail = detailTemplate.replace(/NEW_DETAIL_INDEX/g, detailIndex);
+    detailContainer.insertAdjacentHTML("beforeend", newDetail);
+    detailIndex++;
+  });
+
+  itemContainer?.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-input-item")) {
+      const row = e.target.closest(".input-item-row");
+      row.querySelector('input[name*="[_destroy]"]').value = "1";
+      row.style.display = "none"; // Hide instead of removing
+    }
+  });
+
+  detailContainer?.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-input-detail")) {
+      const row = e.target.closest(".input-detail-row");
+      row.querySelector('input[name*="[_destroy]"]').value = "1";
+      row.style.display = "none";
+    }
+  });
+}
+
+document.addEventListener("turbo:load", initInputForm);
+document.addEventListener("DOMContentLoaded", initInputForm);
+</script>
