@@ -173,6 +173,53 @@ class ItemMastersController < ApplicationController
         end
       end
       
+      def update_block_stock
+        @item_master = ItemMaster.find(params[:id])
+        quantity = params[:block_value].to_i
+        operation = params[:operation]
+        user_comment = params[:comment].to_s.strip
+      
+        formatted_reason =
+          if operation == "block"
+            "Block (#{user_comment})"
+          elsif operation == "unblock"
+            "Unblock (#{user_comment})"
+          else
+            user_comment
+          end
+      
+        PaperTrail.request.whodunnit = current_user.id
+        PaperTrail.request.controller_info = { reason: formatted_reason }
+      
+        case operation
+        when "block"
+          if quantity > @item_master.opening_stock
+            redirect_to versions_item_master_path(@item_master), alert: "Not enough stock to block! Available: #{@item_master.opening_stock}" and return
+          end
+      
+          @item_master.opening_stock -= quantity
+          @item_master.block_stock = (@item_master.block_stock || 0) + quantity
+          notice_msg = "Blocked #{quantity} stocks successfully. (Reason: #{user_comment})"
+      
+        when "unblock"
+          if quantity > @item_master.block_stock.to_i
+            redirect_to versions_item_master_path(@item_master), alert: "Not enough blocked stock to unblock! Currently blocked: #{@item_master.block_stock.to_i}" and return
+          end
+      
+          @item_master.block_stock -= quantity
+          @item_master.opening_stock += quantity
+          notice_msg = "Unblocked #{quantity} stocks successfully. (Reason: #{user_comment})"
+        end
+      
+        if @item_master.save
+          @item_master.reload
+          @item_master.versions.reload
+      
+          redirect_to versions_item_master_path(@item_master), notice: notice_msg
+        else
+          redirect_to versions_item_master_path(@item_master), alert: "Failed to update block stock."
+        end
+      end
 
       
     private

@@ -74,6 +74,7 @@ resources :locations, only: [:create]
   resources :item_masters do
     member do
       patch :update_stock
+      patch :update_block_stock
       get :versions
     end
   end

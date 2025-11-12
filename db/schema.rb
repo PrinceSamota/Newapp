@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_08_144134) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_12_102848) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -133,7 +133,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_08_144134) do
     t.string "rex_no"
     t.date "rex_date"
     t.string "pan_no"
-    t.string "website"
+    t.string "company_url"
     t.string "port_of_discharge"
     t.string "port_of_loading"
     t.string "shipping_terms"
@@ -142,6 +142,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_08_144134) do
     t.string "advance_authorization_file_no"
     t.string "payment_terms"
     t.string "signatory"
+    t.string "distributor_url"
   end
 
   create_table "complete_description_of_goods", force: :cascade do |t|
@@ -315,6 +316,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_08_144134) do
     t.integer "org_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "block_stock"
   end
 
   create_table "item_types", force: :cascade do |t|
