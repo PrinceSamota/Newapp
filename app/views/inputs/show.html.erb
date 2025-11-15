@@ -48,7 +48,7 @@
     </div>
    <!-- Input Details Section -->
     <div class="bg-white rounded-lg shadow-lg p-8">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Invoice Input</h3>
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Input Details</h3>
       <% if @input.input_details.any? %>
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
@@ -88,7 +88,7 @@
 
     <!-- Input Items Section -->
     <div class="bg-white rounded-lg shadow-lg p-8 mb-6 mt-8">
-      <h3 class="text-xl font-bold text-gray-800 mb-4">Packing List Input</h3>
+      <h3 class="text-xl font-bold text-gray-800 mb-4">Input Items</h3>
       <% if @input.input_items.any? %>
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
@@ -101,6 +101,7 @@
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Net Weight</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gross Weight</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dimensions (L×W×H)</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Download</th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
@@ -113,6 +114,15 @@
                   <td class="px-6 py-4 text-sm text-gray-500"><%= item.net_weight.presence || "—" %></td>
                   <td class="px-6 py-4 text-sm text-gray-500"><%= item.gross_weight.presence || "—" %></td>
                   <td class="px-6 py-4 text-sm text-gray-500"><%= [item.length, item.width, item.height].all? ? "#{item.length}×#{item.width}×#{item.height}" : "—" %></td>
+                  <td class="px-6 py-4 text-center">
+                  <%= link_to download_item_pdf_path(item.id, format: :pdf),
+                  class: "text-red-600 hover:text-red-800" do %>
+                  <i class="fa-solid fa-file-pdf text-xl"></i>
+                <% end %>
+                
+              
+                </td>
+
                 </tr>
               <% end %>
             </tbody>

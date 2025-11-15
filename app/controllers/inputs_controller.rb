@@ -72,7 +72,22 @@ class InputsController < ApplicationController
       end
     end
   end
-
+  def download_item_pdf
+    @item = InputItem.find(params[:item_id])
+    @input = @item.input   # Item se parent input fetch karo
+  
+    respond_to do |format|
+      format.pdf do
+        render pdf: "input_item_#{@item.id}",
+               template: "inputs/item_pdf",
+               layout: "pdf",
+               formats: [:html]
+      end
+    end
+  end
+  
+  
+  
 
   def destroy
     @input.destroy

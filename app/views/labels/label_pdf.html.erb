@@ -110,16 +110,53 @@
       <tr>
         <!-- LEFT SIDE: Logo + Signature -->
         <th class="left-logo" rowspan="2">
-          <div class="logo-container">
+        <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
+      
+          <!-- Logo Block 1 -->
+          <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+            <!-- Top text (add your own) -->
+            <div style="font-size:4px; font-weight:bold; margin-top:-4mm; padding-bottom: 4mm;">
+            Hersteller / Manufacturers  
+            </div>
+      
+            <!-- Logo -->
             <% if @client&.logo&.attached? %>
-              <%= image_tag @client.logo, alt: "Company Logo" %>
+              <%= image_tag @client.logo, alt: "Company Logo"%>
             <% end %>
-
-               <% if @client&.emc&.attached? %>
+      
+            <!-- Bottom text (add your own) -->
+            <div style="font-size:4px; padding-top:1mm;">
+               <%= @client&.company_url if @client&.company_url.present? %>
+            </div>
+          </div>
+      
+      
+          <!-- Logo Block 2 -->
+          <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: 3mm;">
+            <!-- Top text (add your own) -->
+            <div style="font-size:4px; font-weight:bold; margin-bottom:1mm;">
+              <!-- YOUR TEXT HERE -->
+            </div>
+      
+            <!-- Logo -->
+            <% if @client&.emc&.attached? %>
               <%= image_tag @client.emc, alt: "EMC Logo" %>
             <% end %>
+      
+            <!-- Bottom text (add your own) -->
+            <div style="font-size:4px; margin-top:1mm;">
+            <% begin %>
+            <% if @form_data[:sticker_date].present? %>
+              <%= Date.parse(@form_data[:sticker_date]).strftime("%B %Y") %>
+            <% end %>
+          <% rescue %>
+          <% end %>
+            </div>
           </div>
-        </th>
+      
+        </div>
+      </th>
+      
 
         <th>Type</th>
         <th>Length</th>
@@ -131,20 +168,58 @@
         <th>Article No.</th>
         <th>Serial No.</th>
 
-        <!-- RIGHT SIDE: EMC + Distribution + QR -->
         <th class="right-logo" rowspan="2">
-          <div class="logo-container">
-          <% if @client&.qr_code&.attached? %>
-          <%= image_tag @client.qr_code, alt: "QR Code" %>
-        <% end %>
-
+        <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
+      
+          <!-- Right Logo Block 1 (QR Code Section) -->
+          <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+      
+            <!-- Top Text -->
+            <div style="font-size:4px; font-weight:bold; margin-top:-4mm; padding-bottom: 4mm;">
+              Manual
+            </div>
+      
+            <!-- QR Code Logo -->
+            <% if @client&.qr_code&.attached? %>
+              <%= image_tag @client.qr_code, alt: "QR Code" %>
+            <% end %>
+      
+            <!-- Bottom text -->
+            <div style="font-size:4px; padding-top:1mm;">
+              <% begin %>
+                <% if @form_data[:sticker_date].present? %>
+                  <%= Date.parse(@form_data[:sticker_date]).strftime("%B %Y") %>
+                <% end %>
+              <% rescue %>
+              <% end %>
+            </div>
+      
+          </div>
+      
+      
+          <!-- Right Logo Block 2 (Distribution Logo Section) -->
+          <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: 3mm;">
+      
+            <!-- Top Text -->
+            <div style="font-size:4px; font-weight:bold; margin-bottom:1mm;">
+              Distribution
+            </div>
+      
+            <!-- Distribution Logo -->
             <% if @client&.distribution_logo&.attached? %>
               <%= image_tag @client.distribution_logo, alt: "Distribution Logo" %>
             <% end %>
-
-           
+      
+            <!-- Bottom URL -->
+            <div style="font-size:4px; margin-top:1mm;">
+              <%= @client&.distributor_url if @client&.distributor_url.present? %>
+            </div>
+      
           </div>
-        </th>
+      
+        </div>
+      </th>
+      
       </tr>
 
       <tr>

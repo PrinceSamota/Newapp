@@ -122,7 +122,12 @@ get 'manual_decode_result', to: 'articles#manual_decode_result'
     end
   end
 
-  resources :inputs
+  resources :inputs do
+    member do
+      get :download_pdf
+    end
+  end
+    get "items/:item_id/download_pdf", to: "inputs#download_item_pdf", as: "download_item_pdf"
   resources :description_of_goods, only: [:create]
   resources :marks_nos, only: [:create]
   resources :type_of_packages, only: [:create]
