@@ -162,11 +162,16 @@
 
 
 <div>
-  <label class="block text-sm font-medium text-gray-700 mb-1">Order Receiving Date</label>
-  <%= f.date_field :order_receiving_date, 
+  <label class="block text-sm font-medium text-gray-700 mb-1">
+    Order Receiving Date
+  </label>
+
+  <%= f.date_field :order_receiving_date,
+      value: @order_entry.created_at.strftime("%Y-%m-%d"),
       readonly: @order_entry.deleted_at.present?,
       class: "w-full rounded-xl border border-gray-300 p-2.5 #{'bg-gray-100 cursor-not-allowed' if @order_entry.deleted_at.present?} focus:ring-blue-500 focus:border-blue-500" %>
 </div>
+
 
 <!-- Driver Revision No -->
 <% if @order_entry.driver_revision_id.present? %>

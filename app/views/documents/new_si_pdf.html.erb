@@ -386,8 +386,10 @@ td{text-align: center;}
 
     <td>
       <table width="100%">
-        <tr><td>Currency</td><td>USD</td></tr>
-        <tr><td class="center bold" colspan="2">9,256.84</td></tr>
+        <tr><td>Currency</td><td><%= @input.currency&.name.presence || "-" %></td></tr>
+         <% @input.input_details.each do |detail| %>
+        <tr><td class="center bold" colspan="2"><%= (detail.price && detail.qty_pcs) ? (detail.price * detail.qty_pcs) : "—" %></td></tr>
+        <% end %>
       </table>
     </td>
 
@@ -481,7 +483,7 @@ td{text-align: center;}
       <td><strong>REG No</strong></td>
       <td></td>
       <td><strong>Date</strong></td>
-      <td class="blue-cell">Advance Authorization / EPCG File No., LIC No. & Date: 0311037859 dt: 11/10/2024</td>
+      <td class="blue-cell">Advance Authorization / EPCG File No., LIC No. & Date: 0311037859 dt: <%= @input.invoice_date&.strftime("%-d-%b-%Y") %></td>
     </tr>
   </table>
 
