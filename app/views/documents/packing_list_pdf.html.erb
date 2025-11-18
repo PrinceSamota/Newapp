@@ -57,7 +57,7 @@
   
   /* Country single box */
   .country-single-row { display: table; width: 100%; table-layout: fixed; }
-  .country-single-box { display: table-cell; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 10px; height: 80px; vertical-align: top; width: 50%; }
+  .country-single-box { display: table-cell; border-right: 1px solid #000; border-bottom: 1px solid #000; padding: 10px; height: 80px; vertical-align: top; width: 50%; border-top: 1px solid #000; }
   .country-empty-box { display: table-cell; padding: 10px; border-top: 1px solid #000; height: 80px; vertical-align: top; width: 50%; }
   
   /* Items table */
@@ -185,12 +185,12 @@
 <body>
 <div class="main-container">
   <!-- Header -->
-  <div class="header" style="text-align: center; position: relative; display: flex; align-items: center; justify-content: center; height: 130px; ">
+  <div class="header" style="text-align: center; position: relative; display: flex; align-items: center; justify-content: center; height: 100px; ">
     PACKING LIST
     <div class="logo-box">
     <% if @logo_data.present? %>
     <img src="data:image/png;base64,<%= @logo_data %>" 
-         style="width: 130px; height: 120px; object-fit: contain;" />
+         style="width: 130px; height: 90px; object-fit: contain;" />
   <% end %>
   
     </div>
@@ -245,18 +245,8 @@
 
   <!-- Additional Country Row - 1 box left side only -->
   <div class="country-single-row">
-    <div class="country-single-box"></div>
-    <div class="country-empty-box">
-      <span class="user-name">BUYER IF OTHER THAN CONSIGNEE:</span> </br>
-       <%= @input.importer_name.company_name %></br>
-       <%= @input.importer_name.address1 %></br>
-       <%= @input.importer_name.address2 %></br>
-       <%= @input.importer_name.address3 %></br>
-       <%= @input.importer_name.country %></br>
-    </div>
-  </div>
   <div class="country-single-row">
-    <div class="country-single-box">
+    <div class="country-single-box" style="max-height: 10px;">
       <div style="float: left; width: 48%;">
         <strong class="user-name">COUNTRY OF EXPORT:</strong><br>
         <%= @input.consignee_name.country %>
@@ -267,7 +257,14 @@
       </div>
       <div style="clear: both;"></div>
     </div>
-  <div class="country-empty-box"></div>
+  <div class="country-empty-box" style="margin-top: -50px; position: absolute; width: 46.5%;">
+     <span class="user-name">BUYER IF OTHER THAN CONSIGNEE:</span> </br>
+       <%= @input.importer_name.company_name %></br>
+       <%= @input.importer_name.address1 %></br>
+       <%= @input.importer_name.address2 %></br>
+       <%= @input.importer_name.address3 %></br>
+       <%= @input.importer_name.country %></br></div>
+       
 </div>
   <!-- Country Row - 4 boxes total -->
   <div class="country-row">
@@ -282,7 +279,7 @@
       </div>
       <div style="clear: both;"></div>
     </div>
-    <div class="country-box">
+    <div class="country-box" style="border-top: 1px solid #000;">
       Buyer's Order No: </br>
         <% if @input&.input_items&.any? %>
           <%= @input.input_items.map(&:order_no).compact.join(", ") %>
