@@ -32,9 +32,9 @@
         <% [
           ["Invoice Number", @input.invoice_no],
           ["Invoice Date", @input.invoice_date&.strftime("%d-%b-%Y")],
-          ["Shipper", @input.shipper_name&.name],
-          ["Consignee", @input.consignee_name&.name],
-          ["Importer", @input.importer_name&.name],
+          ["Shipper", @input.shipper_name&.company_name],
+          ["Consignee", @input.consignee_name&.company_name],
+          ["Importer", @input.importer_name&.company_name],
           ["Order No from Dispatch", @input.order_no_from_dispatch],
           ["Currency", @input.currency&.name],
           ["FedEx AWB No", @input.fedex_awb_no]

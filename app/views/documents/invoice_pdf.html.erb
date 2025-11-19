@@ -287,7 +287,7 @@
 
           <td colspan="4" style="border:none;"></td> 
 
-          <td> <%= @input.input_details.sum { |d| (d.price.to_f * d.qty_pcs.to_f) } %></td>
+          <td> <%= @input.input_details.sum { |d| (d.price * d.qty_pcs) } %></td>
           <td><%= @input.currency&.name %></td> 
         </tr>
         <tr>
