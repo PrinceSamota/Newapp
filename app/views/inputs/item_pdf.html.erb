@@ -18,13 +18,13 @@
 <body>
 
 <!-- ARTICLE BIG NUMBER -->
-<div class="absolute" style="top: 113mm; left: 113mm;">
-  400900<br>TTM Rail Pty Ltd
+<div class="absolute" style="top: 113mm; left: 133mm; font-size: 16px; font-weight: bold;">
+  <span style="font-size: 22px;">400900 </span><br><span style="font-size: 12px;">TTM Rail Pty Ltd </span>
 </div>
-<div class="absolute" style="top: 130mm; left: 152mm;">
+<div class="absolute" style="top: 130mm; left: 152mm; font-size: 18px; font-weight: bold;">
   01
 </div>
-<div class="absolute" style="top: 130mm; left: 170mm;">
+<div class="absolute" style="top: 130mm; left: 170mm; font-size: 18px; font-weight: bold;">
   20
 </div>
 
@@ -35,24 +35,25 @@
 
     <!-- LEFT COLUMN -->
     <div style="position: absolute; top: 0mm; white-space: nowrap;">
-      <div><strong>Product Name:</strong></div>
-      <div><strong>Description:</strong></div>
-      <div><strong>Quantity:</strong></div>
-      <div><strong>Net Weight:</strong></div>
-      <div><strong>Gross Weight:</strong></div>
-      <div><strong>Packing Date:</strong></div>
-      <div><strong>Article No:</strong></div>
+      <div><strong style="font-size: 16px; font-weight: bold;">Product Name:</strong></div>
+      <div><strong style="font-weight: 400;">Description:</strong></div>
+      <div><strong style="font-weight: 400;">Quantity:</strong></div>
+      <div><strong style="font-weight: 400;">Net Weight:</strong></div>
+      <div><strong style="font-weight: 400;">Gross Weight:</strong></div>
+      <div><strong style="font-weight: 400;">Packing Date:</strong></div>
+      <div><strong style="font-weight: bold;">Article No:</strong></div>
     </div>
 
     <!-- RIGHT COLUMN (Always 80mm from the left of the PAGE) -->
-    <div style="position: absolute; top: 0mm; left: 80mm;">
-      <div>LED Light Fixture For Train</div>
+    <% order = OrderEntry.find_by(order_no: @item.order_no) %>
+    <div style="position: absolute; top: 0mm; left: 80mm; width: 100mm;">
+      <div style="font-size: 16px; font-weight: bold;">LED Light Fixture For Train</div>
       <div><%= @item.description_of_good&.name.presence || "—" %></div>
       <div><%= @item.qty_per_box.presence || "—" %></div>
       <div><%= @item.net_weight.presence || "—" %></div>
       <div><%= @item.gross_weight.presence || "—" %></div>
       <div>Nov 2025</div>
-      <div>00021-2342</div>
+      <div style="font-weight: bold;"><%= order&.article_no || "—" %></div>
     </div>
 
   </div>
@@ -61,13 +62,13 @@
 
 
 
-<div class="absolute" style="top: 253mm; left: 133mm;">
-  400900<br>TTM Rail Pty Ltd
+<div class="absolute" style="top: 253mm; left: 133mm; font-size: 16px; font-weight: bold;">
+<span style="font-size: 22px;">400900 </span><br><span style="font-size: 12px;">TTM Rail Pty Ltd </span>
 </div>
-<div class="absolute" style="top: 270mm; left: 152mm;">
+<div class="absolute" style="top: 270mm; left: 152mm; font-size: 18px; font-weight: bold;">
   01
 </div>
-<div class="absolute" style="top: 270mm; left: 170mm;">
+<div class="absolute" style="top: 270mm; left: 170mm; font-size: 18px; font-weight: bold;">
   20
 </div>
 
@@ -78,24 +79,24 @@
 
     <!-- LEFT COLUMN -->
     <div style="position: absolute; top: 0mm; white-space: nowrap;">
-      <div><strong>Product Name:</strong></div>
-      <div><strong>Description:</strong></div>
-      <div><strong>Quantity:</strong></div>
-      <div><strong>Net Weight:</strong></div>
-      <div><strong>Gross Weight:</strong></div>
-      <div><strong>Packing Date:</strong></div>
-      <div><strong>Article No:</strong></div>
+      <div><strong style="font-size: 16px; font-weight: bold;">Product Name:</strong></div>
+      <div><strong style="font-weight: 400;">Description:</strong></div>
+      <div><strong style="font-weight: 400;">Quantity:</strong></div>
+      <div><strong style="font-weight: 400;">Net Weight:</strong></div>
+      <div><strong style="font-weight: 400;">Gross Weight:</strong></div>
+      <div><strong style="font-weight: 400;">Packing Date:</strong></div>
+      <div><strong style="font-weight: bold;">Article No:</strong></div>
     </div>
 
     <!-- RIGHT COLUMN (Always 80mm from the left of the PAGE) -->
-    <div style="position: absolute; top: 0mm; left: 80mm;">
-      <div>LED Light Fixture For Train</div>
+    <div style="position: absolute; top: 0mm; left: 80mm; width: 100mm;">
+      <div style="font-size: 16px; font-weight: bold;">LED Light Fixture For Train</div>
       <div><%= @item.description_of_good&.name.presence || "—" %></div>
       <div><%= @item.qty_per_box.presence || "—" %></div>
       <div><%= @item.net_weight.presence || "—" %></div>
       <div><%= @item.gross_weight.presence || "—" %></div>
       <div>Nov 2025</div>
-      <div>00021-2342</div>
+      <div style="font-weight: bold;"><%= order&.article_no || "—" %></div>
     </div>
 
   </div>

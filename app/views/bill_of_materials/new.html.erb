@@ -374,4 +374,24 @@ document.addEventListener("turbo:load", () => {
     });
   });
 });
+const dropdownInputs = document.querySelectorAll("[data-role='searchable-input']");
+
+  dropdownInputs.forEach((input) => {
+
+    input.addEventListener("focus", function () {
+      if (this.dataset.selected === "true") {
+        this.value = "";
+        this.dataset.selected = "false";
+      }
+    });
+
+    const wrapper = input.closest("div.relative");
+    const dropdown = wrapper?.querySelector("ul");
+
+    dropdown?.querySelectorAll("li").forEach((item) => {
+      item.addEventListener("click", () => {
+        input.dataset.selected = "true";
+      });
+    });
+  });
 </script>

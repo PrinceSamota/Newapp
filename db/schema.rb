@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_12_102848) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_23_121422) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -199,6 +199,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_12_102848) do
     t.date "mfg_date"
     t.date "order_receiving_date"
     t.integer "client_driver_var_no_id"
+    t.string "color"
   end
 
   create_table "driver_revisions", force: :cascade do |t|

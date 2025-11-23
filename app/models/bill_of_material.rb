@@ -8,6 +8,8 @@ class BillOfMaterial < ApplicationRecord
   before_create :generate_bom_number, if: -> { bom_number.blank? }
 
   has_paper_trail save_changes: true
+  validates_associated :finished_good
+  validates_associated :bom_raw_material_items
   
   def generate_bom_number
     last_bom = BillOfMaterial.maximum(:bom_number)
