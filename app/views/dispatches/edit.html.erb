@@ -103,6 +103,24 @@
               class: "w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none",
               disabled: disabled %>
       </div>
+
+        <div>
+          <label class="block text-sm font-medium">Row Color</label>
+          <%= f.select :color,
+              dispatch_color_options_html.map { |name, value| 
+                [
+                  "<span style='display:flex; align-items:center; gap:6px;'>
+                    <span style='display:inline-block; width:15px; height:15px; border:1px solid #555; background:#{value};'></span>
+                    #{name}
+                  </span>".html_safe,
+                  value
+                ] 
+              },
+              { include_blank: "Select Color" },
+              class: "border rounded p-1 w-full",
+              style: "font-size:14px;" %>
+        </div>
+
     </div>
 
     <!-- DISPATCH ITEMS SECTION -->

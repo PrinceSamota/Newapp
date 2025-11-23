@@ -32,7 +32,15 @@
         </div>
         <div>
           <%= form.label :frame_colour, "Frame Colour", class: "block text-sm font-medium mb-1" %>
-          <%= form.text_field :frame_colour, class: "w-full p-2 border rounded" %>
+          <%= form.select :frame_colour, 
+              options_for_select([
+                ["Red", "red"],
+                ["Black", "black"],
+                ["Green", "green"],
+                ["Blue", "blue"]
+              ]), 
+              { prompt: "Select Frame Colour" },
+              { class: "w-full p-2 border rounded" } %>
         </div>
         <div>
           <%= form.label :language, "Language", class: "block text-sm font-medium mb-1" %>

@@ -146,8 +146,15 @@
 
         <tbody id="bomTableBody" class="bg-white divide-y divide-gray-100">
           <% @order_entries.each do |order| %>
-            <% row_color = @dispatch_color_map[order.dispatch_no&.strip] || '#FFFFFF' %>
-            <tr style="background-color: <%= row_color %>;  " data-order-id="<%= order.id %>">
+            <% dispatch = order.dispatch_items.first&.dispatch
+
+            row_color =
+              if dispatch&.color.present?
+                dispatch.color     # Dispatch me save hua color use hoga
+              else
+                @dispatch_color_map[order.dispatch_no&.strip] || '#FFFFFF'
+              end %>
+             <tr style="background-color: <%= row_color %>;" data-order-id="<%= order.id %>">
               <td class="px-4 py-3 border-r border-gray-300 text-center">
                 <% if order.deleted_at.present? %>
                   <span class="text-xs bg-red-500 text-white px-2 py-1 rounded">Deleted</span>

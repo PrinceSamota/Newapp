@@ -10,7 +10,9 @@
   autocomplete="off"
   data-role="searchable-input"
   data-type="<%= label_text.downcase.gsub(' ', '_') %>" 
+  data-selected="<%= selected_value.present? %>"
   class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm <%= extra_class %>" />
+
 
   <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md" data-role="searchable-dropdown">
     <% items.each do |item| %>
