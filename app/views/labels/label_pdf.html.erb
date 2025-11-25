@@ -7,30 +7,38 @@
     <% type_d = @form_data[:type].to_s.downcase == 'd' %>
 
     @page { 
-      size: <%= type_d ? '180mm 13mm' : '315mm 25mm' %>; 
-      margin: 0; 
-    }
+      size: A4 landscape; 
+      margin:0; 
+     }
 
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 5px;
-      margin: 0;
-      padding: 0;
-      background: #fff;
-    }
-
+    body { 
+        font-family: Arial, sans-serif; 
+        font-size: 5px; 
+        margin-top: 0; 
+        padding: 0; 
+        background: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        } 
+    
     .sticker {
       border: 1px solid #000;
       width: <%= type_d ? '180mm' : '315mm' %>;
-      height: <%= type_d ? '13mm' : '25mm' %>;
-      padding: 1px;
+      height: <%= type_d ? '13mm' : '25mm' %>; 
+      padding: 1px; 
       box-sizing: border-box;
       position: relative;
-    }
+      margin-top: 130%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+         }
 
     table {
-      width: 100%;
-      height: 100%;
+      max-width:  <%= type_d ? '130mm' : '140mm' %>;
+      height: <%= type_d ? '11mm' : '23mm' %>;
       border-collapse: collapse;
       table-layout: fixed;
     }
@@ -42,6 +50,13 @@
       text-align: center;
       vertical-align: middle;
       word-wrap: break-word;
+    }
+
+    td {
+      height: <%= type_d ? '3mm' : '6mm' %>;
+    }
+    th {
+      height: <%= type_d ? '6mm' : '12mm' %>;
     }
 
     th {
@@ -77,7 +92,7 @@
     .logo-container img {
       margin: 0 2mm;
       max-width: <%= type_d ? '12mm' : '20mm' %>;
-      max-height: <%= type_d ? '5mm' : '10mm' %>;
+      max-height: <%= type_d ? '5mm' : '17mm' %>;
       object-fit: contain;
     }
 
@@ -92,158 +107,193 @@
 
     .right-logo-container img {
       max-width: <%= type_d ? '10mm' : '15mm' %>;
-      max-height: <%= type_d ? '5mm' : '8mm' %>;
+      max-height: <%= type_d ? '5mm' : '7mm' %>;
       object-fit: contain;
     }
 
     .footer {
+      position: absolute;
+      bottom: -10mm;    
+      left: 50%;
+      transform: translateX(-50%);
       text-align: center;
       font-weight: bold;
       font-size: <%= type_d ? '8px' : '12px' %>;
-      margin-top: 4px;
     }
+
   </style>
 </head>
 <body>
-  <div class="sticker" style="margin: 5mm; position: relative;">
-    <table style="width: 100%; height: 50%; margin-top: 1.5%; border-collapse: collapse; table-layout: fixed;">
-      <tr>
-        <!-- LEFT SIDE: Logo + Signature -->
-        <th class="left-logo" rowspan="2">
-        <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
-      
-          <!-- Logo Block 1 -->
-          <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
-            <!-- Top text (add your own) -->
-             <% if @client&.logo&.attached? %>
-            <div style="font-size:4px; font-weight:bold; margin-top:-4mm; padding-bottom: 4mm;">
-            Hersteller / Manufacturers  
-            </div>
-      
-            <!-- Logo -->
-            <% if @client&.logo&.attached? %>
-              <%= image_tag @client.logo, alt: "Company Logo"%>
-            <% end %>
-      
-            <!-- Bottom text (add your own) -->
-            <div style="font-size:4px; padding-top:1mm;">
-               <%= @client&.company_url if @client&.company_url.present? %>
-            </div>
-            <% end %>
-          </div>
-      
-      
-          <!-- Logo Block 2 -->
-          <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: 3mm;">
-            <!-- Top text (add your own) -->
-            <div style="font-size:4px; font-weight:bold; margin-bottom:1mm;">
-              <!-- YOUR TEXT HERE -->
-            </div>
-      
-            <!-- Logo -->
-    
-            <%= wicked_pdf_image_tag "sticker_data.svg", alt: "EMC Logo", class: "EMC-logo" %>
 
-      
-            <!-- Bottom text (add your own) -->
-            <div style="font-size:4px; margin-top:1mm;">
-            <% begin %>
-            <% if @form_data[:sticker_date].present? %>
-              <%= Date.parse(@form_data[:sticker_date]).strftime("%B %Y") %>
-            <% end %>
-          <% rescue %>
-          <% end %>
-            </div>
-          </div>
-      
-        </div>
-      </th>
-      
 
-        <th>Type</th>
-        <th>Length</th>
-        <th>Power</th>
-        <th>Voltage</th>
-        <th>Current</th>
-        <th>Operating temperature</th>
-        <th>Light color</th>
-        <th>Article No.</th>
-        <th>Serial No.</th>
 
-        <th class="right-logo" rowspan="2">
-        <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
-      
-          <!-- Right Logo Block 1 (QR Code Section) -->
-          <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
-          <% if @client&.qr_code&.attached? %>
-                <!-- Top Text -->
-                <div style="font-size:4px; font-weight:bold; margin-top:-4mm; padding-bottom: 4mm;">
-                  Manual
+
+<div class="sticker">
+            <div class="left-logo" rowspan="2">
+              <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
+            
+                <!-- Logo Block 1 -->
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+                  <!-- Top text (add your own) -->
+                  <% if @client&.logo&.attached? %>
+                  <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-top: 1mm; padding-bottom: 0;">
+                  Hersteller / Manufacturers  
+                  </div>
+            
+                  <!-- Logo -->
+                  <% if @client&.logo&.attached? %>
+                    <%= image_tag @client.logo, alt: "Company Logo"%>
+                  <% end %>
+            
+                  <!-- Bottom text (add your own) -->
+                  <div style="font-size:<%= type_d ? '4px' : '6px' %>; padding-top:1mm; font-weight: bold;">
+                    <%= @client&.company_url if @client&.company_url.present? %>
+                  </div>
+                  <% end %>
                 </div>
+            
+            
+                <!-- Logo Block 2 -->
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: <%= type_d ? '1mm' : '3mm' %>;">
+                  <!-- Top text (add your own) -->
+                  <div style="font-size:4px; font-weight:bold; margin-bottom:1mm;">
+                    <!-- YOUR TEXT HERE -->
+                  </div>
+            
+                  <!-- Logo -->
           
-                <!-- QR Code Logo -->
-                <% if @client&.qr_code&.attached? %>
-                  <%= image_tag @client.qr_code, alt: "QR Code" %>
+                  <%= wicked_pdf_image_tag "sticker_data.svg", alt: "EMC Logo", class: "EMC-logo" %>
+
+            
+                  <!-- Bottom text (add your own) -->
+                  <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:1mm;">
+                  <% begin %>
+                  <% if @form_data[:sticker_date].present? %>
+                    <%= Date.parse(@form_data[:sticker_date]).strftime("%B %Y") %>
+                  <% end %>
+                <% rescue %>
                 <% end %>
-          
-                <!-- Bottom text -->
-                <div style="font-size:4px; padding-top:1mm;">
-                  
+                  </div>
                 </div>
-          <% end %>
-          </div>
-      
-      
-          <!-- Right Logo Block 2 (Distribution Logo Section) -->
-          <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: 3mm;">
-      
-            <!-- Top Text -->
-            <% if @client&.distribution_logo&.attached? %>
-              <div style="font-size:4px; font-weight:bold; margin-bottom:1mm;">
-                Distribution
+            
               </div>
-        
-              <!-- Distribution Logo -->
-              <% if @client&.distribution_logo&.attached? %>
-                <%= image_tag @client.distribution_logo, alt: "Distribution Logo" %>
-              <% end %>
-        
-              <!-- Bottom URL -->
-              <div style="font-size:4px; margin-top:1mm;">
-                <%= @client&.distributor_url if @client&.distributor_url.present? %>
+            </div>
+              <div>
+                <table style="width: 100%; height: 50%; border-collapse: collapse; table-layout: fixed;">
+                    <tr>
+                    <th>Type</th>
+                    <th>Length</th>
+                    <th>Power</th>
+                    <th>Voltage</th>
+                    <th>Current</th>
+                    <th>Operating temperature</th>
+                    <th>Light color</th>
+                    <th>Article No.</th>
+                    <th>Serial No.</th>
+                    </tr>
+                    <tr>
+                    <td><%= @form_data[:type] %></td>
+                    <td><%= @form_data[:length] %></td>
+                    <td><%= @form_data[:wattage] %></td>
+                    <td><%= @form_data[:voltage] %></td>
+                    <td>
+                      <%= begin
+                            watt = @form_data[:wattage].to_s.gsub(/[^\d.]/, '').to_f
+                            volt = @form_data[:voltage].to_s.gsub(/[^\d.]/, '').to_f
+                            volt.zero? ? "-" : "#{(watt / volt).round(2)} A"
+                          rescue
+                            "-"
+                          end %>
+                    </td>
+                    <td>-40°C to +85°C (OT6)</td>
+                    <td><%= @form_data[:cct] %></td>
+                    <td><%= @form_data[:custom_article_no].presence || @form_data[:article_no] %></td>
+                    <td></td>
+                  </tr>
+                </table>
               </div>
-            <% end %>
-          </div>
-      
-        </div>
-      </th>
-      
-      </tr>
 
-      <tr>
-        <td><%= @form_data[:type] %></td>
-        <td><%= @form_data[:length] %></td>
-        <td><%= @form_data[:wattage] %></td>
-        <td><%= @form_data[:voltage] %></td>
-        <td>
-          <%= begin
-                watt = @form_data[:wattage].to_s.gsub(/[^\d.]/, '').to_f
-                volt = @form_data[:voltage].to_s.gsub(/[^\d.]/, '').to_f
-                volt.zero? ? "-" : "#{(watt / volt).round(2)} A"
-              rescue
-                "-"
-              end %>
-        </td>
-        <td>-40°C to +85°C (OT6)</td>
-        <td>3000 K</td>
-        <td><%= @form_data[:custom_article_no].presence || @form_data[:article_no] %></td>
-        <td></td>
-      </tr>
-    </table>
-  </div>
 
-  <div class="footer">
-    Quantity: <%= @form_data[:sticker_quantity] %> pcs
-  </div>
+              <div class="right-logo" rowspan="2" style="margin-left: 3mm;">
+              <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
+            
+                <!-- Right Logo Block 1 (QR Code Section) -->
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+                <% if @client&.qr_code&.attached? %>
+                      <!-- Top Text -->
+                      <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-top: <%= type_d ? '1mm' : '1mm' %>; padding-bottom: 0;">
+                        Manual
+                      </div>
+                
+                      <!-- QR Code Logo -->
+                      <% if @client&.qr_code&.attached? %>
+                        <%= image_tag @client.qr_code, alt: "QR Code" %>
+                      <% end %>
+                
+                      <!-- Bottom text -->
+                      <div style="font-size:4px; padding-top:1mm;">
+                        
+                      </div>
+                <% end %>
+                </div>
+            
+            
+                <!-- Right Logo Block 2 (Distribution Logo Section) -->
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: 3mm;">
+            
+                  <!-- Top Text -->
+                  <% if @client&.distribution_logo&.attached? %>
+                    <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-bottom:1mm;">
+                      Distribution
+                    </div>
+              
+                    <!-- Distribution Logo -->
+                    <% if @client&.distribution_logo&.attached? %>
+                      <%= image_tag @client.distribution_logo, alt: "Distribution Logo" %>
+                    <% end %>
+              
+                    <!-- Bottom URL -->
+                    <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:1mm; font-weight: bold;">
+                      <%= @client&.distributor_url if @client&.distributor_url.present? %>
+                    </div>
+                  <% end %>
+                </div>
+            
+              </div>
+            </div>
+            <div class="footer">
+Quantity: <%= @form_data[:sticker_quantity] %> pcs
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </body>
 </html>

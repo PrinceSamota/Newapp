@@ -7,7 +7,6 @@ class OrderEntry < ApplicationRecord
   belongs_to :driver_revision, optional: true
   attr_accessor :generate_serial
   before_create :generate_serial_numbers
-  before_validation :generate_serial_numbers, if: -> { ActiveModel::Type::Boolean.new.cast(generate_sno) }
   has_many :dispatch_items, foreign_key: :order_no, primary_key: :order_no
   def dispatch_d_id
     dispatch_item = DispatchItem.find_by(order_no: self.order_no)
