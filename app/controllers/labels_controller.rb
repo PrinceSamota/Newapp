@@ -34,7 +34,8 @@ class LabelsController < ApplicationController
       opening_stock: @item_master.opening_stock,
       article_number: @item_master.article_number,
       length: @item_master.length&.name,
-      voltage: @item_master.voltage&.name
+      voltage: @item_master.voltage&.name,
+      cct: @item_master.cct&.name
     }
   end
 
@@ -52,7 +53,8 @@ class LabelsController < ApplicationController
         qty: order.qty,
         type: order.item_type,
         length: order.length,
-        voltage: order.voltage
+        voltage: order.voltage,
+        cct: order.cct
       }
     else
       @order_details = {}
