@@ -27,9 +27,9 @@ class OrderEntry < ApplicationRecord
 
   def generate_serial_numbers
     if self.generate_sno
+      blocked_ranges = [10128208,10136518]
       # Find the maximum end_serial_no
-      last_end_serial = OrderEntry.pluck(:end_serial_no).compact.map{|x| x.gsub(/\D/, "")}.map(&:to_i).max || 0
-  
+      last_end_serial = OrderEntry.pluck(:end_serial_no).compact.map{|x| x.gsub(/\D/, "")}.map(&:to_i).reject { |num| blocked_ranges.any? { |r| r == num }}.max || 0
       new_start_number = last_end_serial + 1
       self.start_serial_no = new_start_number.to_s
   
