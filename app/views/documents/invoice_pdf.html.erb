@@ -268,7 +268,7 @@
       <td><%= detail.hsn&.name.presence || "—" %></td>
       <td><%= detail.qty_pcs.presence || "—" %></td>
       <td><%= detail.price.presence || "—" %></td>
-      <td><%= (detail.price && detail.qty_pcs) ? (detail.price * detail.qty_pcs) : "—" %></td>
+      <td><%= (detail.price && detail.qty_pcs) ? (detail.price.to_f * detail.qty_pcs.to_f).round(4) : "—" %></td>
       <td><%= @input.currency&.name.presence || "-" %></td>
     </tr>
   <% end %>
@@ -287,7 +287,7 @@
 
           <td colspan="4" style="border:none;"></td> 
 
-          <td> <%= (@input.input_details.sum { |d| d.price.to_f * d.qty_pcs.to_f }).to_s[/\d+\.\d{0,2}/] %></td>
+          <td> <%= (@input.input_details.sum { |d| d.price.to_f * d.qty_pcs.to_f }).round(4) %></td>
           <td><%= @input.currency&.name %></td> 
         </tr>
         <tr>
