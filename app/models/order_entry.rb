@@ -1,3 +1,4 @@
+require "csv"
 class OrderEntry < ApplicationRecord
   acts_as_paranoid
   
@@ -19,6 +20,53 @@ class OrderEntry < ApplicationRecord
   def self.ransackable_associations(auth_object = nil)
     %w[client]
   end
+
+  def self.to_csv(records)
+    attributes = [
+      "Order No", "Article No", "Client", "Target Date", "SKU", "Dispatch No",
+      "Ship To", "No Of Box", "Current Stock", "Qty", "Item Type", "Profile",
+      "Wattage", "Voltage", "Length", "CCT", "Cover", "Fuse", "Loop", "Extra",
+      "Start Serial", "End Serial", "MFG Date", "Driver Rev No", "Remark",
+      "Status", "Order Date"
+    ]
+  
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+  
+      records.each do |order|
+        csv << [
+          order.order_no,
+          order.article_no,
+          order.client&.company_name,
+          order.target_date&.strftime("%d-%b-%Y"),
+          order.sku_number,
+          order.dispatch_no,
+          order.location&.name,
+          order.box,
+          ItemMaster.find_by(sku_id: order.sku_number)&.opening_stock,
+          order.qty,
+          order.item_type,
+          order.profile,
+          order.wattage,
+          order.voltage,
+          order.length,
+          order.cct,
+          order.cover_type,
+          order.fuse_type,
+          order.loop,
+          order.extra,
+          order.start_serial_no,
+          order.end_serial_no,
+          (order.mfg_date.present? ? Date.parse(order.mfg_date).strftime("%d-%b-%Y") : nil),
+          order.driver_revision&.name,
+          order.remark,
+          order.status,
+          order.created_at.strftime("%d-%b-%Y")
+        ]
+      end
+    end
+  end
+  
   private
 
   def generate_sno_changed_to_true?

@@ -1,0 +1,77 @@
+<div class="max-w-xl mx-auto bg-white shadow p-6 mt-8 rounded-lg">
+  <h2 class="text-2xl font-bold mb-4">Enter PDF Details</h2>
+
+  <%= form_with url: generate_item_pdf_path(@input.id, format: :pdf), method: :post, local: true do |f| %>
+
+ <div class="mb-3">
+      <%= f.label :client_id, ("Select Client <span class='text-red-500'>*</span>").html_safe, class: "block font-medium" %>
+      <%= f.select :client_id,
+          @clients.map { |c| [c.company_name, c.id] },
+          { prompt: "Choose Client" },
+          class: "border rounded w-full p-2 required-field" %>
+    </div>
+
+    <!-- Box No -->
+    <div class="mb-3">
+      <%= f.label :box_no, ("Box No <span class='text-red-500'>*</span>").html_safe, class: "block font-medium" %>
+      <%= f.text_field :box_no, class: "border rounded w-full p-2 required-field" %>
+    </div>
+
+    <!-- Start Serial No -->
+    <div class="mb-3">
+      <%#= f.label :start_serial_no, "Start Serial No", class: "block font-medium" %>
+      <%#= f.number_field :start_serial_no, class: "border rounded w-full p-2" %>
+    </div>
+
+    <!-- End Serial No -->
+    <div class="mb-3">
+      <%#= f.label :end_serial_no, "End Serial No", class: "block font-medium" %>
+      <%#= f.number_field :end_serial_no, class: "border rounded w-full p-2" %>
+    </div>
+
+    <div class="mb-3">
+    <%= f.label :custom_article_no, "Custom Article No", class: "block font-medium" %>
+    <%= f.text_field :custom_article_no, class: "border rounded w-full p-2" %>
+  </div>
+
+  <div class="mb-3">
+  <%= f.label :packing_date, ("Packing Date <span class='text-red-500'>*</span>").html_safe, class: "block font-medium" %>
+  <%= f.date_field :packing_date, class: "border rounded w-full p-2 required-field" %>
+</div>
+
+<%= f.submit "Generate PDF", id: "submit_btn", disabled: true, class: "bg-blue-400 text-white px-4 py-2 rounded cursor-not-allowed opacity-50" %>
+  <% end %>
+</div>
+<script>
+document.addEventListener("turbo:load", function () {
+  const requiredFields = document.querySelectorAll(".required-field");
+  const submitBtn = document.getElementById("submit_btn");
+
+  function validateForm() {
+    let allFilled = true;
+
+    requiredFields.forEach(field => {
+      if (!field.value.trim()) {
+        allFilled = false;
+      }
+    });
+
+    submitBtn.disabled = !allFilled;
+
+    if (allFilled) {
+      submitBtn.classList.remove("cursor-not-allowed", "opacity-50", "bg-blue-400");
+      submitBtn.classList.add("bg-blue-600", "hover:bg-blue-700", "cursor-pointer");
+    } else {
+      submitBtn.classList.add("cursor-not-allowed", "opacity-50", "bg-blue-400");
+      submitBtn.classList.remove("bg-blue-600", "hover:bg-blue-700", "cursor-pointer");
+    }
+  }
+
+  requiredFields.forEach(field => {
+    field.addEventListener("input", validateForm);
+    field.addEventListener("change", validateForm);
+  });
+
+  validateForm();
+});
+</script>

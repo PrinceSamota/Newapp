@@ -174,8 +174,12 @@ function initItemMasterForm() {
     if (bomFieldsSection) bomFieldsSection.classList.toggle("hidden", !isBom);
 
     itemNameField.readOnly = isBom;
-    itemNameField.value = "";
-    itemNameField.placeholder = isBom ? "Will be auto-generated" : "Enter Item Name";
+    if (isBom) {
+      itemNameField.value = "";
+      itemNameField.placeholder = "Will be auto-generated";
+    } else {
+      itemNameField.placeholder = "Enter Item Name";
+    }
     itemNameField.classList.toggle("bg-gray-100", isBom);
     itemNameField.classList.toggle("cursor-not-allowed", isBom);
 

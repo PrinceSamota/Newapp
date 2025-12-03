@@ -1,3 +1,4 @@
+require "csv"
 class ItemMaster < ApplicationRecord
   has_many :boms, dependent: :destroy
   has_many :bom_raw_material_items, dependent: :destroy
@@ -38,6 +39,27 @@ class ItemMaster < ApplicationRecord
   before_create :generate_sku_id, if: -> { sku_id.blank? }
   before_validation :generate_item_name, if: -> { is_bom == true && item_name.blank? }
 
+  def self.to_csv
+    CSV.generate(headers: true) do |csv|
+      csv << ["SKU", "Item Name", "Category", "Stock", "Purchase Price", "Sale Price", "Min Stock", "Is BOM", "Extra", "Article No", "Measurement"]
+  
+      all.each do |item|
+        csv << [
+          item.sku_id,
+          item.item_name,
+          item.category&.name,
+          item.opening_stock,
+          item.purchase_price,
+          item.sale_price,
+          item.minimum_stock_level,
+          item.is_bom ? "Yes" : "No",
+          item.extra&.name,
+          item.article_number,
+          item.measurement&.name
+        ]
+      end
+    end
+  end
 
   private
 

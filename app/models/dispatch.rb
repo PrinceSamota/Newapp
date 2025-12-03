@@ -1,3 +1,4 @@
+require 'csv'
 class Dispatch < ApplicationRecord
   belongs_to :location, optional: true
   has_one :input, dependent: :destroy
@@ -85,6 +86,31 @@ class Dispatch < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     %w[dispatch_items location]
+  end
+
+  def self.to_csv(records = all)
+    headers = [
+      "DID", "Dispatch Date", "Delivery Date", "Courier Company",
+      "Mode of Shipment", "Tracking No", "Invoice No", "Progress", "Order Nos"
+    ]
+
+    CSV.generate(headers: true) do |csv|
+      csv << headers
+
+      records.each do |dispatch|
+        csv << [
+          dispatch.d_id,
+          dispatch.dispatch_date,
+          dispatch.delivery_date,
+          dispatch.courier_company,
+          dispatch.mode_of_shipment,
+          dispatch.track_no,
+          dispatch.invoice_no,
+          dispatch.progress,
+          dispatch.dispatch_items.map { |i| i.order_entry&.order_no }.compact.join(", ")
+        ]
+      end
+    end
   end
 
   private

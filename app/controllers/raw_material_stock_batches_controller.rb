@@ -46,6 +46,14 @@ end
 def index
   @q = RawMaterialStockBatch.ransack(params[:q])
   @batches = @q.result.includes(:supplier, :raw_material_stock_items).order(created_at: :desc).paginate(page: params[:page], per_page: 100)
+
+  respond_to do |format|
+    format.html
+    format.csv do
+      send_data RawMaterialStockBatch.to_csv,
+        filename: "raw_material_inward_#{Date.today}.csv"
+    end
+  end
 end
 
   private

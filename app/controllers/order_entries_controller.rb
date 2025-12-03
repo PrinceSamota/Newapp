@@ -26,6 +26,7 @@ class OrderEntriesController < ApplicationController
         render :new, status: :unprocessable_entity
       end
     end
+
     def index
       dispatched_order_entry_ids = DispatchItem
         .joins(:dispatch)
@@ -43,39 +44,39 @@ class OrderEntriesController < ApplicationController
         .ransack(params[:q].presence || {})
     
         
-      @order_entries = @q.result
-        .order(params.dig(:q, :s) || 'dispatch_no ASC')
-        .paginate(page: params[:page], per_page: 100)
+      @all_filtered_orders = @q.result.order(params.dig(:q, :s) || 'dispatch_no ASC')
+
+      @order_entries = @all_filtered_orders.paginate(page: params[:page], per_page: 100)
     
 
-digit_color_map = {
-  '1' => '#FFB3B3',  # Light Red
-  '2' => '#B3D1FF',  # Light Blue
-  '3' => '#B3FFB3',  # Light Green
-  '4' => '#FFFFB3',  # Light Yellow
-  '5' => '#FFD9B3',  # Light Orange
-  '6' => '#D1B3FF',  # Light Purple
-  '7' => '#FFB3FF',  # Light Magenta
-  '8' => '#D2B48C',  # Light Brown (Tan)
-  '9' => '#FFD6E7',  # Light Pink
-  '0' => '#D3D3D3'   # Light Gray
-}
+      digit_color_map = {
+        '1' => '#FFB3B3',  # Light Red
+        '2' => '#B3D1FF',  # Light Blue
+        '3' => '#B3FFB3',  # Light Green
+        '4' => '#FFFFB3',  # Light Yellow
+        '5' => '#FFD9B3',  # Light Orange
+        '6' => '#D1B3FF',  # Light Purple
+        '7' => '#FFB3FF',  # Light Magenta
+        '8' => '#D2B48C',  # Light Brown (Tan)
+        '9' => '#FFD6E7',  # Light Pink
+        '0' => '#D3D3D3'   # Light Gray
+      }
 
 
-@dispatch_color_map = {}
+      @dispatch_color_map = {}
 
-@order_entries.each do |order|
-  dispatch_no = order.dispatch_no&.strip
-  next unless dispatch_no.present?
+      @order_entries.each do |order|
+        dispatch_no = order.dispatch_no&.strip
+        next unless dispatch_no.present?  
 
-  last_digit = dispatch_no[-1]  
+        last_digit = dispatch_no[-1]  
 
-  if digit_color_map.key?(last_digit)
-    @dispatch_color_map[dispatch_no] = digit_color_map[last_digit]
-  else
-    @dispatch_color_map[dispatch_no] = '#000000' 
-  end
-end
+        if digit_color_map.key?(last_digit)
+          @dispatch_color_map[dispatch_no] = digit_color_map[last_digit]
+        else
+          @dispatch_color_map[dispatch_no] = '#000000' 
+        end
+      end
       if session[:cart].present?
         @cart_orders = OrderEntry.where(id: session[:cart])
       else
@@ -85,6 +86,15 @@ end
       @cart_orders.each do |order|
         @dispatch.dispatch_items.build(order_entry_id: order.id, quantity: 1)
       end
+
+      respond_to do |format|
+        format.html
+        format.csv do
+          send_data OrderEntry.to_csv(@all_filtered_orders),
+          filename: "pending_orders_#{Date.today}.csv"
+        end
+      end
+      
     end
     
   

@@ -15,6 +15,14 @@ class DispatchesController < ApplicationController
 
     @dispatches = dispatches.order(created_at: :desc).paginate(page: params[:page], per_page: 100)
     @dispatch = Dispatch.new
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data Dispatch.to_csv(dispatches),
+          filename: "dispatches-#{Date.today}.csv"
+      end
+    end
   end
   
   

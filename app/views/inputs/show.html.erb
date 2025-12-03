@@ -115,13 +115,11 @@
                   <td class="px-6 py-4 text-sm text-gray-500"><%= item.gross_weight.presence || "—" %></td>
                   <td class="px-6 py-4 text-sm text-gray-500"><%= [item.length, item.width, item.height].all? ? "#{item.length}×#{item.width}×#{item.height}" : "—" %></td>
                   <td class="px-6 py-4 text-center">
-                  <%= link_to download_item_pdf_path(item.id, format: :pdf),
-                  class: "text-red-600 hover:text-red-800" do %>
-                  <i class="fa-solid fa-file-pdf text-xl"></i>
-                <% end %>
-                
-              
-                </td>
+                    <%= link_to new_item_pdf_path(item.id), 
+                        class: "text-blue-600 hover:text-blue-800" do %>
+                          <i class="fa-solid fa-file-pdf text-xl"></i>
+                    <% end %>
+                  </td>
 
                 </tr>
               <% end %>
@@ -174,3 +172,29 @@
 
   </div>
 </div>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const openBtn = document.getElementById("openPdfPopup");
+  const closeBtn = document.getElementById("closePdfPopup");
+  const popup = document.getElementById("pdfPopup");
+
+  openBtn?.addEventListener("click", () => popup.classList.remove("hidden"));
+  closeBtn?.addEventListener("click", () => popup.classList.add("hidden"));
+});
+
+function openPdfModal(itemId) {
+  document.getElementById("pdfModal").classList.remove("hidden");
+
+  // Set hidden field
+  document.getElementById("modal_item_id").value = itemId;
+
+  // Update form action dynamically
+  const form = document.getElementById("pdfForm");
+  form.action = "/download_item_pdf/" + itemId + ".pdf";
+}
+
+function closePdfModal() {
+  document.getElementById("pdfModal").classList.add("hidden");
+}
+</script>

@@ -8,6 +8,14 @@ class ItemMastersController < ApplicationController
       @selected_fuse_type_id = nil
       @show_fuse_form = false
       @fuse_type_errors = []
+
+      respond_to do |format|
+        format.html
+        format.csv do 
+          send_data ItemMaster.to_csv,
+          filename: "item_masters_#{Date.today}.csv"
+        end
+      end
     end
     
     def show
@@ -40,7 +48,9 @@ class ItemMastersController < ApplicationController
       
           if original_item
             @item_master = original_item.dup
-            @item_master.item_name = nil  
+            if original_item.is_bom
+              @item_master.item_name = nil
+            end 
           else
             @item_master = ItemMaster.new
           end

@@ -73,7 +73,16 @@ class BillOfMaterialsController < ApplicationController
   def index
     @q = BillOfMaterial.includes(:finished_good, :bom_raw_material_items).order("created_at DESC").ransack(params[:q])
     @bill_of_materials = @q.result(distinct: true).paginate(page: params[:page], per_page: 100)
+
+    respond_to do |format|
+      format.html
+      format.csv do 
+        send_data BillOfMaterial.to_csv,
+        filename: "bill_of_materials_#{Date.today}.csv"
+      end
+    end
   end
+  
   def show
     @bill_of_material = BillOfMaterial.find(params[:id])
     @item_masters = ItemMaster.where('"item_masters"."is_bom" = ?', true).includes(:measurement) 
@@ -170,8 +179,8 @@ class BillOfMaterialsController < ApplicationController
     def bom_params_update
       params.require(:bill_of_material).permit(
         :name, :bom_tag,
-        finished_good_attributes: [:id, :sku_id, :item_name, :quantity, :unit, :_destroy],
-        bom_raw_material_items_attributes: [:id, :sku_id, :item_name, :item_master_id, :quantity, :unit, :_destroy]
+        finished_good_attributes: [:id, :sku_id, :item_name, :quantity, :item_master_id, :unit, :_destroy],
+        bom_raw_material_items_attributes: [:id, :sku_id, :item_name, :item_master_id, :item_master_id, :quantity, :unit, :_destroy]
         )
     end
   end

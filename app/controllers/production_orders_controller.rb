@@ -125,6 +125,14 @@ class ProductionOrdersController < ApplicationController
            .order(created_at: :desc)
            .ransack(params[:q])
     @production_orders = @q.result(distinct: true).paginate(page: params[:page], per_page: 100)
+
+    respond_to do |format|
+      format.html
+      format.csv do 
+        send_data ProductionOrder.to_csv,
+        filename: "production_orders_#{Date.today}.csv"
+      end
+    end
   end
   
   
