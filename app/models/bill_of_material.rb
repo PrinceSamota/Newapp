@@ -1,3 +1,4 @@
+require "csv"
 class BillOfMaterial < ApplicationRecord
   has_one :finished_good, dependent: :destroy
   has_many :bom_raw_material_items, dependent: :destroy
@@ -25,6 +26,20 @@ class BillOfMaterial < ApplicationRecord
     %w[
       finished_good
     ]
+  end
+
+  def self.to_csv
+    CSV.generate(headers: true) do |csv|
+      csv << ["BOM Number", "BOM Name", "Finished Good"]
+  
+      all.each do |item|
+        csv << [
+          item.bom_number,
+          item.name,
+          item.finished_good&.sku_id
+        ]
+      end
+    end
   end
 
   private

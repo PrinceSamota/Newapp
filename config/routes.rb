@@ -135,6 +135,9 @@ get 'manual_decode_result', to: 'articles#manual_decode_result'
   resources :hsns, only: [:create]
   resources :client_driver_var_nos, only: [:create]
   resources :currencies, only: [:create]
+  get "/pdf_form/:id", to: "inputs#pdf_form", as: "new_item_pdf"
+  post "/generate_pdf/:id", to: "inputs#generate_pdf", as: "generate_item_pdf"
+  
 
 
 end

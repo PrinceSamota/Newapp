@@ -25,7 +25,13 @@
         <% end %>
       </div>
 
-      
+      <%= link_to order_entries_path(format: :csv),
+        class: "py-2 px-6  border border-gray-300 rounded-md hover:bg-gray-200 transition cursor-pointer",
+        title: "Download CSV" do %>
+
+        <i class="fa-solid fa-download text-lg"></i>
+
+      <% end %>
     
       <%= link_to new_order_entry_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-300" do %>
         <i class="fa-solid fa-plus"></i>
@@ -150,7 +156,7 @@
 
             row_color =
               if dispatch&.color.present?
-                dispatch.color     # Dispatch me save hua color use hoga
+                dispatch.color     
               else
                 @dispatch_color_map[order.dispatch_no&.strip] || '#FFFFFF'
               end %>

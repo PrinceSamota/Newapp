@@ -17,6 +17,16 @@
             class: "whitespace-nowrap px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-150 ease-in-out cursor-pointer" %>
         <% end %>
       </div>
+
+      <div class="flex justify-end md:order-3">
+          <%= link_to raw_material_stock_batches_path(format: :csv),
+          class: "py-2 px-6  border border-gray-300 rounded-md hover:bg-gray-200 transition cursor-pointer",
+          title: "Download CSV" do %>
+        
+          <i class="fa-solid fa-download text-lg"></i>
+        
+        <% end %>
+      </div>
       <div class="flex justify-end md:order-3">
         <%= link_to new_raw_material_stock_batch_path, class: "flex items-center gap-2 transition-colors duration-200 text-black hover:bg-gray-200 rounded-md px-3 py-2 cursor-pointer border border-gray-400 font-bold" do %>
           <i class="fa-solid fa-plus"></i>
