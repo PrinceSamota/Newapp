@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <style>
     body {
-      font-family: Helvetica;
-      font-size: 12px;
+      font-family: 'Arial', sans-serif;
+      font-size: 15px;
       margin: 0;
       position: relative;
     }
@@ -18,30 +18,31 @@
 <body>
 
 <!-- ARTICLE BIG NUMBER -->
-<div class="absolute" style="top: 113mm; left: 133mm; font-size: 16px; font-weight: bold;">
-  <span style="font-size: 22px;"><%= @item.order_no %> </span><br><span style="font-size: 12px;"><%= client.company_name %> </span>
+<div class="absolute" style="top: 551px; left: 646px; font-size: 16px; font-weight: bold;">
+  <span style="font-size: 24px;"><%= @item.order_no %> </span><br><span style="font-size: 16px;"><%= client.company_name %> </span>
 </div>
-<div class="absolute" style="top: 130mm; left: 152mm; font-size: 18px; font-weight: bold;">
-  <%= box_no %>
+<div class="absolute" style="top: 634px; left: 738px; font-size: 18px; font-weight: bold; font-size: 28px;">
+  <%= box_no.to_s.rjust(2, '0') %>
 </div>
-<div class="absolute" style="top: 130mm; left: 170mm; font-size: 18px; font-weight: bold;">
-  <%= @item.no_of_boxes %>
+<div class="absolute" style="top: 634px; left: 825px; font-size: 18px; font-weight: bold; font-size: 28px;">
+  <%= total_boxes.to_s.rjust(2, '0') %>
 </div>
 
 <!-- MAIN BOX -->
-<div class="absolute" style="top: 99mm; left: 26mm;">
+<div class="absolute" style="top: 483px; left:  126px;">
 
   <div>
 
     <!-- LEFT COLUMN -->
-    <div style="position: absolute; top: 0mm; white-space: nowrap;">
-      <div><strong style="font-size: 16px; font-weight: bold;">Product Name:</strong></div>
-      <div><strong style="font-weight: 400;">Description:</strong></div>
-      <div><strong style="font-weight: 400;">Quantity:</strong></div>
-      <div><strong style="font-weight: 400;">Net Weight:</strong></div>
-      <div><strong style="font-weight: 400;">Gross Weight:</strong></div>
-      <div><strong style="font-weight: 400;">Packing Date:</strong></div>
-      <div><strong style="font-weight: bold;">Article No:</strong></div>
+    <div style="position: absolute; white-space: nowrap;">
+      <div style="margin-bottom: 10px;"><strong style="font-size: 20px; font-weight: bold;">Product Name:</strong></div>
+      <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Description:</strong></div>
+      <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Quantity:</strong></div>
+      <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Net Weight:</strong></div>
+      <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Gross Weight:</strong></div>
+      <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Packing Date:</strong></div>
+      <div style="margin-bottom: 5px;"><strong style="font-weight: bold;">Article No:</strong></div>
+      <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Serial No:</strong></div>
     </div>
 
     <!-- RIGHT COLUMN (Always 80mm from the left of the PAGE) -->
@@ -51,17 +52,19 @@
     item_name = ItemMaster.find_by(sku_id: sku_id)&.item_name
   %>
 
-    <div style="position: absolute; top: 0mm; left: 80mm; width: 100mm;">
-      <div style="font-size: 16px; font-weight: bold;"><%= item_name || "—" %></div>
-      <div><%= @item.description_of_good&.name.presence || "—" %></div>
-      <div><%= @item.qty_per_box.presence || "—" %></div>
-      <div><%= @item.net_weight.presence || "—" %></div>
-      <div><%= @item.gross_weight.presence || "—" %></div>
-      <div><% if packing_date.present? %>
+    <div style="position: absolute; top: 0mm; left: 308px; width: 100mm;">
+      <div style="font-size: 20px; font-weight: bold; margin-bottom: 10px;"><%= @item.description_of_good&.name.presence || "—" %></div>
+      <div style="margin-bottom: 5px;"><%= item_name || "—" %></div>
+      <div style="margin-bottom: 5px;"><%= @item.qty_per_box.presence || "—" %></div>
+      <div style="margin-bottom: 5px;"><%= @item.net_weight.presence || "—" %></div>
+      <div style="margin-bottom: 5px;"><%= @item.gross_weight.presence || "—" %></div>
+      <div style="margin-bottom: 5px;"><% if packing_date.present? %>
       <% safe_date = Date.parse(packing_date) rescue nil %>
       <%= safe_date.strftime("%b-%Y") if safe_date %>
       <% end %></div>
-      <div style="font-weight: bold;"><%= custom_article_no.present? ? custom_article_no : order&.article_no %></div>
+      <div style="font-weight: bold; margin-bottom: 5px;"><%= custom_article_no.present? ? custom_article_no : order&.article_no %></div>
+      <div style="margin-bottom: 5px;"><%= end_serial %></div>
+      <div style="margin-bottom: 5px;"><%= end_serial %></div>
     </div>
 
   </div>
@@ -70,48 +73,51 @@
 
 
 
-<div class="absolute" style="top: 253mm; left: 133mm; font-size: 16px; font-weight: bold;">
-<span style="font-size: 22px;"><%= @item.order_no %> </span><br><span style="font-size: 12px;"><%= client.company_name %> </span>
+<div class="absolute" style="top: 1234px; left: 646px; font-size: 16px; font-weight: bold;">
+<span style="font-size: 24px;"><%= @item.order_no %> </span><br><span style="font-size: 16px;"><%= client.company_name %> </span>
 </div>
-<div class="absolute" style="top: 270mm; left: 152mm; font-size: 18px; font-weight: bold;">
-  <%= box_no %>
+<div class="absolute" style="top: 1318px; left: 738px; font-size: 18px; font-weight: bold; font-size: 28px;">
+  <%= box_no.to_s.rjust(2, '0') %>
 </div>
-<div class="absolute" style="top: 270mm; left: 170mm; font-size: 18px; font-weight: bold;">
-  <%= @item.no_of_boxes %>
+<div class="absolute" style="top: 1318px; left: 825px; font-size: 18px; font-weight: bold; font-size: 28px;">
+  <%= total_boxes.to_s.rjust(2, '0') %>
 </div>
 
 <!-- MAIN BOX -->
-<div class="absolute" style="top: 238mm; left: 26mm;">
-
+<div class="absolute" style="top: 1131px; left: 126px;">
   <div>
 
-    <!-- LEFT COLUMN -->
-    <div style="position: absolute; top: 0mm; white-space: nowrap;">
-      <div><strong style="font-size: 16px; font-weight: bold;">Product Name:</strong></div>
-      <div><strong style="font-weight: 400;">Description:</strong></div>
-      <div><strong style="font-weight: 400;">Quantity:</strong></div>
-      <div><strong style="font-weight: 400;">Net Weight:</strong></div>
-      <div><strong style="font-weight: 400;">Gross Weight:</strong></div>
-      <div><strong style="font-weight: 400;">Packing Date:</strong></div>
-      <div><strong style="font-weight: bold;">Article No:</strong></div>
-    </div>
+  <!-- LEFT COLUMN -->
+  <div style="position: absolute; white-space: nowrap;">
+    <div style="margin-bottom: 10px;"><strong style="font-size: 20px; font-weight: bold;">Product Name:</strong></div>
+    <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Description:</strong></div>
+    <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Quantity:</strong></div>
+    <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Net Weight:</strong></div>
+    <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Gross Weight:</strong></div>
+    <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Packing Date:</strong></div>
+    <div style="margin-bottom: 5px;"><strong style="font-weight: bold;">Article No:</strong></div>
+    <div style="margin-bottom: 5px;"><strong style="font-weight: 400;">Serial No:</strong></div>
+  </div>
 
-    <!-- RIGHT COLUMN (Always 80mm from the left of the PAGE) -->
-    <div style="position: absolute; top: 0mm; left: 80mm; width: 100mm;">
-      <div style="font-size: 16px; font-weight: bold;"><%= item_name || "—" %></div>
-      <div><%= @item.description_of_good&.name.presence || "—" %></div>
-      <div><%= @item.qty_per_box.presence || "—" %></div>
-      <div><%= @item.net_weight.presence || "—" %></div>
-      <div><%= @item.gross_weight.presence || "—" %></div>
-      <div><% if packing_date.present? %>
-      <% safe_date = Date.parse(packing_date) rescue nil %>
-      <%= safe_date.strftime("%b-%Y") if safe_date %>
-      <% end %></div>
-      <div style="font-weight: bold;"><%= custom_article_no.present? ? custom_article_no : order&.article_no %></div>
-    </div>
+
+  <div style="position: absolute; top: 0mm; left: 308px; width: 100mm;">
+    <div style="font-size: 20px; font-weight: bold; margin-bottom: 10px;"><%= @item.description_of_good&.name.presence || "—" %></div>
+    <div style="margin-bottom: 5px;"><%= item_name || "—" %></div>
+    <div style="margin-bottom: 5px;"><%= @item.qty_per_box.presence || "—" %></div>
+    <div style="margin-bottom: 5px;"><%= @item.net_weight.presence || "—" %></div>
+    <div style="margin-bottom: 5px;"><%= @item.gross_weight.presence || "—" %></div>
+    <div style="margin-bottom: 5px;"><% if packing_date.present? %>
+    <% safe_date = Date.parse(packing_date) rescue nil %>
+    <%= safe_date.strftime("%b-%Y") if safe_date %>
+    <% end %></div>
+    <div style="font-weight: bold; margin-bottom: 5px;"><%= custom_article_no.present? ? custom_article_no : order&.article_no %></div>
+    <div style="margin-bottom: 5px;"><%= end_serial %></div>
+    <div style="margin-bottom: 5px;"><%= end_serial %></div>
+  </div>
 
   </div>
 
+    
 </div>
 
 

@@ -115,7 +115,7 @@
                   <td class="px-6 py-4 text-sm text-gray-500"><%= item.gross_weight.presence || "—" %></td>
                   <td class="px-6 py-4 text-sm text-gray-500"><%= [item.length, item.width, item.height].all? ? "#{item.length}×#{item.width}×#{item.height}" : "—" %></td>
                   <td class="px-6 py-4 text-center">
-                    <%= link_to new_item_pdf_path(item.id), 
+                    <%= link_to new_item_pdf_path(item.id,input_id: @input.id), 
                         class: "text-blue-600 hover:text-blue-800" do %>
                           <i class="fa-solid fa-file-pdf text-xl"></i>
                     <% end %>

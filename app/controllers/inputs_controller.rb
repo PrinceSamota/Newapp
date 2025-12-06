@@ -50,7 +50,8 @@ class InputsController < ApplicationController
   end
   
   def pdf_form
-    @input = InputItem.find(params[:id])
+    @input_item = InputItem.find(params[:id]) 
+    @input = Input.find(params[:input_id])     
     @clients = Client.all
   end
 
@@ -58,30 +59,50 @@ class InputsController < ApplicationController
   end
   def generate_pdf
     @item = InputItem.find(params[:id])
+    @input = Input.find(params[:input_id])
+    
+    all_boxes = @input.input_items.pluck(:no_of_boxes)
+    total_boxes = all_boxes.sum
+    
     client = Client.find(params[:client_id])
-  box_no = params[:box_no]
-  start_serial = params[:start_serial_no]
-  end_serial = params[:end_serial_no]
-  custom_article_no = params[:custom_article_no]
-  packing_date = params[:packing_date]
-  
+    box_no = params[:box_no]
+    start_serial = params[:start_serial_no]
+    end_serial = params[:end_serial_no]
+    custom_article_no = params[:custom_article_no]
+    packing_date = params[:packing_date]
+
     respond_to do |format|
       format.pdf do
         render pdf: "input_item_#{@item.id}",
                template: "inputs/item_pdf",
-               layout: "pdf",
-               locals: { item: @item, params: params,
-               input: @input,
-               client: client,
-               box_no: box_no,
-               start_serial: start_serial,
-               end_serial: end_serial,
-               custom_article_no: custom_article_no,
-               packing_date: packing_date }
-
+               page_size: 'A4',
+               layout: false,
+               margin: { top: 0, bottom: 0, left: 0, right: 0 },
+               dpi: 96,
+               zoom: 0.77,
+               disable_smart_shrinking: true,
+               print_media_type: true,
+               orientation: 'Portrait',
+               viewport_size: '794x1123',
+               locals: {
+                 item: @item,
+                 params: params,
+                 input: @input,
+                 client: client,
+                 box_no: box_no,
+                 start_serial: start_serial,
+                 end_serial: end_serial,
+                 custom_article_no: custom_article_no,
+                 packing_date: packing_date,
+                 input_id: @input.id,
+                 input_item_id: @item.id,
+                 all_boxes: all_boxes,
+                 total_boxes: total_boxes
+               }
       end
     end
   end
+  
   
   def update
     if params[:save_draft].present?
