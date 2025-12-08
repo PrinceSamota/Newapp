@@ -41,7 +41,7 @@ class ItemMaster < ApplicationRecord
 
   def self.to_csv
     CSV.generate(headers: true) do |csv|
-      csv << ["SKU", "Item Name", "Category", "Stock", "Purchase Price", "Sale Price", "Min Stock", "Is BOM", "Extra", "Article No", "Measurement"]
+      csv << ["SKU", "Item Name", "Category", "Stock", "B S", "Purchase Price", "Sale Price", "Min Stock", "Is BOM", "Extra", "Article No", "Measurement"]
   
       all.each do |item|
         csv << [
@@ -49,6 +49,7 @@ class ItemMaster < ApplicationRecord
           item.item_name,
           item.category&.name,
           item.opening_stock,
+          item.block_stock,
           item.purchase_price,
           item.sale_price,
           item.minimum_stock_level,
@@ -89,7 +90,7 @@ class ItemMaster < ApplicationRecord
 
 
   def self.ransackable_attributes(auth_object = nil)
-    %w[item_name sku_id category article_number]
+    %w[item_name sku_id category article_number block_stock]
   end
 
   def self.ransackable_associations(auth_object = nil)

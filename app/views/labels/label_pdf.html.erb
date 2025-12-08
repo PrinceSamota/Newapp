@@ -30,7 +30,7 @@
       padding: 1px; 
       box-sizing: border-box;
       position: relative;
-      margin-top: 130%;
+      margin-top: 50%;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -44,7 +44,7 @@
     }
 
     th, td {
-      border: 1px solid <%= @form_data[:frame_colour].to_s.split.first %>;
+      border: 1.5px solid <%= @form_data[:frame_colour].to_s.split.first %>;
       padding: 0.5mm 0.5mm;
       font-size: <%= type_d ? '2.5px' : '6px' %>;
       text-align: center;
@@ -154,28 +154,28 @@
             
             
                 <!-- Logo Block 2 -->
-                <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: <%= type_d ? '1mm' : '3mm' %>;">
+                <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-right: <%= type_d ? '1mm' : '3mm' %>;">
                   <!-- Top text (add your own) -->
-                  <div style="font-size:4px; font-weight:bold; margin-top:4mm;">
-                    <!-- YOUR TEXT HERE -->
+                  <div style=" <%= type_d ? 'font-size:4px;' : 'font-size:6px;' %> font-weight:bold; margin-top:0mm;">
+                  Coach LED Tube  
                   </div>
             
                   <!-- Logo -->
           
-                  <%= wicked_pdf_image_tag "sticker_data.svg", alt: "EMC Logo", class: "EMC-logo" %>
-
-            
+                  <%= wicked_pdf_image_tag "sticker_data.png",
+                      style: "#{ type_d ? 'height: 5mm;' : 'height: 10mm;' } width: auto; #{ type_d ? 'transform: scale(1.0);' : 'transform: scale(1.4);' } transform-origin: center;" %>
+ 
                   <!-- Bottom text (add your own) -->
-                  <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:0mm;">
-                 Made in INDIA
+                  <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:0mm; font-weight: bold;">
+                 Made in India
                   </div>
-                  <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:1mm;">
+                  <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:1mm; font-weight: bold;">
                   <% begin %>
                   <% if @form_data[:sticker_date].present? %>
-                    <%= Date.parse(@form_data[:sticker_date]).strftime("%B %Y") %>
+                    <%= Date.parse(@form_data[:sticker_date]).strftime('%m/%Y') %>
                   <% end %>
                 <% rescue %>
-                <% end %>
+                <% end %>                
                   </div>
                 </div>
             
@@ -195,11 +195,12 @@
                     <th>Serial No.</th>
                     </tr>
                     <tr>
-                    <td><%= @form_data[:type] %></td>
-                    <td><%= @form_data[:length] %></td>
-                    <td><%= @form_data[:wattage] %></td>
-                    <td><%= @form_data[:voltage] %></td>
-                    <td>
+                    <td style="font-weight: bold;"><%= @form_data[:type] %><br>
+                     <%= @form_data[:profile].to_s[0] %>/<%= @form_data[:length] %>/<%= @form_data[:cct].to_s[0..1] %>/<%= @form_data[:cover].to_s[0] %>/<%= @form_data[:extra].to_s[0..1] %></td>
+                    <td style="font-weight: bold;"><%= @form_data[:length] %></td>
+                    <td style="font-weight: bold;"><%= @form_data[:wattage] %></td>
+                    <td style="font-weight: bold;"><%= @form_data[:voltage] %></td>
+                    <td style="font-weight: bold;">
                       <%= begin
                             watt = @form_data[:wattage].to_s.gsub(/[^\d.]/, '').to_f
                             volt = @form_data[:voltage].to_s.gsub(/[^\d.]/, '').to_f
@@ -208,8 +209,8 @@
                             "-"
                           end %>
                     </td>
-                    <td>-40°C to +85°C (OT6)</td>
-                    <td><%= @form_data[:cct] %></td>
+                    <td style="font-weight: bold;">-40°C to +85°C (OT6)</td>
+                    <td style="font-weight: bold;"><%= @form_data[:cct] %></td>
                     <td><%= @form_data[:custom_article_no].presence || @form_data[:article_no] %></td>
                     <td></td>
                   </tr>
