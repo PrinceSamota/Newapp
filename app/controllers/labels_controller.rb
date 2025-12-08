@@ -16,6 +16,7 @@ class LabelsController < ApplicationController
       format.pdf do
         render pdf: "label_#{@form_data["custom_article_no"] || @form_data["article_number"] || Time.current.to_i}",
                template: "labels/label_pdf",
+               orientation: 'Landscape',
                layout: "pdf",
                formats: [:html],
                page_size: 'A4',
@@ -55,7 +56,10 @@ class LabelsController < ApplicationController
         type: order.item_type,
         length: order.length,
         voltage: order.voltage,
-        cct: order.cct
+        cct: order.cct,
+        profile: order.profile,
+        cover: order.cover_type,
+        extra: order.extra
       }
     else
       @order_details = {}
