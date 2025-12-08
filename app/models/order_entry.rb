@@ -7,7 +7,7 @@ class OrderEntry < ApplicationRecord
   belongs_to :location, optional: true
   belongs_to :driver_revision, optional: true
   attr_accessor :generate_serial
-  before_create :generate_serial_numbers
+  before_save :generate_serial_numbers
   has_many :dispatch_items, foreign_key: :order_no, primary_key: :order_no
   def dispatch_d_id
     dispatch_item = DispatchItem.find_by(order_no: self.order_no)
@@ -74,14 +74,13 @@ class OrderEntry < ApplicationRecord
   end
 
   def generate_serial_numbers
-    if self.generate_sno
+    if self.generate_sno && self.start_serial_no.blank? && self.end_serial_no.blank?
       blocked_ranges = [10128208,10136518]
       # Find the maximum end_serial_no
       last_end_serial = OrderEntry.pluck(:end_serial_no).compact.map{|x| x.gsub(/\D/, "")}.map(&:to_i).reject { |num| blocked_ranges.any? { |r| r == num }}.max || 0
-      new_start_number = last_end_serial + 1
-      self.start_serial_no = new_start_number.to_s
-  
       if self.qty.present? && self.qty.to_i > 0
+        new_start_number = last_end_serial + 1
+        self.start_serial_no = new_start_number.to_s
         new_end_number = new_start_number + self.qty.to_i - 1
         self.end_serial_no = new_end_number.to_s
       end
