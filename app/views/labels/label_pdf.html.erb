@@ -7,7 +7,7 @@
     <% type_d = @form_data[:type].to_s.downcase == 'd' %>
 
     @page { 
-      size: A4 landscape; 
+      size: A3 landscape; 
       margin:0; 
      }
 
@@ -37,7 +37,7 @@
          }
 
     table {
-      max-width:  <%= type_d ? '130mm' : '140mm' %>;
+      max-width:  <%= type_d ? '130mm' : '315mm' %>;
       height: <%= type_d ? '11mm' : '23mm' %>;
       border-collapse: collapse;
       table-layout: fixed;
@@ -91,8 +91,8 @@
 
     .logo-container img {
       margin: 0 2mm;
-      max-width: <%= type_d ? '12mm' : '20mm' %>;
-      max-height: <%= type_d ? '5mm' : '17mm' %>;
+      max-width: <%= type_d ? '12mm' : '15mm' %>;
+      max-height: <%= type_d ? '5mm' : '12mm' %>;
       object-fit: contain;
     }
 
@@ -106,8 +106,8 @@
     }
 
     .right-logo-container img {
-      max-width: <%= type_d ? '10mm' : '15mm' %>;
-      max-height: <%= type_d ? '5mm' : '7mm' %>;
+      max-width: <%= type_d ? '10mm' : '10mm' %>;
+      max-height: <%= type_d ? '5mm' : '5mm' %>;
       object-fit: contain;
     }
 
@@ -156,7 +156,7 @@
                 <!-- Logo Block 2 -->
                 <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: <%= type_d ? '1mm' : '3mm' %>;">
                   <!-- Top text (add your own) -->
-                  <div style="font-size:4px; font-weight:bold; margin-bottom:1mm;">
+                  <div style="font-size:4px; font-weight:bold; margin-top:4mm;">
                     <!-- YOUR TEXT HERE -->
                   </div>
             
@@ -166,6 +166,9 @@
 
             
                   <!-- Bottom text (add your own) -->
+                  <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:0mm;">
+                 Made in INDIA
+                  </div>
                   <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:1mm;">
                   <% begin %>
                   <% if @form_data[:sticker_date].present? %>
@@ -219,16 +222,14 @@
             
                 <!-- Right Logo Block 1 (QR Code Section) -->
                 <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
-                <% if @client&.qr_code&.attached? %>
+                <% if @distributor&.qr_code&.attached? %>
                       <!-- Top Text -->
                       <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-top: <%= type_d ? '1mm' : '1mm' %>; padding-bottom: 0;">
                         Manual
                       </div>
                 
                       <!-- QR Code Logo -->
-                      <% if @client&.qr_code&.attached? %>
-                        <%= image_tag @client.qr_code, alt: "QR Code" %>
-                      <% end %>
+                        <%= image_tag @distributor.qr_code, alt: "QR Code" %>
                 
                       <!-- Bottom text -->
                       <div style="font-size:4px; padding-top:1mm;">
@@ -237,24 +238,21 @@
                 <% end %>
                 </div>
             
-            
                 <!-- Right Logo Block 2 (Distribution Logo Section) -->
                 <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: 3mm;">
             
                   <!-- Top Text -->
-                  <% if @client&.distribution_logo&.attached? %>
+                  <% if @distributor&.distribution_logo&.attached? %>
                     <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-bottom:1mm;">
                       Distribution
                     </div>
               
                     <!-- Distribution Logo -->
-                    <% if @client&.distribution_logo&.attached? %>
-                      <%= image_tag @client.distribution_logo, alt: "Distribution Logo" %>
-                    <% end %>
-              
+                      <%= image_tag @distributor.distribution_logo, alt: "Distribution Logo" %>
+
                     <!-- Bottom URL -->
                     <div style="font-size:<%= type_d ? '4px' : '6px' %>; margin-top:1mm; font-weight: bold;">
-                      <%= @client&.distributor_url if @client&.distributor_url.present? %>
+                      <%= @distributor&.distributor_url if @distributor&.distributor_url.present? %>
                     </div>
                   <% end %>
                 </div>

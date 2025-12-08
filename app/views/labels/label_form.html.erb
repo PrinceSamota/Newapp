@@ -19,17 +19,9 @@
           <%= form.number_field :sticker_quantity,  class: "w-full p-2 border rounded" %>
         </div>
         <div>
-          <%= form.label :qr_code, "QR Code Data", class: "block text-sm font-medium mb-1" %>
-          <%= form.text_field :qr_code, placeholder: "Enter QR code data", class: "w-full p-2 border rounded" %>
-        </div>
-        <div>
         <%= form.label :custom_article_no, "Custom Article No.", class: "block text-sm font-medium mb-1" %>
         <%= form.text_field :custom_article_no, placeholder: "Enter custom article no.", class: "w-full p-2 border rounded" %>
       </div>
-        <div>
-          <%= form.label :distribution, "Distribution", class: "block text-sm font-medium mb-1" %>
-          <%= form.text_field :distribution, class: "w-full p-2 border rounded" %>
-        </div>
         <div>
           <%= form.label :frame_colour, "Frame Colour", class: "block text-sm font-medium mb-1" %>
           <%= form.select :frame_colour, 
@@ -67,17 +59,39 @@
       </div>
     </div>
 
-    <!-- Manufacturer Selection -->
     <div class="bg-white p-6 rounded-lg shadow">
-      <h3 class="text-lg font-semibold mb-4">Manufacturer</h3>
-      <%= form.select :manufacturer_id, 
+    <h3 class="text-lg font-semibold mb-4">Client Selection</h3>
+  
+    <div class="grid grid-cols-2 gap-4">
+  
+      <!-- Manufacturer Dropdown -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Manufacturer</label>
+        <%= form.select :manufacturer_id, 
           options_from_collection_for_select(
             Client.where(org_id: current_user.org_id).select { |c| c.has_type?("manufacturer") }, 
             :id, :company_name
           ), 
           { prompt: "Select Manufacturer" },
           { class: "w-full p-2 border rounded" } %>
+      </div>
+  
+      <!-- Distributor Dropdown -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Distributor</label>
+        <%= form.select :distributor_id, 
+          options_from_collection_for_select(
+            Client.where(org_id: current_user.org_id).select { |c| c.has_type?("distributor") }, 
+            :id, :company_name
+          ), 
+          { prompt: "Select Distributor" },
+          { class: "w-full p-2 border rounded" } %>
+      </div>
+  
     </div>
+  </div>
+  
+  
 
     <div class="text-center">
       <%= form.submit "Generate #{@label_type.humanize} Label PDF", class: " px-8 py-3 rounded-lg hover:bg-purple-700 transition" %>
