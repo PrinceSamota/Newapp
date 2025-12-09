@@ -184,15 +184,15 @@
               <div>
                 <table style="width: 100%; height: 50%; border-collapse: collapse; table-layout: fixed;">
                     <tr>
-                    <th>Type</th>
-                    <th>Length</th>
-                    <th>Power</th>
-                    <th>Voltage</th>
-                    <th>Current</th>
-                    <th>Operating temperature</th>
-                    <th>Light color</th>
-                    <th>Article No.</th>
-                    <th>Serial No.</th>
+                    <th>Type<br><%= t("pdf.type") %></th>
+                    <th>Length<br><%= t("pdf.length") %></th>
+                    <th>Power<br><%= t("pdf.power") %></th>
+                    <th>Voltage<br><%= t("pdf.voltage") %></th>
+                    <th>Current<br><%= t("pdf.current") %></th>
+                    <th>Operating temperature<br><%= t("pdf.operating_temperature") %></th>
+                    <th>Light color<br><%= t("pdf.light_color") %></th>
+                    <th>Article No.<br><%= t("pdf.article_no") %></th>
+                    <th>Serial No.<br><%= t("pdf.serial_no") %></th>
                     </tr>
                     <tr>
                     <td style="font-weight: bold;"><%= @form_data[:type] %><br>

@@ -38,11 +38,11 @@
           <%= form.label :language, "Language", class: "block text-sm font-medium mb-1" %>
           <%= form.select :language, 
               options_for_select([
-                ["English", "english"],
-                ["Hindi", "hindi"],
-                ["German", "german"],
-                ["French", "french"],
-                ["Spanish", "spanish"]
+                ["English", "en"],
+                ["Hindi", "hi"],
+                ["German", "de"],
+                ["French", "fr"],
+                ["Spanish", "es"]
               ]), 
               { prompt: "Select Language" },
               { class: "w-full p-2 border rounded" } %>

@@ -18,18 +18,18 @@
 <body>
 
 <!-- ARTICLE BIG NUMBER -->
-<div class="absolute" style="top: 551px; left: 646px; font-size: 16px; font-weight: bold;">
+<div class="absolute" style="top: 490px; left: 570px; font-size: 16px; font-weight: bold;">
   <span style="font-size: 24px;"><%= @item.order_no %> </span><br><span style="font-size: 16px;"><%= client.company_name %> </span>
 </div>
-<div class="absolute" style="top: 634px; left: 738px; font-size: 18px; font-weight: bold; font-size: 28px;">
+<div class="absolute" style="top: 570px; left: 738px; font-weight: bold; font-size: 40px;">
   <%= box_no.to_s.rjust(2, '0') %>
 </div>
-<div class="absolute" style="top: 634px; left: 825px; font-size: 18px; font-weight: bold; font-size: 28px;">
+<div class="absolute" style="top: 570px; left: 825px; font-weight: bold; font-size: 40px;">
   <%= total_boxes.to_s.rjust(2, '0') %>
 </div>
 
 <!-- MAIN BOX -->
-<div class="absolute" style="top: 483px; left:  126px;">
+<div class="absolute" style="top: 420px; left:  126px;">
 
   <div>
 
@@ -63,8 +63,7 @@
       <%= safe_date.strftime("%b-%Y") if safe_date %>
       <% end %></div>
       <div style="font-weight: bold; margin-bottom: 5px;"><%= custom_article_no.present? ? custom_article_no : order&.article_no %></div>
-      <div style="margin-bottom: 5px;"><%= end_serial %></div>
-      <div style="margin-bottom: 5px;"><%= end_serial %></div>
+      <div style="margin-bottom: 5px;"><%= end_serial %> - <%= end_serial %></div>
     </div>
 
   </div>
@@ -73,18 +72,18 @@
 
 
 
-<div class="absolute" style="top: 1234px; left: 646px; font-size: 16px; font-weight: bold;">
+<div class="absolute" style="top: 1213px; left: 570px; font-size: 16px; font-weight: bold;">
 <span style="font-size: 24px;"><%= @item.order_no %> </span><br><span style="font-size: 16px;"><%= client.company_name %> </span>
 </div>
-<div class="absolute" style="top: 1318px; left: 738px; font-size: 18px; font-weight: bold; font-size: 28px;">
+<div class="absolute" style="top: 1300px; left: 738px; font-weight: bold; font-size: 40px;">
   <%= box_no.to_s.rjust(2, '0') %>
 </div>
-<div class="absolute" style="top: 1318px; left: 825px; font-size: 18px; font-weight: bold; font-size: 28px;">
+<div class="absolute" style="top: 1300px; left: 825px; font-weight: bold; font-size: 40px;">
   <%= total_boxes.to_s.rjust(2, '0') %>
 </div>
 
 <!-- MAIN BOX -->
-<div class="absolute" style="top: 1131px; left: 126px;">
+<div class="absolute" style="top: 1110px; left: 126px;">
   <div>
 
   <!-- LEFT COLUMN -->
@@ -111,8 +110,7 @@
     <%= safe_date.strftime("%b-%Y") if safe_date %>
     <% end %></div>
     <div style="font-weight: bold; margin-bottom: 5px;"><%= custom_article_no.present? ? custom_article_no : order&.article_no %></div>
-    <div style="margin-bottom: 5px;"><%= end_serial %></div>
-    <div style="margin-bottom: 5px;"><%= end_serial %></div>
+    <div style="margin-bottom: 5px;"><%= end_serial %> - <%= end_serial %></div>
   </div>
 
   </div>
