@@ -4,12 +4,11 @@ class LabelsController < ApplicationController
   end
 
   def generate_pdf
-    # Convert all params safely into a regular hash
     @form_data = params.to_unsafe_h.except(:authenticity_token, :commit, :controller, :action, :format)
     @client = Client.find_by(id: @form_data[:manufacturer_id])
     @distributor = Client.find_by(id: @form_data[:distributor_id]) 
 
-    # Debug line — optional (to verify what’s coming in)
+    I18n.locale = @form_data["language"].presence || :en  
     Rails.logger.info "🧾 PDF PARAMS => #{@form_data.inspect}"
   
     respond_to do |format|
