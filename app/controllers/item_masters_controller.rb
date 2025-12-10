@@ -255,7 +255,8 @@ class ItemMastersController < ApplicationController
         :voltage_id,
         :wattage_id,
         :extra_id,
-        :article_number
+        :article_number,
+        :shortcode
       )
     end
   end

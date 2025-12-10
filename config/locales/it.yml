@@ -1,0 +1,11 @@
+it:
+  pdf:
+    type: "Tipo"
+    length: "Lunghezza"
+    power: "Potenza"
+    voltage: "Voltaggio"
+    current: "Corrente"
+    operating_temperature: "Temperatura di esercizio"
+    light_color: "Colore della luce"
+    article_no: "Numero articolo"
+    serial_no: "Numero di serie"

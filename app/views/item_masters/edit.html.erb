@@ -93,6 +93,10 @@
           <%= f.label :sku_id, "SKU ID", class: "block text-sm font-medium text-gray-700 mb-1" %>
           <%= f.text_field :sku_id, class: "w-full border border-gray-300 rounded-lg px-4 py-2 bg-gray-100 cursor-not-allowed", disabled: true %>
         </div>
+        <div>
+          <%= f.label :shortcode, "Short Code", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <%= f.text_field :shortcode, placeholder: "Enter short code", step: :any, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+        </div>
       </div>
       <!-- Row 4 -->
       <div id="bom-fields" style="<%= @item_master.is_bom? ? '' : 'display: none;' %>">

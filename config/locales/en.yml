@@ -28,13 +28,4 @@
 #       enabled: "ON"
 
 en:
-  pdf:
-    type: "Type"
-    length: "Length"
-    power: "Power"
-    voltage: "Voltage"
-    current: "Current"
-    operating_temperature: "Operating Temperature"
-    light_color: "Light Color"
-    article_no: "Article No."
-    serial_no: "Serial No."
+  hello: "Hello world"

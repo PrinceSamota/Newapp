@@ -1,8 +1,10 @@
 <div class="container mx-auto px-4 py-6">
-  <h1 class="text-2xl font-bold mb-6">Generate <%= @label_type.humanize %> Label</h1>
+  <h1 class="text-2xl font-bold mb-6">Generate Sticker</h1>
   
-  <%= form_with url: generate_pdf_labels_path(format: :pdf), method: :post, local: true, class: "space-y-6" do |form| %>
-    <%= form.hidden_field :label_type, value: @label_type %>
+  <%= form_with url: generate_pdf_labels_path(format: :pdf), 
+  method: :post, 
+  local: true, 
+  html: { target: "_blank", class: "space-y-6" } do |form| %>    <%= form.hidden_field :label_type, value: @label_type %>
     
 
 
@@ -38,11 +40,11 @@
           <%= form.label :language, "Language", class: "block text-sm font-medium mb-1" %>
           <%= form.select :language, 
               options_for_select([
-                ["English", "en"],
-                ["Hindi", "hi"],
-                ["German", "de"],
-                ["French", "fr"],
-                ["Spanish", "es"]
+              ["English", "en"],
+              ["German", "de"],
+              ["French", "fr"],
+              ["Portuguese", "pt"],
+              ["Italian", "it"]
               ]), 
               { prompt: "Select Language" },
               { class: "w-full p-2 border rounded" } %>
@@ -97,7 +99,7 @@
   
 
     <div class="text-center">
-      <%= form.submit "Generate #{@label_type.humanize} Label PDF", class: " px-8 py-3 rounded-lg hover:bg-purple-700 transition" %>
+      <%= form.submit "Generate Sticker", class: " px-8 py-3 rounded-lg hover:bg-purple-700 transition bg-purple-600 cursor-pointer" %>
     </div>
   <% end %>
 </div>
