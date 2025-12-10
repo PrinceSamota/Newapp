@@ -184,19 +184,23 @@
               <div>
                 <table style="width: 100%; height: 50%; border-collapse: collapse; table-layout: fixed;">
                     <tr>
-                    <th>Type<br><%= t("pdf.type") %></th>
-                    <th>Length<br><%= t("pdf.length") %></th>
-                    <th>Power<br><%= t("pdf.power") %></th>
-                    <th>Voltage<br><%= t("pdf.voltage") %></th>
-                    <th>Current<br><%= t("pdf.current") %></th>
-                    <th>Operating temperature<br><%= t("pdf.operating_temperature") %></th>
-                    <th>Light color<br><%= t("pdf.light_color") %></th>
-                    <th>Article No.<br><%= t("pdf.article_no") %></th>
-                    <th>Serial No.<br><%= t("pdf.serial_no") %></th>
+                    <th>Type<br><%= params[:language] == "en" ? "" : t("pdf.type") %></th>
+                    <th>Length<br><%= params[:language] == "en" ? "" : t("pdf.length") %></th>
+                    <th>Power<br><%= params[:language] == "en" ? "" : t("pdf.power") %></th>
+                    <th>Voltage<br><%= params[:language] == "en" ? "" : t("pdf.voltage") %></th>
+                    <th>Current<br><%= params[:language] == "en" ? "" : t("pdf.current") %></th>
+                    <th>Operating temperature<br> <%= params[:language] == "en" ? "" : t("pdf.operating_temperature") %></th>
+                    <th>Light color<br><%= params[:language] == "en" ? "" : t("pdf.light_color") %></th>
+                    <th>Article No.<br><%= params[:language] == "en" ? "" : t("pdf.article_no") %></th>
+                    <th>Serial No.<br><%= params[:language] == "en" ? "" : t("pdf.serial_no") %></th>
                     </tr>
+                    <% order = OrderEntry.find_by(id: @form_data[:order_id]) %>
+                    <% sku_id = order&.sku_number %>
+                    <% item_master = ItemMaster.find_by(sku_id: sku_id) %>
                     <tr>
                     <td style="font-weight: bold;"><%= @form_data[:type] %><br>
-                     <%= @form_data[:profile].to_s[0] %>/<%= @form_data[:length] %>/<%= @form_data[:cct].to_s[0..1] %>/<%= @form_data[:cover].to_s[0] %>/<%= @form_data[:extra].to_s[0..1] %></td>
+                    <%= item_master&.shortcode %>
+                    </td>
                     <td style="font-weight: bold;"><%= @form_data[:length] %></td>
                     <td style="font-weight: bold;"><%= @form_data[:wattage] %></td>
                     <td style="font-weight: bold;"><%= @form_data[:voltage] %></td>

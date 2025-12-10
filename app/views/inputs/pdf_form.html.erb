@@ -1,5 +1,5 @@
 <div class="max-w-xl mx-auto bg-white shadow p-6 mt-8 rounded-lg">
-  <h2 class="text-2xl font-bold mb-4">Enter PDF Details</h2>
+  <h2 class="text-2xl font-bold mb-4">Enter Label Details</h2>
 
   <form action="<%= generate_item_pdf_path(@input_item.id, format: :pdf) %>" method="post" target="_blank">
     <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
