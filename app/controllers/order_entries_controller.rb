@@ -35,7 +35,7 @@ class OrderEntriesController < ApplicationController
         .uniq
 
       @q = OrderEntry
-        .with_deleted
+        .visible_in_index
         .includes(:client)
         .left_joins(dispatch_items: :dispatch)
         .where.not(id: dispatched_order_entry_ids)

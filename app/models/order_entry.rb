@@ -67,6 +67,14 @@ class OrderEntry < ApplicationRecord
     end
   end
   
+  scope :visible_in_index, -> {
+    with_deleted.where(
+      "order_entries.deleted_at IS NULL OR order_entries.deleted_at >= ?",
+      7.days.ago
+    )
+  }
+  
+
   private
 
   def generate_sno_changed_to_true?

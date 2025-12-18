@@ -4,7 +4,26 @@
   <span class="font-bold">Back</span>
 <% end %>
 
-
+<% if @bill_of_material&.errors&.any? %>
+  <div class="fixed top-4 right-4 bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg z-50 max-w-md animate-pulse">
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="flex items-center">
+          <i class="fa-solid fa-exclamation-triangle mr-2"></i>
+          <strong>Error!</strong>
+        </div>
+        <div class="mt-2 text-sm">
+          <% @bill_of_material.errors.full_messages.each do |message| %>
+            <div><%= message %></div>
+          <% end %>
+        </div>
+      </div>
+      <button type="button" onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200 text-2xl cursor-pointer">
+        ×
+      </button>
+    </div>
+  </div>
+<% end %>
 <%= form_with model: @bill_of_material, id: "bom-form", local: true do |f| %>
   <div class="max-w-8xl mx-auto bg-white p-8 rounded-2xl shadow-xl space-y-8 mt-10">
     
@@ -222,21 +241,19 @@ function initBomForm() {
   const fgItemId = document.getElementById("finished-good-item-id");
 
   if (fgSku && fgItem) {
-    fgSku.addEventListener("change", () => {
-      const sku = fgSku.value;
-      if (skuToItem[sku]) fgItem.value = skuToItem[sku];
-      if (skuToUnit[sku] && fgUnit) fgUnit.value = skuToUnit[sku];
-      if (skuToId[sku] && fgItemId) fgItemId.value = skuToId[sku];
-      fgItem.dispatchEvent(new Event('change'));
-    });
+  fgSku.addEventListener("change", () => {
+    const sku = fgSku.value;
+    if (skuToItem[sku]) fgItem.value = skuToItem[sku];
+    if (skuToUnit[sku] && fgUnit) fgUnit.value = skuToUnit[sku];
+    if (skuToId[sku] && fgItemId) fgItemId.value = skuToId[sku];
+      });
 
-    fgItem.addEventListener("change", () => {
-      const item = fgItem.value;
-      if (itemToSku[item]) fgSku.value = itemToSku[item];
-      if (itemToUnit[item] && fgUnit) fgUnit.value = itemToUnit[item];
-      if (itemToId[item] && fgItemId) fgItemId.value = itemToId[item];
-    });
-  }
+  fgItem.addEventListener("change", () => {
+    const item = fgItem.value;
+    if (itemToUnit[item] && fgUnit) fgUnit.value = itemToUnit[item];
+    if (itemToId[item] && fgItemId) fgItemId.value = itemToId[item];
+  });
+}
 
   const bomNameField = document.getElementById("bom-name");
   if (fgItem && bomNameField) {

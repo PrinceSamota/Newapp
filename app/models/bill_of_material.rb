@@ -11,6 +11,7 @@ class BillOfMaterial < ApplicationRecord
   has_paper_trail save_changes: true
   validates_associated :finished_good
   validates_associated :bom_raw_material_items
+  validate :finished_good_sku_must_be_unique
   
   def generate_bom_number
     last_bom = BillOfMaterial.maximum(:bom_number)
@@ -43,6 +44,19 @@ class BillOfMaterial < ApplicationRecord
   end
 
   private
+  def finished_good_sku_must_be_unique
+    return if finished_good.blank? || finished_good.sku_id.blank?
+
+    existing_bom = BillOfMaterial
+      .joins(:finished_good)
+      .where(finished_goods: { sku_id: finished_good.sku_id })
+      .where.not(id: id) 
+      .exists?
+
+    if existing_bom
+      errors.add(:base, "Finished Good SKU already used in another BOM")
+    end
+  end
 
   def must_have_at_least_one_raw_material
     if bom_raw_material_items.reject(&:marked_for_destruction?).empty?
