@@ -52,9 +52,9 @@
     item_name = ItemMaster.find_by(sku_id: sku_id)&.shortcode
   %>
 
-    <div style="position: absolute; top: 0mm; left: 308px; width: 100mm;">
+    <div style="position: absolute; top: 0mm; left: 308px;">
       <div style="font-size: 20px; font-weight: bold; margin-bottom: 10px;"><%= @item.description_of_good&.name.presence || "—" %></div>
-      <div style="margin-bottom: 5px;"><%= item_name || "—" %></div>
+      <div style="margin-bottom: 5px; width: 155mm;"><%= truncate(item_name, length: 68) || "—" %></div>
       <div style="margin-bottom: 5px;"><%= @item.qty_per_box.presence || "—" %></div>
       <div style="margin-bottom: 5px;"><%= @item.net_weight.presence || "—" %></div>
       <div style="margin-bottom: 5px;"><%= @item.gross_weight.presence || "—" %></div>
@@ -99,9 +99,9 @@
   </div>
 
 
-  <div style="position: absolute; top: 0mm; left: 308px; width: 100mm;">
+  <div style="position: absolute; top: 0mm; left: 308px;">
     <div style="font-size: 20px; font-weight: bold; margin-bottom: 10px;"><%= @item.description_of_good&.name.presence || "—" %></div>
-    <div style="margin-bottom: 5px;"><%= item_name || "—" %></div>
+    <div style="margin-bottom: 5px; width: 155mm;"><%= truncate(item_name, length: 68) || "—" %></div>
     <div style="margin-bottom: 5px;"><%= @item.qty_per_box.presence || "—" %></div>
     <div style="margin-bottom: 5px;"><%= @item.net_weight.presence || "—" %></div>
     <div style="margin-bottom: 5px;"><%= @item.gross_weight.presence || "—" %></div>
