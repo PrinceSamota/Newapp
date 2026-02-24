@@ -34,7 +34,7 @@
             <td class="px-4 py-2 border text-center"><%= row[:stock] %></td>
             <td class="px-4 py-2 border text-center
               <%= row[:requirement].to_i >= 0 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold' %>">
-              <%= row[:requirement] %>
+              <%= row[:requirement].abs %>
             </td>
             <td class="px-4 py-2 border text-center">
               <%= row[:actual_required_qty] > 0 ? row[:actual_required_qty] : "-" %>
