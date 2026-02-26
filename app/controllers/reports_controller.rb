@@ -12,7 +12,7 @@ class ReportsController < ApplicationController
     # Step 2: Expand BOM for each SKU once, using total quantity
     sku_totals.each do |sku_id, total_qty|
       bom_items = expand_bom(sku_id, total_qty)
-      
+
       # Step 3: Merge results into cumulative hash
       bom_items.each do |s, row|
         if sku_hash[s]
@@ -46,10 +46,10 @@ class ReportsController < ApplicationController
     return {} unless item
 
     stock = item.opening_stock || 0
-    to_produce_qty = [qty_needed - stock, 0].max
 
     result = {}
-    # Default entry: finished good / intermediate
+
+    # ✅ Finished Good / Intermediate Entry
     result[sku_id] = {
       sku: sku_id,
       item_name: item.item_name,
@@ -57,10 +57,13 @@ class ReportsController < ApplicationController
       quantity: qty_needed,
       stock: stock,
       requirement: stock - qty_needed,
-      actual_required_qty: 0  # Only leaf raw materials will have actual required qty
+      actual_required_qty: qty_needed # ✔ Order Qty × 1
     }
 
-    bom = BillOfMaterial.joins(:finished_good).find_by(finished_goods: { sku_id: sku_id })
+    bom = BillOfMaterial
+            .joins(:finished_good)
+            .find_by(finished_goods: { sku_id: sku_id })
+
     return result unless bom
 
     bom.bom_raw_material_items.each do |rm|
@@ -71,11 +74,15 @@ class ReportsController < ApplicationController
       rm_name = rm_item.item_name
       rm_stock = rm_item.opening_stock || 0
 
-      total_required_qty = to_produce_qty * rm.quantity
+      # ✅ IMPORTANT: use qty_needed (order qty), not stock-adjusted qty
+      total_required_qty = qty_needed * rm.quantity
 
-      if BillOfMaterial.joins(:finished_good).exists?(finished_goods: { sku_id: rm_sku })
-        # Multi-level BOM: recurse
+      if BillOfMaterial.joins(:finished_good)
+                       .exists?(finished_goods: { sku_id: rm_sku })
+
+        # 🔁 Multi-level BOM recursion
         child_results = expand_bom(rm_sku, total_required_qty, visited.dup)
+
         child_results.each do |child_sku, child_data|
           if result[child_sku]
             result[child_sku][:quantity] += child_data[:quantity]
@@ -86,7 +93,7 @@ class ReportsController < ApplicationController
           end
         end
       else
-        # Leaf raw material: actual required quantity
+        # ✅ Leaf Raw Material
         if result[rm_sku]
           result[rm_sku][:quantity] += total_required_qty
           result[rm_sku][:requirement] = result[rm_sku][:stock] - result[rm_sku][:quantity]
@@ -99,7 +106,7 @@ class ReportsController < ApplicationController
             quantity: total_required_qty,
             stock: rm_stock,
             requirement: rm_stock - total_required_qty,
-            actual_required_qty: total_required_qty
+            actual_required_qty: total_required_qty # ✔ Order Qty × RM quantity
           }
         end
       end
