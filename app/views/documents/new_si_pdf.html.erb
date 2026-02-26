@@ -258,11 +258,11 @@ td{text-align: center;}
     <tr>
      
       <th>Marks & Numbers</th><td>CLED</td>
-      <th>PAN No.</th><td>ATYPD0195J</td>
+      <th>PAN No.</th><td><%= @input.shipper_name.pan_no %></td>
       <th class="gstn-title" rowspan="3">GSTN<br>DETAILS</th>
       <td class="gstn-box" rowspan="3">
         <table>
-          <tr><th>GSTN No.</th><td>27ATYPD0195J1Z6</td></tr>
+          <tr><th>GSTN No.</th><td><%= @input.shipper_name.gst_no %></td></tr>
           <tr><th>State Code</th><td>27</td></tr>
           <tr><th>GSTIN Type</th><td>Regular</td></tr>
         </table>
@@ -313,12 +313,12 @@ td{text-align: center;}
       </td>
       <td>
         <strong>Post shipment document / EP delivery instructions</strong><br><br>
-        <strong>Contact person:</strong> Deepak Sharma<br>
-        <strong>Telephone / Mobile:</strong> +91 9022756007<br>
-        <strong>Address 1:</strong> 240-E5, Bhumi World - Industrial Park<br>
-        <strong>Address 2:</strong> Mumbai - Nashik Highway<br>
-        <strong>City:</strong> Bhiwandi, Maharashtra<br>
-        <strong>Pin Code:</strong> 421302
+        <strong>Contact person:</strong> <%= @input.shipper_name.name %><br>
+        <strong>Telephone / Mobile:</strong> <%= @input.shipper_name.contact_no %><br>
+        <strong>Address 1:</strong> <%= @input.shipper_name.address1 %><br>
+        <strong>Address 2:</strong> <%= @input.shipper_name.address2 %><br>
+        <strong>City:</strong> <%= @input.shipper_name.address3 %><br>
+        <strong>Pin Code:</strong> <%= @input.shipper_name.pin_code %>
       </td>
     </tr>
   
