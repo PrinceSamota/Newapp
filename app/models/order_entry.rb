@@ -24,7 +24,7 @@ class OrderEntry < ApplicationRecord
   def self.to_csv(records)
     attributes = [
       "Order No", "Article No", "Client", "Target Date", "SKU", "Dispatch No",
-      "Ship To", "No Of Box", "Current Stock", "Qty", "Item Type", "Profile",
+      "Ship To", "No Of Box", "Current Stock", "Qty", "Item Type", "Category", "Profile",
       "Wattage", "Voltage", "Length", "CCT", "Cover", "Fuse", "Loop", "Extra",
       "Start Serial", "End Serial", "MFG Date", "Driver Rev No", "Remark",
       "Status", "Order Date"
@@ -46,6 +46,7 @@ class OrderEntry < ApplicationRecord
           ItemMaster.find_by(sku_id: order.sku_number)&.opening_stock,
           order.qty,
           order.item_type,
+          ItemMaster.find_by(sku_id: order.sku_number)&.category&.name,
           order.profile,
           order.wattage,
           order.voltage,
