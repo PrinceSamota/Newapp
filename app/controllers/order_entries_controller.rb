@@ -101,6 +101,7 @@ class OrderEntriesController < ApplicationController
   
     def show
       @order_entry = OrderEntry.with_deleted.find(params[:id])
+      @item_masters = ItemMaster.all
     end
     def edit
       @order_entry = OrderEntry.with_deleted.find(params[:id])

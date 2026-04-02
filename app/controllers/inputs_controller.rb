@@ -30,8 +30,6 @@ class InputsController < ApplicationController
     @input.user = current_user
     @input.org_id = current_user.org_id
   
-    @input.dispatch_id = params[:dispatch_id] if params[:dispatch_id].present?
-  
     if params[:save_draft].present?
       @input.status = "draft"
       if @input.save(validate: false)
@@ -42,7 +40,7 @@ class InputsController < ApplicationController
     else
       @input.status = "completed"
       if @input.save
-        redirect_to input_path(@input), notice: 'Input was successfully created.'
+        redirect_to edit_dispatch_path(@input.dispatch_id), notice: 'Input was successfully created.'
       else
         render :new, status: :unprocessable_entity
       end

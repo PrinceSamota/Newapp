@@ -121,8 +121,7 @@ get 'manual_decode_result', to: 'articles#manual_decode_result'
       get :get_item_details
     end
   end
-
-  resources :inputs do
+  resources :inputs, except: [:index] do
     member do
       get :download_pdf
     end
