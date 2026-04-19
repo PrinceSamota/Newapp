@@ -41,19 +41,48 @@
         </div>
 
         <div>
-          <%= f.label :shipper_name_id, "Shipper" %>
-          <%= f.collection_select :shipper_name_id, Client.all, :id, :company_name, { prompt: "Select Shipper" }, class: "w-full border border-gray-300 rounded-lg p-2" %>
-        </div>
+        <%= f.label :shipper_name_id, "Shipper" %>
+      
+        <%= f.collection_select :shipper_name_id,
+          Client.all,
+          :id,
+          :company_name,
+          {},
+          {
+            class: "tom-select w-full border border-gray-300 rounded-lg p-2",
+            data: { placeholder: "Select Shipper" }
+          }
+        %>
+      </div>
+      <div>
+      <%= f.label :consignee_name_id, "Consignee" %>
+    
+      <%= f.collection_select :consignee_name_id,
+        Client.all,
+        :id,
+        :company_name,
+        {},
+        {
+          class: "tom-select w-full border border-gray-300 rounded-lg p-2",
+          data: { placeholder: "Select Consignee" }
+        }
+      %>
+    </div>
 
-        <div>
-          <%= f.label :consignee_name_id, "Consignee" %>
-          <%= f.collection_select :consignee_name_id, Client.all, :id, :company_name, { prompt: "Select Consignee" }, class: "w-full border border-gray-300 rounded-lg p-2" %>
-        </div>
+      <div>
+      <%= f.label :importer_name_id, "Importer" %>
 
-        <div>
-          <%= f.label :importer_name_id, "Importer" %>
-          <%= f.collection_select :importer_name_id, Client.all, :id, :company_name, { prompt: "Select Importer" }, class: "w-full border border-gray-300 rounded-lg p-2" %>
-        </div>
+      <%= f.collection_select :importer_name_id,
+        Client.all,
+        :id,
+        :company_name,
+        {},
+        {
+          class: "tom-select w-full border border-gray-300 rounded-lg p-2",
+          data: { placeholder: "Select Importer" }
+        }
+      %>
+      </div>
 
         <div>
           <%= f.label :order_no_from_dispatch, "Order No from Dispatch" %>
@@ -61,9 +90,19 @@
         </div>
 
         <div>
-          <%= f.label :currency_id, "Currency" %>
-          <%= f.collection_select :currency_id, Currency.all, :id, :name, { prompt: "Select Currency" }, class: "w-full border border-gray-300 rounded-lg p-2" %>
-        </div>
+        <%= f.label :currency_id, "Currency" %>
+      
+        <%= f.collection_select :currency_id,
+          Currency.all,
+          :id,
+          :name,
+          {},
+          {
+            class: "tom-select w-full border border-gray-300 rounded-lg p-2",
+            data: { placeholder: "Select Currency" }
+          }
+        %>
+      </div>
 
         <div>
           <%= f.label :fedex_awb_no, "FedEx AWB No" %>
@@ -134,11 +173,49 @@
   </div>
 </div>
 <script>
+function initTomSelect(element) {
+  if (!element || element.tomselect) return;
+
+  new TomSelect(element, {
+    create: false,
+    allowEmptyOption: true,
+    placeholder: element.dataset.placeholder || "Select Option",
+    hidePlaceholder: true,
+    persist: false,
+
+    searchField: ["text"],
+    maxOptions: 1000,
+
+    sortField: {
+      field: "text",
+      direction: "asc"
+    },
+
+    onInitialize: function () {
+      this.clear();
+    },
+
+    onDropdownOpen: function () {
+      if (this.getValue()) {
+        this.clear(true);
+      }
+    }
+  });
+}
+
+
+function initAllTomSelects() {
+  document.querySelectorAll(".tom-select").forEach((select) => {
+    initTomSelect(select);
+  });
+}
+
+
 function initInputForm() {
   const itemContainer = document.getElementById("input-items");
   const detailContainer = document.getElementById("input-details");
-  if (!itemContainer || itemContainer.dataset.initialized === "true") return;
 
+  if (!itemContainer || itemContainer.dataset.initialized === "true") return;
   itemContainer.dataset.initialized = "true";
 
   const itemTemplate = document.getElementById("input-item-template")?.innerHTML;
@@ -150,37 +227,237 @@ function initInputForm() {
   let itemIndex = itemContainer.querySelectorAll(".input-item-row").length;
   let detailIndex = detailContainer.querySelectorAll(".input-detail-row").length;
 
+
   addItemButton?.addEventListener("click", function () {
     if (!itemTemplate) return;
-    const newRow = itemTemplate.replace(/NEW_INDEX/g, itemIndex);
-    itemContainer.insertAdjacentHTML("beforeend", newRow);
+
+    const newRowHTML = itemTemplate.replace(/NEW_INDEX/g, itemIndex);
+    itemContainer.insertAdjacentHTML("beforeend", newRowHTML);
+
+    const newRow = itemContainer.lastElementChild;
+
+    newRow.querySelectorAll(".tom-select").forEach((select) => {
+      initTomSelect(select);
+    });
+
     itemIndex++;
   });
 
   addDetailButton?.addEventListener("click", function () {
     if (!detailTemplate) return;
-    const newDetail = detailTemplate.replace(/NEW_DETAIL_INDEX/g, detailIndex);
-    detailContainer.insertAdjacentHTML("beforeend", newDetail);
+
+    const newDetailHTML = detailTemplate.replace(/NEW_DETAIL_INDEX/g, detailIndex);
+    detailContainer.insertAdjacentHTML("beforeend", newDetailHTML);
+
+    const newRow = detailContainer.lastElementChild;
+
+    newRow.querySelectorAll(".tom-select").forEach((select) => {
+      initTomSelect(select);
+    });
+
     detailIndex++;
   });
 
   itemContainer?.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-item")) {
       const row = e.target.closest(".input-item-row");
-      row.querySelector('input[name*="[_destroy]"]').value = "1";
-      row.style.display = "none"; // Hide instead of removing
+
+      const destroyInput = row.querySelector('input[name*="[_destroy]"]');
+      if (destroyInput) {
+        destroyInput.value = "1";
+        row.style.display = "none";
+      } else {
+        row.remove();
+      }
     }
   });
+
 
   detailContainer?.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-detail")) {
       const row = e.target.closest(".input-detail-row");
-      row.querySelector('input[name*="[_destroy]"]').value = "1";
-      row.style.display = "none";
+
+      const destroyInput = row.querySelector('input[name*="[_destroy]"]');
+      if (destroyInput) {
+        destroyInput.value = "1";
+        row.style.display = "none";
+      } else {
+        row.remove();
+      }
     }
   });
 }
 
-document.addEventListener("turbo:load", initInputForm);
-document.addEventListener("DOMContentLoaded", initInputForm);
+document.addEventListener("turbo:load", () => {
+  initInputForm();
+  initAllTomSelects();
+});
+
+document.addEventListener("turbo:frame-load", () => {
+  initAllTomSelects();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  initInputForm();
+  initAllTomSelects();
+});
+// ===============================
+// INIT INPUT FORM (ADD / REMOVE ROW)
+// ===============================
+function initInputForm() {
+  const itemContainer = document.getElementById("input-items");
+  const detailContainer = document.getElementById("input-details");
+
+  if (!itemContainer || itemContainer.dataset.initialized === "true") return;
+  itemContainer.dataset.initialized = "true";
+
+  const itemTemplate = document.getElementById("input-item-template")?.innerHTML;
+  const detailTemplate = document.getElementById("input-detail-template")?.innerHTML;
+
+  const addItemButton = document.getElementById("add-input-item");
+  const addDetailButton = document.getElementById("add-input-detail");
+
+  let itemIndex = itemContainer.querySelectorAll(".input-item-row").length;
+  let detailIndex = detailContainer.querySelectorAll(".input-detail-row").length;
+
+  // ✅ ADD INPUT ITEM
+  addItemButton?.addEventListener("click", function () {
+    if (!itemTemplate) return;
+
+    const html = itemTemplate.replace(/NEW_INDEX/g, itemIndex);
+    itemContainer.insertAdjacentHTML("beforeend", html);
+
+    const newRow = itemContainer.lastElementChild;
+
+    // 🔥 APPLY SEARCH DROPDOWN
+    initAllTomSelects(newRow);
+
+    itemIndex++;
+  });
+
+  // ✅ ADD INPUT DETAIL
+  addDetailButton?.addEventListener("click", function () {
+    if (!detailTemplate) return;
+
+    const html = detailTemplate.replace(/NEW_DETAIL_INDEX/g, detailIndex);
+    detailContainer.insertAdjacentHTML("beforeend", html);
+
+    const newRow = detailContainer.lastElementChild;
+
+    // 🔥 APPLY SEARCH DROPDOWN
+    initAllTomSelects(newRow);
+
+    detailIndex++;
+  });
+
+  // ✅ REMOVE ITEM
+  itemContainer.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-input-item")) {
+      e.target.closest(".input-item-row")?.remove();
+    }
+  });
+
+  // ✅ REMOVE DETAIL
+  detailContainer.addEventListener("click", function (e) {
+    if (e.target.classList.contains("remove-input-detail")) {
+      e.target.closest(".input-detail-row")?.remove();
+    }
+  });
+}
+
+
+// ===============================
+// TOM SELECT INIT
+// ===============================
+function initTomSelect(element) {
+  if (!element || element.tomselect) return;
+
+  new TomSelect(element, {
+    create: false,
+    allowEmptyOption: true,
+    placeholder: element.dataset.placeholder || "Select Option",
+    hidePlaceholder: true,
+    persist: false,
+    searchField: ["text"],
+    maxOptions: 1000,
+
+    sortField: {
+      field: "text",
+      direction: "asc"
+    },
+
+    onDropdownOpen: function () {
+      if (this.getValue()) {
+        this.clear(true);
+      }
+    }
+  }).clear();
+}
+
+
+// ===============================
+// INIT ALL SELECTS
+// ===============================
+function initAllTomSelects(scope = document) {
+  scope.querySelectorAll("select[data-placeholder]").forEach((select) => {
+    if (!select.tomselect) {
+      initTomSelect(select);
+    }
+  });
+}
+
+
+// ===============================
+// TURBO + PAGE LOAD SUPPORT
+// ===============================
+document.addEventListener("turbo:load", () => {
+  initInputForm();
+  initAllTomSelects();
+});
+
+document.addEventListener("turbo:frame-load", () => {
+  initAllTomSelects();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  initInputForm();
+  initAllTomSelects();
+});
+
+
+// ===============================
+// MARKS NO AJAX (TURBO FIX)
+// ===============================
+function submitNewMarksNo(button) {
+  const wrapper = button.closest("[id^='marks_no_section']");
+  const input = wrapper.querySelector("#new_marks_no_name");
+  const errorsDiv = wrapper.querySelector("#marks-no-errors");
+
+  const name = input.value;
+
+  if (!name) {
+    errorsDiv.textContent = "Marks No cannot be blank.";
+    return;
+  }
+
+  fetch("/marks_nos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+      "Accept": "text/vnd.turbo-stream.html"
+    },
+    body: JSON.stringify({ marks_no: { name } })
+  })
+    .then(res => res.text())
+    .then(html => {
+      wrapper.innerHTML = html;
+
+      // 🔥 RE-INIT DROPDOWN AFTER UPDATE
+      initAllTomSelects(wrapper);
+    })
+    .catch(() => {
+      errorsDiv.textContent = "Something went wrong.";
+    });
+}
 </script>

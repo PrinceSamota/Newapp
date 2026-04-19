@@ -69,38 +69,56 @@
           <%= f.text_field :fedex_awb_no, class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
         </div>
 
-        <div>
-          <%= f.label :shipper_name_id, "Shipper Name", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.select :shipper_name_id, 
-              options_from_collection_for_select(
-                Client.where(org_id: current_user.org_id).select { |c| c.has_type?("shipper") }, 
-                :id, :company_name, @input.shipper_name_id
-              ),
-              { include_blank: "Select Shipper" },
-              { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" } %>
-        </div>
+            <div>
+            <%= f.label :shipper_name_id, "Shipper Name",
+                class: "block text-sm font-medium text-gray-700 mb-1" %>
+          
+            <%= f.select :shipper_name_id, 
+                options_from_collection_for_select(
+                  Client.where(org_id: current_user.org_id).select { |c| c.has_type?("shipper") }, 
+                  :id, :company_name, @input.shipper_name_id
+                ),
+                {},  
+                {
+                  id: "shipper-select",
+                  class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500",
+                  data: { placeholder: "Select Shipper" }
+                } %>
+          </div>
 
-        <div>
-          <%= f.label :consignee_name_id, "Consignee Name", class: "block text-sm font-medium text-gray-700 mb-1" %>
+          <div>
+          <%= f.label :consignee_name_id, "Consignee Name",
+              class: "block text-sm font-medium text-gray-700 mb-1" %>
+        
           <%= f.select :consignee_name_id, 
               options_from_collection_for_select(
                 Client.where(org_id: current_user.org_id).select { |c| c.has_type?("consignee") }, 
                 :id, :company_name, @input.consignee_name_id
               ),
-              { include_blank: "Select Consignee" },
-              { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" } %>
+              {},
+              {
+                id: "consignee-select",
+                class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500",
+                data: { placeholder: "Select Consignee" }
+              } %>
         </div>
 
         <div>
-          <%= f.label :importer_name_id, "Importer Name", class: "block text-sm font-medium text-gray-700 mb-1" %>
-          <%= f.select :importer_name_id, 
-              options_from_collection_for_select(
-                Client.where(org_id: current_user.org_id).select { |c| c.has_type?("buyer") }, 
-                :id, :company_name, @input.importer_name_id
-              ),
-              { include_blank: "Select Importer" },
-              { class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500" } %>
-        </div>
+        <%= f.label :importer_name_id, "Importer Name",
+            class: "block text-sm font-medium text-gray-700 mb-1" %>
+      
+        <%= f.select :importer_name_id, 
+            options_from_collection_for_select(
+              Client.where(org_id: current_user.org_id).select { |c| c.has_type?("buyer") }, 
+              :id, :company_name, @input.importer_name_id
+            ),
+            {},  
+            {
+              id: "importer-select",
+              class: "required-field w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-blue-500 focus:border-blue-500",
+              data: { placeholder: "Select Importer" }
+            } %>
+      </div>
       </div>
 
       <!-- Input Details Section -->
@@ -168,11 +186,14 @@
   </div>
 </div>
 <script>
+// ===============================
+// INIT INPUT FORM (ADD / REMOVE ROW)
+// ===============================
 function initInputForm() {
   const itemContainer = document.getElementById("input-items");
   const detailContainer = document.getElementById("input-details");
-  if (!itemContainer || itemContainer.dataset.initialized === "true") return;
 
+  if (!itemContainer || itemContainer.dataset.initialized === "true") return;
   itemContainer.dataset.initialized = "true";
 
   const itemTemplate = document.getElementById("input-item-template")?.innerHTML;
@@ -184,38 +205,144 @@ function initInputForm() {
   let itemIndex = itemContainer.querySelectorAll(".input-item-row").length;
   let detailIndex = detailContainer.querySelectorAll(".input-detail-row").length;
 
-  // ✅ Add Input Item Row
+  // ✅ ADD INPUT ITEM
   addItemButton?.addEventListener("click", function () {
     if (!itemTemplate) return;
-    const newRow = itemTemplate.replace(/NEW_INDEX/g, itemIndex);
-    itemContainer.insertAdjacentHTML("beforeend", newRow);
+
+    const html = itemTemplate.replace(/NEW_INDEX/g, itemIndex);
+    itemContainer.insertAdjacentHTML("beforeend", html);
+
+    const newRow = itemContainer.lastElementChild;
+
+    // 🔥 APPLY SEARCH DROPDOWN
+    initAllTomSelects(newRow);
+
     itemIndex++;
   });
 
-  // ✅ Add Input Detail Row
+  // ✅ ADD INPUT DETAIL
   addDetailButton?.addEventListener("click", function () {
     if (!detailTemplate) return;
-    const newDetail = detailTemplate.replace(/NEW_DETAIL_INDEX/g, detailIndex);
-    detailContainer.insertAdjacentHTML("beforeend", newDetail);
+
+    const html = detailTemplate.replace(/NEW_DETAIL_INDEX/g, detailIndex);
+    detailContainer.insertAdjacentHTML("beforeend", html);
+
+    const newRow = detailContainer.lastElementChild;
+
+    // 🔥 APPLY SEARCH DROPDOWN
+    initAllTomSelects(newRow);
+
     detailIndex++;
   });
 
-  // ✅ Remove Input Item Row
-  itemContainer?.addEventListener("click", function (e) {
+  // ✅ REMOVE ITEM
+  itemContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-item")) {
       e.target.closest(".input-item-row")?.remove();
     }
   });
 
-  // ✅ Remove Input Detail Row
-  detailContainer?.addEventListener("click", function (e) {
+  // ✅ REMOVE DETAIL
+  detailContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-detail")) {
       e.target.closest(".input-detail-row")?.remove();
     }
   });
 }
 
-// ✅ Works both on Turbo and normal load
-document.addEventListener("turbo:load", initInputForm);
-document.addEventListener("DOMContentLoaded", initInputForm);
+
+// ===============================
+// TOM SELECT INIT
+// ===============================
+function initTomSelect(element) {
+  if (!element || element.tomselect) return;
+
+  new TomSelect(element, {
+    create: false,
+    allowEmptyOption: true,
+    placeholder: element.dataset.placeholder || "Select Option",
+    hidePlaceholder: true,
+    persist: false,
+    searchField: ["text"],
+    maxOptions: 1000,
+
+    sortField: {
+      field: "text",
+      direction: "asc"
+    },
+
+    onDropdownOpen: function () {
+      if (this.getValue()) {
+        this.clear(true);
+      }
+    }
+  }).clear();
+}
+
+
+// ===============================
+// INIT ALL SELECTS
+// ===============================
+function initAllTomSelects(scope = document) {
+  scope.querySelectorAll("select[data-placeholder]").forEach((select) => {
+    if (!select.tomselect) {
+      initTomSelect(select);
+    }
+  });
+}
+
+
+// ===============================
+// TURBO + PAGE LOAD SUPPORT
+// ===============================
+document.addEventListener("turbo:load", () => {
+  initInputForm();
+  initAllTomSelects();
+});
+
+document.addEventListener("turbo:frame-load", () => {
+  initAllTomSelects();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  initInputForm();
+  initAllTomSelects();
+});
+
+
+// ===============================
+// MARKS NO AJAX (TURBO FIX)
+// ===============================
+function submitNewMarksNo(button) {
+  const wrapper = button.closest("[id^='marks_no_section']");
+  const input = wrapper.querySelector("#new_marks_no_name");
+  const errorsDiv = wrapper.querySelector("#marks-no-errors");
+
+  const name = input.value;
+
+  if (!name) {
+    errorsDiv.textContent = "Marks No cannot be blank.";
+    return;
+  }
+
+  fetch("/marks_nos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+      "Accept": "text/vnd.turbo-stream.html"
+    },
+    body: JSON.stringify({ marks_no: { name } })
+  })
+    .then(res => res.text())
+    .then(html => {
+      wrapper.innerHTML = html;
+
+      // 🔥 RE-INIT DROPDOWN AFTER UPDATE
+      initAllTomSelects(wrapper);
+    })
+    .catch(() => {
+      errorsDiv.textContent = "Something went wrong.";
+    });
+}
 </script>
