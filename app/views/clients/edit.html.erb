@@ -219,6 +219,16 @@
           <%= f.text_field :distributor_url, class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
         </div>
       </div>
+      <div id="manufacturer-fields" class="hidden">
+      <%= f.label :manufacturer_logo, "Manufacturer Logo", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= f.file_field :manufacturer_logo, accept: "image/*", class: "w-full border border-gray-300 rounded-lg px-4 py-2" %>
+      <% if @client.manufacturer_logo.attached? %>
+        <div class="mt-2">
+          <%= image_tag @client.manufacturer_logo, class: "w-20 h-20 object-contain border rounded" %>
+          <p class="text-xs text-green-600">✓ Current Manufacturer Logo</p>
+        </div>
+      <% end %>
+    </div>
         </div>
       </div>
 
@@ -240,21 +250,31 @@
   </div>
 </div>
 <script>
-  document.addEventListener("turbo:load", function() {
-    const distributorCheckbox = document.querySelector('input[type="checkbox"][value="distributor"]');
-    const distributorFields = document.getElementById("distributor-fields");
+document.addEventListener("turbo:load", function() {
+  const distributorCheckbox = document.querySelector('input[type="checkbox"][value="distributor"]');
+  const distributorFields = document.getElementById("distributor-fields");
 
-    if (distributorCheckbox && distributorFields) {
-      if (distributorCheckbox.checked) {
-        distributorFields.classList.remove("hidden");
-      }
-      distributorCheckbox.addEventListener("change", function() {
-        if (this.checked) {
-          distributorFields.classList.remove("hidden");
-        } else {
-          distributorFields.classList.add("hidden");
-        }
-      });
+  const manufacturerCheckbox = document.querySelector('input[type="checkbox"][value="manufacturer"]');
+  const manufacturerFields = document.getElementById("manufacturer-fields");
+
+  if (distributorCheckbox && distributorFields) {
+    if (distributorCheckbox.checked) {
+      distributorFields.classList.remove("hidden");
     }
-  });
+
+    distributorCheckbox.addEventListener("change", function() {
+      distributorFields.classList.toggle("hidden", !this.checked);
+    });
+  }
+
+  if (manufacturerCheckbox && manufacturerFields) {
+    if (manufacturerCheckbox.checked) {
+      manufacturerFields.classList.remove("hidden");
+    }
+
+    manufacturerCheckbox.addEventListener("change", function() {
+      manufacturerFields.classList.toggle("hidden", !this.checked);
+    });
+  }
+});
 </script>
