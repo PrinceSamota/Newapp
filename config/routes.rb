@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 's_no/:id', to: 'serial_numbers#show', as: :serial_number
+  get 's_no', to: 'serial_numbers#show', as: :serial_number_search
   
   resources :onboardings, only: [:index] do
     collection do
@@ -45,6 +47,7 @@ Rails.application.routes.draw do
   resources :order_entries do
     member do
       patch :archive
+      get :generate_qr_links
     end
   end
 get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'

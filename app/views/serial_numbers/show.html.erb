@@ -1,0 +1,99 @@
+<div class="bg-white shadow-xl rounded-2xl overflow-hidden mt-4">
+  <!-- Header Section -->
+  <div class="bg-gray-50 border-b border-gray-100 px-6 py-5 text-center">
+    <h1 class="text-2xl font-bold text-gray-800">Product Details</h1>
+    
+    <% if @sno_input.present? %>
+      <% if @sno_found %>
+        <div class="mt-3 inline-flex items-center bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-sm font-semibold shadow-sm">
+          <i class="fa-solid fa-circle-check mr-2"></i>
+          Genuine Product Verified
+        </div>
+      <% else %>
+        <div class="mt-3 inline-flex items-center bg-red-100 text-red-700 px-3 py-1.5 rounded-full text-sm font-semibold shadow-sm">
+          <i class="fa-solid fa-circle-xmark mr-2"></i>
+          Product Not Found
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <!-- Content Section -->
+  <div class="p-6 space-y-6">
+    <% if @sno_found %>
+      <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 text-center">
+        <p class="text-xs text-blue-500 uppercase tracking-wider font-semibold mb-1">Serial No.</p>
+        <p class="text-xl font-bold text-blue-800 font-mono"><%= @sno_input %></p>
+      </div>
+
+      <div>
+        <div class="flex justify-between items-center mb-1">
+           <span class="text-sm font-bold text-gray-600">Article No:</span>
+           <span class="font-bold text-gray-800"><%= @order_entry.article_no %></span>
+        </div>
+        
+        <h3 class="text-lg font-bold text-gray-800 mt-6 mb-3 border-b border-gray-200 pb-2">Overview</h3>
+        
+        <ul class="space-y-4">
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Manufacturing Date</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.mfg_date.present? ? Date.parse(@order_entry.mfg_date.to_s).strftime("%d/%b/%Y") : "N/A" %></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Item Type</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.item_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Length</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.length.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Profile</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.profile.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">CCT</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.cct.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Cover Type</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.cover_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Voltage</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.voltage.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Wattage</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.wattage.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Driver Rev. No.</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.driver_revision&.name.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+          <li class="flex justify-between items-center">
+            <span class="text-gray-500 text-sm font-medium">Additional</span>
+            <span class="text-gray-800 font-semibold"><%= @order_entry.fuse_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+          </li>
+        </ul>
+      </div>
+    <% elsif @sno_input.present? %>
+       <div class="text-center text-gray-500 mt-4 mb-4">
+          The serial number <strong class="text-gray-800"> <%= @sno_input %> </strong> is either invalid or not registered in our system. Please try again.
+       </div>
+    <% else %>
+       <div class="text-center text-gray-500 mt-4 mb-4">
+          Enter a serial number below to verify product authenticity.
+       </div>
+    <% end %>
+
+    <!-- Search Section -->
+    <div class="mt-8 pt-6 border-t border-gray-100">
+      <h4 class="text-sm font-bold text-gray-700 mb-3 text-center">Search by Serial No, Manually Enter</h4>
+      <%= form_with url: serial_number_search_path, method: :get, local: true, class: "flex gap-2" do |f| %>
+        <%= f.text_field :q, value: @sno_input, placeholder: "e.g. 100012345", class: "flex-grow px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-gray-400 w-full outline-none transition-colors" %>
+        <%= f.submit "Search", class: "px-6 py-2 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-sm transition-colors cursor-pointer" %>
+      <% end %>
+    </div>
+  </div>
+</div>

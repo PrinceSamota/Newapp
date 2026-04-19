@@ -16,9 +16,15 @@
       <h2 class="text-2xl font-bold text-gray-800">Edit Order</h2>
      
       <%= link_to new_product_label_labels_path(order_id: @order_entry.id), 
-          class: "flex items-center gap-2 text-white bg-purple-600 hover:bg-purple-700 rounded-md px-4 py-2 border shadow-md transition duration-200 mb-4" do %>
+          class: "flex items-center w-max gap-2 text-white bg-purple-600 hover:bg-purple-700 rounded-md px-4 py-2 border shadow-md transition duration-200 mb-4" do %>
         <i class="fa-solid fa-tag"></i>
         <span class="font-bold">Create Sticker</span>
+      <% end %>
+
+      <%= link_to generate_qr_links_order_entry_path(@order_entry), 
+          class: "flex items-center w-max gap-2 text-white bg-green-600 hover:bg-green-700 rounded-md px-4 py-2 border shadow-md transition duration-200 mb-4" do %>
+        <i class="fa-solid fa-qrcode"></i>
+        <span class="font-bold">Generate Serial No QR Links</span>
       <% end %>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <!-- Row 1 -->

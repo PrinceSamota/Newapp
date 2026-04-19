@@ -1,0 +1,46 @@
+<% content_for(:title, "Generated QR Links") %>
+
+<div class="max-w-4xl mx-auto mt-10 bg-white border border-gray-200 rounded-2xl shadow p-10 space-y-6">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-gray-800">Generated QR Links</h2>
+    <%= link_to order_entry_path(@order_entry), class: "flex items-center gap-2 text-black hover:bg-gray-200 rounded-md p-2 border border-gray-300" do %>
+      <i class="fa-solid fa-arrow-left"></i>
+      <span class="font-bold">Back to Order</span>
+    <% end %>
+  </div>
+
+  <% if @links.any? %>
+    <div class="bg-gray-50 border border-gray-200 rounded-xl max-h-96 overflow-y-auto p-4">
+      <ul class="space-y-2">
+        <% @links.each do |link| %>
+          <li class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition duration-150">
+            <a href="<%= link %>" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 hover:underline font-medium font-mono text-sm break-all mr-4"><%= link %></a>
+            <button onclick="navigator.clipboard.writeText('<%= link %>')" class="text-gray-600 hover:text-blue-800 focus:outline-none flex-shrink-0" title="Copy to clipboard">
+              <i class="fa-solid fa-copy"></i> Copy
+            </button>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    
+    <div class="mt-4 flex justify-end">
+      <button onclick="copyAllLinks()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow transition duration-200">
+        Copy All Links
+      </button>
+    </div>
+  <% else %>
+    <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-xl">
+      <p class="font-semibold">No links generated.</p>
+      <p class="text-sm">Make sure starting and ending serial numbers are present on the order.</p>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  function copyAllLinks() {
+    const links = <%= raw @links.to_json %>;
+    navigator.clipboard.writeText(links.join("\n")).then(() => {
+      alert("All links copied to clipboard!");
+    });
+  }
+</script>

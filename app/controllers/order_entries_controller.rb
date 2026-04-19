@@ -139,7 +139,32 @@ class OrderEntriesController < ApplicationController
       end
     end
 
-  
+    def generate_qr_links
+      @order_entry = OrderEntry.with_deleted.find(params[:id])
+      @links = []
+      
+      start_sno = @order_entry.start_serial_no.to_i
+      end_sno = @order_entry.end_serial_no.to_i
+      
+      if start_sno > 0 && end_sno >= start_sno
+        fg = FinishedGood.find_by(sku_id: @order_entry.sku_number)
+        bom = fg&.bill_of_material
+        bom_items = bom ? bom.bom_raw_material_items.includes(:item_master) : []
+        sub_boms = bom_items.select { |item| item.item_master&.is_bom? }
+        
+        (start_sno..end_sno).each do |sno|
+          if sub_boms.empty?
+            @links << serial_number_url(id: sno)
+          else
+            sub_boms.each_with_index do |sub_bom, index|
+              bom_str = sub_bom.item_master.bill_of_material&.bom_number&.gsub(/[^0-9]/, '')&.to_i || (index + 1)
+              @links << serial_number_url(id: "#{sno}_#{bom_str}")
+            end
+          end
+        end
+      end
+    end
+
     private
   
     def order_entry_params
