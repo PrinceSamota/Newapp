@@ -47,7 +47,7 @@
           Client.all,
           :id,
           :company_name,
-          {},
+          { include_blank: "Select Shipper" },
           {
             class: "tom-select w-full border border-gray-300 rounded-lg p-2",
             data: { placeholder: "Select Shipper" }
@@ -61,7 +61,7 @@
         Client.all,
         :id,
         :company_name,
-        {},
+        { include_blank: "Select Consignee" },
         {
           class: "tom-select w-full border border-gray-300 rounded-lg p-2",
           data: { placeholder: "Select Consignee" }
@@ -76,7 +76,7 @@
         Client.all,
         :id,
         :company_name,
-        {},
+        { include_blank: "Select Importer" },
         {
           class: "tom-select w-full border border-gray-300 rounded-lg p-2",
           data: { placeholder: "Select Importer" }
@@ -96,7 +96,7 @@
           Currency.all,
           :id,
           :name,
-          {},
+          { include_blank: "Select Currency" },
           {
             class: "tom-select w-full border border-gray-300 rounded-lg p-2",
             data: { placeholder: "Select Currency" }
@@ -301,9 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initInputForm();
   initAllTomSelects();
 });
-// ===============================
-// INIT INPUT FORM (ADD / REMOVE ROW)
-// ===============================
 function initInputForm() {
   const itemContainer = document.getElementById("input-items");
   const detailContainer = document.getElementById("input-details");
@@ -320,7 +317,6 @@ function initInputForm() {
   let itemIndex = itemContainer.querySelectorAll(".input-item-row").length;
   let detailIndex = detailContainer.querySelectorAll(".input-detail-row").length;
 
-  // ✅ ADD INPUT ITEM
   addItemButton?.addEventListener("click", function () {
     if (!itemTemplate) return;
 
@@ -329,13 +325,11 @@ function initInputForm() {
 
     const newRow = itemContainer.lastElementChild;
 
-    // 🔥 APPLY SEARCH DROPDOWN
     initAllTomSelects(newRow);
 
     itemIndex++;
   });
 
-  // ✅ ADD INPUT DETAIL
   addDetailButton?.addEventListener("click", function () {
     if (!detailTemplate) return;
 
@@ -344,20 +338,17 @@ function initInputForm() {
 
     const newRow = detailContainer.lastElementChild;
 
-    // 🔥 APPLY SEARCH DROPDOWN
     initAllTomSelects(newRow);
 
     detailIndex++;
   });
 
-  // ✅ REMOVE ITEM
   itemContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-item")) {
       e.target.closest(".input-item-row")?.remove();
     }
   });
 
-  // ✅ REMOVE DETAIL
   detailContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-detail")) {
       e.target.closest(".input-detail-row")?.remove();
@@ -366,9 +357,6 @@ function initInputForm() {
 }
 
 
-// ===============================
-// TOM SELECT INIT
-// ===============================
 function initTomSelect(element) {
   if (!element || element.tomselect) return;
 
@@ -386,18 +374,33 @@ function initTomSelect(element) {
       direction: "asc"
     },
 
-    onDropdownOpen: function () {
+    onInitialize: function () {
       if (this.getValue()) {
-        this.clear(true);
+        this.control_input.placeholder = "";
+      }
+    },
+
+    onChange: function (value) {
+      if (value) {
+        this.control_input.placeholder = "";
+      } else {
+        this.control_input.placeholder =
+          element.dataset.placeholder || "Select Option";
+      }
+    },
+
+    onDropdownOpen: function () {
+      this.control_input.placeholder = "";
+    },
+
+    onBlur: function () {
+      if (!this.getValue()) {
+        this.control_input.placeholder =
+          element.dataset.placeholder || "Select Option";
       }
     }
-  }).clear();
+  });
 }
-
-
-// ===============================
-// INIT ALL SELECTS
-// ===============================
 function initAllTomSelects(scope = document) {
   scope.querySelectorAll("select[data-placeholder]").forEach((select) => {
     if (!select.tomselect) {
@@ -407,9 +410,6 @@ function initAllTomSelects(scope = document) {
 }
 
 
-// ===============================
-// TURBO + PAGE LOAD SUPPORT
-// ===============================
 document.addEventListener("turbo:load", () => {
   initInputForm();
   initAllTomSelects();
@@ -425,9 +425,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// ===============================
-// MARKS NO AJAX (TURBO FIX)
-// ===============================
 function submitNewMarksNo(button) {
   const wrapper = button.closest("[id^='marks_no_section']");
   const input = wrapper.querySelector("#new_marks_no_name");
@@ -453,7 +450,6 @@ function submitNewMarksNo(button) {
     .then(html => {
       wrapper.innerHTML = html;
 
-      // 🔥 RE-INIT DROPDOWN AFTER UPDATE
       initAllTomSelects(wrapper);
     })
     .catch(() => {
