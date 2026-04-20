@@ -3,9 +3,9 @@
     <%= f.hidden_field :id %>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-300 rounded-t-xl p-4 bg-gray-50 shadow-sm relative">
-      
+
       <% if local_assigns[:from_edit] %>
-        <span class="absolute -top-3 left-13 bg-green-100  text-green-700 px-2 py-1 text-xs rounded-full shadow">
+        <span class="absolute -top-3 left-13 bg-green-100 text-green-700 px-2 py-1 text-xs rounded-full shadow">
           New
         </span>
       <% end %>
@@ -20,26 +20,32 @@
           placeholder="Search Order Number..."
           autocomplete="off"
           data-role="searchable-input"
-        class=" required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
+          class="required-field w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
 
         <%= f.hidden_field :order_entry_id, class: "order-entry-id-field" %>
 
-        <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md"
-            data-role="searchable-dropdown">
-          <% OrderEntry.select(:id, :order_no, :sku_number).distinct.each do |entry| %>
-            <li class="cursor-pointer px-3 py-2 hover:bg-blue-100"
-                data-id="<%= entry.id %>"
-                data-value="<%= entry.order_no %>">
+        <ul
+          class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md"
+          data-role="searchable-dropdown">
+
+          <% @order_entries.each do |entry| %>
+            <li
+              class="cursor-pointer px-3 py-2 hover:bg-blue-100"
+              data-id="<%= entry.id %>"
+              data-value="<%= entry.order_no %>">
+
               <%= "#{entry.order_no} | #{entry.sku_number}" %>
-            </li> 
+            </li>
           <% end %>
+
         </ul>
       </div>
 
       <%= f.hidden_field :quantity, value: "1" %>
       <%= f.hidden_field :_destroy %>
 
-      <button type="button"
+      <button
+        type="button"
         class="remove-item absolute -top-3 -right-3 bg-white border border-red-300 text-red-600 px-2 py-1 text-xs rounded-full shadow hover:bg-red-100 hover:text-red-700 transition cursor-pointer">
         ✕
       </button>

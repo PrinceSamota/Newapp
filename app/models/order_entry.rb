@@ -27,13 +27,18 @@ class OrderEntry < ApplicationRecord
       "Ship To", "No Of Box", "Current Stock", "Qty", "Item Type", "Category", "Profile",
       "Wattage", "Voltage", "Length", "CCT", "Cover", "Fuse", "Loop", "Extra",
       "Start Serial", "End Serial", "MFG Date", "Driver Rev No", "Remark",
-      "Status", "Order Date"
+      "Status", "Order Date", "Tracking No", "Invoice No", "Dispatch Date", "Delivery date", "Mode Of Shipment", "Courier Company", "Progress"
     ]
   
     CSV.generate(headers: true) do |csv|
       csv << attributes
   
       records.each do |order|
+        item_master = ItemMaster.find_by(sku_id: order.sku_number)
+
+        dispatch_item = DispatchItem.find_by(order_no: order.order_no)
+  
+        dispatch = dispatch_item&.dispatch
         csv << [
           order.order_no,
           order.article_no,
@@ -62,7 +67,14 @@ class OrderEntry < ApplicationRecord
           order.driver_revision&.name,
           order.remark,
           order.status,
-          order.created_at.strftime("%d-%b-%Y")
+          order.created_at.strftime("%d-%b-%Y"),
+          dispatch&.track_no,
+          dispatch&.invoice_no,
+          dispatch&.dispatch_date&.strftime("%d-%b-%Y"),
+          dispatch&.delivery_date&.strftime("%d-%b-%Y"),
+          dispatch&.mode_of_shipment,
+          dispatch&.courier_company,
+          dispatch&.progress
         ]
       end
     end

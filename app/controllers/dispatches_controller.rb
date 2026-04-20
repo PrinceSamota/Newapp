@@ -30,6 +30,10 @@ class DispatchesController < ApplicationController
   def new
     @dispatch = Dispatch.new
     @dispatch.dispatch_items.build
+
+    used_order_entry_ids = DispatchItem.where.not(order_entry_id: nil).pluck(:order_entry_id)
+
+    @order_entries = OrderEntry.where.not(id: used_order_entry_ids)
    
   end
 
@@ -52,9 +56,20 @@ class DispatchesController < ApplicationController
 
   def edit
     @dispatch = Dispatch.find(params[:id])
+  
     if @dispatch.dispatch_items.empty?
       @dispatch.dispatch_items.build
     end
+  
+    current_order_entry_ids = @dispatch.dispatch_items.pluck(:order_entry_id).compact
+  
+    used_order_entry_ids = DispatchItem
+                             .where.not(order_entry_id: nil)
+                             .where.not(order_entry_id: current_order_entry_ids)
+                             .pluck(:order_entry_id)
+  
+    @order_entries = OrderEntry.where.not(id: used_order_entry_ids)
+  
     @input = Input.find_by(dispatch_id: @dispatch.id)
   end
   
@@ -124,7 +139,22 @@ class DispatchesController < ApplicationController
   def new_item_row
     @dispatch_item = DispatchItem.new
     @index = params[:index].to_i
-    render partial: 'dispatches/dispatch_item_fields', locals: { dispatch_item: @dispatch_item, index: @index, from_edit: false }
+  
+    used_order_entry_ids = DispatchItem
+                             .where.not(order_entry_id: nil)
+                             .pluck(:order_entry_id)
+  
+    @order_entries = OrderEntry
+                       .where.not(id: used_order_entry_ids)
+                       .select(:id, :order_no, :sku_number)
+                       .distinct
+  
+    render partial: "dispatches/dispatch_item_fields",
+           locals: {
+             dispatch_item: @dispatch_item,
+             index: @index,
+             from_edit: false
+           }
   end
 
   def new_item_row_edit

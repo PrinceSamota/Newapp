@@ -18,7 +18,27 @@
 
       <ul class="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto hidden text-sm shadow-md"
           data-role="searchable-dropdown">
-        <% OrderEntry.select(:id, :order_no, :sku_number).distinct.each do |entry| %>
+          <%
+          used_order_entry_ids = DispatchItem
+                                  .where.not(order_entry_id: nil)
+                                  .pluck(:order_entry_id)
+        
+          current_order_entry_id = f.object.order_entry_id
+        
+          available_orders = if current_order_entry_id.present?
+                               OrderEntry
+                                 .where.not(id: used_order_entry_ids - [current_order_entry_id])
+                                 .select(:id, :order_no, :sku_number)
+                                 .distinct
+                             else
+                               OrderEntry
+                                 .where.not(id: used_order_entry_ids)
+                                 .select(:id, :order_no, :sku_number)
+                                 .distinct
+                             end
+        %>
+        
+        <% available_orders.each do |entry| %>
           <li class="cursor-pointer px-3 py-2 hover:bg-blue-100"
               data-id="<%= entry.id %>"
               data-value="<%= entry.order_no %>">

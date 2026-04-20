@@ -26,7 +26,7 @@
     .sticker {
       border: 1px solid #000;
       width: <%= type_d ? '180mm' : '280mm' %>;
-      height: <%= type_d ? '13mm' : '25mm' %>; 
+      height: <%= type_d ? '13mm' : '22mm' %>; 
       padding: 1px; 
       box-sizing: border-box;
       position: relative;
@@ -37,26 +37,36 @@
          }
 
     table {
-      max-width:  <%= type_d ? '130mm' : '315mm' %>;
-      height: <%= type_d ? '11mm' : '23mm' %>;
+      min-width:  <%= type_d ? '100mm' : '150mm' %>;
+      max-height: <%= type_d ? '8mm' : '16mm' %>;
+      min-height: <%= type_d ? '8mm' : '16mm' %>;
       border-collapse: collapse;
       table-layout: fixed;
     }
 
-    th, td {
-      border: 1.5px solid <%= @form_data[:frame_colour].to_s.split.first %>;
-      padding: 0;
-      font-size: <%= type_d ? '2.5px' : '9px' %>;
+    th {
+      border: 2px solid <%= @form_data[:frame_colour].to_s.split.first %>;
+      padding: 1mm;
+      font-size: <%= type_d ? '2.5px' : '6px' %>;
+      text-align: center;
+      vertical-align: middle;
+      word-wrap: break-word;
+    }
+      
+    td {
+      border: 2px solid <%= @form_data[:frame_colour].to_s.split.first %>;
+      padding: 1mm;
+      font-size: <%= type_d ? '2.5px' : '6px' %>;
       text-align: center;
       vertical-align: middle;
       word-wrap: break-word;
     }
 
     td {
-      height: <%= type_d ? '3mm' : '6mm' %>;
+      height: <%= type_d ? '2mm' : '6mm' %>;
     }
     th {
-      height: <%= type_d ? '6mm' : '12mm' %>;
+      height: <%= type_d ? '2mm' : '6mm' %>;
     }
 
     th {
@@ -75,7 +85,7 @@
 
     /* RIGHT LOGO AREA */
     .right-logo {
-      width: <%= type_d ? '25mm' : '40mm' %>;
+      width: <%= type_d ? '35mm' : '70mm' %>;
       text-align: center;
       vertical-align: middle;
       border: none;
@@ -113,7 +123,7 @@
 
     .footer {
       position: absolute;
-      bottom: -10mm;    
+      bottom: -15mm;    
       left: 50%;
       transform: translateX(-50%);
       text-align: center;
@@ -182,9 +192,9 @@
               </div>
             </div>
               <div>
-                <table style="width: 100%; height: 50%; border-collapse: collapse; table-layout: fixed;">
+                <table style="border-collapse: collapse; table-layout: auto;">
                     <tr>
-                    <th>Type <br><%= params[:language] == "en" ? "" : t("pdf.type") %></th>
+                    <th style="white-space: nowrap; max-width: 10%;">Type <br><%= params[:language] == "en" ? "" : t("pdf.type") %></th>
                     <th>Length <br><%= params[:language] == "en" ? "" : t("pdf.length") %></th>
                     <th>Power <br><%= params[:language] == "en" ? "" : t("pdf.power") %></th>
                     <th>Voltage <br><%= params[:language] == "en" ? "" : t("pdf.voltage") %></th>
@@ -192,14 +202,13 @@
                     <th style="width:20%;">Operating temperature <br> <%= params[:language] == "en" ? "" : t("pdf.operating_temperature") %></th>
                     <th>Light color <br><%= params[:language] == "en" ? "" : t("pdf.light_color") %></th>
                     <th>Article No. <br><%= params[:language] == "en" ? "" : t("pdf.article_no") %></th>
-                    <th>Serial No. <br><%= params[:language] == "en" ? "" : t("pdf.serial_no") %></th>
                     </tr>
                     <% order = OrderEntry.find_by(id: @form_data[:order_id]) %>
                     <% sku_id = order&.sku_number %>
                     <% item_master = ItemMaster.find_by(sku_id: sku_id) %>
                     <tr>
-                    <td style="font-weight: bold;"><%= @form_data[:type] %><br>
-                    <%= item_master&.shortcode %>
+                    <td style="font-weight: bold; white-space: nowrap;"><%= @form_data[:type] %><br>
+                    <%= @form_data[:profile] %>/<%= @form_data[:length].to_s.scan(/\d+/).first %>/<%= @form_data[:cct].to_s.scan(/\d+/).first %>/<%= @form_data[:cover] %>
                     </td>
                     <td style="font-weight: bold;"><%= @form_data[:length] %></td>
                     <td style="font-weight: bold;"><%= @form_data[:wattage] %></td>
@@ -216,40 +225,60 @@
                     <td style="font-weight: bold; width: 15%;">-40°C to +85°C (OT6)</td>
                     <td style="font-weight: bold;"><%= @form_data[:cct] %></td>
                     <td><%= @form_data[:custom_article_no].presence || @form_data[:article_no] %></td>
-                    <td></td>
                   </tr>
                 </table>
               </div>
 
 
-              <div class="right-logo" rowspan="2" style="margin-left: 3mm;">
+              <div class="right-logo" rowspan="3" style="margin-left: 3mm;">
               <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
             
-                <!-- Right Logo Block 1 (QR Code Section) -->
+
+              <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
+              <% if @distributor&.qr_code&.attached? %>
+                    <!-- Top Text -->
+                    <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-top: <%= type_d ? '1mm' : '0mm' %>; margin-bottom: 1mm;">
+                    <%= params[:language] == "en" ? "" : t("pdf.serial_no") %> / Serial No.
+                    </div>
+              
+                    <!-- QR Code Logo -->
+                     <%= image_tag @distributor.qr_code, alt: "QR Code", style: "width: 12mm; height: 12mm; margin-bottom: 1mm;" %>
+              
+                    <!-- Bottom text -->
+                    <div style="font-size:4px; padding-top: 0;">
+                      10099686
+                    </div>
+                    <div style="font-size:4px; padding-top:0mm;">
+                      04/2026
+                    </div>
+              <% end %>
+              </div>
+                
+
                 <div style="text-align:center; display:flex; flex-direction:column; align-items:center;">
                 <% if @distributor&.qr_code&.attached? %>
                       <!-- Top Text -->
-                      <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-top: <%= type_d ? '1mm' : '1mm' %>; padding-bottom: 0;">
-                        Manual
+                      <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-bottom:2mm;">
+                        Anieitung / Manual
                       </div>
                 
                       <!-- QR Code Logo -->
                         <%= image_tag @distributor.qr_code, alt: "QR Code" %>
                 
                       <!-- Bottom text -->
-                      <div style="font-size:4px; padding-top:1mm;">
+                      <div style="font-size:4px; margin-bottom:1mm; min-height:1mm;">
                         
                       </div>
                 <% end %>
                 </div>
             
-                <!-- Right Logo Block 2 (Distribution Logo Section) -->
+                
                 <div style="text-align:center; display:flex; flex-direction:column; align-items:center; margin-left: 3mm;">
             
                   <!-- Top Text -->
                   <% if @distributor&.distribution_logo&.attached? %>
                     <div style="font-size:<%= type_d ? '4px' : '6px' %>; font-weight:bold; margin-bottom:1mm;">
-                      Distribution
+                     Vertrieb / Distribution
                     </div>
               
                     <!-- Distribution Logo -->
@@ -268,35 +297,5 @@
 Quantity: <%= @form_data[:sticker_quantity] %> pcs
 </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 </body>
 </html>
