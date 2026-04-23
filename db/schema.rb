@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_10_073923) do
+ActiveRecord::Schema[7.2].define(version: 2026_04_22_181952) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -143,6 +143,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_10_073923) do
     t.string "payment_terms"
     t.string "signatory"
     t.string "distributor_url"
+    t.string "brand_name"
   end
 
   create_table "complete_description_of_goods", force: :cascade do |t|
@@ -418,7 +419,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_10_073923) do
     t.string "client_id"
     t.date "target_date"
     t.integer "location_id"
-    t.decimal "qty"
+    t.integer "qty"
     t.string "sku_number"
     t.string "fuse_type"
     t.string "loop"

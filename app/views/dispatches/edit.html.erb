@@ -188,88 +188,88 @@ document.addEventListener("turbo:load", function () {
     });
   }
 
-function checkDispatchValidation() {
-  const submitBtn = document.querySelector("input[type='submit']");
-  const progressSelect = document.querySelector("select[name='dispatch[progress]']");
-  const warningMessage = document.getElementById("dispatch-warning-message");
-
-  if (!submitBtn || !progressSelect || !warningMessage) return;
-
-  const isDispatching = progressSelect.value?.trim().toLowerCase() === "dispatched";
-
-  const orderItems = Array.from(document.querySelectorAll(".dispatch-item"));
-  let hasMissingMfgDate = false;
-  let hasMissingVarNo = false;
-  let hasMissingReceivingDate = false;
-
-  orderItems.forEach(item => {
-    const mfgEl = item.querySelector("[data-field='mfg-date']");
-    const varEl = item.querySelector("[data-field='var-no']");
-    const recvEl = item.querySelector("[data-field='order-receiving-date']");
-
-    const mfgText = mfgEl ? mfgEl.textContent.trim() : "";
-    const varText = varEl ? varEl.textContent.trim() : "";
-    const recvText = recvEl ? recvEl.textContent.trim() : "";
-
-    const mfgMissing = !mfgText || mfgText === "-" || mfgText.toLowerCase() === "null";
-    const varMissing = !varText || varText === "-" || varText.toLowerCase() === "null";
-    const recvMissing = !recvText || recvText === "-" || recvText.toLowerCase() === "null";
-
-    if (mfgMissing) {
-      hasMissingMfgDate = true;
-      mfgEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
+  function checkDispatchValidation() {
+    const submitBtn = document.querySelector("input[type='submit']");
+    const progressSelect = document.querySelector("select[name='dispatch[progress]']");
+    const warningMessage = document.getElementById("dispatch-warning-message");
+  
+    if (!submitBtn || !progressSelect || !warningMessage) return;
+  
+    const isDispatching = progressSelect.value?.trim().toLowerCase() === "dispatched";
+  
+    const orderItems = Array.from(document.querySelectorAll(".dispatch-item"));
+    let hasMissingMfgDate = false;
+    let hasMissingVarNo = false;
+    let hasMissingReceivingDate = false;
+    let hasInsufficientStock = false;
+  
+    orderItems.forEach(item => {
+      const mfgEl = item.querySelector("[data-field='mfg-date']");
+      const varEl = item.querySelector("[data-field='var-no']");
+      const recvEl = item.querySelector("[data-field='order-receiving-date']");
+      const stockErrorEl = item.querySelector("[data-insufficient-stock='true']");
+  
+      const mfgText = mfgEl ? mfgEl.textContent.trim() : "";
+      const varText = varEl ? varEl.textContent.trim() : "";
+      const recvText = recvEl ? recvEl.textContent.trim() : "";
+  
+      const mfgMissing = !mfgText || mfgText === "-" || mfgText.toLowerCase() === "null";
+      const varMissing = !varText || varText === "-" || varText.toLowerCase() === "null";
+      const recvMissing = !recvText || recvText === "-" || recvText.toLowerCase() === "null";
+  
+      if (mfgMissing) {
+        hasMissingMfgDate = true;
+        mfgEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
+      } else {
+        mfgEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
+      }
+  
+      if (varMissing) {
+        hasMissingVarNo = true;
+        varEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
+      } else {
+        varEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
+      }
+  
+      if (recvMissing) {
+        hasMissingReceivingDate = true;
+        recvEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
+      } else {
+        recvEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
+      }
+  
+      if (stockErrorEl) {
+        hasInsufficientStock = true;
+      }
+    });
+  
+    const shouldDisable = isDispatching && (
+      hasMissingMfgDate ||
+      hasMissingVarNo ||
+      hasMissingReceivingDate ||
+      hasInsufficientStock
+    );
+  
+    let messages = [];
+  
+    if (hasMissingMfgDate) messages.push("MFG Date");
+    if (hasMissingVarNo) messages.push("VAR No");
+    if (hasMissingReceivingDate) messages.push("Order Receiving Date");
+    if (hasInsufficientStock) messages.push("Sufficient Stock");
+  
+    if (shouldDisable) {
+      submitBtn.disabled = true;
+      submitBtn.classList.add("opacity-50", "cursor-not-allowed");
+      warningMessage.classList.remove("hidden");
+      warningMessage.textContent =
+        `⚠️ Please ensure ${messages.join(", ")} for all Dispatch items before dispatch.`;
     } else {
-      mfgEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
-    }
-
-    if (varMissing) {
-      hasMissingVarNo = true;
-      varEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
-    } else {
-      varEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
-    }
-
-    if (recvMissing) {
-      hasMissingReceivingDate = true;
-      recvEl?.classList.add("border", "border-red-500", "rounded-md", "px-1");
-    } else {
-      recvEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
-    }
-  });
-
-  const shouldDisable = isDispatching && (hasMissingMfgDate || hasMissingVarNo || hasMissingReceivingDate);
-
-  let message = "";
-  if (shouldDisable) {
-    if (hasMissingMfgDate && hasMissingVarNo && hasMissingReceivingDate) {
-      message = "⚠️ Please fill MFG Date, VAR No, and Order Receiving Date for all Dispatch items before dispatch.";
-    } else if (hasMissingMfgDate && hasMissingVarNo) {
-      message = "⚠️ Please fill MFG Date and VAR No for all Dispatch items before dispatch.";
-    } else if (hasMissingMfgDate && hasMissingReceivingDate) {
-      message = "⚠️ Please fill MFG Date and Order Receiving Date for all Dispatch items before dispatch.";
-    } else if (hasMissingVarNo && hasMissingReceivingDate) {
-      message = "⚠️ Please fill VAR No and Order Receiving Date for all Dispatch items before dispatch.";
-    } else if (hasMissingMfgDate) {
-      message = "⚠️ Please fill MFG Date for all Dispatch items before dispatch.";
-    } else if (hasMissingVarNo) {
-      message = "⚠️ Please fill VAR No for all Dispatch items before dispatch.";
-    } else if (hasMissingReceivingDate) {
-      message = "⚠️ Please fill Order Receiving Date for all Dispatch items before dispatch.";
+      submitBtn.disabled = false;
+      submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
+      warningMessage.classList.add("hidden");
+      warningMessage.textContent = "";
     }
   }
-
-  if (shouldDisable) {
-    submitBtn.disabled = true;
-    submitBtn.classList.add("opacity-50", "cursor-not-allowed");
-    warningMessage.classList.remove("hidden");
-    warningMessage.textContent = message;
-  } else {
-    submitBtn.disabled = false;
-    submitBtn.classList.remove("opacity-50", "cursor-not-allowed");
-    warningMessage.classList.add("hidden");
-    warningMessage.textContent = "";
-  }
-}
 
   
 
