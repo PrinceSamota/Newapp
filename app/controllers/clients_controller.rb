@@ -47,7 +47,7 @@ class ClientsController < ApplicationController
       :rex_no, :rex_date, :pan_no, :company_url, :distributor_url,
       :port_of_discharge, :port_of_loading, :shipping_terms, :remark,
       :advance_authorization_lic_no_and_date, :advance_authorization_file_no,
-      :logo, :qr_code, :emc, :distribution_logo, :manufacturer_logo, :signature, :signatory, :payment_terms,
+      :logo, :qr_code, :emc, :distribution_logo, :manufacturer_logo, :signature, :signatory, :payment_terms, :brand_name,
       client_types: []
     )
   end
