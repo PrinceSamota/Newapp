@@ -25,7 +25,7 @@
     
     .sticker {
       border: 1px solid #000;
-      width: <%= type_d ? '199mm' : '299mm' %>;
+      width: <%= type_d ? '210mm' : '350mm' %>;
       height: <%= type_d ? '17mm' : '32.6mm' %>; 
       padding: 1px; 
       box-sizing: border-box;
@@ -37,17 +37,18 @@
          }
 
     table {
-      min-width:  <%= type_d ? '100mm' : '150mm' %>;
-      max-height: <%= type_d ? '8mm' : '16mm' %>;
-      min-height: <%= type_d ? '8mm' : '16mm' %>;
+      min-width:  <%= type_d ? '110mm' : '180mm' %>;
+      max-height: <%= type_d ? '14mm' : '26mm' %>;
+      min-height: <%= type_d ? '14mm' : '26mm' %>;
       border-collapse: collapse;
       table-layout: fixed;
+      margin-left:1mm;
     }
 
     th {
       border: 2px solid <%= @form_data[:frame_colour].to_s.split.first %>;
       padding: 1mm;
-      font-size: <%= type_d ? '2.5px' : '6px' %>;
+      font-size: <%= type_d ? '5px' : '9px' %>;
       text-align: center;
       vertical-align: middle;
       word-wrap: break-word;
@@ -56,7 +57,7 @@
     td {
       border: 2px solid <%= @form_data[:frame_colour].to_s.split.first %>;
       padding: 1mm;
-      font-size: <%= type_d ? '2.5px' : '6px' %>;
+      font-size: <%= type_d ? '5px' : '9px' %>;
       text-align: center;
       vertical-align: middle;
       word-wrap: break-word;
@@ -76,21 +77,24 @@
 
     /* LEFT LOGO AREA */
     .left-logo {
-      width: <%= type_d ? '35mm' : '60mm' %>;
+      width: <%= type_d ? '35mm' : '75mm' %>;
+      text-align: center;
+      vertical-align: middle;
+      border: none;
+      position: relative;
+      margin-left:2mm;
+    }
+
+    /* RIGHT LOGO AREA */
+    .right-logo {
+      width: <%= type_d ? '55mm' : '95mm' %>;
       text-align: center;
       vertical-align: middle;
       border: none;
       position: relative;
     }
 
-    /* RIGHT LOGO AREA */
-    .right-logo {
-      width: <%= type_d ? '35mm' : '75mm' %>;
-      text-align: center;
-      vertical-align: middle;
-      border: none;
-      position: relative;
-    }
+
 
     /* LOGO & SIGNATURE IMAGE STYLES */
     .logo-container {
@@ -128,7 +132,7 @@
       transform: translateX(-50%);
       text-align: center;
       font-weight: bold;
-      font-size: <%= type_d ? '8px' : '25px' %>;
+      font-size: <%= type_d ? '13px' : '25px' %>;
     }
 
   </style>
@@ -143,105 +147,108 @@
               <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
             
                 <!-- Logo Block 1 -->
-                <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>;">
-
-                  <% if @client&.logo&.attached? %>
-
-                    <!-- Top text (fixed position) -->
-                    <div style="
-                      font-size:<%= type_d ? '4px' : '6px' %>;
-                      font-weight:bold;
-                      height:<%= type_d ? '4mm' : '6mm' %>;
-                      line-height:<%= type_d ? '4mm' : '6mm' %>;
-                      margin:0;
-                      padding:2mm;
-                    ">
-                      Hersteller / Manufacturers
-                    </div>
-
-                    <!-- Logo -->
-                    <div style="
-                      height:<%= type_d ? '6mm' : '12mm' %>;
-                      display:flex;
-                      align-items:center;
-                      justify-content:center;
-                      margin-top:2mm;
-                    ">
-                      <%= image_tag @client.logo, alt: "Company Logo", style: "max-height:100%; width:auto;" %>
-                    </div>
-
-                    <!-- Bottom text -->
-                    <% if @client&.company_url.present? %>
-                      <div style="
-                        font-size:<%= type_d ? '4px' : '6px' %>;
-                        font-weight:bold;
-                        height:<%= type_d ? '4mm' : '6mm' %>;
-                        line-height:<%= type_d ? '4mm' : '6mm' %>;
-                        margin:0;
-                        padding:0;
-                      ">
-                        <%= @client.company_url %>
-                      </div>
-                    <% end %>
-
-                  <% end %>
-
-                </div>
-            
-                <!-- Logo Block 2 -->
-                <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>;">
-                  
-                  <!-- Top text -->
+                <div style="
+                text-align:center;
+                display:flex;
+                flex-direction:column;
+                align-items:center;
+                justify-content:flex-start;
+                min-height:<%= type_d ? '18mm' : '32.6mm' %>;
+                min-width:<%= type_d ? '18mm' : '26mm' %>;
+                padding: 0 2mm;
+              ">
+          
+               <% if @client&.logo&.attached? %>
+          
                   <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    height:<%= type_d ? '4mm' : '6mm' %>;
-                    line-height:<%= type_d ? '4mm' : '6mm' %>;
-                    margin:0;
-                    padding:2mm;
-                  ">
-                    Coach LED Tube
-                  </div>
+                    font-size:<%= type_d ? '5px' : '9px' %>;
+                    font-weight: bold;
+                    min-height:<%= type_d ? '4mm' : '8mm' %>;
+                    line-height:<%= type_d ? '4mm' : '7mm' %>;
 
-                  <!-- Logo -->
+                    white-space: nowrap;
+                    overflow: visible;
+                    width: auto;
+                    min-width: max-content;
+                  ">
+                    Hersteller / Manufacturers
+                  </div>
+          
+                  <!-- Image with proper gap -->
                   <div style="
                     height:<%= type_d ? '6mm' : '12mm' %>;
                     display:flex;
                     align-items:center;
                     justify-content:center;
                     margin-top:2mm;
+                    margin-bottom:3mm;
                   ">
-                    <%= wicked_pdf_image_tag "sticker_data.png",
-                        style: "max-height:100%; width:auto;" %>
+                    <%= image_tag @client.logo,
+                        style: "max-height: #{type_d ? '10mm' : '16mm'}; max-width: #{type_d ? '16mm' : '28mm'}; width: auto; height: auto; object-fit: contain;" %>
                   </div>
-
-                  <!-- Bottom text -->
+          
                   <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
+                    font-size:<%= type_d ? '5px' : '8px' %>;
                     font-weight:bold;
-                    height:<%= type_d ? '4mm' : '6mm' %>;
-                    line-height:<%= type_d ? '4mm' : '6mm' %>;
-                    margin:0;
-                    padding:0;
+                    margin-top:<%= type_d ? '0' : '2mm' %>;
                   ">
-                    Made in India
+                    <%= @client.company_url %>
                   </div>
+          
+                <% end %>
+              </div>
+                
+              <div style="
+              text-align:center;
+              display:flex;
+              flex-direction:column;
+              align-items:center;
+              justify-content:flex-start;
+              min-height:<%= type_d ? '18mm' : '32.6mm' %>;
+              min-width:<%= type_d ? '18mm' : '24mm' %>;
+              padding: 0 2mm;
+            ">
+        
+             <% if @client&.logo&.attached? %>
+        
+                <div style="
+                  font-size:<%= type_d ? '5px' : '9px' %>;
+                  font-weight: bold;
+                  min-height:<%= type_d ? '4mm' : '8mm' %>;
+                  line-height:<%= type_d ? '4mm' : '7mm' %>;
 
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    margin-top:1mm;
-                  ">
-                    <% begin %>
-                      <% if @form_data[:sticker_date].present? %>
-                        <%#= Date.parse(@form_data[:sticker_date]).strftime('%m/%Y') %>
-                      <% end %>
-                    <% rescue %>
-                    <% end %>
-                  </div>
-
+                  white-space: nowrap;
+                  overflow: visible;
+                  width: auto;
+                  min-width: max-content;
+                ">
+                  Coach LED Tube
                 </div>
-            
+        
+                <!-- Image with proper gap -->
+                <div style="
+                  height:<%= type_d ? '6mm' : '12mm' %>;
+                  display:flex;
+                  align-items:center;
+                  justify-content:center;
+                  margin-top:2mm;
+                  margin-bottom:3mm;
+                ">
+                <%= wicked_pdf_image_tag "sticker_data.png",
+                      style: "max-height: #{type_d ? '10mm' : '18mm'}; max-width: #{type_d ? '16mm' : '32mm'}; width: auto; height: auto; object-fit: contain;" %>
+                </div>
+        
+                <div style="
+                  font-size:<%= type_d ? '5px' : '8px' %>;
+                  font-weight:bold;
+                  margin-top:<%= type_d ? '0' : '2mm' %>;
+                ">
+                Made in India
+                </div>
+        
+              <% end %>
+            </div>
+                
               </div>
             </div>
               <div>
@@ -260,7 +267,7 @@
                     <% sku_id = order&.sku_number %>
                     <% item_master = ItemMaster.find_by(sku_id: sku_id) %>
                     <tr>
-                    <td style="font-weight: bold; white-space: nowrap;"><% if @client&.brand_name.present? %><%= @client&.brand_name %><% end %><%= @form_data[:type] %><br>
+                    <td style="font-weight: bold; white-space: nowrap;"><% if @client&.brand_name.present? %><%= @client&.brand_name %><% end %> <%= @form_data[:type] %><br>
                     <%= @form_data[:profile] %>/<%= @form_data[:length].to_s.scan(/\d+/).first %>/<%= @form_data[:cct].to_s.scan(/\d+/).first %>/<%= @form_data[:cover] %>
                     </td>
                     <td style="font-weight: bold;"><%= @form_data[:length] %></td>
@@ -283,155 +290,163 @@
               </div>
 
 
-              <div class="right-logo" rowspan="3" style="margin-left: 3mm;">
-              <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
-            
+              <div class="right-logo" rowspan="3" style="margin-left: <%= type_d ? '1mm' : '0mm' %>;">
+  <div class="logo-container" style="display:flex; gap:%= type_d ? '1mm' : '3mm' %>; justify-content:center; align-items:center; ">
 
-              <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>;">
-  
-                <% if @distributor&.qr_code&.attached? %>
+    <!-- Logo Block 1 -->
+    <div style="
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      min-height:<%= type_d ? '18mm' : '32.6mm' %>;
+      min-width:<%= type_d ? '18mm' : '30mm' %>;
+      padding: 0 2mm;
+    ">
 
-                  <!-- Top Text -->
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    height:<%= type_d ? '4mm' : '6mm' %>;
-                    line-height:<%= type_d ? '4mm' : '6mm' %>;
-                    margin:0;
-                    padding:2mm;
+      <% if @distributor&.qr_code&.attached? %>
+
+        <div style="
+                    font-size:<%= type_d ? '5px' : '8px' %>;
+                    font-weight: bold;
+                    min-height:<%= type_d ? '4mm' : '8mm' %>;
+                    line-height:<%= type_d ? '4mm' : '7mm' %>;
+
+                    white-space: nowrap;
+                    overflow: visible;
+                    width: auto;
+                    min-width: max-content;
                   ">
-                    <%= params[:language] == "en" ? "" : t("pdf.serial_no") %> / Serial No.
-                  </div>
+          <%= params[:language] == "en" ? "" : t("pdf.serial_no") %> / Serial No.
+        </div>
 
-                  <!-- QR Code -->
-                  <div style="
-                    height:<%= type_d ? '6mm' : '12mm' %>;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    margin-top:2mm;
+        <!-- Image with proper gap -->
+        <div style="
+          height:<%= type_d ? '6mm' : '12mm' %>;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          margin-top:2mm;
+          margin-bottom:3mm;
+        ">
+          <%#= image_tag @distributor.qr_code,
+              style: "max-height: 18mm; max-width: 35mm; width: auto; height: auto; object-fit: contain;" %>
+        </div>
+
+        <div style="
+          font-size:<%= type_d ? '4px' : '8px' %>;
+          font-weight:bold;
+          margin-top:1mm;
+        ">
+          
+        </div>
+
+        <div style="
+          font-size:<%= type_d ? '4px' : '6px' %>;
+          font-weight:bold;
+          margin-top:1mm;
+        ">
+          
+        </div>
+
+      <% end %>
+    </div>
+
+    <!-- Logo Block 2 -->
+    <div style="
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      min-height:<%= type_d ? '18mm' : '32.6mm' %>;
+      min-width:<%= type_d ? '17mm' : '25mm' %>;
+      padding: 0 2mm;
+      margin-left:<%= type_d ? '0' : '3mm' %>;
+    ">
+
+      <% if @distributor&.qr_code&.attached? %>
+
+        <div style="
+          font-size:<%= type_d ? '5px' : '8px' %>;
+          font-weight:bold;
+          height:<%= type_d ? '4mm' : '8mm' %>;
+          line-height:<%= type_d ? '4mm' : '7mm' %>;
+        ">
+          Anieitung / Manual
+        </div>
+
+        <!-- Image with proper gap -->
+        <div style="
+          height:<%= type_d ? '6mm' : '12mm' %>;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          margin-top:2mm;
+          margin-bottom:3mm;
+        ">
+          <%= image_tag @distributor.qr_code,
+              style: "max-height:#{type_d ? '10mm' : '18mm'}; max-width: #{type_d ? '16mm' : '35mm'} width: auto; height: auto; object-fit: contain;" %>
+        </div>
+
+      <% end %>
+    </div>
+
+    <!-- Logo Block 3 -->
+    <div style="
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:flex-start;
+      min-height:<%= type_d ? '18mm' : '32.6mm' %>;
+      min-width:<%= type_d ? '17mm' : '26mm' %>;
+      padding: 0 2mm;
+    ">
+
+      <% if @distributor&.distribution_logo&.attached? %>
+
+         <div style="
+                    font-size:<%= type_d ? '5px' : '8px' %>;
+                    font-weight: bold;
+                    min-height:<%= type_d ? '4mm' : '8mm' %>;
+                    line-height:<%= type_d ? '4mm' : '7mm' %>;
+
+                    white-space: nowrap;
+                    overflow: visible;
+                    width: auto;
+                    min-width: max-content;
                   ">
-                    <%= image_tag @distributor.qr_code,
-                        alt: "QR Code",
-                        style: "max-height:100%; width:auto;" %>
-                  </div>
+          Vertrieb / Distribution
+        </div>
 
-                  <!-- Bottom Text -->
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    margin-top:1mm;
-                    line-height:1.2;
-                  ">
-                    10099686
-                  </div>
+        <!-- Image with proper gap -->
+        <div style="
+          height:<%= type_d ? '6mm' : '12mm' %>;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          margin-top:2mm;
+          margin-bottom:3mm;
+        ">
+          <%= image_tag @distributor.distribution_logo,
+              style: "max-height: #{type_d ? '10mm' : '18mm'}; max-width: #{type_d ? '16mm' : '35mm'}; width: auto; height: auto; object-fit: contain;" %>
+        </div>
 
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    margin-top:0mm;
-                    line-height:1.2;
-                  ">
-                    04/2026
-                  </div>
+        <div style="
+          font-size:<%= type_d ? '5px' : '8px' %>;
+          font-weight:bold;
+          margin-top:<%= type_d ? '0' : '2mm' %>;
+        ">
+          <%= @distributor.distributor_url %>
+        </div>
 
-                <% end %>
+      <% end %>
+    </div>
 
-              </div>
+  </div>
 
-              <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>;">
-                
-              <% if @distributor&.qr_code&.attached? %>
-
-                <!-- Top Text -->
-                <div style="
-                  font-size:<%= type_d ? '4px' : '6px' %>;
-                  font-weight:bold;
-                  height:<%= type_d ? '4mm' : '6mm' %>;
-                  line-height:<%= type_d ? '4mm' : '6mm' %>;
-                  margin:0;
-                  padding:2mm;
-                ">
-                  Anieitung / Manual
-                </div>
-
-                <!-- QR Code -->
-                <div style="
-                  height:<%= type_d ? '6mm' : '12mm' %>;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  margin-top:2mm;
-                ">
-                  <%= image_tag @distributor.qr_code,
-                      alt: "QR Code",
-                      style: "max-height:100%; width:auto;" %>
-                </div>
-
-                <!-- Bottom Text -->
-                <div style="
-                  font-size:<%= type_d ? '4px' : '6px' %>;
-                  font-weight:bold;
-                  margin-top:1mm;
-                  min-height:<%= type_d ? '4mm' : '6mm' %>;
-                  line-height:1.2;
-                ">
-                </div>
-
-              <% end %>
-
-              </div>
-                          
-                              
-              <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>; margin-left: 3mm;">
-                
-              <% if @distributor&.distribution_logo&.attached? %>
-
-                <!-- Top Text -->
-                <div style="
-                  font-size:<%= type_d ? '4px' : '6px' %>;
-                  font-weight:bold;
-                  height:<%= type_d ? '4mm' : '6mm' %>;
-                  line-height:<%= type_d ? '4mm' : '6mm' %>;
-                  margin:0;
-                  padding:2mm;
-                  width: auto; 
-                ">
-                  Vertrieb / Distribution
-                </div>
-
-                <!-- Distribution Logo -->
-                <div style="
-                  height:<%= type_d ? '6mm' : '12mm' %>;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  margin-top:2mm;
-                ">
-                  <%= image_tag @distributor.distribution_logo,
-                      alt: "Distribution Logo",
-                      style: "max-height:100%; width:auto;" %>
-                </div>
-
-                <!-- Bottom URL -->
-                <% if @distributor&.distributor_url.present? %>
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    height:<%= type_d ? '4mm' : '6mm' %>;
-                    line-height:<%= type_d ? '4mm' : '6mm' %>;
-                    margin:0;
-                    padding:0;
-                  ">
-                    <%= @distributor.distributor_url %>
-                  </div>
-                <% end %>
-
-              <% end %>
-
-              </div>
-            
-              </div>
             </div>
             <div class="footer">
 Quantity: <%= @form_data[:sticker_quantity] %> pcs

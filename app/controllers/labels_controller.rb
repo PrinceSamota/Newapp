@@ -4,6 +4,7 @@ class LabelsController < ApplicationController
   end
 
   def generate_pdf
+    @sticker= OrderEntry.find(params[:order_id])
     @form_data = params.to_unsafe_h.except(:authenticity_token, :commit, :controller, :action, :format)
     @client = Client.find_by(id: @form_data[:manufacturer_id])
     @distributor = Client.find_by(id: @form_data[:distributor_id]) 
@@ -13,7 +14,7 @@ class LabelsController < ApplicationController
   
     respond_to do |format|
       format.pdf do
-        render pdf: "label_#{@form_data["custom_article_no"] || @form_data["article_number"] || Time.current.to_i}",
+        render pdf: "#{@sticker.order_no}",
                template: "labels/label_pdf",
                orientation: 'Landscape',
                layout: "pdf",
