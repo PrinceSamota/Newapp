@@ -1,441 +1,310 @@
 <!doctype html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <title>LED Product Sticker</title>
-  <style>
-    <% type_d = @form_data[:type].to_s.downcase == 'd' %>
+<meta charset="utf-8" />
+<title>LED Product Sticker</title>
 
-    @page { 
-      size: A3 landscape; 
-      margin:0; 
-     }
+<style>
+<% is_d = @form_data[:type].to_s.downcase == 'd' %>
+<% s = is_d ? 0.66 : 1 %>
+<% lang_en = params[:language].to_s == "en" %>
 
-    body { 
-        font-family: Arial, sans-serif; 
-        font-size: 5px; 
-        margin-top: 0; 
-        padding: 0; 
-        background: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        } 
-    
-    .sticker {
-      border: 1px solid #000;
-      width: <%= type_d ? '199mm' : '299mm' %>;
-      height: <%= type_d ? '17mm' : '32.6mm' %>; 
-      padding: 1px; 
-      box-sizing: border-box;
-      position: relative;
-      margin-top: 241mm;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-         }
+<%
+# =========================
+# MASTER CONTROLS
+# =========================
 
-    table {
-      min-width:  <%= type_d ? '100mm' : '150mm' %>;
-      max-height: <%= type_d ? '8mm' : '16mm' %>;
-      min-height: <%= type_d ? '8mm' : '16mm' %>;
-      border-collapse: collapse;
-      table-layout: fixed;
-    }
+sticker_w = 400 * s
+sticker_h = 32.6 * s
 
-    th {
-      border: 2px solid <%= @form_data[:frame_colour].to_s.split.first %>;
-      padding: 1mm;
-      font-size: <%= type_d ? '2.5px' : '6px' %>;
-      text-align: center;
-      vertical-align: middle;
-      word-wrap: break-word;
-    }
-      
-    td {
-      border: 2px solid <%= @form_data[:frame_colour].to_s.split.first %>;
-      padding: 1mm;
-      font-size: <%= type_d ? '2.5px' : '6px' %>;
-      text-align: center;
-      vertical-align: middle;
-      word-wrap: break-word;
-    }
+left_w    = 60 * s
+right_w   = 75 * s
 
-    td {
-      height: <%= type_d ? '2mm' : '6mm' %>;
-    }
-    th {
-      height: <%= type_d ? '2mm' : '6mm' %>;
-    }
+font_main  = 15.4 * s
+font_small = 10 * s
 
-    th {
-      font-weight: bold;
-      background: #fff;
-    }
+logo_h = 18 * s
 
-    /* LEFT LOGO AREA */
-    .left-logo {
-      width: <%= type_d ? '35mm' : '60mm' %>;
-      text-align: center;
-      vertical-align: middle;
-      border: none;
-      position: relative;
-    }
+# CENTER TABLE (FINAL POLISH)
+center_header_h = 11 * s
+center_row_h    = 17 * s
 
-    /* RIGHT LOGO AREA */
-    .right-logo {
-      width: <%= type_d ? '35mm' : '75mm' %>;
-      text-align: center;
-      vertical-align: middle;
-      border: none;
-      position: relative;
-    }
+# COLUMN WIDTHS
+col_type    = 22
+col_len     = 10
+col_power   = 10
+col_volt    = 10
+col_curr    = 10
+col_temp    = 25
+col_color   = 10
+col_article = 14
 
-    /* LOGO & SIGNATURE IMAGE STYLES */
-    .logo-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+cell_pad = 0.3 * s
+border_w = 0.45 * s
 
-    .logo-container img {
-      margin: 0 2mm;
-      max-width: <%= type_d ? '12mm' : '18mm' %>;
-      max-height: <%= type_d ? '5mm' : '15mm' %>;
-      object-fit: contain;
-    }
+footer_fs = 18 * s
+%>
 
-    /* RIGHT SIDE LOGO BLOCK (EMC + Distribution + QR) */
-    .right-logo-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1mm;
-    }
+@page {
+  size: A3 landscape;
+  margin: 0;
+}
 
-    .right-logo-container img {
-      max-width: <%= type_d ? '10mm' : '10mm' %>;
-      max-height: <%= type_d ? '5mm' : '5mm' %>;
-      object-fit: contain;
-    }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
 
-    .footer {
-      position: absolute;
-      bottom: -15mm;    
-      left: 50%;
-      transform: translateX(-50%);
-      text-align: center;
-      font-weight: bold;
-      font-size: <%= type_d ? '8px' : '25px' %>;
-    }
+/* MAIN */
+.sticker {
+  margin-top: 100.3mm;
+  width: <%= sticker_w %>mm;
+  height: <%= sticker_h %>mm;
+  border: <%= border_w %>mm solid #000;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
 
-  </style>
+td {
+  padding: 0;
+  vertical-align: middle;
+}
+
+/* WIDTHS */
+.left   { width: <%= left_w %>mm; }
+.right  { width: <%= right_w %>mm; }
+
+/* INNER TABLE */
+.inner {
+  width: 100%;
+  height: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.inner td {
+  vertical-align: middle;
+  text-align: center;
+  border: none !important;
+}
+
+/* TRUE CENTERING */
+.center-box {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.center-box-inner {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+/* TEXT */
+.top {
+  font-size: <%= font_small %>px;
+  font-weight: bold;
+  margin-bottom: 0.3mm;
+}
+
+.bottom {
+  font-size: <%= font_small %>px;
+  font-weight: bold;
+  margin-top: 0.3mm;
+}
+
+/* LOGO */
+.logo {
+  height: <%= logo_h %>mm;
+}
+
+.logo img {
+  max-height: 95%;
+  max-width: 92%;
+  display: block;
+  margin: 0 auto;
+  border: none !important;
+  outline: none !important;
+}
+
+/* CENTER TABLE */
+.data {
+  padding: 30px;
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.data th {
+  border: <%= border_w * 2.4 %>mm solid <%= @form_data[:frame_colour].to_s.split.first %>;
+  font-size: <%= font_main %>px;
+  height: <%= center_header_h %>mm;
+  padding: <%= cell_pad * 0.5 %>mm;
+  text-align: center;
+  font-weight: bold;
+  line-height: 1.0;
+}
+
+.data td {
+  border: <%= border_w * 2.4 %>mm solid <%= @form_data[:frame_colour].to_s.split.first %>;
+  font-size: <%= font_main %>px;
+  height: <%= center_row_h %>mm;
+  padding: <%= cell_pad * 0.5 %>mm;
+  text-align: center;
+  vertical-align: middle;
+  font-weight: bold;
+  line-height: 1.1;
+}
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  font-size: <%= footer_fs %>px;
+  font-weight: bold;
+  margin-top: <%= 1.5 * s %>mm;
+}
+
+</style>
 </head>
+
 <body>
 
+<table class="sticker">
+<tr>
 
+<!-- LEFT -->
+<td class="left">
+  <table class="inner">
+    <tr>
 
+      <td>
+        <div class="center-box"><div class="center-box-inner">
+          <div class="top">Hersteller / Manufacturers</div>
+          <div class="logo">
+            <%= image_tag @client.logo if @client&.logo&.attached? %>
+          </div>
+          <div class="bottom"><%= @client.company_url %></div>
+        </div></div>
+      </td>
 
-<div class="sticker">
-            <div class="left-logo" rowspan="2">
-              <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
-            
-                <!-- Logo Block 1 -->
-                <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>;">
+      <td>
+        <div class="center-box"><div class="center-box-inner">
+          <div class="top">Coach LED Tube</div>
+          <div class="logo">
+            <%= wicked_pdf_image_tag "sticker_data.png" %>
+          </div>
+          <div class="bottom">Made in India</div>
+          <div class="bottom">
+            <% if @form_data[:sticker_date].present? %>
+              <%= Date.parse(@form_data[:sticker_date]).strftime('%m/%Y') rescue "" %>
+            <% end %>
+          </div>
+        </div></div>
+      </td>
 
-                  <% if @client&.logo&.attached? %>
+    </tr>
+  </table>
+</td>
 
-                    <!-- Top text (fixed position) -->
-                    <div style="
-                      font-size:<%= type_d ? '4px' : '6px' %>;
-                      font-weight:bold;
-                      height:<%= type_d ? '4mm' : '6mm' %>;
-                      line-height:<%= type_d ? '4mm' : '6mm' %>;
-                      margin:0;
-                      padding:2mm;
-                    ">
-                      Hersteller / Manufacturers
-                    </div>
+<!-- CENTER -->
+<td>
 
-                    <!-- Logo -->
-                    <div style="
-                      height:<%= type_d ? '6mm' : '12mm' %>;
-                      display:flex;
-                      align-items:center;
-                      justify-content:center;
-                      margin-top:2mm;
-                    ">
-                      <%= image_tag @client.logo, alt: "Company Logo", style: "max-height:100%; width:auto;" %>
-                    </div>
+<table class="data">
+<tr>
+  <th style="width:<%= col_type %>%;">Type</th>
+  <th style="width:<%= col_len %>%;">Length</th>
+  <th style="width:<%= col_power %>%;">Power</th>
+  <th style="width:<%= col_volt %>%;">Voltage <%= lang_en ? "" : "<br>#{t('pdf.voltage')}".html_safe %></th>
+  <th style="width:<%= col_curr %>%;">Current</th>
+  <th style="width:<%= col_temp %>%;">Operating temperature <%= lang_en ? "" : "<br>#{t('pdf.operating_temperature')}".html_safe%></th>
+  <th style="width:<%= col_color %>%;">Light color</th>
+  <th style="width:<%= col_article %>%;">Article No.</th>
+</tr>
 
-                    <!-- Bottom text -->
-                    <% if @client&.company_url.present? %>
-                      <div style="
-                        font-size:<%= type_d ? '4px' : '6px' %>;
-                        font-weight:bold;
-                        height:<%= type_d ? '4mm' : '6mm' %>;
-                        line-height:<%= type_d ? '4mm' : '6mm' %>;
-                        margin:0;
-                        padding:0;
-                      ">
-                        <%= @client.company_url %>
-                      </div>
-                    <% end %>
+<tr>
+  <td style="line-height:1.15;">
+    <div><%= @client&.brand_name %><%= @form_data[:type] %></div>
+    <div style="margin-top:1mm;">
+      <%= @form_data[:profile] %> /
+      <%= @form_data[:length].to_s.scan(/\d+/).first %> /
+      <%= @form_data[:cct].to_s.scan(/\d+/).first %> /
+      <%= @form_data[:cover] %>
+    </div>
+  </td>
 
-                  <% end %>
+  <td><%= @form_data[:length] %></td>
+  <td><%= @form_data[:wattage] %></td>
+  <td><%= @form_data[:voltage] %></td>
 
-                </div>
-            
-                <!-- Logo Block 2 -->
-                <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>;">
-                  
-                  <!-- Top text -->
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    height:<%= type_d ? '4mm' : '6mm' %>;
-                    line-height:<%= type_d ? '4mm' : '6mm' %>;
-                    margin:0;
-                    padding:2mm;
-                  ">
-                    Coach LED Tube
-                  </div>
+  <td>
+    <%= begin
+          watt = @form_data[:wattage].to_f
+          volt = @form_data[:voltage].to_f
+          volt.zero? ? "-" : "#{(watt / volt).round(2)} A"
+        rescue "-"
+        end %>
+  </td>
 
-                  <!-- Logo -->
-                  <div style="
-                    height:<%= type_d ? '6mm' : '12mm' %>;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    margin-top:2mm;
-                  ">
-                    <%= wicked_pdf_image_tag "sticker_data.png",
-                        style: "max-height:100%; width:auto;" %>
-                  </div>
+  <td>-40°C to +85°C (OT6)</td>
+  <td><%= @form_data[:cct] %></td>
+  <td><%= @form_data[:custom_article_no].presence || @form_data[:article_no] %></td>
+</tr>
+</table>
 
-                  <!-- Bottom text -->
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    height:<%= type_d ? '4mm' : '6mm' %>;
-                    line-height:<%= type_d ? '4mm' : '6mm' %>;
-                    margin:0;
-                    padding:0;
-                  ">
-                    Made in India
-                  </div>
+</td>
 
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    margin-top:1mm;
-                  ">
-                    <% begin %>
-                      <% if @form_data[:sticker_date].present? %>
-                        <%#= Date.parse(@form_data[:sticker_date]).strftime('%m/%Y') %>
-                      <% end %>
-                    <% rescue %>
-                    <% end %>
-                  </div>
+<!-- RIGHT -->
+<td class="right">
+  <table class="inner">
+    <colgroup>
+      <col style="width:32%">
+      <col style="width:30%">
+      <col style="width:38%">
+    </colgroup>
+    <tr>
 
-                </div>
-            
-              </div>
-            </div>
-              <div>
-                <table style="border-collapse: collapse; table-layout: auto;">
-                    <tr>
-                    <th style="white-space: nowrap; max-width: 10%;">Type <br><%= params[:language] == "en" ? "" : t("pdf.type") %></th>
-                    <th>Length <br><%= params[:language] == "en" ? "" : t("pdf.length") %></th>
-                    <th>Power <br><%= params[:language] == "en" ? "" : t("pdf.power") %></th>
-                    <th>Voltage <br><%= params[:language] == "en" ? "" : t("pdf.voltage") %></th>
-                    <th>Current <br><%= params[:language] == "en" ? "" : t("pdf.current") %></th>
-                    <th style="width:20%;">Operating temperature <br> <%= params[:language] == "en" ? "" : t("pdf.operating_temperature") %></th>
-                    <th>Light color <br><%= params[:language] == "en" ? "" : t("pdf.light_color") %></th>
-                    <th>Article No. <br><%= params[:language] == "en" ? "" : t("pdf.article_no") %></th>
-                    </tr>
-                    <% order = OrderEntry.find_by(id: @form_data[:order_id]) %>
-                    <% sku_id = order&.sku_number %>
-                    <% item_master = ItemMaster.find_by(sku_id: sku_id) %>
-                    <tr>
-                    <td style="font-weight: bold; white-space: nowrap;"><% if @client&.brand_name.present? %><%= @client&.brand_name %><% end %><%= @form_data[:type] %><br>
-                    <%= @form_data[:profile] %>/<%= @form_data[:length].to_s.scan(/\d+/).first %>/<%= @form_data[:cct].to_s.scan(/\d+/).first %>/<%= @form_data[:cover] %>
-                    </td>
-                    <td style="font-weight: bold;"><%= @form_data[:length] %></td>
-                    <td style="font-weight: bold;"><%= @form_data[:wattage] %></td>
-                    <td style="font-weight: bold;"><%= @form_data[:voltage] %></td>
-                    <td style="font-weight: bold;">
-                      <%= begin
-                            watt = @form_data[:wattage].to_s.gsub(/[^\d.]/, '').to_f
-                            volt = @form_data[:voltage].to_s.gsub(/[^\d.]/, '').to_f
-                            volt.zero? ? "-" : "#{(watt / volt).round(2)} A"
-                          rescue
-                            "-"
-                          end %>
-                    </td>
-                    <td style="font-weight: bold; width: 15%;">-40°C to +85°C (OT6)</td>
-                    <td style="font-weight: bold;"><%= @form_data[:cct] %></td>
-                    <td style="font-weight: bold;"><%= @form_data[:custom_article_no].presence || @form_data[:article_no] %></td>
-                  </tr>
-                </table>
-              </div>
+      <td>
+        <div class="center-box"><div class="center-box-inner">
+          <div class="top"><%= lang_en ? "Serial No." : "<br>#{t('pdf.serial_number')}".html_safe %></div>
+          <div class="logo">
+            <%= image_tag @distributor.qr_code if @distributor&.qr_code&.attached? %>
+          </div>
+          <%# <div class="bottom">10099686</div>
+          <div class="bottom">04/2026</div> %>
+        </div></div>
+      </td>
 
+      <td>
+        <div class="center-box"><div class="center-box-inner">
+          <div class="top">Anleitung / Manual</div>
+          <div class="logo">
+            <%= image_tag @distributor.qr_code if @distributor&.qr_code&.attached? %>
+          </div>
+        </div></div>
+      </td>
 
-              <div class="right-logo" rowspan="3" style="margin-left: 3mm;">
-              <div class="logo-container" style="display:flex; gap:3mm; justify-content:center; align-items:center;">
-            
+      <td>
+        <div class="center-box"><div class="center-box-inner">
+          <div class="top">Vertrieb / Distribution</div>
+          <div class="logo">
+            <%= image_tag @distributor.distribution_logo if @distributor&.distribution_logo&.attached? %>
+          </div>
+          <div class="bottom"><%= @distributor.distributor_url %></div>
+        </div></div>
+      </td>
 
-              <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>;">
-  
-                <% if @distributor&.qr_code&.attached? %>
+    </tr>
+  </table>
+</td>
 
-                  <!-- Top Text -->
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    height:<%= type_d ? '4mm' : '6mm' %>;
-                    line-height:<%= type_d ? '4mm' : '6mm' %>;
-                    margin:0;
-                    padding:2mm;
-                  ">
-                    <%= params[:language] == "en" ? "" : t("pdf.serial_no") %> / Serial No.
-                  </div>
+</tr>
+</table>
 
-                  <!-- QR Code -->
-                  <div style="
-                    height:<%= type_d ? '6mm' : '12mm' %>;
-                    display:flex;
-                    align-items:center;
-                    justify-content:center;
-                    margin-top:2mm;
-                  ">
-                    <%= image_tag @distributor.qr_code,
-                        alt: "QR Code",
-                        style: "max-height:100%; width:auto;" %>
-                  </div>
-
-                  <!-- Bottom Text -->
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    margin-top:1mm;
-                    line-height:1.2;
-                  ">
-                    10099686
-                  </div>
-
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    margin-top:0mm;
-                    line-height:1.2;
-                  ">
-                    04/2026
-                  </div>
-
-                <% end %>
-
-              </div>
-
-              <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>;">
-                
-              <% if @distributor&.qr_code&.attached? %>
-
-                <!-- Top Text -->
-                <div style="
-                  font-size:<%= type_d ? '4px' : '6px' %>;
-                  font-weight:bold;
-                  height:<%= type_d ? '4mm' : '6mm' %>;
-                  line-height:<%= type_d ? '4mm' : '6mm' %>;
-                  margin:0;
-                  padding:2mm;
-                ">
-                  Anieitung / Manual
-                </div>
-
-                <!-- QR Code -->
-                <div style="
-                  height:<%= type_d ? '6mm' : '12mm' %>;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  margin-top:2mm;
-                ">
-                  <%= image_tag @distributor.qr_code,
-                      alt: "QR Code",
-                      style: "max-height:100%; width:auto;" %>
-                </div>
-
-                <!-- Bottom Text -->
-                <div style="
-                  font-size:<%= type_d ? '4px' : '6px' %>;
-                  font-weight:bold;
-                  margin-top:1mm;
-                  min-height:<%= type_d ? '4mm' : '6mm' %>;
-                  line-height:1.2;
-                ">
-                </div>
-
-              <% end %>
-
-              </div>
-                          
-                              
-              <div style="text-align:center; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:<%= type_d ? '18mm' : '28mm' %>; margin-left: 3mm;">
-                
-              <% if @distributor&.distribution_logo&.attached? %>
-
-                <!-- Top Text -->
-                <div style="
-                  font-size:<%= type_d ? '4px' : '6px' %>;
-                  font-weight:bold;
-                  height:<%= type_d ? '4mm' : '6mm' %>;
-                  line-height:<%= type_d ? '4mm' : '6mm' %>;
-                  margin:0;
-                  padding:2mm;
-                  width: auto; 
-                ">
-                  Vertrieb / Distribution
-                </div>
-
-                <!-- Distribution Logo -->
-                <div style="
-                  height:<%= type_d ? '6mm' : '12mm' %>;
-                  display:flex;
-                  align-items:center;
-                  justify-content:center;
-                  margin-top:2mm;
-                ">
-                  <%= image_tag @distributor.distribution_logo,
-                      alt: "Distribution Logo",
-                      style: "max-height:100%; width:auto;" %>
-                </div>
-
-                <!-- Bottom URL -->
-                <% if @distributor&.distributor_url.present? %>
-                  <div style="
-                    font-size:<%= type_d ? '4px' : '6px' %>;
-                    font-weight:bold;
-                    height:<%= type_d ? '4mm' : '6mm' %>;
-                    line-height:<%= type_d ? '4mm' : '6mm' %>;
-                    margin:0;
-                    padding:0;
-                  ">
-                    <%= @distributor.distributor_url %>
-                  </div>
-                <% end %>
-
-              <% end %>
-
-              </div>
-            
-              </div>
-            </div>
-            <div class="footer">
-Quantity: <%= @form_data[:sticker_quantity] %> pcs
+<div class="footer">
+  Quantity: <%= @form_data[:sticker_quantity] %> pcs
 </div>
-</div>
+
 </body>
 </html>
