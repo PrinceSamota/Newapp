@@ -19,7 +19,7 @@ class LabelsController < ApplicationController
                orientation: 'Landscape',
                layout: "pdf",
                formats: [:html],
-               page_size: 'A4',
+               page_size: 'A3',
                encoding: "UTF-8",
                show_as_html: params.key?("debug")
       end

@@ -5,7 +5,7 @@
 <title>LED Product Sticker</title>
 
 <style>
-<% is_d = @form_data[:type].to_s.downcase == 'd' %>
+<% is_d = @form_data[:profile].to_s.downcase == 'd' %>
 <% s = is_d ? 0.66 : 1 %>
 <% lang_en = params[:language].to_s == "en" %>
 
@@ -13,15 +13,22 @@
 # =========================
 # FIXED OUTER SIZE (DO NOT TOUCH)
 # =========================
-sticker_w = 490   # mm
-sticker_h = 28.6  # mm
+
+sticker_w = 386 * s  # mm
+sticker_h = 30  * s # mm
+
+# =========================
+# 🔥 GLOBAL SCALE FIX (NEW)
+# =========================
+base_sticker_h = 38.0
+scale_h = sticker_h / base_sticker_h
 
 # =========================
 # OUTER LAYOUT (TOTAL = 100)
 # =========================
-outer_left   = 20
-outer_center = 61
-outer_right  = 24
+outer_left   = 18
+outer_center = 58
+outer_right  = 28
 
 # =========================
 # LEFT INNER CONTROL
@@ -32,58 +39,62 @@ left_col_2 = 50
 # =========================
 # RIGHT INNER CONTROL
 # =========================
-right_col_1 = 30
-right_col_2 = 30
-right_col_3 = 40
+right_col_1 = 36
+right_col_2 = 24
+right_col_3 = 38
 
 # =========================
 # CENTER TABLE CONTROL (TOTAL = 100)
 # =========================
-c_type    = 18
+c_type    = 16
 c_length  = 10
-c_power   = 10
+c_power   = 8
 c_voltage = 10
 c_current = 10
-c_temp    = 18
+c_temp    = 22
 c_color   = 10
 c_article = 14
 
 # =========================
 # CENTER SPACING
 # =========================
-center_padding_top    = 3   # mm
-center_padding_bottom = 3   # mm
+center_padding_top    = 2 * scale_h   # mm
+center_padding_bottom = 1 * scale_h   # mm
 
 # =========================
-# LOGO SPACING CONTROL (UPDATED)
-# QR logo: 35.3mm × ~14.9mm
-# Distribution logo: 47.0mm × ~14.9mm
+# LOGO SPACING CONTROL
 # =========================
-logo_gap_top = 0.8
-logo_gap_bottom = 0.8
+logo_gap_top = 0.8 * scale_h
+logo_gap_bottom = 0.8 * scale_h
 logo_scale = 0.85
 
 # =========================
 # TYPOGRAPHY
 # =========================
-font_main  = 15.4 * s
-font_small = 13 * s
-logo_h     = 18 * s
+font_main  = 15.4 * s * scale_h
+font_small = 13 * s * scale_h
+logo_h     = 25 * s * scale_h
 
-center_header_h = 11 * s
-center_row_h    = 17 * s
+center_header_h = 11 * s * scale_h
+center_row_h    = 17 * s * scale_h
 
-border_w = 0.45 * s
-footer_fs = 18 * s
+border_w = 0.45 * s * scale_h
+footer_fs = 18 * s * scale_h
 %>
 
 @page {
-  size: A3 landscape;
+  size: 600mm 330mm;
   margin: 0;
 }
 
-body {
+html, body {
+  width: 100%;
+  height: 100%;
   margin: 0;
+  padding: 0;
+}
+
+body {
   font-family: Arial, sans-serif;
 }
 
@@ -105,40 +116,43 @@ body {
   border-collapse: collapse;
 }
 
-.inner td {
-  border: none !important;
-  height: 100%;
+/* =========================
+   INNER COLUMN PADDING FIX
+   ========================= */
+.left-section .inner td,
+.right-section .inner td {
+  padding-left: <%= 2 * scale_h %>mm;
+  padding-right: <%= 2 * scale_h %>mm;
+  box-sizing: border-box;
 }
 
-/* BLOCK POSITIONING (FINAL FIX - NO OVERLAP) */
+/* BLOCK */
 .block {
   position: relative;
   height: 100%;
   width: 100%;
+  overflow: hidden;
 }
 
-/* TOP TEXT */
 .block-top {
   position: absolute;
   top: 0;
   width: 100%;
   text-align: center;
-  padding-top: 0.5mm;
+  padding-top: <%= 0.5 * scale_h %>mm;
 }
 
-/* BOTTOM TEXT */
 .block-bottom {
   position: absolute;
   bottom: 0;
   width: 100%;
   text-align: center;
-  padding-bottom: 0.8mm;
+  padding-bottom: <%= 0.8 * scale_h %>mm;
 }
 
-/* MIDDLE SAFE ZONE */
 .block-middle {
   position: absolute;
-  top: 28%;   /* ⬆ increased top spacing for ALL logos */
+  top: 28%;
   bottom: 20%;
   left: 0;
   right: 0;
@@ -149,12 +163,12 @@ body {
 
   padding-top: <%= logo_gap_top %>mm;
   padding-bottom: <%= logo_gap_bottom %>mm;
-  box-sizing: border-box;
 
+  box-sizing: border-box;
+  overflow: hidden;
   text-align: center;
 }
 
-/* TEXT */
 .top {
   font-size: <%= font_small %>px;
   font-weight: bold;
@@ -165,27 +179,30 @@ body {
   font-weight: bold;
 }
 
-/* LOGO (GLOBAL SAFE CENTERING) */
+/* LOGO */
 .logo {
-  width: 100%;
-  height: 100%;
-
+  width: 90%;
+  height: 90%;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  text-align: center;
+  overflow: hidden;
 }
 
 .logo img {
   display: inline-block;
   margin: auto;
 
-  max-height: <%= logo_h * logo_scale %>mm;
-  max-width: 85%;
+  max-height: <%= logo_h %>mm;
+  max-width: 100%;
+
+  width: auto;
+  height: auto;
+
+  object-fit: contain;
 }
 
-/* CENTER WRAPPER */
+/* CENTER */
 .center-wrapper {
   padding-top: <%= center_padding_top %>mm;
   padding-bottom: <%= center_padding_bottom %>mm;
@@ -193,7 +210,6 @@ body {
   box-sizing: border-box;
 }
 
-/* CENTER TABLE */
 .data {
   width: 100%;
   height: 100%;
@@ -201,23 +217,19 @@ body {
   table-layout: auto;
 }
 
-/* FIX: prevent height increase */
 .data th,
 .data td {
-  border: <%= border_w * 2.4 %>mm solid <%= @form_data[:frame_colour].to_s.split.first %>;
+  border: <%= border_w %>mm solid <%= @form_data[:frame_colour].to_s.split.first %>;
   font-size: <%= font_main %>px;
   text-align: center;
   font-weight: bold;
-
   white-space: nowrap;
 }
 
-/* HEADER */
 .data th {
   height: <%= center_header_h %>mm;
 }
 
-/* ROW */
 .data td {
   height: <%= center_row_h %>mm;
 }
@@ -227,29 +239,18 @@ body {
   text-align: center;
   font-size: <%= footer_fs %>px;
   font-weight: bold;
-  margin-top: <%= 1.5 * s %>mm;
+  margin-top: <%= 1.5 * s * scale_h %>mm;
 }
 
-/* =========================
-   RIGHT SIDE LOGO ENHANCEMENT (NEW)
-   ========================= */
-
-/* reduce internal padding space */
-td:nth-child(3) .block-middle {
-  top: 10% !important;
-  bottom: 10% !important;
+/* OUTER COLUMN PADDING */
+.left-section {
+  padding-left: <%= 1 * scale_h %>mm;
+  padding-right: <%= 1 * scale_h %>mm;
 }
 
-/* enlarge logo container usage */
-td:nth-child(3) .logo {
-  width: 100%;
-  height: 100%;
-}
-
-/* increase actual logo size */
-td:nth-child(3) .logo img {
-  max-width: 95%;
-  max-height: 95%;
+.right-section {
+  padding-left: <%= 1 * scale_h %>mm;
+  padding-right: <%= 1 * scale_h %>mm;
 }
 
 </style>
@@ -259,17 +260,16 @@ td:nth-child(3) .logo img {
 
 <table class="sticker">
 
-  <!-- OUTER WIDTH CONTROL -->
-  <colgroup>
-    <col style="width:<%= outer_left %>%;">
-    <col style="width:<%= outer_center %>%;">
-    <col style="width:<%= outer_right %>%;">
-  </colgroup>
+<colgroup>
+  <col style="width:<%= outer_left %>%;">
+  <col style="width:<%= outer_center %>%;">
+  <col style="width:<%= outer_right %>%;">
+</colgroup>
 
 <tr>
 
 <!-- LEFT -->
-<td>
+<td class="left-section">
   <table class="inner">
     <colgroup>
       <col style="width:<%= left_col_1 %>%;">
@@ -277,12 +277,9 @@ td:nth-child(3) .logo img {
     </colgroup>
     <tr>
 
-      <!-- Manufacturer -->
       <td>
         <div class="block">
-          <div class="block-top">
-            <div class="top">Hersteller / Manufacturers</div>
-          </div>
+          <div class="block-top"><div class="top">Hersteller / Manufacturers</div></div>
 
           <div class="block-middle">
             <div class="logo">
@@ -296,15 +293,12 @@ td:nth-child(3) .logo img {
         </div>
       </td>
 
-      <!-- Product -->
       <td>
         <div class="block">
-          <div class="block-top">
-            <div class="top">Coach LED Tube</div>
-          </div>
+          <div class="block-top"><div class="top">Coach LED Tube</div></div>
 
           <div class="block-middle">
-            <div class="logo">
+            <div class="">
               <%= wicked_pdf_image_tag "sticker_data.png" %>
             </div>
           </div>
@@ -323,7 +317,6 @@ td:nth-child(3) .logo img {
 <td>
   <div class="center-wrapper">
     <table class="data">
-
       <colgroup>
         <col style="width:<%= c_type %>%;">
         <col style="width:<%= c_length %>%;">
@@ -347,32 +340,21 @@ td:nth-child(3) .logo img {
       </tr>
 
       <tr>
-        <td>
-          <% if @client&.brand_name.present? %><%= @client.brand_name %><% end %><%= @form_data[:type] %><br>
-          <%= @form_data[:profile] %>/<%= @form_data[:length].to_s.scan(/\d+/).first %>/<%= @form_data[:cct].to_s.scan(/\d+/).first %>/<%= @form_data[:cover] %>
-        </td>
+        <td><%= @form_data[:type] %></td>
         <td><%= @form_data[:length] %></td>
         <td><%= @form_data[:wattage] %></td>
         <td><%= @form_data[:voltage] %></td>
-        <td>
-          <%= begin
-                w = @form_data[:wattage].to_f
-                v = @form_data[:voltage].to_f
-                v.zero? ? "-" : "#{(w/v).round(2)} A"
-              rescue "-"
-              end %>
-        </td>
+        <td>-</td>
         <td>-40°C to +85°C</td>
         <td><%= @form_data[:cct] %></td>
         <td><%= @form_data[:article_no] %></td>
       </tr>
-
     </table>
   </div>
 </td>
 
 <!-- RIGHT -->
-<td>
+<td class="right-section">
   <table class="inner">
     <colgroup>
       <col style="width:<%= right_col_1 %>%;">
@@ -382,20 +364,11 @@ td:nth-child(3) .logo img {
 
     <tr>
 
-      <!-- Serial -->
+      <td><div class="block"><div class="block-top"><div class="top"><%= lang_en ? "Serial No." : "#{t('pdf.serial_no')} / Serial No." %></div></div></div></td>
+
       <td>
         <div class="block">
-          <div class="block-top">
-            <div class="top"><%= lang_en ? "Serial No." : "#{t('pdf.serial_no')} / Serial No." %></div>
-          </div>
-        </div>
-      </td>
-
-      <!-- Manual -->
-      <td>
-        <div class="block">
-          <div class="block-top"><div class="top">Manual</div></div>
-
+          <div class="block-top"><div class="top"><%= lang_en ? "Anleitung / Manual" : "Anleitung / #{t('pdf.manual')}" %></div></div>
           <div class="block-middle">
             <div class="logo">
               <%= image_tag @distributor.qr_code if @distributor&.qr_code&.attached? %>
@@ -404,12 +377,9 @@ td:nth-child(3) .logo img {
         </div>
       </td>
 
-      <!-- Distribution -->
       <td>
         <div class="block">
-          <div class="block-top">
-            <div class="top">Distribution</div>
-          </div>
+          <div class="block-top"><div class="top"><%= lang_en ? "Vertrieb / Distribution" : "Vertrieb / #{t('pdf.distribution')}" %></div></div>
 
           <div class="block-middle">
             <div class="logo">
