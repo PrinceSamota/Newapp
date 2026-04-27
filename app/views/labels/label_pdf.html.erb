@@ -27,8 +27,8 @@ scale_h = sticker_h / base_sticker_h
 # OUTER LAYOUT (TOTAL = 100)
 # =========================
 outer_left   = 18
-outer_center = 58
-outer_right  = 28
+outer_center = 60
+outer_right  = 26
 
 # =========================
 # LEFT INNER CONTROL
@@ -39,9 +39,9 @@ left_col_2 = 50
 # =========================
 # RIGHT INNER CONTROL
 # =========================
-right_col_1 = 36
-right_col_2 = 24
-right_col_3 = 38
+right_col_1 = 39
+right_col_2 = 23
+right_col_3 = 36
 
 # =========================
 # CENTER TABLE CONTROL (TOTAL = 100)
@@ -340,11 +340,23 @@ body {
       </tr>
 
       <tr>
-        <td><%= @form_data[:type] %></td>
+        <td>
+          <% if @client&.brand_name.present? %>
+          <%= @client.brand_name %>&nbsp;<% end %>
+          <%= @form_data[:type] %><br>
+          <%= @form_data[:profile] %>/<%= @form_data[:length].to_s.scan(/\d+/).first %>/<%= @form_data[:cct].to_s.scan(/\d+/).first %>/<%= @form_data[:cover] %>
+        </td>
         <td><%= @form_data[:length] %></td>
         <td><%= @form_data[:wattage] %></td>
         <td><%= @form_data[:voltage] %></td>
-        <td>-</td>
+        <td>
+          <%= begin
+                w = @form_data[:wattage].to_f
+                v = @form_data[:voltage].to_f
+                v.zero? ? "-" : "#{(w/v).round(2)} A"
+              rescue "-"
+              end %>
+        </td>
         <td>-40°C to +85°C</td>
         <td><%= @form_data[:cct] %></td>
         <td><%= @form_data[:article_no] %></td>
