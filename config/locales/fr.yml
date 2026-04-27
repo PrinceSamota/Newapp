@@ -9,3 +9,6 @@ fr:
     light_color: "Couleur de la lumière"
     article_no: "Numéro d'article"
     serial_no: "Numéro de série"
+    manual: "Manuel"
+    distribution: "Distribution"
+    manufacturer: "Fabricant"
