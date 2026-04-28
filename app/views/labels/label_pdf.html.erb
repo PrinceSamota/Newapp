@@ -58,7 +58,7 @@ c_article = 14
 # =========================
 # CENTER SPACING
 # =========================
-center_padding_top    = 2 * scale_h   # mm
+center_padding_top    = 1 * scale_h   # mm
 center_padding_bottom = 1 * scale_h   # mm
 
 # =========================
@@ -71,8 +71,8 @@ logo_scale = 0.85
 # =========================
 # TYPOGRAPHY
 # =========================
-font_main  = 15.4 * s * scale_h
-font_small = 13 * s * scale_h
+font_main  = 14.4 * s * scale_h
+font_small = 11 * s * scale_h
 logo_h     = 25 * s * scale_h
 
 center_header_h = 11 * s * scale_h
@@ -199,6 +199,21 @@ body {
   width: auto;
   height: auto;
 
+  object-fit: contain;
+}
+
+.right-section .inner td:nth-child(2) .block-middle {
+  bottom: 0;
+  padding-bottom: 0;
+}
+
+/* keep QR perfectly square */
+.right-section .inner td:nth-child(2) .logo img {
+  aspect-ratio: 1 / 1;
+  max-height: <%= logo_h %>mm;
+  max-width: <%= logo_h %>mm;
+  width: auto;
+  height: auto;
   object-fit: contain;
 }
 
@@ -380,7 +395,7 @@ body {
 
       <td>
         <div class="block">
-          <div class="block-top"><div class="top"><%= lang_en ? "Anleitung / Manual" : "Anleitung / #{t('pdf.manual')}" %></div></div>
+          <div class="block-top"><div class="top"><%= lang_en ? "Anleitung / Manual" : "#{t('pdf.manual')} / Manual" %></div></div>
           <div class="block-middle">
             <div class="logo">
               <%= image_tag @distributor.qr_code if @distributor&.qr_code&.attached? %>
@@ -391,7 +406,7 @@ body {
 
       <td>
         <div class="block">
-          <div class="block-top"><div class="top"><%= lang_en ? "Vertrieb / Distribution" : "Vertrieb / #{t('pdf.distribution')}" %></div></div>
+          <div class="block-top"><div class="top"><%= lang_en ? "Vertrieb / Distribution" : "#{t('pdf.distribution')} / Distribution " %></div></div>
 
           <div class="block-middle">
             <div class="logo">
