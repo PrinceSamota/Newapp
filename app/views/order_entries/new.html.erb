@@ -341,7 +341,7 @@ document.addEventListener("turbo:load", () => {
   const form = document.getElementById("order-form");
   if (!form) return;
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     let isValid = true;
 
     // Remove previous errors
@@ -359,6 +359,40 @@ document.addEventListener("turbo:load", () => {
     // Only prevent if validation fails
     if (!isValid) {
       e.preventDefault();
+      return;
+    }
+
+    if (form.dataset.skipCheck === "true") {
+      return;
+    }
+
+    e.preventDefault();
+
+    const orderNo = document.getElementById("order_entry_order_no")?.value;
+    const clientId = document.getElementById("client-select")?.value;
+    const targetDate = document.getElementById("order_entry_target_date")?.value;
+
+    if (orderNo && clientId && targetDate) {
+      try {
+        const response = await fetch(`/order_entries/check_duplicate?order_no=${encodeURIComponent(orderNo)}&client_id=${encodeURIComponent(clientId)}&target_date=${encodeURIComponent(targetDate)}`);
+        const data = await response.json();
+        
+        if (data.exists) {
+          if (confirm("This order may already exist. Continue?")) {
+            form.dataset.skipCheck = "true";
+            form.submit();
+          }
+        } else {
+          form.dataset.skipCheck = "true";
+          form.submit();
+        }
+      } catch (err) {
+        form.dataset.skipCheck = "true";
+        form.submit();
+      }
+    } else {
+      form.dataset.skipCheck = "true";
+      form.submit();
     }
   });
 

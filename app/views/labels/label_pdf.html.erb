@@ -78,7 +78,12 @@ logo_h     = 25 * s * scale_h
 center_header_h = 11 * s * scale_h
 center_row_h    = 17 * s * scale_h
 
+# =========================
+# BORDER CONTROL
+# =========================
 border_w = 0.45 * s * scale_h
+inner_border_w = 0.85 * s * scale_h
+
 footer_fs = 18 * s * scale_h
 %>
 
@@ -207,7 +212,6 @@ body {
   padding-bottom: 0;
 }
 
-/* keep QR perfectly square */
 .right-section .inner td:nth-child(2) .logo img {
   aspect-ratio: 1 / 1;
   max-height: <%= logo_h %>mm;
@@ -234,7 +238,7 @@ body {
 
 .data th,
 .data td {
-  border: <%= border_w %>mm solid <%= @form_data[:frame_colour].to_s.split.first %>;
+  border: <%= inner_border_w %>mm solid <%= @form_data[:frame_colour].to_s.split.first %>;
   font-size: <%= font_main %>px;
   text-align: center;
   font-weight: bold;
@@ -265,7 +269,7 @@ body {
 
 .right-section {
   padding-left: <%= 1 * scale_h %>mm;
-  padding-right: <%= 1 * scale_h %>mm;
+  padding-right: <%= 0 * scale_h %>mm;
 }
 
 </style>

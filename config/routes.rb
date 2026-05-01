@@ -45,6 +45,9 @@ Rails.application.routes.draw do
   end
   resources :clients, only: [:index, :create, :edit, :update]
   resources :order_entries do
+    collection do
+      get :check_duplicate
+    end
     member do
       patch :archive
       get :generate_qr_links

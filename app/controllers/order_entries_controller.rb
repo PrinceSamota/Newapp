@@ -14,6 +14,16 @@ class OrderEntriesController < ApplicationController
         @item_masters = ItemMaster.all
         render :new
       end
+
+      def check_duplicate
+        exists = OrderEntry.exists?(
+          order_no: params[:order_no],
+          client_id: params[:client_id],
+          target_date: params[:target_date]
+        )
+        render json: { exists: exists }
+      end
+
     def create
       @order_entry = OrderEntry.new(order_entry_params)
       decode_article_fields
