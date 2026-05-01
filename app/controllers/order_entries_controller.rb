@@ -19,7 +19,7 @@ class OrderEntriesController < ApplicationController
         exists = OrderEntry.exists?(
           order_no: params[:order_no],
           client_id: params[:client_id],
-          target_date: params[:target_date]
+          article_no: params[:article_no]
         )
         render json: { exists: exists }
       end

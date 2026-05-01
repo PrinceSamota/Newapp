@@ -370,11 +370,11 @@ document.addEventListener("turbo:load", () => {
 
     const orderNo = document.getElementById("order_entry_order_no")?.value;
     const clientId = document.getElementById("client-select")?.value;
-    const targetDate = document.getElementById("order_entry_target_date")?.value;
+    const articleNo = document.getElementById("articleSearchInput")?.value;
 
-    if (orderNo && clientId && targetDate) {
+    if (orderNo && clientId && articleNo) {
       try {
-        const response = await fetch(`/order_entries/check_duplicate?order_no=${encodeURIComponent(orderNo)}&client_id=${encodeURIComponent(clientId)}&target_date=${encodeURIComponent(targetDate)}`);
+        const response = await fetch(`/order_entries/check_duplicate?order_no=${encodeURIComponent(orderNo)}&client_id=${encodeURIComponent(clientId)}&article_no=${encodeURIComponent(articleNo)}`);
         const data = await response.json();
         
         if (data.exists) {
