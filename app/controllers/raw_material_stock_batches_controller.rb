@@ -49,9 +49,10 @@ def index
 
   respond_to do |format|
     format.html
-    format.csv do
-      send_data RawMaterialStockBatch.to_csv,
-        filename: "raw_material_inward_#{Date.today}.csv"
+    format.xlsx do
+      @batches_all = RawMaterialStockBatch.includes(:supplier).all
+      response.headers['Content-Disposition'] =
+        "attachment; filename=\"raw_material_inward_#{Date.today}.xlsx\""
     end
   end
 end

@@ -18,9 +18,10 @@ class DispatchesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv do
-        send_data Dispatch.to_csv(dispatches),
-          filename: "dispatches-#{Date.today}.csv"
+      format.xlsx do
+        @dispatches_all = dispatches.includes(dispatch_items: { order_entry: [:client, :location, :driver_revision] })
+        response.headers['Content-Disposition'] =
+          "attachment; filename=\"dispatches-#{Date.today}.xlsx\""
       end
     end
   end

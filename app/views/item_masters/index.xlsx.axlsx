@@ -1,0 +1,25 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Item Masters") do |sheet|
+  sheet.add_row [
+    "SKU", "Item Name", "Category", "Stock", "B S", "Purchase Price",
+    "Sale Price", "Min Stock", "Is BOM", "Extra", "Article No", "Measurement"
+  ], style: wb.styles.add_style(b: true)
+
+  @item_masters_all.each do |item|
+    sheet.add_row [
+      item.sku_id,
+      item.item_name,
+      item.category&.name,
+      item.opening_stock,
+      item.block_stock,
+      item.purchase_price,
+      item.sale_price,
+      item.minimum_stock_level,
+      item.is_bom ? "Yes" : "No",
+      item.extra&.name,
+      item.article_number,
+      item.measurement&.name
+    ]
+  end
+end

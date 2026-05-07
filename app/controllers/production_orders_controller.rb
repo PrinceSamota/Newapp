@@ -128,9 +128,10 @@ class ProductionOrdersController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv do 
-        send_data ProductionOrder.to_csv,
-        filename: "production_orders_#{Date.today}.csv"
+      format.xlsx do
+        @production_orders_all = ProductionOrder.includes(production_order_items: :item_master).all
+        response.headers['Content-Disposition'] =
+          "attachment; filename=\"production_orders_#{Date.today}.xlsx\""
       end
     end
   end

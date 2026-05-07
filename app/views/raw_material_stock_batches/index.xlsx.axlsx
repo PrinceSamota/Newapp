@@ -1,0 +1,15 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Raw Material Inward") do |sheet|
+  sheet.add_row [
+    "Supplier Name", "Receiving Date", "Invoice Number"
+  ], style: wb.styles.add_style(b: true)
+
+  @batches_all.each do |batch|
+    sheet.add_row [
+      batch.supplier&.name,
+      batch.receiving_date.present? ? batch.receiving_date.strftime("%d-%b-%Y") : "N/A",
+      batch.supplier_invoice_number
+    ]
+  end
+end

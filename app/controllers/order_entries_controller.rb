@@ -99,9 +99,9 @@ class OrderEntriesController < ApplicationController
 
       respond_to do |format|
         format.html
-        format.csv do
-          send_data OrderEntry.to_csv(@all_filtered_orders),
-          filename: "pending_orders_#{Date.today}.csv"
+        format.xlsx do
+          response.headers['Content-Disposition'] =
+            "attachment; filename=\"pending_orders_#{Date.today}.xlsx\""
         end
       end
       

@@ -1,0 +1,23 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Production Orders") do |sheet|
+  sheet.add_row [
+    "PID", "BOM Number", "SKU", "Current Stock", "Finished Good", "Executed"
+  ], style: wb.styles.add_style(b: true)
+
+  @production_orders_all.each do |order|
+    order.production_order_items.each do |item|
+      item_master = ItemMaster.find_by(id: item.item_master_id)
+      bom_number, finished_good = item.bom.to_s.split(",", 2)
+
+      sheet.add_row [
+        order.pid,
+        bom_number,
+        item.sku_id,
+        item_master&.opening_stock,
+        item_master&.item_name,
+        order.executed ? "Yes" : "No"
+      ]
+    end
+  end
+end

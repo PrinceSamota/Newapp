@@ -11,9 +11,10 @@ class ItemMastersController < ApplicationController
 
       respond_to do |format|
         format.html
-        format.csv do 
-          send_data ItemMaster.to_csv,
-          filename: "item_masters_#{Date.today}.csv"
+        format.xlsx do
+          @item_masters_all = ItemMaster.includes(:category, :measurement, :extra).all
+          response.headers['Content-Disposition'] =
+            "attachment; filename=\"item_masters_#{Date.today}.xlsx\""
         end
       end
     end

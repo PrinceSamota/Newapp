@@ -81,9 +81,10 @@ class BillOfMaterialsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.csv do 
-        send_data BillOfMaterial.to_csv,
-        filename: "bill_of_materials_#{Date.today}.csv"
+      format.xlsx do
+        @bill_of_materials_all = BillOfMaterial.includes(:finished_good).all
+        response.headers['Content-Disposition'] =
+          "attachment; filename=\"bill_of_materials_#{Date.today}.xlsx\""
       end
     end
   end

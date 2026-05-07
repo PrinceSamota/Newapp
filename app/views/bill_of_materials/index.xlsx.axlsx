@@ -1,0 +1,15 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Bill of Materials") do |sheet|
+  sheet.add_row [
+    "BOM Number", "BOM Name", "Finished Good"
+  ], style: wb.styles.add_style(b: true)
+
+  @bill_of_materials_all.each do |item|
+    sheet.add_row [
+      item.bom_number,
+      item.name,
+      item.finished_good&.sku_id
+    ]
+  end
+end

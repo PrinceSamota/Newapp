@@ -1,0 +1,54 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Pending Orders") do |sheet|
+  sheet.add_row [
+    "Order No", "Article No", "Client", "Target Date", "SKU", "Dispatch No",
+    "Ship To", "No Of Box", "Current Stock", "Qty", "Item Type", "Category", "Profile",
+    "Wattage", "Voltage", "Length", "CCT", "Cover", "Fuse", "Loop", "Extra",
+    "Start Serial", "End Serial", "MFG Date", "Driver Rev No", "Remark",
+    "Status", "Order Date", "Tracking No", "Invoice No", "Dispatch Date", "Delivery Date", "Mode Of Shipment", "Courier Company", "Progress"
+  ], style: wb.styles.add_style(b: true)
+
+  @all_filtered_orders.each do |order|
+    dispatch_item = DispatchItem.find_by(order_no: order.order_no)
+    dispatch = dispatch_item&.dispatch
+
+    sheet.add_row [
+      order.order_no,
+      order.article_no,
+      order.client&.company_name,
+      order.target_date&.strftime("%d-%b-%Y"),
+      order.sku_number,
+      order.dispatch_no,
+      order.location&.name,
+      order.box,
+      ItemMaster.find_by(sku_id: order.sku_number)&.opening_stock,
+      order.qty,
+      order.item_type,
+      ItemMaster.find_by(sku_id: order.sku_number)&.category&.name,
+      order.profile,
+      order.wattage,
+      order.voltage,
+      order.length,
+      order.cct,
+      order.cover_type,
+      order.fuse_type,
+      order.loop,
+      order.extra,
+      order.start_serial_no,
+      order.end_serial_no,
+      (order.mfg_date.present? ? Date.parse(order.mfg_date).strftime("%d-%b-%Y") : nil),
+      order.driver_revision&.name,
+      order.remark,
+      order.status,
+      order.created_at.strftime("%d-%b-%Y"),
+      dispatch&.track_no,
+      dispatch&.invoice_no,
+      dispatch&.dispatch_date&.strftime("%d-%b-%Y"),
+      dispatch&.delivery_date&.strftime("%d-%b-%Y"),
+      dispatch&.mode_of_shipment,
+      dispatch&.courier_company,
+      dispatch&.progress
+    ]
+  end
+end
