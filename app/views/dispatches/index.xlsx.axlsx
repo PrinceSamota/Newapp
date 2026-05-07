@@ -13,6 +13,7 @@ wb.add_worksheet(name: "Dispatches") do |sheet|
     dispatch.dispatch_items.each do |item|
       order = item.order_entry
       next unless order
+      next unless order.dispatch_no.present?
 
       sheet.add_row [
         order.dispatch_no,

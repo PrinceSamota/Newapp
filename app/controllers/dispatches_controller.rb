@@ -19,7 +19,7 @@ class DispatchesController < ApplicationController
     respond_to do |format|
       format.html
       format.xlsx do
-        @dispatches_all = dispatches.includes(dispatch_items: { order_entry: [:client, :location, :driver_revision] })
+        @dispatches_all = dispatches.includes(dispatch_items: { order_entry: [:client, :location, :driver_revision] }).order(d_id: :desc)
         response.headers['Content-Disposition'] =
           "attachment; filename=\"dispatches-#{Date.today}.xlsx\""
       end
