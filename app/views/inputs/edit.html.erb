@@ -86,7 +86,9 @@
 
         <div>
           <%= f.label :order_no_from_dispatch, "Order No from Dispatch" %>
-          <%= f.text_field :order_no_from_dispatch, class: "w-full border border-gray-300 rounded-lg p-2" %>
+          <%= f.text_field :order_no_from_dispatch, 
+              id: "order_no_from_dispatch_field",
+              class: "w-full border border-gray-300 rounded-lg p-2" %>
         </div>
 
         <div>
@@ -216,11 +218,37 @@ function initInputForm() {
     detailIndex++;
   });
 
+  // ✅ RECALCULATE ORDER NOS
+  function recalculateOrderNos() {
+    const orderNos = new Set();
+    
+    // Collect from items
+    itemContainer.querySelectorAll(".input-item-row").forEach(row => {
+      if (row.style.display !== "none") {
+        const val = row.querySelector('input[name*="[order_no]"]')?.value;
+        if (val) orderNos.add(val.trim());
+      }
+    });
+
+    // Collect from details
+    detailContainer.querySelectorAll(".input-detail-row").forEach(row => {
+      if (row.style.display !== "none") {
+        const val = row.querySelector('input[name*="[order_no]"]')?.value;
+        if (val) orderNos.add(val.trim());
+      }
+    });
+
+    const field = document.getElementById("order_no_from_dispatch_field");
+    if (field) {
+      field.value = Array.from(orderNos).join(", ");
+    }
+  }
+
   // ✅ REMOVE ITEM (Correctly sets _destroy for existing, removes for new)
   itemContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-item")) {
       const row = e.target.closest(".input-item-row");
-      const idInput = row.querySelector('input[name*="[id]"]');
+      const idInput = row.querySelector('input[name$="[id]"]');
       const destroyInput = row.querySelector('input[name*="[_destroy]"]');
       
       if (idInput && destroyInput) {
@@ -229,6 +257,7 @@ function initInputForm() {
       } else {
         row.remove();
       }
+      recalculateOrderNos();
     }
   });
 
@@ -236,7 +265,7 @@ function initInputForm() {
   detailContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-detail")) {
       const row = e.target.closest(".input-detail-row");
-      const idInput = row.querySelector('input[name*="[id]"]');
+      const idInput = row.querySelector('input[name$="[id]"]');
       const destroyInput = row.querySelector('input[name*="[_destroy]"]');
       
       if (idInput && destroyInput) {
@@ -245,6 +274,14 @@ function initInputForm() {
       } else {
         row.remove();
       }
+      recalculateOrderNos();
+    }
+  });
+
+  // Also listen for changes to the order_no fields themselves
+  document.addEventListener("change", (e) => {
+    if (e.target.name && e.target.name.includes("[order_no]")) {
+      recalculateOrderNos();
     }
   });
 }

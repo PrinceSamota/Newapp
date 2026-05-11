@@ -142,7 +142,7 @@ class InputsController < ApplicationController
       ],
       input_details_attributes: [
         :id, :marks_no_id, :no_of_packages, :type_of_package_id, 
-        :complete_description_of_good_id, :hsn_id, :qty_pcs, :price, :_destroy
+        :complete_description_of_good_id, :hsn_id, :qty_pcs, :price, :order_no, :_destroy
       ]
     )
   end
