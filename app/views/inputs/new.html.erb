@@ -301,6 +301,19 @@ function initInputForm() {
       recalculateOrderNos();
     }
   });
+
+  // ✅ DYNAMIC TOTAL CALCULATION FOR DETAILS
+  detailContainer.addEventListener("input", function(e) {
+    if (e.target.classList.contains("detail-qty-field") || e.target.classList.contains("detail-price-field")) {
+      const row = e.target.closest(".input-detail-row");
+      const qty = parseFloat(row.querySelector(".detail-qty-field").value) || 0;
+      const price = parseFloat(row.querySelector(".detail-price-field").value) || 0;
+      const totalField = row.querySelector(".detail-total-field");
+      if (totalField) {
+        totalField.value = (qty * price).toFixed(4);
+      }
+    }
+  });
 }
 
 
