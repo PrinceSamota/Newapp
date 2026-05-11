@@ -1,51 +1,97 @@
-
-<div class="relative min-h-screen">
-  <div class="absolute inset-0 -z-10">
-    <img
-      src="<%= asset_path('home4.jpg') %>"
-      alt="Background"
-      class="w-full h-full object-cover"
-      loading="eager"
-      fetchpriority="high"
-    />
+<div class="relative min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden bg-[#e5e1dc]">
+  <!-- Background Pattern/Effect -->
+  <div class="absolute inset-0 z-0">
+    <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/10 rounded-full blur-[120px]"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/10 rounded-full blur-[120px]"></div>
   </div>
 
-
-  <div class="relative z-10 flex justify-center items-center min-h-[calc(100vh-4rem)] px-4">
-  <div class="bg-white bg-opacity-90 p-8 rounded-xl shadow-lg w-full max-w-md">
-    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Log in</h2>
-    <% if flash[:alert] %>
-    <div class="mb-4 text-red-600 font-semibold text-center">
-      <%= flash[:alert] %>
-    </div>
-  <% end %>
-
-    <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-      <div class="mb-4">
-        <%= f.label :email, class: "block text-gray-700 font-semibold mb-2" %>
-        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" %>
+  <!-- Login Card -->
+  <div class="relative z-10 w-full max-w-md">
+    <div class="bg-white border border-gray-200 p-8 rounded-2xl shadow-xl">
+      <!-- Logo in the box -->
+      <div class="text-center mb-8">
+        <div class="mb-6">
+          <%= image_tag "CLED_India.png", alt: "Logo", class: "mx-auto h-16 w-auto object-contain" %>
+        </div>
+        <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Welcome Back</h2>
+        <p class="mt-2 text-gray-500 text-sm">Please enter your details to sign in</p>
       </div>
 
-      <div class="mb-4">
-        <%= f.label :password, class: "block text-gray-700 font-semibold mb-2" %>
-        <%= f.password_field :password, autocomplete: "current-password", class: "w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500" %>
-      </div>
-
-      <% if devise_mapping.rememberable? %>
-        <div class="mb-4 flex items-center">
-          <%= f.check_box :remember_me, class: "mr-2" %>
-          <%= f.label :remember_me, class: "text-gray-600" %>
+      <% if flash[:alert] %>
+        <div class="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm font-medium flex items-center gap-3 animate-shake">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <%= flash[:alert] %>
         </div>
       <% end %>
 
-      <div class="mb-4">
-        <%= f.submit "Log in", class: "w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 font-semibold cursor-pointer " %>
-      </div>
-    <% end %>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "space-y-5" }) do |f| %>
+        <div class="space-y-2">
+          <%= f.label :email, class: "block text-sm font-medium text-gray-700" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <i class="fa-solid fa-envelope text-sm"></i>
+            </div>
+            <%= f.email_field :email, 
+                autofocus: true, 
+                autocomplete: "email", 
+                placeholder: "name@company.com",
+                class: "block w-full pl-10 pr-3 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all sm:text-sm" %>
+          </div>
+        </div>
 
-    <div class="text-center text-sm text-gray-600 ">
-      <%= render "devise/shared/links" %>
+        <div class="space-y-2">
+          <%= f.label :password, class: "block text-sm font-medium text-gray-700" %>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+              <i class="fa-solid fa-key text-sm"></i>
+            </div>
+            <%= f.password_field :password, 
+                autocomplete: "current-password", 
+                placeholder: "••••••••",
+                class: "block w-full pl-10 pr-3 py-3 bg-gray-50 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all sm:text-sm" %>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between py-2">
+          <% if devise_mapping.rememberable? %>
+            <div class="flex items-center">
+              <%= f.check_box :remember_me, class: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500" %>
+              <%= f.label :remember_me, class: "ml-2 block text-sm text-gray-600" %>
+            </div>
+          <% end %>
+
+          <div class="text-sm">
+            <%= link_to "Forgot password?", new_password_path(resource_name), class: "font-medium text-blue-600 hover:text-blue-500 transition-colors" %>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <%= f.submit "Sign In", class: "w-full py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer" %>
+        </div>
+      <% end %>
+
+      <div class="mt-8 pt-6 border-t border-gray-100 text-center">
+        <p class="text-sm text-gray-500">
+          Don't have an account? 
+          <%= link_to "Contact Administrator", "#", class: "font-medium text-blue-600 hover:text-blue-500 transition-colors" %>
+        </p>
+      </div>
+    </div>
+    
+    <!-- Footer Links -->
+    <div class="mt-8 text-center text-gray-400 text-xs font-medium">
+      <p>&copy; <%= Time.now.year %> CLED India. All rights reserved.</p>
     </div>
   </div>
 </div>
-</div>
+
+<style>
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+  .animate-shake {
+    animation: shake 0.4s ease-in-out;
+  }
+</style>
