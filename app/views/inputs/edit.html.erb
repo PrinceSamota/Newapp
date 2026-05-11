@@ -173,44 +173,9 @@
   </div>
 </div>
 <script>
-function initTomSelect(element) {
-  if (!element || element.tomselect) return;
-
-  new TomSelect(element, {
-    create: false,
-    allowEmptyOption: true,
-    placeholder: element.dataset.placeholder || "Select Option",
-    hidePlaceholder: true,
-    persist: false,
-
-    searchField: ["text"],
-    maxOptions: 1000,
-
-    sortField: {
-      field: "text",
-      direction: "asc"
-    },
-
-    onInitialize: function () {
-      this.clear();
-    },
-
-    onDropdownOpen: function () {
-      if (this.getValue()) {
-        this.clear(true);
-      }
-    }
-  });
-}
-
-
-function initAllTomSelects() {
-  document.querySelectorAll(".tom-select").forEach((select) => {
-    initTomSelect(select);
-  });
-}
-
-
+// ===============================
+// INIT INPUT FORM (ADD / REMOVE ROW)
+// ===============================
 function initInputForm() {
   const itemContainer = document.getElementById("input-items");
   const detailContainer = document.getElementById("input-details");
@@ -227,96 +192,7 @@ function initInputForm() {
   let itemIndex = itemContainer.querySelectorAll(".input-item-row").length;
   let detailIndex = detailContainer.querySelectorAll(".input-detail-row").length;
 
-
-  addItemButton?.addEventListener("click", function () {
-    if (!itemTemplate) return;
-
-    const newRowHTML = itemTemplate.replace(/NEW_INDEX/g, itemIndex);
-    itemContainer.insertAdjacentHTML("beforeend", newRowHTML);
-
-    const newRow = itemContainer.lastElementChild;
-
-    newRow.querySelectorAll(".tom-select").forEach((select) => {
-      initTomSelect(select);
-    });
-
-    itemIndex++;
-  });
-
-  addDetailButton?.addEventListener("click", function () {
-    if (!detailTemplate) return;
-
-    const newDetailHTML = detailTemplate.replace(/NEW_DETAIL_INDEX/g, detailIndex);
-    detailContainer.insertAdjacentHTML("beforeend", newDetailHTML);
-
-    const newRow = detailContainer.lastElementChild;
-
-    newRow.querySelectorAll(".tom-select").forEach((select) => {
-      initTomSelect(select);
-    });
-
-    detailIndex++;
-  });
-
-  itemContainer?.addEventListener("click", function (e) {
-    if (e.target.classList.contains("remove-input-item")) {
-      const row = e.target.closest(".input-item-row");
-
-      const destroyInput = row.querySelector('input[name*="[_destroy]"]');
-      if (destroyInput) {
-        destroyInput.value = "1";
-        row.style.display = "none";
-      } else {
-        row.remove();
-      }
-    }
-  });
-
-
-  detailContainer?.addEventListener("click", function (e) {
-    if (e.target.classList.contains("remove-input-detail")) {
-      const row = e.target.closest(".input-detail-row");
-
-      const destroyInput = row.querySelector('input[name*="[_destroy]"]');
-      if (destroyInput) {
-        destroyInput.value = "1";
-        row.style.display = "none";
-      } else {
-        row.remove();
-      }
-    }
-  });
-}
-
-document.addEventListener("turbo:load", () => {
-  initInputForm();
-  initAllTomSelects();
-});
-
-document.addEventListener("turbo:frame-load", () => {
-  initAllTomSelects();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  initInputForm();
-  initAllTomSelects();
-});
-function initInputForm() {
-  const itemContainer = document.getElementById("input-items");
-  const detailContainer = document.getElementById("input-details");
-
-  if (!itemContainer || itemContainer.dataset.initialized === "true") return;
-  itemContainer.dataset.initialized = "true";
-
-  const itemTemplate = document.getElementById("input-item-template")?.innerHTML;
-  const detailTemplate = document.getElementById("input-detail-template")?.innerHTML;
-
-  const addItemButton = document.getElementById("add-input-item");
-  const addDetailButton = document.getElementById("add-input-detail");
-
-  let itemIndex = itemContainer.querySelectorAll(".input-item-row").length;
-  let detailIndex = detailContainer.querySelectorAll(".input-detail-row").length;
-
+  // ✅ ADD INPUT ITEM
   addItemButton?.addEventListener("click", function () {
     if (!itemTemplate) return;
 
@@ -324,12 +200,11 @@ function initInputForm() {
     itemContainer.insertAdjacentHTML("beforeend", html);
 
     const newRow = itemContainer.lastElementChild;
-
     initAllTomSelects(newRow);
-
     itemIndex++;
   });
 
+  // ✅ ADD INPUT DETAIL
   addDetailButton?.addEventListener("click", function () {
     if (!detailTemplate) return;
 
@@ -337,26 +212,46 @@ function initInputForm() {
     detailContainer.insertAdjacentHTML("beforeend", html);
 
     const newRow = detailContainer.lastElementChild;
-
     initAllTomSelects(newRow);
-
     detailIndex++;
   });
 
+  // ✅ REMOVE ITEM (Correctly sets _destroy for existing, removes for new)
   itemContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-item")) {
-      e.target.closest(".input-item-row")?.remove();
+      const row = e.target.closest(".input-item-row");
+      const idInput = row.querySelector('input[name*="[id]"]');
+      const destroyInput = row.querySelector('input[name*="[_destroy]"]');
+      
+      if (idInput && destroyInput) {
+        destroyInput.value = "1";
+        row.style.display = "none";
+      } else {
+        row.remove();
+      }
     }
   });
 
+  // ✅ REMOVE DETAIL (Correctly sets _destroy for existing, removes for new)
   detailContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-detail")) {
-      e.target.closest(".input-detail-row")?.remove();
+      const row = e.target.closest(".input-detail-row");
+      const idInput = row.querySelector('input[name*="[id]"]');
+      const destroyInput = row.querySelector('input[name*="[_destroy]"]');
+      
+      if (idInput && destroyInput) {
+        destroyInput.value = "1";
+        row.style.display = "none";
+      } else {
+        row.remove();
+      }
     }
   });
 }
 
-
+// ===============================
+// TOM SELECT INIT
+// ===============================
 function initTomSelect(element) {
   if (!element || element.tomselect) return;
 
@@ -368,39 +263,13 @@ function initTomSelect(element) {
     persist: false,
     searchField: ["text"],
     maxOptions: 1000,
-
     sortField: {
       field: "text",
       direction: "asc"
-    },
-
-    onInitialize: function () {
-      if (this.getValue()) {
-        this.control_input.placeholder = "";
-      }
-    },
-
-    onChange: function (value) {
-      if (value) {
-        this.control_input.placeholder = "";
-      } else {
-        this.control_input.placeholder =
-          element.dataset.placeholder || "Select Option";
-      }
-    },
-
-    onDropdownOpen: function () {
-      this.control_input.placeholder = "";
-    },
-
-    onBlur: function () {
-      if (!this.getValue()) {
-        this.control_input.placeholder =
-          element.dataset.placeholder || "Select Option";
-      }
     }
   });
 }
+
 function initAllTomSelects(scope = document) {
   scope.querySelectorAll("select[data-placeholder]").forEach((select) => {
     if (!select.tomselect) {
@@ -409,7 +278,9 @@ function initAllTomSelects(scope = document) {
   });
 }
 
-
+// ===============================
+// TURBO + PAGE LOAD SUPPORT
+// ===============================
 document.addEventListener("turbo:load", () => {
   initInputForm();
   initAllTomSelects();
@@ -424,12 +295,13 @@ document.addEventListener("DOMContentLoaded", () => {
   initAllTomSelects();
 });
 
-
+// ===============================
+// MARKS NO AJAX
+// ===============================
 function submitNewMarksNo(button) {
   const wrapper = button.closest("[id^='marks_no_section']");
   const input = wrapper.querySelector("#new_marks_no_name");
   const errorsDiv = wrapper.querySelector("#marks-no-errors");
-
   const name = input.value;
 
   if (!name) {
@@ -449,7 +321,6 @@ function submitNewMarksNo(button) {
     .then(res => res.text())
     .then(html => {
       wrapper.innerHTML = html;
-
       initAllTomSelects(wrapper);
     })
     .catch(() => {

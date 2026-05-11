@@ -235,17 +235,35 @@ function initInputForm() {
     detailIndex++;
   });
 
-  // ✅ REMOVE ITEM
+  // ✅ REMOVE ITEM (Correctly sets _destroy for existing, removes for new)
   itemContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-item")) {
-      e.target.closest(".input-item-row")?.remove();
+      const row = e.target.closest(".input-item-row");
+      const idInput = row.querySelector('input[name*="[id]"]');
+      const destroyInput = row.querySelector('input[name*="[_destroy]"]');
+      
+      if (idInput && destroyInput) {
+        destroyInput.value = "1";
+        row.style.display = "none";
+      } else {
+        row.remove();
+      }
     }
   });
 
-  // ✅ REMOVE DETAIL
+  // ✅ REMOVE DETAIL (Correctly sets _destroy for existing, removes for new)
   detailContainer.addEventListener("click", function (e) {
     if (e.target.classList.contains("remove-input-detail")) {
-      e.target.closest(".input-detail-row")?.remove();
+      const row = e.target.closest(".input-detail-row");
+      const idInput = row.querySelector('input[name*="[id]"]');
+      const destroyInput = row.querySelector('input[name*="[_destroy]"]');
+      
+      if (idInput && destroyInput) {
+        destroyInput.value = "1";
+        row.style.display = "none";
+      } else {
+        row.remove();
+      }
     }
   });
 }
@@ -265,18 +283,11 @@ function initTomSelect(element) {
     persist: false,
     searchField: ["text"],
     maxOptions: 1000,
-
     sortField: {
       field: "text",
       direction: "asc"
-    },
-
-    onDropdownOpen: function () {
-      if (this.getValue()) {
-        this.clear(true);
-      }
     }
-  }).clear();
+  });
 }
 
 

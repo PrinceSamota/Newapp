@@ -9,8 +9,8 @@ class Input < ApplicationRecord
   has_many :input_items, dependent: :destroy, inverse_of: :input
   has_many :input_details, dependent: :destroy, inverse_of: :input
 
-  accepts_nested_attributes_for :input_items, allow_destroy: true
-  accepts_nested_attributes_for :input_details, allow_destroy: true
+  accepts_nested_attributes_for :input_items, allow_destroy: true, reject_if: :all_blank
+  accepts_nested_attributes_for :input_details, allow_destroy: true, reject_if: :all_blank
 
   validates_associated :input_items
   validates_associated :input_details
