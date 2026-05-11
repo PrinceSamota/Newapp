@@ -202,12 +202,29 @@ document.addEventListener("turbo:load", function () {
     let hasMissingVarNo = false;
     let hasMissingReceivingDate = false;
     let hasInsufficientStock = false;
+    const skuTotals = {};
   
     orderItems.forEach(item => {
+      // Check for hidden or deleted items (ignore them)
+      if (item.style.display === "none") return;
+  
+      const grid = item.querySelector("[data-sku]");
+      if (!grid) return;
+  
+      const sku = grid.dataset.sku;
+      const qty = parseInt(grid.dataset.requiredQty) || 0;
+      const available = parseInt(grid.dataset.availableStock) || 0;
+  
+      if (!skuTotals[sku]) {
+        skuTotals[sku] = { required: 0, available: available, rows: [] };
+      }
+      skuTotals[sku].required += qty;
+      skuTotals[sku].rows.push(item);
+  
+      // Previous checks (MFG date, etc.)
       const mfgEl = item.querySelector("[data-field='mfg-date']");
       const varEl = item.querySelector("[data-field='var-no']");
       const recvEl = item.querySelector("[data-field='order-receiving-date']");
-      const stockErrorEl = item.querySelector("[data-insufficient-stock='true']");
   
       const mfgText = mfgEl ? mfgEl.textContent.trim() : "";
       const varText = varEl ? varEl.textContent.trim() : "";
@@ -237,10 +254,32 @@ document.addEventListener("turbo:load", function () {
       } else {
         recvEl?.classList.remove("border", "border-red-500", "rounded-md", "px-1");
       }
+    });
   
-      if (stockErrorEl) {
-        hasInsufficientStock = true;
-      }
+    // Check combined stock
+    Object.keys(skuTotals).forEach(sku => {
+      const data = skuTotals[sku];
+      const isInsufficient = data.required > data.available;
+      
+      data.rows.forEach(item => {
+        const errorEl = item.querySelector(".combined-stock-error");
+        if (errorEl) {
+          if (isInsufficient) {
+            hasInsufficientStock = true;
+            errorEl.classList.remove("hidden");
+            errorEl.dataset.insufficientStock = "true";
+            
+            if (data.rows.length > 1) {
+              errorEl.innerHTML = `🚫 Not enough combined stock for SKU <strong>${sku}</strong>. <br> Required (All Rows): ${data.required}, Available: ${data.available}`;
+            } else {
+              errorEl.innerHTML = `🚫 Not enough stock for SKU <strong>${sku}</strong>. <br> Required: ${data.required}, Available: ${data.available}`;
+            }
+          } else {
+            errorEl.classList.add("hidden");
+            errorEl.dataset.insufficientStock = "false";
+          }
+        }
+      });
     });
   
     const shouldDisable = isDispatching && (
