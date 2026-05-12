@@ -247,14 +247,6 @@ function initInputForm() {
       }
     });
 
-    // Collect from details
-    detailContainer.querySelectorAll(".input-detail-row").forEach(row => {
-      if (row.style.display !== "none") {
-        const val = row.querySelector('input[name*="[order_no]"]')?.value;
-        if (val) orderNos.add(val.trim());
-      }
-    });
-
     const field = document.getElementById("order_no_from_dispatch_field");
     if (field) {
       field.value = Array.from(orderNos).join(", ");

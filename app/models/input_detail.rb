@@ -6,5 +6,5 @@ class InputDetail < ApplicationRecord
   belongs_to :hsn, optional: true
 
   validates :marks_no_id, :no_of_packages, :type_of_package_id,
-            :complete_description_of_good_id, :hsn_id, :qty_pcs, :price, :order_no, presence: true
+            :complete_description_of_good_id, :hsn_id, :qty_pcs, :price, presence: true
 end
