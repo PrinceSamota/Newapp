@@ -166,9 +166,13 @@ class OrderEntriesController < ApplicationController
           if sub_boms.empty?
             @links << serial_number_url(id: sno)
           else
-            sub_boms.each_with_index do |sub_bom, index|
-              bom_str = sub_bom.item_master.bill_of_material&.bom_number&.gsub(/[^0-9]/, '')&.to_i || (index + 1)
-              @links << serial_number_url(id: "#{sno}_#{bom_str}")
+            unit_counter = 1
+            sub_boms.each do |sub_bom|
+              qty = sub_bom.quantity.to_i
+              qty.times do
+                @links << serial_number_url(id: "#{sno}_#{unit_counter}")
+                unit_counter += 1
+              end
             end
           end
         end
