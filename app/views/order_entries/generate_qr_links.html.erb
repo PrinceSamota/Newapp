@@ -14,18 +14,6 @@
     <% end %>
   </div>
 
-  <% if flash[:notice].present? %>
-    <div class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-medium shadow-sm">
-      <%= flash[:notice] %>
-    </div>
-  <% end %>
-
-  <% if flash[:alert].present? %>
-    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm font-medium shadow-sm">
-      <%= flash[:alert] %>
-    </div>
-  <% end %>
-
   <% if @links.any? %>
     <div class="space-y-6 max-h-[600px] overflow-y-auto pr-2">
       <% @links.each_with_index do |group, index| %>
@@ -69,26 +57,15 @@
                     </a>
                   </div>
                   
-                  <div class="flex items-center gap-3 self-end md:self-auto flex-wrap md:flex-nowrap">
-                    <!-- Inline Form for Article Override -->
-                    <%= form_with url: update_article_link_order_entry_path(@order_entry), method: :post, local: true, class: "inline-flex items-center gap-1" do |f| %>
-                      <%= f.hidden_field :serial_no, value: child[:sno] %>
-                      <div class="flex flex-col">
-                        <span class="text-[9px] uppercase font-bold tracking-wider text-gray-400">Article No</span>
-                        <input type="text" name="article_no" list="article-suggestions" value="<%= child[:article_no] == 'N/A' ? '' : child[:article_no] %>" placeholder="Set Article" class="text-xs border border-gray-300 rounded-lg px-2.5 py-1.5 focus:ring-2 focus:ring-blue-100 focus:border-blue-500 bg-white w-32 font-mono" />
-                      </div>
-                      <button type="submit" class="text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-lg px-3 py-1.5 mt-3 shadow-sm transition duration-150 cursor-pointer">
-                        Save
-                      </button>
-                    <% end %>
-
-                    <!-- Copy Button -->
-                    <div class="flex flex-col mt-3 md:mt-0">
-                      <span class="text-[9px] text-transparent hidden md:block">Action</span>
-                      <button onclick="navigator.clipboard.writeText('<%= child[:url] %>')" class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 rounded-lg px-3 py-2 transition duration-150 flex-shrink-0" title="Copy child link">
-                        <i class="fa-solid fa-copy"></i> Copy
-                      </button>
+                  <div class="flex items-center gap-4 self-end md:self-auto">
+                    <div class="text-right">
+                      <span class="text-[10px] uppercase font-bold tracking-wider text-gray-400 block">Article No</span>
+                      <span class="text-xs font-mono font-bold text-gray-600 bg-gray-100 px-2.5 py-1 rounded border border-gray-200"><%= child[:article_no] %></span>
                     </div>
+
+                    <button onclick="navigator.clipboard.writeText('<%= child[:url] %>')" class="inline-flex items-center gap-1.5 text-xs font-bold text-gray-600 hover:text-blue-600 bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-200 rounded-lg px-3 py-2 transition duration-150 flex-shrink-0" title="Copy child link">
+                      <i class="fa-solid fa-copy"></i> Copy
+                    </button>
                   </div>
                 </div>
               <% end %>
@@ -98,13 +75,6 @@
         </div>
       <% end %>
     </div>
-
-    <!-- Datalist Suggestions -->
-    <datalist id="article-suggestions">
-      <% @item_articles.each do |art| %>
-        <option value="<%= art %>"></option>
-      <% end %>
-    </datalist>
 
     <div class="mt-6 pt-5 border-t border-gray-100 flex justify-end">
       <button onclick="copyAllLinks()" class="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition duration-200 cursor-pointer">
