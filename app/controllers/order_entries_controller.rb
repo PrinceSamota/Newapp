@@ -151,10 +151,12 @@ class OrderEntriesController < ApplicationController
 
     def generate_qr_links
       @order_entry = OrderEntry.with_deleted.find(params[:id])
+      @item_masters = ItemMaster.includes(:raw_material_stock_items,:category,:measurement,:fuse_type,:loop,:item_type,:profile,:wattage,:voltage,:length,:cct,:cover_type,:extra).all
+      @item_articles = ItemMaster.pluck(:article_number).compact.uniq
       @links = []
       
-      start_sno = @order_entry.start_serial_no.to_i
-      end_sno = @order_entry.end_serial_no.to_i
+      start_sno = @order_entry.start_serial_no.to_s.gsub(/\D/, '').to_i
+      end_sno = @order_entry.end_serial_no.to_s.gsub(/\D/, '').to_i
       
       if start_sno > 0 && end_sno >= start_sno
         fg = FinishedGood.find_by(sku_id: @order_entry.sku_number)
@@ -163,19 +165,117 @@ class OrderEntriesController < ApplicationController
         sub_boms = bom_items.select { |item| item.item_master&.is_bom? }
         
         (start_sno..end_sno).each do |sno|
-          if sub_boms.empty?
-            @links << serial_number_url(id: sno)
-          else
+          parent_link = {
+            url: serial_number_url(id: sno),
+            article_no: @order_entry.article_no.presence || "N/A",
+            type: :parent,
+            sno: sno.to_s
+          }
+          
+          children = []
+          unless sub_boms.empty?
             unit_counter = 1
             sub_boms.each do |sub_bom|
               qty = sub_bom.quantity.to_i
               qty.times do
-                @links << serial_number_url(id: "#{sno}_#{unit_counter}")
+                im_id = sub_bom.item_master&.id
+                sno_key = "#{sno}_#{unit_counter}"
+                mapped_article = @order_entry.qr_links_map&.[](sno_key) || @order_entry.qr_links_map&.[](im_id.to_s)
+                children << {
+                  url: serial_number_url(id: sno_key),
+                  sno: sno_key,
+                  article_no: mapped_article.presence || sub_bom.item_master&.article_number.presence || "N/A",
+                  type: :component,
+                  item_master_id: im_id
+                }
                 unit_counter += 1
               end
             end
           end
+          
+          @links << {
+            parent: parent_link,
+            children: children
+          }
         end
+      end
+
+      respond_to do |format|
+        format.html
+        format.json do
+          flat_links = []
+          @links.each do |group|
+            flat_links << {
+              link: group[:parent][:url],
+              article_number: group[:parent][:article_no],
+              parent_link: nil,
+              parent_article_number: nil,
+              type: "parent"
+            }
+            group[:children].each do |child|
+              flat_links << {
+                link: child[:url],
+                article_number: child[:article_no],
+                parent_link: group[:parent][:url],
+                parent_article_number: group[:parent][:article_no],
+                type: "component",
+                sno: child[:sno]
+              }
+            end
+          end
+          render json: flat_links
+        end
+      end
+    end
+
+    def update_article_link
+      @order_entry = OrderEntry.with_deleted.find(params[:id])
+      
+      if params[:serial_no].present?
+        serial_no = params[:serial_no]
+        article_no = params[:article_no]
+        
+        @order_entry.qr_links_map ||= {}
+        @order_entry.qr_links_map[serial_no] = article_no
+        
+        if @order_entry.save
+          notice_msg = "Component article linked successfully for serial number #{serial_no}."
+        else
+          alert_msg = "Failed to link component article: #{@order_entry.errors.full_messages.join(', ')}"
+        end
+      elsif params[:item_master_id].present?
+        item_master_id = params[:item_master_id]
+        article_no = params[:article_no]
+        
+        @order_entry.qr_links_map ||= {}
+        @order_entry.qr_links_map[item_master_id.to_s] = article_no
+        
+        if @order_entry.save
+          notice_msg = "Component article linked successfully."
+        else
+          alert_msg = "Failed to link component article: #{@order_entry.errors.full_messages.join(', ')}"
+        end
+      else
+        @order_entry.article_no = params[:article_no]
+        decoded = ArticleDecoder.new(params[:article_no]).decode
+        allowed_keys = %i[ptype profile voltage wattage length cct cover_type]
+        allowed_keys.each do |key|
+          if decoded[key].present?
+            @order_entry.send("#{key}=", decoded[key])
+          end
+        end
+        
+        if @order_entry.save
+          notice_msg = "Parent article updated successfully."
+        else
+          alert_msg = "Failed to update parent article: #{@order_entry.errors.full_messages.join(', ')}"
+        end
+      end
+      
+      if alert_msg.present?
+        redirect_to generate_qr_links_order_entry_path(@order_entry), alert: alert_msg
+      else
+        redirect_to generate_qr_links_order_entry_path(@order_entry), notice: notice_msg
       end
     end
 

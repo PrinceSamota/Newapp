@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     member do
       patch :archive
       get :generate_qr_links
+      post :update_article_link
     end
   end
 get '/boms/find_by_sku', to: 'bill_of_materials#find_by_sku'

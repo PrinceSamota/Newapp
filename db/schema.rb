@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_05_11_094423) do
+ActiveRecord::Schema[7.2].define(version: 2026_06_08_194330) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -448,6 +448,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_05_11_094423) do
     t.integer "driver_revision_id"
     t.datetime "deleted_at"
     t.date "order_receiving_date"
+    t.json "qr_links_map", default: {}
     t.index ["deleted_at"], name: "index_order_entries_on_deleted_at"
   end
 
