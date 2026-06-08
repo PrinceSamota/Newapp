@@ -235,8 +235,9 @@ class OrderEntriesController < ApplicationController
         serial_no = params[:serial_no]
         article_no = params[:article_no]
         
-        @order_entry.qr_links_map ||= {}
-        @order_entry.qr_links_map[serial_no] = article_no
+        map = (@order_entry.qr_links_map || {}).dup
+        map[serial_no] = article_no
+        @order_entry.qr_links_map = map
         
         if @order_entry.save
           notice_msg = "Component article linked successfully for serial number #{serial_no}."
@@ -247,8 +248,9 @@ class OrderEntriesController < ApplicationController
         item_master_id = params[:item_master_id]
         article_no = params[:article_no]
         
-        @order_entry.qr_links_map ||= {}
-        @order_entry.qr_links_map[item_master_id.to_s] = article_no
+        map = (@order_entry.qr_links_map || {}).dup
+        map[item_master_id.to_s] = article_no
+        @order_entry.qr_links_map = map
         
         if @order_entry.save
           notice_msg = "Component article linked successfully."
