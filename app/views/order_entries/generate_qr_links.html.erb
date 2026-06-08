@@ -59,7 +59,7 @@
                   
                   <div class="flex items-center gap-4 self-end md:self-auto">
                     <%= form_with url: update_article_link_order_entry_path(@order_entry), method: :post, local: true, class: "flex items-center gap-2" do |f| %>
-                      <%= f.hidden_field :serial_no, value: child[:sno] %>
+                      <%= f.hidden_field :item_master_id, value: child[:item_master_id] %>
                       <div class="flex flex-col">
                         <span class="text-[10px] uppercase font-bold tracking-wider text-gray-400 block mb-0.5">Article No</span>
                         <div class="flex items-center gap-1.5">

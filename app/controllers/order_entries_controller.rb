@@ -249,11 +249,14 @@ class OrderEntriesController < ApplicationController
         article_no = params[:article_no]
         
         map = (@order_entry.qr_links_map || {}).dup
+        map.keys.each do |key|
+          map.delete(key) if key.include?('_')
+        end
         map[item_master_id.to_s] = article_no
         @order_entry.qr_links_map = map
         
         if @order_entry.save
-          notice_msg = "Component article linked successfully."
+          notice_msg = "Component article linked successfully for all child components."
         else
           alert_msg = "Failed to link component article: #{@order_entry.errors.full_messages.join(', ')}"
         end
