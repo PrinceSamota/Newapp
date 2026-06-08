@@ -29,7 +29,7 @@
       <div>
         <div class="flex justify-between items-center mb-1">
            <span class="text-sm font-bold text-gray-600">Article No:</span>
-           <span class="font-bold text-gray-800"><%= @order_entry.article_no %></span>
+           <span class="font-bold text-gray-800"><%= @display_article_no.presence || "N/A" %></span>
         </div>
         
         <h3 class="text-lg font-bold text-gray-800 mt-6 mb-3 border-b border-gray-200 pb-2">Overview</h3>
@@ -37,43 +37,43 @@
         <ul class="space-y-4">
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Manufacturing Date</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.mfg_date.present? ? Date.parse(@order_entry.mfg_date.to_s).strftime("%d/%b/%Y") : "N/A" %></span>
+            <span class="text-gray-800 font-semibold"><%= @display_mfg_date.present? ? (Date.parse(@display_mfg_date.to_s).strftime("%d/%b/%Y") rescue "N/A") : "N/A" %></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Item Type</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.item_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_item_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Length</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.length.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_length.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Profile</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.profile.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_profile.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">CCT</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.cct.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_cct.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Cover Type</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.cover_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_cover_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Voltage</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.voltage.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_voltage.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Wattage</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.wattage.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_wattage.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Driver Rev. No.</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.driver_revision&.name.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_driver_revision.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
           <li class="flex justify-between items-center">
             <span class="text-gray-500 text-sm font-medium">Additional</span>
-            <span class="text-gray-800 font-semibold"><%= @order_entry.fuse_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
+            <span class="text-gray-800 font-semibold"><%= @display_fuse_type.presence || "N/A" %> <i class="fa-solid fa-chevron-right text-gray-300 ml-1 text-xs"></i></span>
           </li>
         </ul>
       </div>

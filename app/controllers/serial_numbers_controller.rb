@@ -57,17 +57,22 @@ class SerialNumbersController < ApplicationController
                 article_to_decode = overridden_article.presence || original_item_master.article_number
                 
                 if article_to_decode.present?
-                  @component_item_master = ItemMaster.new(original_item_master.attributes)
-                  @component_item_master.article_number = article_to_decode
-                  
-                  decoded = ArticleDecoder.new(article_to_decode).decode
-                  @component_item_master.item_type = ItemType.find_or_create_by(name: decoded[:type]) if decoded[:type].present?
-                  @component_item_master.voltage = Voltage.find_or_create_by(name: decoded[:voltage]) if decoded[:voltage].present?
-                  @component_item_master.length = Length.find_or_create_by(name: decoded[:length]) if decoded[:length].present?
-                  @component_item_master.cct = Cct.find_or_create_by(name: decoded[:kelvin]) if decoded[:kelvin].present?
-                  @component_item_master.cover_type = CoverType.find_or_create_by(name: decoded[:cover]) if decoded[:cover].present?
-                  @component_item_master.wattage = Wattage.find_or_create_by(name: decoded[:watt]) if decoded[:watt].present?
-                  @component_item_master.profile = Profile.find_or_create_by(name: decoded[:profile]) if decoded[:profile].present?
+                  db_item_master = ItemMaster.find_by(article_number: article_to_decode)
+                  if db_item_master.present?
+                    @component_item_master = db_item_master
+                  else
+                    @component_item_master = ItemMaster.new(original_item_master.attributes)
+                    @component_item_master.article_number = article_to_decode
+                    
+                    decoded = ArticleDecoder.new(article_to_decode).decode
+                    @component_item_master.item_type = ItemType.find_or_create_by(name: decoded[:type]) if decoded[:type].present?
+                    @component_item_master.voltage = Voltage.find_or_create_by(name: decoded[:voltage]) if decoded[:voltage].present?
+                    @component_item_master.length = Length.find_or_create_by(name: decoded[:length]) if decoded[:length].present?
+                    @component_item_master.cct = Cct.find_or_create_by(name: decoded[:kelvin]) if decoded[:kelvin].present?
+                    @component_item_master.cover_type = CoverType.find_or_create_by(name: decoded[:cover]) if decoded[:cover].present?
+                    @component_item_master.wattage = Wattage.find_or_create_by(name: decoded[:watt]) if decoded[:watt].present?
+                    @component_item_master.profile = Profile.find_or_create_by(name: decoded[:profile]) if decoded[:profile].present?
+                  end
                 else
                   @component_item_master = original_item_master
                 end
@@ -84,6 +89,32 @@ class SerialNumbersController < ApplicationController
           @sno_found = false
         end
       end
+    end
+
+    if @order_entry.present? && @sno_found
+      if @component_item_master.present?
+        @display_article_no = @component_item_master.article_number
+        @display_item_type = @component_item_master.item_type&.name
+        @display_length = @component_item_master.length&.name
+        @display_profile = @component_item_master.profile&.name
+        @display_cct = @component_item_master.cct&.name
+        @display_cover_type = @component_item_master.cover_type&.name
+        @display_voltage = @component_item_master.voltage&.name
+        @display_wattage = @component_item_master.wattage&.name
+        @display_fuse_type = @component_item_master.fuse_type&.name
+      else
+        @display_article_no = @order_entry.article_no
+        @display_item_type = @order_entry.item_type
+        @display_length = @order_entry.length
+        @display_profile = @order_entry.profile
+        @display_cct = @order_entry.cct
+        @display_cover_type = @order_entry.cover_type
+        @display_voltage = @order_entry.voltage
+        @display_wattage = @order_entry.wattage
+        @display_fuse_type = @order_entry.fuse_type
+      end
+      @display_mfg_date = @order_entry.mfg_date
+      @display_driver_revision = @order_entry.driver_revision&.name
     end
     
     render layout: 'public_minimal'
