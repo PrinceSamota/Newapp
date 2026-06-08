@@ -54,11 +54,13 @@ class SerialNumbersController < ApplicationController
               
               if original_item_master.present?
                 overridden_article = @order_entry.qr_links_map&.[](@sno_input) || @order_entry.qr_links_map&.[](original_item_master.id.to_s)
-                if overridden_article.present?
+                article_to_decode = overridden_article.presence || original_item_master.article_number
+                
+                if article_to_decode.present?
                   @component_item_master = ItemMaster.new(original_item_master.attributes)
-                  @component_item_master.article_number = overridden_article
+                  @component_item_master.article_number = article_to_decode
                   
-                  decoded = ArticleDecoder.new(overridden_article).decode
+                  decoded = ArticleDecoder.new(article_to_decode).decode
                   @component_item_master.item_type = ItemType.find_or_create_by(name: decoded[:type]) if decoded[:type].present?
                   @component_item_master.voltage = Voltage.find_or_create_by(name: decoded[:voltage]) if decoded[:voltage].present?
                   @component_item_master.length = Length.find_or_create_by(name: decoded[:length]) if decoded[:length].present?
