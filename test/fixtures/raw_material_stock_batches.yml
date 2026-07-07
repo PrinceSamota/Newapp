@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  supplier_name: MyString
+  supplier_id: 1
   receiving_date: 2025-06-21
   supplier_invoice_number: MyString
 
 two:
-  supplier_name: MyString
+  supplier_id: 2
   receiving_date: 2025-06-21
   supplier_invoice_number: MyString
