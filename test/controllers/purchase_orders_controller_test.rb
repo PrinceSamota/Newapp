@@ -50,7 +50,7 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     item = item_masters(:one)
     initial_stock = item.opening_stock
 
-    assert_difference("RawMaterialInward.count", 1) do
+    assert_difference("RawMaterialStockBatch.count", 1) do
       post convert_to_rmi_purchase_order_path(@po), params: {
         quantity_to_convert: 300,
         receiving_date: Date.today.to_s
@@ -62,10 +62,13 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 700, @po.remaining_quantity
     assert_equal "Open", @po.status
 
-    rmi = RawMaterialInward.last
-    assert_equal @po.id, rmi.purchase_order_id
-    assert_equal 300, rmi.receiving_quantity
-    assert_equal "Test Supplier", rmi.supplier_name
+    batch = RawMaterialStockBatch.last
+    assert_equal @po.id, batch.purchase_order_id
+    assert_equal 1, batch.raw_material_stock_items.count
+
+    stock_item = batch.raw_material_stock_items.first
+    assert_equal 300, stock_item.receiving_quantity
+    assert_equal "SKU-A", stock_item.sku_id
 
     # Verify stock updated
     item.reload
@@ -74,8 +77,8 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     # Verify PaperTrail version is created and linked
     version = item.versions.last
     assert_not_nil version
-    assert_equal "RawMaterialInward", version.source_type
-    assert_equal rmi.id, version.source_id
+    assert_equal "RawMaterialStockBatch", version.source_type
+    assert_equal batch.id, version.source_id
     assert_equal "Converted from PO: #{@po.po_number}", version.reason
   end
 
@@ -93,7 +96,7 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Open", @po.status
 
     # Final conversion to close PO
-    assert_difference("RawMaterialInward.count", 1) do
+    assert_difference("RawMaterialStockBatch.count", 1) do
       post convert_to_rmi_purchase_order_path(@po), params: {
         quantity_to_convert: 300,
         receiving_date: Date.today.to_s

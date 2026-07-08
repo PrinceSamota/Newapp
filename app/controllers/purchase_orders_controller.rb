@@ -65,15 +65,25 @@ class PurchaseOrdersController < ApplicationController
     end
 
     ActiveRecord::Base.transaction do
-      # Create Raw Material Inward record
-      rmi = RawMaterialInward.create!(
-        supplier_name: @purchase_order.supplier_name,
+      supplier = Supplier.find_by(name: @purchase_order.supplier_name)
+      item = ItemMaster.find_by(sku_id: @purchase_order.sku_id)
+
+      # Create Raw Material Stock Batch record
+      batch = RawMaterialStockBatch.create!(
+        supplier_id: supplier&.id,
         receiving_date: Date.parse(receiving_date),
-        sku_id: @purchase_order.sku_id,
-        item_name: @purchase_order.item_name,
+        supplier_invoice_number: @purchase_order.po_number,
+        purchase_order_id: @purchase_order.id
+      )
+
+      # Create Raw Material Stock Item record
+      stock_item = RawMaterialStockItem.create!(
+        raw_material_stock_batch_id: batch.id,
+        item_master_id: item&.id,
         receiving_quantity: quantity_to_convert,
         purchase_price: @purchase_order.purchase_price,
-        purchase_order_id: @purchase_order.id
+        sku_id: @purchase_order.sku_id,
+        item_name: @purchase_order.item_name
       )
 
       # Update Purchase Order details
@@ -87,7 +97,6 @@ class PurchaseOrdersController < ApplicationController
       @purchase_order.save!
 
       # Update SKU stock & generate/link history
-      item = ItemMaster.find_by(sku_id: @purchase_order.sku_id)
       if item
         previous_stock = item.opening_stock.to_i
         new_stock = previous_stock + quantity_to_convert
@@ -98,11 +107,11 @@ class PurchaseOrdersController < ApplicationController
         
         item.update!(opening_stock: new_stock)
         
-        # Update the created version to point to RawMaterialInward
+        # Update the created version to point to RawMaterialStockBatch
         if item.versions.last
           item.versions.last.update!(
-            source_type: "RawMaterialInward",
-            source_id: rmi.id
+            source_type: "RawMaterialStockBatch",
+            source_id: batch.id
           )
         end
       end

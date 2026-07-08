@@ -1,5 +1,5 @@
 class PurchaseOrder < ApplicationRecord
-  has_many :raw_material_inwards, dependent: :nullify
+  has_many :raw_material_stock_batches, dependent: :nullify
 
   validates :po_number, :po_date, :supplier_name, :sku_id, :item_name, presence: true
   validates :quantity, presence: true, numericality: { only_integer: true, greater_than: 0 }

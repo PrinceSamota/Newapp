@@ -139,8 +139,8 @@
       <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
         <h2 class="text-xl font-bold text-gray-800 mb-6">Inward Receipts (RMI)</h2>
 
-        <% related_rmis = @purchase_order.raw_material_inwards %>
-        <% if related_rmis.present? %>
+        <% related_batches = @purchase_order.raw_material_stock_batches.includes(:raw_material_stock_items) %>
+        <% if related_batches.present? %>
           <div class="overflow-hidden border border-gray-200 rounded-lg">
             <table class="min-w-full divide-y divide-gray-200 text-xs">
               <thead class="bg-gray-50 text-gray-500 uppercase font-semibold">
@@ -148,15 +148,19 @@
                   <th class="px-4 py-3 text-center">Receiving Date</th>
                   <th class="px-4 py-3 text-center">Quantity Received</th>
                   <th class="px-4 py-3 text-center">Purchase Price</th>
+                  <th class="px-4 py-3 text-center">Invoice No.</th>
                 </tr>
               </thead>
               <tbody class="bg-white divide-y divide-gray-100">
-                <% related_rmis.each do |rmi| %>
-                  <tr class="hover:bg-gray-50">
-                    <td class="px-4 py-3 text-center"><%= rmi.receiving_date&.strftime("%d %b %Y") %></td>
-                    <td class="px-4 py-3 text-center font-semibold text-gray-800"><%= rmi.receiving_quantity %></td>
-                    <td class="px-4 py-3 text-center"><%= rmi.purchase_price %></td>
-                  </tr>
+                <% related_batches.each do |batch| %>
+                  <% batch.raw_material_stock_items.each do |item| %>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-center"><%= batch.receiving_date&.strftime("%d %b %Y") %></td>
+                      <td class="px-4 py-3 text-center font-semibold text-gray-800"><%= item.receiving_quantity %></td>
+                      <td class="px-4 py-3 text-center"><%= item.purchase_price %></td>
+                      <td class="px-4 py-3 text-center"><%= batch.supplier_invoice_number %></td>
+                    </tr>
+                  <% end %>
                 <% end %>
               </tbody>
             </table>
