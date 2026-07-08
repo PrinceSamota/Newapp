@@ -7,6 +7,9 @@ one:
   sale_price: 150.0
   sku_id: "SKU-A"
   is_bom: false
+  category: one
+  measurement: one
+  minimum_stock_level: 5
 
 two:
   item_name: "Item B"
@@ -15,3 +18,6 @@ two:
   sale_price: 300.0
   sku_id: "SKU-B"
   is_bom: false
+  category: one
+  measurement: one
+  minimum_stock_level: 5

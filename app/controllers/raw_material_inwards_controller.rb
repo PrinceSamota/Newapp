@@ -1,6 +1,7 @@
 class RawMaterialInwardsController < ApplicationController
   def index
     @raw_material_inwards = RawMaterialInward.all.order(created_at: :desc)
+    @raw_material_inward = RawMaterialInward.new
   end
 
   def new

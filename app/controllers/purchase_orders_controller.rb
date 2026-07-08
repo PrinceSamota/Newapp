@@ -1,14 +1,17 @@
 class PurchaseOrdersController < ApplicationController
   before_action :set_purchase_order, only: [:edit, :update, :convert_to_rmi]
+  before_action :set_item_masters_and_suppliers, only: [:index, :new, :create, :edit, :update]
 
   def index
-    @purchase_orders = PurchaseOrder.all.order(created_at: :desc)
+    @q = PurchaseOrder.ransack(params[:q])
+    @purchase_orders = @q.result.order(created_at: :desc)
     @purchase_order = PurchaseOrder.new
   end
 
   def new
     @purchase_order = PurchaseOrder.new
-    @purchase_orders = PurchaseOrder.all.order(created_at: :desc)
+    @q = PurchaseOrder.ransack(params[:q])
+    @purchase_orders = @q.result.order(created_at: :desc)
   end
 
   def create
@@ -19,7 +22,8 @@ class PurchaseOrdersController < ApplicationController
     if @purchase_order.save
       redirect_to purchase_orders_path, notice: "Purchase Order created successfully."
     else
-      @purchase_orders = PurchaseOrder.all.order(created_at: :desc)
+      @q = PurchaseOrder.ransack(params[:q])
+      @purchase_orders = @q.result.order(created_at: :desc)
       render :new, status: :unprocessable_entity
     end
   end
@@ -62,7 +66,7 @@ class PurchaseOrdersController < ApplicationController
 
     ActiveRecord::Base.transaction do
       # Create Raw Material Inward record
-      RawMaterialInward.create!(
+      rmi = RawMaterialInward.create!(
         supplier_name: @purchase_order.supplier_name,
         receiving_date: Date.parse(receiving_date),
         sku_id: @purchase_order.sku_id,
@@ -81,6 +85,27 @@ class PurchaseOrdersController < ApplicationController
       end
 
       @purchase_order.save!
+
+      # Update SKU stock & generate/link history
+      item = ItemMaster.find_by(sku_id: @purchase_order.sku_id)
+      if item
+        previous_stock = item.opening_stock.to_i
+        new_stock = previous_stock + quantity_to_convert
+        
+        # Set PaperTrail request parameters
+        PaperTrail.request.whodunnit = current_user&.id
+        PaperTrail.request.controller_info = { reason: "Converted from PO: #{@purchase_order.po_number}" }
+        
+        item.update!(opening_stock: new_stock)
+        
+        # Update the created version to point to RawMaterialInward
+        if item.versions.last
+          item.versions.last.update!(
+            source_type: "RawMaterialInward",
+            source_id: rmi.id
+          )
+        end
+      end
     end
 
     redirect_to edit_purchase_order_path(@purchase_order), notice: "Successfully converted #{quantity_to_convert} to Raw Material Inward."
@@ -92,6 +117,11 @@ class PurchaseOrdersController < ApplicationController
 
   def set_purchase_order
     @purchase_order = PurchaseOrder.find(params[:id])
+  end
+
+  def set_item_masters_and_suppliers
+    @item_masters = ItemMaster.all
+    @suppliers = Supplier.all
   end
 
   def purchase_order_params

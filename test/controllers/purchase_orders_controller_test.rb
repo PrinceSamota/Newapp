@@ -7,8 +7,8 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
       po_number: "PO-X001",
       po_date: Date.today,
       supplier_name: "Test Supplier",
-      sku_id: "TEST-SKU",
-      item_name: "Test Item",
+      sku_id: "SKU-A",
+      item_name: "Item A",
       quantity: 1000,
       purchase_price: 12.50,
       delivered_quantity: 0,
@@ -47,6 +47,9 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
 
   test "should partially convert purchase order to rmi" do
     sign_in @user
+    item = item_masters(:one)
+    initial_stock = item.opening_stock
+
     assert_difference("RawMaterialInward.count", 1) do
       post convert_to_rmi_purchase_order_path(@po), params: {
         quantity_to_convert: 300,
@@ -63,11 +66,24 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal @po.id, rmi.purchase_order_id
     assert_equal 300, rmi.receiving_quantity
     assert_equal "Test Supplier", rmi.supplier_name
+
+    # Verify stock updated
+    item.reload
+    assert_equal initial_stock + 300, item.opening_stock
+
+    # Verify PaperTrail version is created and linked
+    version = item.versions.last
+    assert_not_nil version
+    assert_equal "RawMaterialInward", version.source_type
+    assert_equal rmi.id, version.source_id
+    assert_equal "Converted from PO: #{@po.po_number}", version.reason
   end
 
   test "should fully convert purchase order to rmi and close it" do
     sign_in @user
-    
+    item = item_masters(:one)
+    initial_stock = item.opening_stock
+
     # First partial conversion
     post convert_to_rmi_purchase_order_path(@po), params: {
       quantity_to_convert: 700,
@@ -88,6 +104,10 @@ class PurchaseOrdersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 1000, @po.delivered_quantity
     assert_equal 0, @po.remaining_quantity
     assert_equal "Closed", @po.status
+
+    # Verify stock updated completely (700 + 300 = 1000 added)
+    item.reload
+    assert_equal initial_stock + 1000, item.opening_stock
   end
 
   test "should fail conversion if quantity exceeds remaining" do

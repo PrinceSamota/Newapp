@@ -1,97 +1,96 @@
-<!-- Purchase Order Form -->
-<div class="bg-white p-8 rounded-2xl shadow-lg max-w-full mx-auto mt-6 overflow-auto">
-  <%= form_with model: @purchase_order, url: purchase_orders_path, local: true do |form| %>
-    <div class="flex flex-col lg:flex-row lg:items-end gap-6">
-      <!-- Purchase Order No -->
-      <div class="flex-1 min-w-[200px]">
-        <%= form.label :po_number, "Purchase Order No", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-        <%= form.text_field :po_number, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+<% content_for(:title, "Purchase Orders") %>
+
+<div class="max-w-8xl mx-auto p-6 space-y-8">
+  <!-- Header & Search Section -->
+  <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-200">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2 font-bold text-2xl text-gray-800">
+        <i class="fa-solid fa-file-invoice-dollar text-blue-600"></i>
+        <span>Purchase Order Management</span>
       </div>
 
-      <!-- PO Date -->
-      <div class="flex-1 min-w-[200px]">
-        <%= form.label :po_date, "PO Date", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-        <%= form.date_field :po_date, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-      </div>
-
-      <!-- Supplier Name -->
-      <div class="flex-1 min-w-[200px]">
-        <%= form.label :supplier_name, "Supplier Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-        <%= form.text_field :supplier_name, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-      </div>
-
-      <!-- SKU ID -->
-      <div class="flex-1 min-w-[200px]">
-        <%= form.label :sku_id, "SKU ID", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-        <%= form.text_field :sku_id, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-      </div>
-
-      <!-- Item Name -->
-      <div class="flex-1 min-w-[200px]">
-        <%= form.label :item_name, "Item Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-        <%= form.text_field :item_name, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-      </div>
-
-      <!-- Quantity -->
-      <div class="flex-1 min-w-[150px]">
-        <%= form.label :quantity, "Quantity", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-        <%= form.number_field :quantity, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-      </div>
-
-      <!-- Purchase Price -->
-      <div class="flex-1 min-w-[150px]">
-        <%= form.label :purchase_price, "Purchase Price", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-        <%= form.text_field :purchase_price, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-      </div>
-
-      <!-- Submit -->
-      <div class="mt-1 lg:mt-0">
-        <%= form.submit "Create",
-              class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-full shadow-md transition text-sm whitespace-nowrap cursor-pointer" %>
+      <!-- Ransack Search Form -->
+      <div class="w-full md:w-auto">
+        <%= search_form_for @q, url: purchase_orders_path, method: :get, class: "flex items-center gap-2 w-full md:max-w-md" do |f| %>
+          <div class="relative w-full md:w-80">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
+              <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <%= f.search_field :po_number_or_supplier_name_or_sku_id_or_item_name_cont,
+                  class: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm",
+                  placeholder: "Search PO, SKU, Supplier, Item..." %>
+          </div>
+          <%= f.submit "Search", class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-sm font-semibold cursor-pointer shadow" %>
+          <%= link_to "Clear", purchase_orders_path, class: "px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition text-sm font-semibold border border-gray-300" %>
+        <% end %>
       </div>
     </div>
-  <% end %>
-</div>
+  </div>
 
-<!-- Purchase Orders Table -->
-<div class="p-6 pt-12">
-  <h2 class="text-xl font-semibold mb-4">All Purchase Orders</h2>
+  <!-- Create Purchase Order Section -->
+  <div>
+    <h3 class="text-lg font-bold text-gray-700 mb-3 px-1 uppercase tracking-wider">Create New Purchase Order</h3>
+    <%= render "form" %>
+  </div>
 
-  <% if @purchase_orders.present? %>
-    <div class="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
-      <table class="min-w-full text-sm">
-        <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
-          <tr>
-            <% ["PO No.", "PO Date", "Supplier Name", "SKU ID", "Item Name", "Qty Ordered", "Qty Delivered", "Qty Remaining", "Status", "Actions"].each_with_index do |header, index| %>
-              <th class="px-6 py-3 text-center border-r border-gray-300 <%= 'last:border-r-0' if index == 9 %>"><%= header %></th>
-            <% end %>
-          </tr>
-        </thead>
-        <tbody class="bg-white">
-          <% @purchase_orders.each_with_index do |po, index| %>
-            <tr class="border-b border-gray-200 <%= index.even? ? '' : 'bg-gray-50' %>">
-              <td class="px-6 py-3 text-center border-r border-gray-200"><%= po.po_number %></td>
-              <td class="px-6 py-3 text-center border-r border-gray-200"><%= po.po_date&.strftime("%d %b %Y") %></td>
-              <td class="px-6 py-3 text-center border-r border-gray-200"><%= po.supplier_name %></td>
-              <td class="px-6 py-3 text-center border-r border-gray-200"><%= po.sku_id %></td>
-              <td class="px-6 py-3 text-center border-r border-gray-200"><%= po.item_name %></td>
-              <td class="px-6 py-3 text-center border-r border-gray-200"><%= po.quantity %></td>
-              <td class="px-6 py-3 text-center border-r border-gray-200"><%= po.delivered_quantity %></td>
-              <td class="px-6 py-3 text-center border-r border-gray-200"><%= po.remaining_quantity %></td>
-              <td class="px-6 py-3 text-center border-r border-gray-200">
-                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full <%= po.status == 'Open' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' %>">
-                  <%= po.status %>
-                </span>
-              </td>
-              <td class="px-6 py-3 text-center">
-                <%= link_to "Edit / Convert", edit_purchase_order_path(po), class: "text-blue-600 hover:text-blue-900 font-semibold" %>
-              </td>
+  <!-- All Purchase Orders Table -->
+  <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+      <h2 class="text-lg font-bold text-gray-800">All Purchase Orders</h2>
+      <span class="px-3 py-1 bg-blue-50 text-blue-700 text-xs font-bold rounded-full">
+        Total: <%= @purchase_orders.respond_to?(:total_entries) ? @purchase_orders.total_entries : @purchase_orders.count %>
+      </span>
+    </div>
+
+    <% if @purchase_orders.present? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-sm divide-y divide-gray-200">
+          <thead class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold">
+            <tr>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">PO No.</th>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">PO Date</th>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">Supplier Name</th>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">SKU ID</th>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">Item Name</th>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">Qty Ordered</th>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">Qty Delivered</th>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">Qty Remaining</th>
+              <th class="px-6 py-3.5 text-center border-r border-gray-200">Status</th>
+              <th class="px-6 py-3.5 text-center">Actions</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <% else %>
-    <p class="text-gray-600">No purchase orders found.</p>
-  <% end %>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-100">
+            <% @purchase_orders.each_with_index do |po, index| %>
+              <tr class="hover:bg-gray-50 <%= index.even? ? '' : 'bg-gray-50/30' %> transition-colors">
+                <td class="px-6 py-4 text-center border-r border-gray-100 font-semibold text-gray-800"><%= po.po_number %></td>
+                <td class="px-6 py-4 text-center border-r border-gray-100 text-gray-600"><%= po.po_date&.strftime("%d %b %Y") %></td>
+                <td class="px-6 py-4 text-center border-r border-gray-100 font-medium text-gray-700"><%= po.supplier_name %></td>
+                <td class="px-6 py-4 text-center border-r border-gray-100 text-blue-600"><%= po.sku_id %></td>
+                <td class="px-6 py-4 text-center border-r border-gray-100 text-gray-600"><%= po.item_name %></td>
+                <td class="px-6 py-4 text-center border-r border-gray-100 font-medium text-gray-800"><%= po.quantity %></td>
+                <td class="px-6 py-4 text-center border-r border-gray-100 text-green-700 font-medium"><%= po.delivered_quantity %></td>
+                <td class="px-6 py-4 text-center border-r border-gray-100 text-gray-800 font-semibold"><%= po.remaining_quantity %></td>
+                <td class="px-6 py-4 text-center border-r border-gray-100">
+                  <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-bold rounded-full <%= po.status == 'Open' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' %>">
+                    <%= po.status %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <%= link_to edit_purchase_order_path(po), class: "inline-flex items-center gap-1.5 text-blue-600 hover:text-blue-900 font-bold hover:underline" do %>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    <span>Edit / Convert</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    <% else %>
+      <div class="text-center py-12 text-gray-500">
+        <i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-300 block"></i>
+        No purchase orders found matching your search.
+      </div>
+    <% end %>
+  </div>
 </div>

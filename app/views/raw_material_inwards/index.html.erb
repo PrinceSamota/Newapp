@@ -56,14 +56,21 @@
       <table class="min-w-full text-sm">
         <thead class="bg-gray-100 text-gray-600 uppercase text-xs">
           <tr>
-            <% ["Supplier Name", "Receiving Date", "SKU ID", "Item Name", "Quantity", "Purchase Price"].each_with_index do |header, index| %>
-              <th class="px-6 py-3 text-center border-r border-gray-300 <%= 'last:border-r-0' if index == 5 %>"><%= header %></th>
+            <% ["PO No.", "Supplier Name", "Receiving Date", "SKU ID", "Item Name", "Quantity", "Purchase Price"].each_with_index do |header, index| %>
+              <th class="px-6 py-3 text-center border-r border-gray-300 <%= 'last:border-r-0' if index == 6 %>"><%= header %></th>
             <% end %>
           </tr>
         </thead>
         <tbody class="bg-white">
           <% @raw_material_inwards.each_with_index do |inward, index| %>
             <tr class="border-b border-gray-200 <%= index.even? ? '' : 'bg-gray-50' %>">
+              <td class="px-6 py-3 text-center border-r border-gray-200">
+                <% if inward.purchase_order.present? %>
+                  <%= link_to inward.purchase_order.po_number, edit_purchase_order_path(inward.purchase_order), class: "text-blue-600 hover:underline font-semibold" %>
+                <% else %>
+                  <span class="text-gray-400">-</span>
+                <% end %>
+              </td>
               <td class="px-6 py-3 text-center border-r border-gray-200"><%= inward.supplier_name %></td>
               <td class="px-6 py-3 text-center border-r border-gray-200"><%= inward.receiving_date %></td>
               <td class="px-6 py-3 text-center border-r border-gray-200"><%= inward.sku_id %></td>

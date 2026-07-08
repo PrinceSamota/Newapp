@@ -9,6 +9,14 @@ class PurchaseOrder < ApplicationRecord
 
   validate :delivered_quantity_cannot_exceed_quantity
 
+  def self.ransackable_attributes(auth_object = nil)
+    %w[po_number supplier_name sku_id item_name status]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["raw_material_inwards"]
+  end
+
   def remaining_quantity
     [quantity - delivered_quantity, 0].max
   end
