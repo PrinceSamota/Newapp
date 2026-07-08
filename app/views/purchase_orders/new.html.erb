@@ -1,0 +1,10 @@
+<div class="max-w-8xl mx-auto p-6 space-y-6">
+  <%= link_to purchase_orders_path, class: "inline-flex items-center gap-2 text-gray-700 bg-white hover:bg-gray-100 font-bold px-4 py-2 rounded-lg border border-gray-300 shadow-sm transition text-sm" do %>
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back</span>
+  <% end %>
+
+  <h2 class="text-2xl font-bold text-gray-800">Create New Purchase Order</h2>
+  
+  <%= render "form" %>
+</div>

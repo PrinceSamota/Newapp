@@ -1,0 +1,223 @@
+<div class="max-w-8xl mx-auto p-6 space-y-6">
+  <%= link_to purchase_orders_path, class: "inline-flex items-center gap-2 text-gray-700 bg-white hover:bg-gray-100 font-bold px-4 py-2 rounded-lg border border-gray-300 shadow-sm transition text-sm" do %>
+    <i class="fa-solid fa-arrow-left"></i>
+    <span>Back</span>
+  <% end %>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-4">
+    <!-- Left Column: Edit Purchase Order Form -->
+    <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+      <h2 class="text-xl font-bold text-gray-800 mb-6">Edit Purchase Order</h2>
+
+      <%= form_with model: @purchase_order, url: purchase_order_path(@purchase_order), method: :patch, local: true, id: "edit-po-form" do |form| %>
+        <% if @purchase_order.errors.any? %>
+          <div class="bg-red-50 text-red-800 p-4 rounded-lg mb-6 text-sm border border-red-200">
+            <h3 class="font-bold mb-1">Please correct the following errors:</h3>
+            <ul class="list-disc list-inside">
+              <% @purchase_order.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <%= form.label :po_number, "Purchase Order No", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+            <%= form.text_field :po_number, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+          </div>
+
+          <div>
+            <%= form.label :po_date, "PO Date", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+            <%= form.date_field :po_date, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+          </div>
+
+          <div class="md:col-span-2">
+            <%= form.label :supplier_name, "Supplier Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+            <%= form.select :supplier_name, 
+                  options_for_select(@suppliers.pluck(:name).uniq, @purchase_order.supplier_name), 
+                  { include_blank: "Select or type a Supplier" }, 
+                  { id: "po-edit-supplier-select", class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" } %>
+          </div>
+
+          <div>
+            <%= form.label :sku_id, "SKU ID", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+            <select name="purchase_order[sku_id]" id="po-edit-sku-select" class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
+              <option value="">Select SKU</option>
+              <% @item_masters.each do |item| %>
+                <option value="<%= item.sku_id %>" 
+                        data-item-name="<%= item.item_name %>" 
+                        data-purchase-price="<%= item.purchase_price %>"
+                        <%= 'selected' if @purchase_order.sku_id == item.sku_id %>>
+                  <%= item.sku_id %> (<%= item.item_name %>)
+                </option>
+              <% end %>
+            </select>
+          </div>
+
+          <div>
+            <%= form.label :item_name, "Item Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+            <%= form.text_field :item_name, id: "edit_purchase_order_item_name", class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm bg-gray-50" %>
+          </div>
+
+          <div>
+            <%= form.label :quantity, "Quantity", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+            <%= form.number_field :quantity, class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+          </div>
+
+          <div>
+            <%= form.label :purchase_price, "Purchase Price", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+            <%= form.text_field :purchase_price, id: "edit_purchase_order_purchase_price", class: "w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
+          </div>
+        </div>
+
+        <div class="mt-8 flex justify-end">
+          <%= form.submit "Update PO", class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition text-sm cursor-pointer" %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Right Column: Convert to RMI / Details -->
+    <div class="flex flex-col gap-8">
+      <!-- PO Status Panel -->
+      <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-xl font-bold text-gray-800">Status & Conversion</h2>
+          <span class="px-3 py-1 text-sm font-bold rounded-full <%= @purchase_order.status == 'Open' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+            <%= @purchase_order.status %>
+          </span>
+        </div>
+
+        <!-- Quantities Progress -->
+        <div class="space-y-4 mb-8">
+          <div class="flex justify-between text-sm text-gray-600">
+            <span>Ordered: <strong><%= @purchase_order.quantity %></strong></span>
+            <span>Delivered: <strong><%= @purchase_order.delivered_quantity %></strong></span>
+            <span>Remaining: <strong><%= @purchase_order.remaining_quantity %></strong></span>
+          </div>
+          
+          <!-- Progress Bar -->
+          <% percentage = (@purchase_order.delivered_quantity.to_f / @purchase_order.quantity * 100).clamp(0, 100).round %>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="bg-green-600 h-3 rounded-full transition-all duration-500" style="width: <%= percentage %>%"></div>
+          </div>
+          <div class="text-right text-xs text-gray-500"><%= percentage %>% fulfilled</div>
+        </div>
+
+        <% if @purchase_order.open? && @purchase_order.remaining_quantity > 0 %>
+          <h3 class="font-semibold text-gray-700 mb-4 text-sm uppercase tracking-wider">Convert to RMI (Raw Material Inward)</h3>
+          
+          <%= form_with url: convert_to_rmi_purchase_order_path(@purchase_order), method: :post, local: true, class: "space-y-6" do %>
+            <div>
+              <label for="quantity_to_convert" class="block text-sm font-semibold text-gray-700 mb-1">Quantity to Receive</label>
+              <input type="number" name="quantity_to_convert" id="quantity_to_convert" 
+                     value="<%= @purchase_order.remaining_quantity %>" 
+                     min="1" max="<%= @purchase_order.remaining_quantity %>"
+                     class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" />
+            </div>
+
+            <div>
+              <label for="receiving_date" class="block text-sm font-semibold text-gray-700 mb-1">Receiving Date</label>
+              <input type="date" name="receiving_date" id="receiving_date" 
+                     value="<%= Date.today.to_s %>"
+                     class="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" />
+            </div>
+
+            <div class="flex justify-end">
+              <%= submit_tag "Convert to RMI", class: "bg-green-600 hover:bg-green-700 text-white font-semibold py-2.5 px-6 rounded-lg shadow-md transition text-sm cursor-pointer" %>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg text-center text-gray-600 text-sm">
+            <i class="fa-solid fa-circle-check text-green-500 text-2xl mb-2 block"></i>
+            This Purchase Order is fully received and closed.
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Conversion History Table -->
+      <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Inward Receipts (RMI)</h2>
+
+        <% related_batches = @purchase_order.raw_material_stock_batches.includes(:raw_material_stock_items) %>
+        <% if related_batches.present? %>
+          <div class="overflow-hidden border border-gray-200 rounded-lg">
+            <table class="min-w-full divide-y divide-gray-200 text-xs">
+              <thead class="bg-gray-50 text-gray-500 uppercase font-semibold">
+                <tr>
+                  <th class="px-4 py-3 text-center">Receiving Date</th>
+                  <th class="px-4 py-3 text-center">Quantity Received</th>
+                  <th class="px-4 py-3 text-center">Purchase Price</th>
+                  <th class="px-4 py-3 text-center">Invoice No.</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-100">
+                <% related_batches.each do |batch| %>
+                  <% batch.raw_material_stock_items.each do |item| %>
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-4 py-3 text-center"><%= batch.receiving_date&.strftime("%d %b %Y") %></td>
+                      <td class="px-4 py-3 text-center font-semibold text-gray-800"><%= item.receiving_quantity %></td>
+                      <td class="px-4 py-3 text-center"><%= item.purchase_price %></td>
+                      <td class="px-4 py-3 text-center"><%= batch.supplier_invoice_number %></td>
+                    </tr>
+                  <% end %>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-gray-500 text-sm text-center py-4">No inward receipts yet.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("turbo:load", initializePoEditForm);
+  document.addEventListener("turbo:frame-load", initializePoEditForm);
+
+  function initializePoEditForm() {
+    const supplierSelect = document.getElementById("po-edit-supplier-select");
+    const skuSelect = document.getElementById("po-edit-sku-select");
+
+    // Initialize Supplier TomSelect (allows searching and adding custom new names)
+    if (supplierSelect && !supplierSelect.tomselect) {
+      new TomSelect(supplierSelect, {
+        create: true,
+        placeholder: "Select or type supplier...",
+        allowEmptyOption: true
+      });
+    }
+
+    // Initialize SKU TomSelect & set up autofill change handler
+    if (skuSelect && !skuSelect.tomselect) {
+      const tsSku = new TomSelect(skuSelect, {
+        create: false,
+        placeholder: "Search SKU ID...",
+        allowEmptyOption: true
+      });
+
+      tsSku.on('change', function(value) {
+        const option = skuSelect.querySelector(`option[value="${value}"]`);
+        if (option) {
+          const itemName = option.getAttribute("data-item-name");
+          const purchasePrice = option.getAttribute("data-purchase-price");
+
+          const nameInput = document.getElementById("edit_purchase_order_item_name");
+          const priceInput = document.getElementById("edit_purchase_order_purchase_price");
+
+          if (nameInput) nameInput.value = itemName || "";
+          if (priceInput) priceInput.value = purchasePrice || "";
+        }
+      });
+    }
+  }
+
+  // Fallback trigger if page loads directly
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initializePoEditForm);
+  } else {
+    initializePoEditForm();
+  }
+</script>

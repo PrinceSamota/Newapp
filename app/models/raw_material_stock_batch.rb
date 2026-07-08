@@ -5,6 +5,7 @@ class RawMaterialStockBatch < ApplicationRecord
     accepts_nested_attributes_for :raw_material_stock_items, allow_destroy: true
     has_paper_trail save_changes: true
     belongs_to :supplier, optional: true
+    belongs_to :purchase_order, optional: true
     delegate :name, to: :supplier, prefix: true, allow_nil: true
 
     def self.ransackable_attributes(auth_object = nil)
@@ -15,11 +16,12 @@ class RawMaterialStockBatch < ApplicationRecord
         created_at
         updated_at
         id
+        purchase_order_id
       ]
     end
   
     def self.ransackable_associations(auth_object = nil)
-      %w[supplier]
+      %w[supplier purchase_order]
     end
 
     def self.to_csv

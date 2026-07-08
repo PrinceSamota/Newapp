@@ -1,6 +1,9 @@
-# app/controllers/raw_material_inwards_controller.rb
-
 class RawMaterialInwardsController < ApplicationController
+  def index
+    @raw_material_inwards = RawMaterialInward.all.order(created_at: :desc)
+    @raw_material_inward = RawMaterialInward.new
+  end
+
   def new
     @raw_material_inward = RawMaterialInward.new
     @raw_material_inwards = RawMaterialInward.all.order(created_at: :desc)
@@ -9,7 +12,7 @@ class RawMaterialInwardsController < ApplicationController
   def create
     @raw_material_inward = RawMaterialInward.new(raw_material_inward_params)
     if @raw_material_inward.save
-      redirect_to new_raw_material_inward_path, notice: "Raw material inward created successfully."
+      redirect_to raw_material_inwards_path, notice: "Raw material inward created successfully."
     else
       @raw_material_inwards = RawMaterialInward.all.order(created_at: :desc)
       render :new, status: :unprocessable_entity
@@ -19,8 +22,6 @@ class RawMaterialInwardsController < ApplicationController
   private
   
   def raw_material_inward_params
-    params.require(:raw_material_inward).permit(:supplier_name, :receiving_date, :sku_id, :item_name, :receiving_quantity, :purchase_price)
+    params.require(:raw_material_inward).permit(:supplier_name, :receiving_date, :sku_id, :item_name, :receiving_quantity, :purchase_price, :purchase_order_id)
   end
-  
-  end
-  
+end

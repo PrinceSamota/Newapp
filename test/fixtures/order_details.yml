@@ -5,7 +5,7 @@ one:
   sheet_name: MyString
   article_no: MyString
   service: MyString
-  type: 
+  fixture_type: MyString
   suspension: MyString
   voltage: MyString
   length: MyString
@@ -33,7 +33,7 @@ two:
   sheet_name: MyString
   article_no: MyString
   service: MyString
-  type: 
+  fixture_type: MyString
   suspension: MyString
   voltage: MyString
   length: MyString

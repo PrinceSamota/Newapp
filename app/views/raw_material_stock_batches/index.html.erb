@@ -6,9 +6,9 @@
       <div class="w-full md:flex-1 md:flex md:justify-center md:order-2">
         <%= search_form_for @q, url: raw_material_stock_batches_path, method: :get, html: { class: "w-full flex items-center justify-center gap-2" } do |f| %>
           <div class="relative w-full md:w-96">
-            <%= f.search_field :supplier_name_or_supplier_invoice_number_cont,
+            <%= f.search_field :supplier_name_or_supplier_invoice_number_or_purchase_order_po_number_cont,
               class: "pl-10 pr-4 py-2 border border-gray-300 rounded-md text-sm w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500",
-              placeholder: "Search by Supplier or Invoice" %>
+              placeholder: "Search by Supplier, Invoice, or PO No." %>
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
               <i class="fa-solid fa-magnifying-glass"></i>
             </span>
@@ -41,6 +41,7 @@
     <table class="min-w-full text-sm">
       <thead class="bg-gray-100 text-gray-700 text-xs uppercase sticky top-0 z-10">
         <tr>
+          <th class="px-4 py-3 text-left border-r border-gray-300">PO No.</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">Supplier Name</th>
           <th class="px-4 py-3 text-left border-r border-gray-300">Receiving Date</th>
           <th class="px-4 py-3 text-left">Invoice Number</th>
@@ -54,6 +55,13 @@
             data-date="<%= batch.receiving_date.present? ? batch.receiving_date.strftime('%d-%m-%Y').downcase : '' %>"
             data-invoice="<%= batch.supplier_invoice_number.to_s.downcase %>"
           >
+            <td class="px-4 py-3 border-r border-gray-200">
+              <% if batch.purchase_order_id.present? && batch.purchase_order.present? %>
+                <%= link_to batch.purchase_order.po_number, edit_purchase_order_path(batch.purchase_order_id), class: "text-blue-600 hover:underline font-semibold" %>
+              <% else %>
+                <span class="text-gray-400">-</span>
+              <% end %>
+            </td>
             <td class="px-4 py-3 border-r border-gray-200">
               <%= link_to (batch.supplier&.name.presence || "N/A"), raw_material_stock_batch_path(batch), class: "text-blue-600 hover:underline font-medium" %>
             </td>

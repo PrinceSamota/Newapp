@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_06_08_194330) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_08_165751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -525,6 +525,20 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_08_194330) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "purchase_orders", force: :cascade do |t|
+    t.string "po_number"
+    t.date "po_date"
+    t.string "supplier_name"
+    t.string "sku_id"
+    t.string "item_name"
+    t.integer "quantity"
+    t.float "purchase_price"
+    t.integer "delivered_quantity", default: 0
+    t.string "status", default: "Open"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "raw_material_inwards", force: :cascade do |t|
     t.string "supplier_name"
     t.date "receiving_date"
@@ -534,6 +548,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_08_194330) do
     t.float "purchase_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "purchase_order_id"
   end
 
   create_table "raw_material_stock_batches", force: :cascade do |t|
@@ -542,6 +557,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_06_08_194330) do
     t.string "supplier_invoice_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "purchase_order_id"
   end
 
   create_table "raw_material_stock_items", force: :cascade do |t|

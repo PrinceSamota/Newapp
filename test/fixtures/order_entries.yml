@@ -5,9 +5,9 @@ one:
   article_no: MyString
   client: MyString
   target_date: 2025-07-08
-  ship_to_location: MyString
+  location_id: 1
   qty: 1
-  type: 
+  item_type: MyString
   profile: MyString
   voltage: MyString
   wattage: MyString
@@ -23,9 +23,9 @@ two:
   article_no: MyString
   client: MyString
   target_date: 2025-07-08
-  ship_to_location: MyString
+  location_id: 2
   qty: 1
-  type: 
+  item_type: MyString
   profile: MyString
   voltage: MyString
   wattage: MyString

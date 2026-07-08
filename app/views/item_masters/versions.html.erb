@@ -143,6 +143,10 @@
                     <%= link_to "Raw Material Stock ( #{version.source_id} )",
                                 raw_material_stock_batch_path(version.source_id),
                                 class: "text-green-600 underline hover:text-green-800" %>
+                  <% elsif version.source_type == "RawMaterialInward" %>
+                    <%= link_to "Raw Material Inward ( #{version.source_id} )",
+                                raw_material_inwards_path,
+                                class: "text-green-600 underline hover:text-green-800" %>
                   <% else %>
                     -
                   <% end %>                 

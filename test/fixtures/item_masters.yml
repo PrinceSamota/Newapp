@@ -1,35 +1,23 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  order: one
-  loop_color: MyString
-  client: MyString
-  status: MyString
-  profile: MyString
-  start_serial_no: MyString
-  end_serial_no: MyString
-  invoice_no: MyString
-  fuse: MyString
-  sku_no: MyString
-  tracking_no: MyString
-  current_status: MyString
-  manufacturing_date: MyString
-  dispatch_date: MyString
-  delivery_date: MyString
+  item_name: "Item A"
+  opening_stock: 10
+  purchase_price: 100.0
+  sale_price: 150.0
+  sku_id: "SKU-A"
+  is_bom: false
+  category: one
+  measurement: one
+  minimum_stock_level: 5
 
 two:
-  order: two
-  loop_color: MyString
-  client: MyString
-  status: MyString
-  profile: MyString
-  start_serial_no: MyString
-  end_serial_no: MyString
-  invoice_no: MyString
-  fuse: MyString
-  sku_no: MyString
-  tracking_no: MyString
-  current_status: MyString
-  manufacturing_date: MyString
-  dispatch_date: MyString
-  delivery_date: MyString
+  item_name: "Item B"
+  opening_stock: 5
+  purchase_price: 200.0
+  sale_price: 300.0
+  sku_id: "SKU-B"
+  is_bom: false
+  category: one
+  measurement: one
+  minimum_stock_level: 5

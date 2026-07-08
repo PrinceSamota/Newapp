@@ -75,6 +75,11 @@ get '/dispatches/new_item_row', to: 'dispatches#new_item_row'
 resources :suppliers, only: [:create]
 resources :locations, only: [:create]
   resources :bom_raw_materials
+  resources :purchase_orders do
+    member do
+      post :convert_to_rmi
+    end
+  end
   resources :raw_material_inwards
   resources :orders, only: [:show]
   resources :availabilities, only: [:new, :create, :index]
