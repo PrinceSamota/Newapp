@@ -5,15 +5,25 @@
     <% end %>
 
 <%= form_with model: @batch, id: "RMI-form", local: true do |form| %>
+    <%= form.hidden_field :purchase_order_id %>
     <div class="max-w-8xl mx-auto bg-white p-8 rounded-2xl shadow-xl space-y-8 mt-10">
   
       <!-- Header -->
-      <h2 class="text-2xl font-semibold text-gray-800">Raw Material Inward Stock Management</h2>
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-semibold text-gray-800">Raw Material Inward Stock Management</h2>
+        <% if @batch.purchase_order_id.present? %>
+          <div class="bg-indigo-50 border border-indigo-200 px-4 py-2 rounded-lg shadow-sm">
+            <span class="text-indigo-800 font-bold tracking-wider text-sm flex items-center gap-2">
+              <i class="fa-solid fa-file-invoice"></i> PO: <%= @batch.purchase_order&.po_number %>
+            </span>
+          </div>
+        <% end %>
+      </div>
   
       <!-- Supplier Info Section (Top) -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div>
-          <%= render partial: "uploads/supplier_dropdown", locals: { selected_supplier_id: nil, show_form: false, errors: [] } %>
+          <%= render partial: "uploads/supplier_dropdown", locals: { selected_supplier_id: @selected_supplier_id, show_form: false, errors: [], readonly: @batch.purchase_order_id.present? } %>
         </div>
     
         <div>
@@ -23,7 +33,7 @@
   
         <div>
           <label class="block text-sm font-medium text-gray-700">Supplier Invoice No.</label>
-          <%= form.text_field :supplier_invoice_number, placeholder: "Enter invoice number", class: "required-field mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
+          <%= form.text_field :supplier_invoice_number, placeholder: "Enter invoice number", required: true, class: "required-field mt-1 block w-full border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500" %>
         </div>
       </div>
   
@@ -41,11 +51,13 @@
       </div>
   
       <!-- Add Item Button -->
-      <div class="pt-2">
-        <button type="button" id="add-item" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md cursor-pointer">
-          + Add Item
-        </button>
-      </div>
+      <% unless @batch.purchase_order_id.present? %>
+        <div class="pt-2">
+          <button type="button" id="add-item" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md cursor-pointer">
+            + Add Item
+          </button>
+        </div>
+      <% end %>
       <div class="text-right text-lg font-semibold text-gray-800 mt-4">
   Total Price:  <span id="total-only-price">0.00</span>
 </div>

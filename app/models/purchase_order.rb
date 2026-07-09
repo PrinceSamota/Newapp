@@ -1,24 +1,18 @@
 class PurchaseOrder < ApplicationRecord
   has_many :raw_material_stock_batches, dependent: :nullify
+  has_many :purchase_order_items, dependent: :destroy
+  accepts_nested_attributes_for :purchase_order_items, allow_destroy: true
 
-  validates :po_number, :po_date, :supplier_name, :sku_id, :item_name, presence: true
-  validates :quantity, presence: true, numericality: { only_integer: true, greater_than: 0 }
-  validates :purchase_price, presence: true, numericality: { greater_than_or_equal_to: 0 }
-  validates :delivered_quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :po_number, :po_date, :supplier_name, presence: true
+  validates :po_number, uniqueness: true
   validates :status, presence: true, inclusion: { in: %w[Open Closed Completed] }
 
-  validate :delivered_quantity_cannot_exceed_quantity
-
   def self.ransackable_attributes(auth_object = nil)
-    %w[po_number supplier_name sku_id item_name status]
+    %w[po_number supplier_name status]
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["raw_material_inwards"]
-  end
-
-  def remaining_quantity
-    [quantity - delivered_quantity, 0].max
+    ["raw_material_stock_batches", "purchase_order_items"]
   end
 
   def closed?
@@ -27,13 +21,5 @@ class PurchaseOrder < ApplicationRecord
 
   def open?
     status == 'Open'
-  end
-
-  private
-
-  def delivered_quantity_cannot_exceed_quantity
-    if delivered_quantity.present? && quantity.present? && delivered_quantity > quantity
-      errors.add(:delivered_quantity, "cannot exceed the ordered quantity")
-    end
   end
 end

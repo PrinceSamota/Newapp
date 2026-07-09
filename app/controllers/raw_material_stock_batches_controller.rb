@@ -2,9 +2,30 @@ class RawMaterialStockBatchesController < ApplicationController
   before_action :set_item_masters, only: [:new, :create]
   def new
     @batch = RawMaterialStockBatch.new
-    @batch.raw_material_stock_items.build 
     @item_masters = ItemMaster.all
     @selected_supplier_id = params[:supplier_id]
+
+    if params[:po_number].present?
+      po = PurchaseOrder.find_by(po_number: params[:po_number])
+      if po
+        @batch.purchase_order_id = po.id
+        @batch.supplier_id = Supplier.find_by(name: po.supplier_name)&.id
+        @batch.receiving_date = po.po_date || Date.today
+
+        po.purchase_order_items.each do |po_item|
+          @batch.raw_material_stock_items.build(
+            sku_id: po_item.sku_id,
+            item_name: po_item.item_name,
+            receiving_quantity: po_item.remaining_quantity > 0 ? po_item.remaining_quantity : 0,
+            purchase_price: po_item.purchase_price
+          )
+        end
+      else
+        @batch.raw_material_stock_items.build
+      end
+    else
+      @batch.raw_material_stock_items.build
+    end
   end
 
   def show
@@ -93,7 +114,7 @@ end
   
   def batch_params
     params.require(:raw_material_stock_batch).permit(
-      :supplier_id, :receiving_date, :supplier_invoice_number,
+      :supplier_id, :receiving_date, :supplier_invoice_number, :purchase_order_id,
       raw_material_stock_items_attributes: [:id, :item_name, :sku_id, :receiving_quantity, :purchase_price, :item_master_id, :po_invoice, :stock_updated, :_destroy]
     )
   end

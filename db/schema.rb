@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_09_144024) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_09_172248) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -525,15 +525,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_09_144024) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "purchase_orders", force: :cascade do |t|
-    t.string "po_number"
-    t.date "po_date"
-    t.string "supplier_name"
+  create_table "purchase_order_items", force: :cascade do |t|
+    t.bigint "purchase_order_id", null: false
     t.string "sku_id"
     t.string "item_name"
     t.integer "quantity"
     t.float "purchase_price"
-    t.integer "delivered_quantity", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["purchase_order_id"], name: "index_purchase_order_items_on_purchase_order_id"
+  end
+
+  create_table "purchase_orders", force: :cascade do |t|
+    t.string "po_number"
+    t.date "po_date"
+    t.string "supplier_name"
     t.string "status", default: "Open"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -656,5 +662,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_09_144024) do
   add_foreign_key "inputs", "clients", column: "importer_name_id"
   add_foreign_key "inputs", "clients", column: "shipper_name_id"
   add_foreign_key "inputs", "users"
+  add_foreign_key "purchase_order_items", "purchase_orders"
   add_foreign_key "users", "organizations", column: "org_id"
 end
