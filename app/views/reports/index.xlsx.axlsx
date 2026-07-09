@@ -7,7 +7,7 @@ wb.add_worksheet(name: "Report") do |sheet|
 
   sheet.add_row []
   # Table Header
-  sheet.add_row ["Item Name", "SKU", "Category", "Quantity", "Stock", "Requirement"]
+  sheet.add_row ["Item Name", "SKU", "Category", "Quantity", "Stock", "Requirement", "PO Quantity"]
 
   # Table Data
   @report_data.each do |row|
@@ -17,7 +17,8 @@ wb.add_worksheet(name: "Report") do |sheet|
       row[:category],
       row[:quantity],
       row[:stock],
-      row[:requirement]
+      row[:requirement],
+      row[:po_quantity]
     ]
   end
 end

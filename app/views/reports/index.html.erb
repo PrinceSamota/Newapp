@@ -21,7 +21,7 @@
           <th class="px-4 py-2 border text-center">Order Quantity</th>
           <th class="px-4 py-2 border text-center">Stock</th>
           <th class="px-4 py-2 border text-center">Requirement</th>
-          
+          <th class="px-4 py-2 border text-center">PO Quantity</th>
         </tr>
       </thead>
       <tbody>
@@ -36,6 +36,7 @@
               <%= row[:requirement].to_i >= 0 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold' %>">
               <%= row[:requirement].abs %>
             </td>
+            <td class="px-4 py-2 border text-center text-blue-600 font-bold"><%= row[:po_quantity] %></td>
 
               <%#= row[:actual_required_qty] > 0 ? row[:actual_required_qty] : "-" %>
 
