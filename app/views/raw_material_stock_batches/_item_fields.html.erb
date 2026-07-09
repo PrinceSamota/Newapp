@@ -13,7 +13,8 @@
         field_name: "#{f.object_name}[sku_id]",
         items: @item_masters,
         value_method: :sku_id,
-        selected_value: f.object.sku_id %>
+        selected_value: f.object.sku_id,
+        readonly: f.object.raw_material_stock_batch&.purchase_order_id.present? %>
 </div>
 
   <!-- Item Name Dropdown -->
@@ -24,7 +25,8 @@
       field_name: f.object_name + '[item_name]',
       items: @item_masters,
       value_method: :item_name,
-      selected_value: f.object.item_name %>
+      selected_value: f.object.item_name,
+      readonly: f.object.raw_material_stock_batch&.purchase_order_id.present? %>
 </div>
   <!-- Quantity -->
   <div class="col-span-1">

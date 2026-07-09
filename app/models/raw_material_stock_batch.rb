@@ -8,6 +8,8 @@ class RawMaterialStockBatch < ApplicationRecord
     belongs_to :purchase_order, optional: true
     delegate :name, to: :supplier, prefix: true, allow_nil: true
 
+    validates :supplier_invoice_number, presence: true
+
     def self.ransackable_attributes(auth_object = nil)
       %w[
         supplier_id

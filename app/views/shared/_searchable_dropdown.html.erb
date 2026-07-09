@@ -5,10 +5,12 @@
     <input type="text"
            id="<%= field_id %>_search"
            placeholder="Search <%= label_text %>..."
-           onkeyup="filterDropdown('<%= field_id %>')"
-           onclick="toggleDropdown('<%= field_id %>')"
+           <%= "readonly" if local_assigns[:readonly] %>
+           onkeyup="<%= local_assigns[:readonly] ? '' : "filterDropdown('#{field_id}')" %>"
+           onclick="<%= local_assigns[:readonly] ? '' : "toggleDropdown('#{field_id}')" %>"
            autocomplete="off"
-           class="required-field w-full px-3 py-2 pr-10 border border-gray-300 rounded-md text-sm bg-white " />
+           value="<%= selected_value %>"
+           class="required-field w-full px-3 py-2 pr-10 border border-gray-300 rounded-md text-sm <%= local_assigns[:readonly] ? 'bg-gray-200 cursor-not-allowed' : 'bg-white' %>" />
 
     <button type="button"
             id="<%= field_id %>_clear"

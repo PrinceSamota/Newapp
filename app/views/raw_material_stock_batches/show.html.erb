@@ -29,11 +29,9 @@
             <tr>
               <th class="px-4 py-2 text-left">SKU ID</th>
               <th class="px-4 py-2 text-left">Item Name</th>
-              <th class="px-4 py-2 text-left">PO Invoice</th>
               <th class="px-4 py-2 text-left">Quantity</th>
               <th class="px-4 py-2 text-left">Price</th>
               <th class="px-4 py-2 text-right">Total</th>
-              <th class="px-4 py-2 text-center">Stock Status</th>
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-100">
@@ -52,12 +50,6 @@
               </td>
               
                 <td class="px-4 py-2">
-                  <%= item_fields.text_field :po_invoice,
-                    readonly: item_fields.object.stock_updated?,
-                    class: "w-full border-gray-300 p-2 rounded-md border #{item_fields.object.stock_updated? ? 'bg-gray-100 cursor-not-allowed text-gray-500' : 'focus:ring focus:ring-blue-200 bg-white text-gray-900'}",
-                    placeholder: "Invoice No." %>
-                </td>
-                <td class="px-4 py-2">
                   <%= item_fields.number_field :receiving_quantity,
                   readonly: item_fields.object.stock_updated?, step: "0.01",
                     class: "w-full border-gray-300 p-2 rounded-md border #{item_fields.object.stock_updated? ? 'bg-gray-100 cursor-not-allowed text-gray-500' : 'focus:ring focus:ring-blue-200 bg-white text-gray-900'}" %>
@@ -70,28 +62,15 @@
                 <td class="px-4 py-2">
                   <span class="item-total block text-right text-gray-700 font-medium pr-2">0.00</span>
                 </td>
-                <td class="px-4 py-2 text-center">
-                  <% if item_fields.object.stock_updated? %>
-                    <span class="px-2 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800">Updated</span>
-                  <% else %>
-                    <div class="flex flex-col items-center gap-1">
-                      <span class="px-2 py-1 text-xs font-bold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                      <button type="submit" name="update_item_id" value="<%= item_fields.object.id %>" class="mt-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded text-xs shadow-sm cursor-pointer transition-colors whitespace-nowrap">
-                        Update Stock
-                      </button>
-                    </div>
-                  <% end %>
-                </td>
               </tr>
             <% end %>
           </tbody>
           <tfoot>
             <tr>
-              <td colspan="5" class="px-4 py-2 text-right font-semibold text-gray-700">Total Price:</td>
+              <td colspan="3" class="px-4 py-2 text-right font-semibold text-gray-700">Total Price:</td>
               <td class="px-4 py-2">
                 <span id="grand-total" class="block text-right text-green-600 font-bold pr-2">0.00</span>
               </td>
-              <td class="px-4 py-2"></td>
             </tr>
           </tfoot>
         </table>

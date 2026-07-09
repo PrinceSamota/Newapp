@@ -2,18 +2,25 @@
   <div class="flex flex-col space-y-2">
     <div class="flex justify-between items-center">
       <label class="text-sm font-semibold text-gray-800">Supplier</label>
-      <button type="button"
-        onclick="document.getElementById('newSupplierForm').classList.toggle('hidden')"
-        class="text-blue-600 text-xl font-bold">+</button>
+      <% unless local_assigns[:readonly] %>
+        <button type="button"
+          onclick="document.getElementById('newSupplierForm').classList.toggle('hidden')"
+          class="text-blue-600 text-xl font-bold">+</button>
+      <% end %>
     </div>
 
+    <% if local_assigns[:readonly] %>
+      <%= hidden_field_tag "raw_material_stock_batch[supplier_id]", selected_supplier_id %>
+    <% end %>
+    
     <%= select_tag "raw_material_stock_batch[supplier_id]",
       options_from_collection_for_select(
         Supplier.where(org_id: current_user.org_id), :id, :name, selected_supplier_id
       ),
       id: "supplier-select",
       include_blank: "Select Supplier",
-      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm",
+      disabled: local_assigns[:readonly],
+      class: "required-field w-full rounded-md border border-gray-300 px-4 py-2 text-sm #{local_assigns[:readonly] ? 'bg-gray-200 cursor-not-allowed' : ''}",
       data: { placeholder: "Select Supplier" } %>
 
     <div id="newSupplierForm" class="mt-2 <%= 'hidden' unless show_form %>">
@@ -72,11 +79,9 @@
         persist: false,
         sortField: { field: 'text', direction: 'asc' },
         onDropdownOpen: function() {
-          if (this.getValue()) this.clear(true);
+          // Do not clear automatically
         }
       });
-
-      if (ts.getValue()) ts.clear(true);
     }
   }
 

@@ -34,8 +34,12 @@
 
     <h3 class="text-lg font-semibold text-gray-800 mb-4">Items</h3>
     <div id="po-items-container" class="space-y-4">
-      <% items_to_render = @po_items || [@purchase_order] %>
-      <% items_to_render.each_with_index do |item, idx| %>
+      <% 
+        if @purchase_order.purchase_order_items.empty?
+          @purchase_order.purchase_order_items.build
+        end
+      %>
+      <% @purchase_order.purchase_order_items.each_with_index do |item, idx| %>
         <%= render 'purchase_orders/po_item_fields', index: idx, item: (item.new_record? ? nil : item) %>
       <% end %>
     </div>
@@ -57,6 +61,61 @@
 <%= content_tag :script, raw(@item_masters.to_json), id: "po_item_masters_json", type: "application/json" %>
 
 <script>
+  window.attachPoItemEvents = function(row) {
+    const skuSelect = row.querySelector(".po-sku-select");
+    const nameSelect = row.querySelector(".po-item-name");
+    const priceInput = row.querySelector(".po-item-price");
+
+    let tsSku = null;
+    let tsName = null;
+
+    if (skuSelect && !skuSelect.tomselect) {
+      tsSku = new TomSelect(skuSelect, {
+        create: false,
+        placeholder: "Search SKU ID...",
+        allowEmptyOption: true
+      });
+    } else if (skuSelect) {
+      tsSku = skuSelect.tomselect;
+    }
+
+    if (nameSelect && !nameSelect.tomselect && nameSelect.tagName === 'SELECT') {
+      tsName = new TomSelect(nameSelect, {
+        create: false,
+        placeholder: "Search Item Name...",
+        allowEmptyOption: true
+      });
+    } else if (nameSelect) {
+      tsName = nameSelect.tomselect;
+    }
+
+    if (tsSku) {
+      tsSku.on('change', function(value) {
+        if (!value) return;
+        const match = window.poItemsData.find(i => String(i.sku_id) === String(value));
+        if (match) {
+          if (tsName && tsName.getValue() !== match.item_name) {
+            tsName.setValue(match.item_name, true); // true = silent to prevent infinite loop
+          }
+          if (priceInput) priceInput.value = match.purchase_price || "";
+        }
+      });
+    }
+
+    if (tsName) {
+      tsName.on('change', function(value) {
+        if (!value) return;
+        const match = window.poItemsData.find(i => String(i.item_name) === String(value));
+        if (match) {
+          if (tsSku && tsSku.getValue() !== match.sku_id) {
+            tsSku.setValue(match.sku_id, true);
+          }
+          if (priceInput) priceInput.value = match.purchase_price || "";
+        }
+      });
+    }
+  };
+
   document.addEventListener("turbo:load", function() {
     const supplierSelect = document.getElementById("po-supplier-select-multi");
     if (supplierSelect && !supplierSelect.tomselect) {
@@ -70,31 +129,9 @@
     const itemsDataEl = document.getElementById("po_item_masters_json");
     window.poItemsData = itemsDataEl ? JSON.parse(itemsDataEl.textContent) : [];
 
-    function attachItemEvents(row) {
-      const skuSelect = row.querySelector(".po-sku-select");
-      const nameInput = row.querySelector(".po-item-name");
-      const priceInput = row.querySelector(".po-item-price");
-
-      if (skuSelect && !skuSelect.tomselect) {
-        const tsSku = new TomSelect(skuSelect, {
-          create: false,
-          placeholder: "Search SKU ID...",
-          allowEmptyOption: true
-        });
-
-        tsSku.on('change', function(value) {
-          const match = window.poItemsData.find(i => String(i.sku_id) === String(value));
-          if (match) {
-            if (nameInput) nameInput.value = match.item_name || "";
-            if (priceInput) priceInput.value = match.purchase_price || "";
-          }
-        });
-      }
-    }
-
     const container = document.getElementById("po-items-container");
     if (container) {
-      container.querySelectorAll(".po-item-row").forEach(attachItemEvents);
+      container.querySelectorAll(".po-item-row").forEach(window.attachPoItemEvents);
     }
   });
 
@@ -113,32 +150,20 @@
           container.insertAdjacentHTML("beforeend", newRowHtml);
           
           const newRow = container.lastElementChild;
-          const skuSelect = newRow.querySelector(".po-sku-select");
-          const nameInput = newRow.querySelector(".po-item-name");
-          const priceInput = newRow.querySelector(".po-item-price");
-  
-          if (skuSelect && !skuSelect.tomselect) {
-            const tsSku = new TomSelect(skuSelect, {
-              create: false,
-              placeholder: "Search SKU ID...",
-              allowEmptyOption: true
-            });
-  
-            tsSku.on('change', function(value) {
-              const match = window.poItemsData.find(i => String(i.sku_id) === String(value));
-              if (match) {
-                if (nameInput) nameInput.value = match.item_name || "";
-                if (priceInput) priceInput.value = match.purchase_price || "";
-              }
-            });
-          }
+          window.attachPoItemEvents(newRow);
         }
       }
       
       if (e.target.closest(".remove-po-item")) {
         const row = e.target.closest(".po-item-row");
         if (row) {
-          row.remove();
+          const destroyInput = row.querySelector(".po-item-destroy");
+          if (destroyInput) {
+            destroyInput.value = "1";
+            row.style.display = "none";
+          } else {
+            row.remove();
+          }
         }
       }
     });

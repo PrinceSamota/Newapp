@@ -4,161 +4,39 @@ class PurchaseOrdersController < ApplicationController
 
   def index
     @q = PurchaseOrder.ransack(params[:q])
-    @purchase_orders = @q.result.order(created_at: :desc)
+    @purchase_orders = @q.result.distinct.order(created_at: :desc)
     @purchase_order = PurchaseOrder.new
   end
 
   def new
     @purchase_order = PurchaseOrder.new
     @q = PurchaseOrder.ransack(params[:q])
-    @purchase_orders = @q.result.order(created_at: :desc)
+    @purchase_orders = @q.result.distinct.order(created_at: :desc)
   end
 
   def create
-    items = params.dig(:purchase_order, :items)
+    @purchase_order = PurchaseOrder.new(purchase_order_params)
+    @purchase_order.status = 'Open'
 
-    if items.present?
-      po_number = params[:purchase_order][:po_number]
-      if PurchaseOrder.exists?(po_number: po_number)
-        @purchase_order = PurchaseOrder.new(params.require(:purchase_order).permit(:po_number, :po_date, :supplier_name))
-        @purchase_order.errors.add(:po_number, "has already been used")
-        @q = PurchaseOrder.ransack(params[:q])
-        @purchase_orders = @q.result.order(created_at: :desc)
-        render :new, status: :unprocessable_entity
-        return
-      end
-
-      success = true
-      ActiveRecord::Base.transaction do
-        items.each do |_, item_params|
-          po = PurchaseOrder.new(
-            po_number: params[:purchase_order][:po_number],
-            po_date: params[:purchase_order][:po_date],
-            supplier_name: params[:purchase_order][:supplier_name],
-            sku_id: item_params[:sku_id],
-            item_name: item_params[:item_name],
-            quantity: item_params[:quantity],
-            purchase_price: item_params[:purchase_price],
-            status: 'Open',
-            delivered_quantity: 0
-          )
-          unless po.save
-            success = false
-            @purchase_order = po # capture validation errors
-            raise ActiveRecord::Rollback
-          end
-        end
-      end
-
-      if success
-        redirect_to purchase_orders_path, notice: "Purchase Orders created successfully."
-      else
-        @q = PurchaseOrder.ransack(params[:q])
-        @purchase_orders = @q.result.order(created_at: :desc)
-        render :new, status: :unprocessable_entity
-      end
+    if @purchase_order.save
+      redirect_to purchase_orders_path, notice: "Purchase Order created successfully."
     else
-      @purchase_order = PurchaseOrder.new(purchase_order_params)
-      @purchase_order.status = 'Open'
-      @purchase_order.delivered_quantity = 0
-
-      if PurchaseOrder.exists?(po_number: @purchase_order.po_number)
-        @purchase_order.errors.add(:po_number, "has already been used")
-        @q = PurchaseOrder.ransack(params[:q])
-        @purchase_orders = @q.result.order(created_at: :desc)
-        render :new, status: :unprocessable_entity
-        return
-      end
-
-      if @purchase_order.save
-        redirect_to purchase_orders_path, notice: "Purchase Order created successfully."
-      else
-        @q = PurchaseOrder.ransack(params[:q])
-        @purchase_orders = @q.result.order(created_at: :desc)
-        render :new, status: :unprocessable_entity
-      end
+      @q = PurchaseOrder.ransack(params[:q])
+      @purchase_orders = @q.result.distinct.order(created_at: :desc)
+      render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @po_items = PurchaseOrder.where(po_number: @purchase_order.po_number).order(:id)
+    @po_items = @purchase_order.purchase_order_items
   end
 
   def update
-    items = params.dig(:purchase_order, :items)
-    po_number = params[:purchase_order][:po_number]
-    po_date = params[:purchase_order][:po_date]
-    supplier_name = params[:purchase_order][:supplier_name]
-
-    if items.present?
-      success = true
-      submitted_item_ids = []
-
-      ActiveRecord::Base.transaction do
-        items.each do |_, item_params|
-          if item_params[:id].present?
-            item = PurchaseOrder.find(item_params[:id])
-            if item.update(
-                 po_number: po_number,
-                 po_date: po_date,
-                 supplier_name: supplier_name,
-                 sku_id: item_params[:sku_id],
-                 item_name: item_params[:item_name],
-                 quantity: item_params[:quantity],
-                 purchase_price: item_params[:purchase_price]
-               )
-              # Re-evaluate status based on new quantities
-              item.update!(status: item.delivered_quantity >= item.quantity ? 'Closed' : 'Open')
-              submitted_item_ids << item.id
-            else
-              success = false
-              @purchase_order = item
-              raise ActiveRecord::Rollback
-            end
-          else
-            po = PurchaseOrder.new(
-              po_number: po_number,
-              po_date: po_date,
-              supplier_name: supplier_name,
-              sku_id: item_params[:sku_id],
-              item_name: item_params[:item_name],
-              quantity: item_params[:quantity],
-              purchase_price: item_params[:purchase_price],
-              status: 'Open',
-              delivered_quantity: 0
-            )
-            if po.save
-              submitted_item_ids << po.id
-            else
-              success = false
-              @purchase_order = po
-              raise ActiveRecord::Rollback
-            end
-          end
-        end
-
-        if success
-          # Delete items removed from the form if they haven't been received
-          PurchaseOrder.where(po_number: @purchase_order.po_number)
-                       .where.not(id: submitted_item_ids)
-                       .each do |missing_item|
-            if missing_item.delivered_quantity == 0
-              missing_item.destroy
-            end
-          end
-        end
-      end
-
-      if success
-        redirect_to purchase_orders_path, notice: "Purchase Order updated successfully."
-      else
-        @po_items = PurchaseOrder.where(po_number: @purchase_order.po_number).order(:id)
-        @item_masters = ItemMaster.all
-        @suppliers = Supplier.all
-        render :edit, status: :unprocessable_entity
-      end
+    if @purchase_order.update(purchase_order_params)
+      redirect_to purchase_orders_path, notice: "Purchase Order updated successfully."
     else
-      redirect_to edit_purchase_order_path(@purchase_order), alert: "No items provided."
+      @po_items = @purchase_order.purchase_order_items
+      render :edit, status: :unprocessable_entity
     end
   end
 
@@ -261,6 +139,6 @@ class PurchaseOrdersController < ApplicationController
   end
 
   def purchase_order_params
-    params.require(:purchase_order).permit(:po_number, :po_date, :supplier_name, :sku_id, :item_name, :quantity, :purchase_price)
+    params.require(:purchase_order).permit(:po_number, :po_date, :supplier_name, :status, purchase_order_items_attributes: [:id, :sku_id, :item_name, :quantity, :purchase_price, :_destroy])
   end
 end
