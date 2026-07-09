@@ -1,5 +1,5 @@
 <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
-  <%= form_with model: @purchase_order, url: @purchase_order.new_record? ? purchase_orders_path : purchase_order_path(@purchase_order), local: true, id: "po-form" do |form| %>
+  <%= form_with url: (@purchase_order.new_record? ? purchase_orders_path : purchase_order_path(@purchase_order)), method: (@purchase_order.new_record? ? :post : :patch), local: true, id: "po-multi-form" do |form| %>
     <% if @purchase_order.errors.any? %>
       <div class="bg-red-50 text-red-800 p-4 rounded-lg mb-6 text-sm border border-red-200">
         <h3 class="font-bold mb-1">Please correct the following errors:</h3>
@@ -11,80 +11,54 @@
       </div>
     <% end %>
 
-    <!-- Form Grid Layout -->
-    <div class="space-y-6">
-      <!-- Row 1: PO Number, PO Date, Supplier Name -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-          <%= form.label :po_number, "Purchase Order No", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-          <%= form.text_field :po_number, required: true, class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-        </div>
-
-        <div>
-          <%= form.label :po_date, "PO Date", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-          <%= form.date_field :po_date, required: true, class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-        </div>
-
-        <div>
-          <%= form.label :supplier_name, "Supplier Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-          <%= form.select :supplier_name, 
-                options_for_select(@suppliers.pluck(:name).uniq, @purchase_order.supplier_name), 
-                { include_blank: "Select or type a Supplier" }, 
-                { id: "po-supplier-select", class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" } %>
-        </div>
+    <!-- Supplier Info Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div>
+        <%= form.label :po_number, "Purchase Order No", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.text_field :po_number, name: "purchase_order[po_number]", value: @purchase_order.po_number, required: true, readonly: !@purchase_order.new_record?, class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm #{!@purchase_order.new_record? ? 'bg-gray-200 cursor-not-allowed' : 'bg-white'}" %>
       </div>
-
-      <!-- Row 2: SKU ID, Item Name, Quantity, Purchase Price -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <div>
-          <%= form.label :sku_id, "SKU ID", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-          <select name="purchase_order[sku_id]" id="po-sku-select" class="required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm">
-            <option value="">Select SKU</option>
-            <% @item_masters.each do |item| %>
-              <option value="<%= item.sku_id %>" 
-                      data-item-name="<%= item.item_name %>" 
-                      data-purchase-price="<%= item.purchase_price %>"
-                      <%= 'selected' if @purchase_order.sku_id == item.sku_id %>>
-                <%= item.sku_id %> (<%= item.item_name %>)
-              </option>
-            <% end %>
-          </select>
-        </div>
-
-        <div>
-          <%= form.label :item_name, "Item Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-          <%= form.text_field :item_name, id: "purchase_order_item_name", required: true, class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm bg-gray-50" %>
-        </div>
-
-        <div>
-          <%= form.label :quantity, "Quantity", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-          <%= form.number_field :quantity, required: true, min: 1, class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-        </div>
-
-        <div>
-          <%= form.label :purchase_price, "Purchase Price", class: "block text-sm font-semibold text-gray-700 mb-1" %>
-          <%= form.text_field :purchase_price, id: "purchase_order_purchase_price", required: true, class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
-        </div>
+      <div>
+        <%= form.label :po_date, "PO Date", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.date_field :po_date, name: "purchase_order[po_date]", value: @purchase_order.po_date, required: true, class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" %>
       </div>
-
-      <!-- Action Button -->
-      <div class="flex justify-end pt-4">
-        <%= form.submit @purchase_order.new_record? ? "Create PO" : "Update PO", 
-              class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-8 rounded-lg shadow-md transition text-sm cursor-pointer" %>
+      <div>
+        <%= form.label :supplier_name, "Supplier Name", class: "block text-sm font-semibold text-gray-700 mb-1" %>
+        <%= form.select :supplier_name, 
+              options_for_select(@suppliers.pluck(:name).uniq, @purchase_order.supplier_name), 
+              { include_blank: "Select or type a Supplier" }, 
+              { name: "purchase_order[supplier_name]", id: "po-supplier-select-multi", class: "required-field w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 py-2 px-4 shadow-sm text-sm" } %>
       </div>
+    </div>
+
+    <div class="border-t border-gray-300 mb-6"></div>
+
+    <h3 class="text-lg font-semibold text-gray-800 mb-4">Items</h3>
+    <div id="po-items-container" class="space-y-4">
+      <% items_to_render = @po_items || [@purchase_order] %>
+      <% items_to_render.each_with_index do |item, idx| %>
+        <%= render 'purchase_orders/po_item_fields', index: idx, item: (item.new_record? ? nil : item) %>
+      <% end %>
+    </div>
+
+    <div class="pt-6 flex justify-between items-center">
+      <button type="button" id="add-po-item" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-md cursor-pointer text-sm">
+        + Add Item
+      </button>
+      <%= form.submit (@purchase_order.new_record? ? "Create PO" : "Update PO"), class: "bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-8 rounded-lg shadow-md transition text-sm cursor-pointer" %>
     </div>
   <% end %>
 </div>
 
+<div id="po-item-template" style="display: none;">
+  <%= render 'purchase_orders/po_item_fields', index: 'INDEX' %>
+</div>
+
+<!-- Items Data for JS -->
+<%= content_tag :script, raw(@item_masters.to_json), id: "po_item_masters_json", type: "application/json" %>
+
 <script>
-  document.addEventListener("turbo:load", initializePoForm);
-  document.addEventListener("turbo:frame-load", initializePoForm);
-
-  function initializePoForm() {
-    const supplierSelect = document.getElementById("po-supplier-select");
-    const skuSelect = document.getElementById("po-sku-select");
-
-    // Initialize Supplier TomSelect (allows searching and adding custom new names)
+  document.addEventListener("turbo:load", function() {
+    const supplierSelect = document.getElementById("po-supplier-select-multi");
     if (supplierSelect && !supplierSelect.tomselect) {
       new TomSelect(supplierSelect, {
         create: true,
@@ -93,34 +67,80 @@
       });
     }
 
-    // Initialize SKU TomSelect & set up autofill change handler
-    if (skuSelect && !skuSelect.tomselect) {
-      const tsSku = new TomSelect(skuSelect, {
-        create: false,
-        placeholder: "Search SKU ID...",
-        allowEmptyOption: true
-      });
+    const itemsDataEl = document.getElementById("po_item_masters_json");
+    window.poItemsData = itemsDataEl ? JSON.parse(itemsDataEl.textContent) : [];
 
-      tsSku.on('change', function(value) {
-        const option = skuSelect.querySelector(`option[value="${value}"]`);
-        if (option) {
-          const itemName = option.getAttribute("data-item-name");
-          const purchasePrice = option.getAttribute("data-purchase-price");
+    function attachItemEvents(row) {
+      const skuSelect = row.querySelector(".po-sku-select");
+      const nameInput = row.querySelector(".po-item-name");
+      const priceInput = row.querySelector(".po-item-price");
 
-          const nameInput = document.getElementById("purchase_order_item_name");
-          const priceInput = document.getElementById("purchase_order_purchase_price");
+      if (skuSelect && !skuSelect.tomselect) {
+        const tsSku = new TomSelect(skuSelect, {
+          create: false,
+          placeholder: "Search SKU ID...",
+          allowEmptyOption: true
+        });
 
-          if (nameInput) nameInput.value = itemName || "";
-          if (priceInput) priceInput.value = purchasePrice || "";
-        }
-      });
+        tsSku.on('change', function(value) {
+          const match = window.poItemsData.find(i => String(i.sku_id) === String(value));
+          if (match) {
+            if (nameInput) nameInput.value = match.item_name || "";
+            if (priceInput) priceInput.value = match.purchase_price || "";
+          }
+        });
+      }
     }
-  }
 
-  // Fallback trigger if page loads directly
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initializePoForm);
-  } else {
-    initializePoForm();
+    const container = document.getElementById("po-items-container");
+    if (container) {
+      container.querySelectorAll(".po-item-row").forEach(attachItemEvents);
+    }
+  });
+
+  if (!window.poMultiFormDelegationAdded) {
+    window.poMultiFormDelegationAdded = true;
+    document.addEventListener("click", function(e) {
+      if (e.target.closest("#add-po-item")) {
+        const container = document.getElementById("po-items-container");
+        const templateDiv = document.getElementById("po-item-template");
+        
+        if (container && templateDiv) {
+          const templateHTML = templateDiv.innerHTML;
+          let indexCounter = container.querySelectorAll(".po-item-row").length;
+          const newRowHtml = templateHTML.replace(/INDEX/g, indexCounter);
+          
+          container.insertAdjacentHTML("beforeend", newRowHtml);
+          
+          const newRow = container.lastElementChild;
+          const skuSelect = newRow.querySelector(".po-sku-select");
+          const nameInput = newRow.querySelector(".po-item-name");
+          const priceInput = newRow.querySelector(".po-item-price");
+  
+          if (skuSelect && !skuSelect.tomselect) {
+            const tsSku = new TomSelect(skuSelect, {
+              create: false,
+              placeholder: "Search SKU ID...",
+              allowEmptyOption: true
+            });
+  
+            tsSku.on('change', function(value) {
+              const match = window.poItemsData.find(i => String(i.sku_id) === String(value));
+              if (match) {
+                if (nameInput) nameInput.value = match.item_name || "";
+                if (priceInput) priceInput.value = match.purchase_price || "";
+              }
+            });
+          }
+        }
+      }
+      
+      if (e.target.closest(".remove-po-item")) {
+        const row = e.target.closest(".po-item-row");
+        if (row) {
+          row.remove();
+        }
+      }
+    });
   }
 </script>

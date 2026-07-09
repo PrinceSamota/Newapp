@@ -77,7 +77,8 @@ resources :locations, only: [:create]
   resources :bom_raw_materials
   resources :purchase_orders do
     member do
-      post :convert_to_rmi
+      post :receive_item
+      post :convert_receipt_to_rmi
     end
   end
   resources :raw_material_inwards

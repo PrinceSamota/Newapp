@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_07_08_165751) do
+ActiveRecord::Schema[7.2].define(version: 2026_07_09_144024) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -549,6 +549,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_08_165751) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "purchase_order_id"
+    t.boolean "converted_to_stock"
   end
 
   create_table "raw_material_stock_batches", force: :cascade do |t|
@@ -569,6 +570,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_07_08_165751) do
     t.integer "item_master_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "po_invoice"
+    t.boolean "stock_updated", default: false
   end
 
   create_table "statuses", force: :cascade do |t|

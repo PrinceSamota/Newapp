@@ -14,9 +14,36 @@ class RawMaterialStockBatchesController < ApplicationController
   def update
     @raw_material_stock_batch = RawMaterialStockBatch.find(params[:id])
     if @raw_material_stock_batch.update(batch_params)
-      redirect_to raw_material_stock_batches_path, notice: "Batch updated successfully."
+      if params[:update_item_id].present?
+        stock_item = @raw_material_stock_batch.raw_material_stock_items.find_by(id: params[:update_item_id])
+        if stock_item && !stock_item.stock_updated?
+          if stock_item.po_invoice.blank?
+            redirect_to raw_material_stock_batch_path(@raw_material_stock_batch), alert: "PO Invoice is required to update stock for #{stock_item.sku_id}."
+            return
+          end
+          
+          item = ItemMaster.find_by(sku_id: stock_item.sku_id)
+          if item
+            previous_stock = item.opening_stock.to_i
+            
+            # Set PaperTrail request parameters
+            PaperTrail.request.whodunnit = current_user&.id if defined?(current_user)
+            PaperTrail.request.controller_info = { reason: "RMI Update Stock: #{@raw_material_stock_batch.id}" } if PaperTrail.request.respond_to?(:controller_info=)
+            
+            item.update!(opening_stock: previous_stock + stock_item.receiving_quantity.to_i)
+            if item.versions.last
+              item.versions.last.update!(source_type: "RawMaterialStockBatch", source_id: @raw_material_stock_batch.id)
+            end
+            
+            stock_item.update!(stock_updated: true)
+          end
+        end
+        redirect_to raw_material_stock_batch_path(@raw_material_stock_batch), notice: "Stock updated successfully for #{stock_item&.sku_id}."
+      else
+        redirect_to raw_material_stock_batch_path(@raw_material_stock_batch), notice: "Batch updated successfully."
+      end
     else
-      render :edit 
+      render :show 
     end
   end
 def create
@@ -67,7 +94,7 @@ end
   def batch_params
     params.require(:raw_material_stock_batch).permit(
       :supplier_id, :receiving_date, :supplier_invoice_number,
-      raw_material_stock_items_attributes: [:id, :item_name, :sku_id, :receiving_quantity, :purchase_price, :item_master_id, :_destroy]
+      raw_material_stock_items_attributes: [:id, :item_name, :sku_id, :receiving_quantity, :purchase_price, :item_master_id, :po_invoice, :stock_updated, :_destroy]
     )
   end
 end
