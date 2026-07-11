@@ -3,6 +3,8 @@ class RawMaterialStockItem < ApplicationRecord
   belongs_to :item_master, optional: true
 
   before_validation :assign_item_master_id
+  
+  attr_accessor :po_remaining_quantity
 
   private
 
