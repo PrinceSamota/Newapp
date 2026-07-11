@@ -62,6 +62,22 @@ class RawMaterialStockBatchesController < ApplicationController
         end
         redirect_to raw_material_stock_batch_path(@raw_material_stock_batch), notice: "Stock updated successfully for #{stock_item&.sku_id}."
       else
+        if @raw_material_stock_batch.purchase_order_id.blank?
+          @raw_material_stock_batch.raw_material_stock_items.where(stock_updated: false).each do |stock_item|
+            item = ItemMaster.find_by(sku_id: stock_item.sku_id)
+            if item
+              previous_stock = item.opening_stock.to_i
+              PaperTrail.request.whodunnit = current_user&.id if defined?(current_user)
+              PaperTrail.request.controller_info = { reason: "RMI Update Stock: #{@raw_material_stock_batch.id}" } if PaperTrail.request.respond_to?(:controller_info=)
+              
+              item.update!(opening_stock: previous_stock + stock_item.receiving_quantity.to_i)
+              if item.versions.last
+                item.versions.last.update!(source_type: "RawMaterialStockBatch", source_id: @raw_material_stock_batch.id)
+              end
+              stock_item.update!(stock_updated: true)
+            end
+          end
+        end
         redirect_to raw_material_stock_batch_path(@raw_material_stock_batch), notice: "Batch updated successfully."
       end
     else
@@ -72,12 +88,17 @@ def create
   @batch = RawMaterialStockBatch.new(batch_params)
 
   if @batch.save
-    @batch.raw_material_stock_items.each do |stock_item|
-      item = ItemMaster.find_by(sku_id: stock_item.sku_id)
-      if item
-        previous_stock = item.opening_stock.to_i
-        item.update(opening_stock: previous_stock + stock_item.receiving_quantity.to_i)
-        item.versions.last.update!(source_type: "RawMaterialStockBatch", source_id: @batch.id)
+    if @batch.purchase_order_id.present?
+      @batch.raw_material_stock_items.each do |stock_item|
+        item = ItemMaster.find_by(sku_id: stock_item.sku_id)
+        if item
+          previous_stock = item.opening_stock.to_i
+          item.update(opening_stock: previous_stock + stock_item.receiving_quantity.to_i)
+          if item.versions.last
+            item.versions.last.update!(source_type: "RawMaterialStockBatch", source_id: @batch.id)
+          end
+          stock_item.update!(stock_updated: true)
+        end
       end
     end
     redirect_to raw_material_stock_batches_path, notice: "Raw material batch created successfully."
