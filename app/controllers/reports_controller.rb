@@ -42,7 +42,7 @@ class ReportsController < ApplicationController
       accumulator[sku_id][:requirement] =
         accumulator[sku_id][:stock] - accumulator[sku_id][:quantity]
     else
-      po_qty = PurchaseOrder.where(sku_id: sku_id).to_a.sum(&:remaining_quantity)
+      po_qty = PurchaseOrderItem.where(sku_id: sku_id).to_a.sum(&:remaining_quantity)
 
       accumulator[sku_id] = {
         sku: sku_id,
