@@ -10,15 +10,16 @@ class RawMaterialStockBatchesController < ApplicationController
       if po
         @batch.purchase_order_id = po.id
         @batch.supplier_id = Supplier.find_by(name: po.supplier_name)&.id
+        @selected_supplier_id = @batch.supplier_id
         @batch.receiving_date = po.po_date || Date.today
 
         po.purchase_order_items.each do |po_item|
-          @batch.raw_material_stock_items.build(
+          item = @batch.raw_material_stock_items.build(
             sku_id: po_item.sku_id,
             item_name: po_item.item_name,
-            receiving_quantity: po_item.remaining_quantity > 0 ? po_item.remaining_quantity : 0,
             purchase_price: po_item.purchase_price
           )
+          item.po_remaining_quantity = po_item.remaining_quantity
         end
       else
         @batch.raw_material_stock_items.build
