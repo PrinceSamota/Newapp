@@ -22,4 +22,14 @@ class PurchaseOrder < ApplicationRecord
   def open?
     status == 'Open'
   end
+
+  def update_status_based_on_items!
+    return if purchase_order_items.empty?
+    
+    if purchase_order_items.all? { |item| item.remaining_quantity <= 0 }
+      update(status: 'Completed')
+    elsif status == 'Completed'
+      update(status: 'Open')
+    end
+  end
 end

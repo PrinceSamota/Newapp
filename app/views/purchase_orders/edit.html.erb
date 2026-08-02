@@ -106,8 +106,10 @@
       </table>
     </div>
     
+    <% unless @purchase_order.closed? %>
     <div class="mt-4 flex justify-end">
       <%= link_to "Create RMI", new_raw_material_stock_batch_path(po_number: @purchase_order.po_number), class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-colors cursor-pointer flex items-center gap-2" %>
     </div>
+    <% end %>
   </div>
 </div>
