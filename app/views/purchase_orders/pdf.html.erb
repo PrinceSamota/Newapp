@@ -47,13 +47,23 @@
     <tr>
       <td style="width: 60%">
         <div class="company-details">
-          <h2>CLED INDIA</h2>
-          <p>India</p>
+          <% cled = Client.find_by("company_name ILIKE ?", 'CLED INDIA') %>
+          <h2><%= cled&.company_name || 'CLED INDIA' %></h2>
+          <% if cled %>
+            <p><%= cled.address1 %></p>
+            <% if cled.address2.present? %><p><%= cled.address2 %></p><% end %>
+            <p><%= cled.address3 %> <%= cled.pin_code %></p>
+            <p><%= cled.country %></p>
+            <% if cled.contact_no.present? %><p>Phone: <%= cled.contact_no %></p><% end %>
+            <% if cled.email.present? %><p>Email: <%= cled.email %></p><% end %>
+          <% else %>
+            <p>[Address not available in clients table]</p>
+          <% end %>
         </div>
       </td>
       <td style="width: 40%; text-align: right;">
         <div class="logo-container">
-          <h1 style="color: #2b6cb0;">CLED INDIA</h1>
+          <%= wicked_pdf_image_tag 'CLED_India.png', width: '200', alt: 'CLED INDIA Logo' %>
         </div>
       </td>
     </tr>
@@ -64,7 +74,13 @@
       <td style="width: 50%">
         <div class="supplier-info">
           <h3>Supplier</h3>
-          <p><%= @purchase_order.supplier_name %></p>
+          <% supplier_record = Supplier.find_by(name: @purchase_order.supplier_name) %>
+          <p style="font-weight: bold;"><%= @purchase_order.supplier_name %></p>
+          <% if supplier_record&.address.present? %>
+            <p style="white-space: pre-line; color: #555; margin-top: 5px; line-height: 1.4;"><%= supplier_record.address %></p>
+          <% else %>
+            <p style="color: #999; font-style: italic; margin-top: 5px;">[Address not provided]</p>
+          <% end %>
         </div>
       </td>
       <td style="width: 50%">
@@ -138,6 +154,9 @@
         </table>
         
         <div class="signature-line">
+          <div style="font-family: 'Brush Script MT', 'Lucida Handwriting', cursive; font-size: 28px; color: #000; margin-bottom: 5px; height: 40px; line-height: 40px;">
+            CLED India
+          </div>
           Authorized Signatory<br>
           <small>CLED INDIA</small>
         </div>
