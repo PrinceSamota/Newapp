@@ -1,5 +1,5 @@
 class PurchaseOrdersController < ApplicationController
-  before_action :set_purchase_order, only: [:edit, :update, :receive_item, :convert_receipt_to_rmi]
+  before_action :set_purchase_order, only: [:show, :edit, :update, :receive_item, :convert_receipt_to_rmi]
   before_action :set_item_masters_and_suppliers, only: [:index, :new, :create, :edit, :update]
 
   def index
@@ -24,6 +24,18 @@ class PurchaseOrdersController < ApplicationController
       @q = PurchaseOrder.ransack(params[:q])
       @purchase_orders = @q.result.distinct.order(created_at: :desc)
       render :new, status: :unprocessable_entity
+    end
+  end
+
+  def show
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "Purchase_Order_#{@purchase_order.po_number}",
+               template: "purchase_orders/pdf",
+               layout: "pdf",
+               formats: [:html]
+      end
     end
   end
 

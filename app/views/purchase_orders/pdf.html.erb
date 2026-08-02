@@ -47,17 +47,13 @@
     <tr>
       <td style="width: 60%">
         <div class="company-details">
-          <h2>Ad4tech Material LLC</h2>
-          <p>67h, Martin street</p>
-          <p>Alexander road</p>
-          <p>576832</p>
-          <p>Mobile: +123456789</p>
-          <p>Email: ad4example@gmail.com</p>
+          <h2>CLED INDIA</h2>
+          <p>India</p>
         </div>
       </td>
       <td style="width: 40%; text-align: right;">
         <div class="logo-container">
-          <h1>Logo</h1>
+          <h1 style="color: #2b6cb0;">CLED INDIA</h1>
         </div>
       </td>
     </tr>
@@ -68,18 +64,18 @@
       <td style="width: 50%">
         <div class="supplier-info">
           <h3>Supplier</h3>
-          <p><%= @batch.supplier&.name || @batch.purchase_order&.supplier_name %></p>
+          <p><%= @purchase_order.supplier_name %></p>
         </div>
       </td>
       <td style="width: 50%">
         <table class="po-info-table">
           <tr>
             <td class="label">PO No :</td>
-            <td class="value"><%= @batch.purchase_order&.po_number || @batch.supplier_invoice_number %></td>
+            <td class="value"><%= @purchase_order.po_number %></td>
           </tr>
           <tr>
             <td class="label">Date :</td>
-            <td class="value"><%= (@batch.receiving_date || @batch.created_at).strftime("%b %d, %Y") %></td>
+            <td class="value"><%= (@purchase_order.po_date || @purchase_order.created_at).strftime("%b %d, %Y") %></td>
           </tr>
         </table>
       </td>
@@ -98,13 +94,13 @@
     </thead>
     <tbody>
       <% subtotal = 0 %>
-      <% @batch.raw_material_stock_items.each_with_index do |item, idx| %>
-        <% amount = item.receiving_quantity.to_f * item.purchase_price.to_f %>
+      <% @purchase_order.purchase_order_items.each_with_index do |item, idx| %>
+        <% amount = item.quantity.to_f * item.purchase_price.to_f %>
         <% subtotal += amount %>
         <tr>
           <td><%= idx + 1 %></td>
           <td><%= item.item_name %><br><small style="color: #666;"><%= item.sku_id %></small></td>
-          <td class="right"><%= item.receiving_quantity %></td>
+          <td class="right"><%= item.quantity %></td>
           <td class="right"><%= number_to_currency(item.purchase_price, unit: "$") %></td>
           <td class="right"><%= number_to_currency(amount, unit: "$") %></td>
         </tr>
@@ -118,7 +114,7 @@
         <div class="payment-info">
           <h3>Payment Instructions</h3>
           <p>Pay Cheque to</p>
-          <p>John Doe</p>
+          <p>CLED INDIA</p>
         </div>
       </td>
       <td style="width: 50%">
@@ -132,7 +128,7 @@
             <td class="border-top" style="font-weight: bold;"><%= number_to_currency(subtotal, unit: "$") %></td>
           </tr>
           <tr>
-            <td class="label">Paid (<%= (@batch.receiving_date || @batch.created_at).strftime("%b %d, %Y") %>)</td>
+            <td class="label">Paid (<%= (@purchase_order.po_date || @purchase_order.created_at).strftime("%b %d, %Y") %>)</td>
             <td>$0.00</td>
           </tr>
           <tr>
@@ -142,7 +138,8 @@
         </table>
         
         <div class="signature-line">
-          Authorized Signatory
+          Authorized Signatory<br>
+          <small>CLED INDIA</small>
         </div>
       </td>
     </tr>
