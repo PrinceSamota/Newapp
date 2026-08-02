@@ -89,6 +89,9 @@
                               <% end %>
                             </td>
                             <td class="px-4 py-2 text-right">
+                              <%= link_to raw_material_stock_batch_path(rmi.raw_material_stock_batch_id, format: :pdf), class: "text-red-600 hover:text-red-800 mr-3 text-sm inline-flex items-center justify-center", title: "Download PDF" do %>
+                                <i class="fa-solid fa-file-pdf"></i>
+                              <% end %>
                               <%= link_to "View Batch", raw_material_stock_batch_path(rmi.raw_material_stock_batch_id), class: "text-blue-600 hover:underline text-xs font-semibold" %>
                             </td>
                           </tr>

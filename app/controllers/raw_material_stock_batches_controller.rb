@@ -31,6 +31,15 @@ class RawMaterialStockBatchesController < ApplicationController
 
   def show
     @batch = RawMaterialStockBatch.includes(:raw_material_stock_items).find(params[:id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "Purchase_Order_#{@batch.purchase_order&.po_number || @batch.id}",
+               template: "raw_material_stock_batches/pdf",
+               layout: "pdf",
+               formats: [:html]
+      end
+    end
   end
   
   def update

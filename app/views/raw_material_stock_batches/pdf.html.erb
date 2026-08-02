@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: 'Helvetica', 'Arial', sans-serif; font-size: 14px; color: #333; }
+    .header-title { text-align: center; font-size: 32px; font-weight: bold; margin-top: 20px; margin-bottom: 40px; }
+    
+    table.layout-table { width: 100%; margin-bottom: 30px; }
+    table.layout-table td { vertical-align: top; }
+    
+    .company-details h2 { margin: 0 0 5px 0; font-size: 18px; }
+    .company-details p { margin: 2px 0; font-size: 13px; }
+    
+    .logo-container h1 { color: #444; font-size: 36px; margin: 0; text-align: right; }
+    
+    .info-section { border-top: 1px solid #ddd; padding-top: 20px; }
+    .supplier-info h3 { margin: 0 0 10px 0; font-size: 16px; }
+    .supplier-info p { margin: 2px 0; font-size: 14px; }
+    
+    table.po-info-table { width: 100%; }
+    table.po-info-table td { padding: 5px 0; }
+    table.po-info-table .label { font-weight: bold; text-align: right; padding-right: 15px; width: 50%; }
+    table.po-info-table .value { text-align: left; font-weight: bold; }
+    
+    table.items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; margin-top: 20px; }
+    table.items-table th { background-color: #dbeafe; padding: 10px; text-align: left; font-weight: bold; border-bottom: 2px solid #ccc; }
+    table.items-table th.right { text-align: right; }
+    table.items-table td { padding: 10px; border-bottom: 1px solid #eee; }
+    table.items-table td.right { text-align: right; }
+    
+    .payment-info h3 { font-size: 15px; margin: 0 0 10px 0; }
+    .payment-info p { color: #666; margin: 0 0 5px 0; }
+    
+    table.totals-table { width: 100%; border-collapse: collapse; }
+    table.totals-table td { padding: 8px 0; text-align: right; }
+    table.totals-table .label { font-weight: bold; padding-right: 20px; }
+    table.totals-table .border-top { border-top: 1px solid #ddd; padding-top: 10px; }
+    
+    .signature-line { border-top: 1px solid #333; width: 200px; margin-top: 80px; padding-top: 10px; text-align: center; font-weight: bold; float: right;}
+  </style>
+</head>
+<body>
+  <div class="header-title">PURCHASE ORDER</div>
+  
+  <table class="layout-table">
+    <tr>
+      <td style="width: 60%">
+        <div class="company-details">
+          <h2>Ad4tech Material LLC</h2>
+          <p>67h, Martin street</p>
+          <p>Alexander road</p>
+          <p>576832</p>
+          <p>Mobile: +123456789</p>
+          <p>Email: ad4example@gmail.com</p>
+        </div>
+      </td>
+      <td style="width: 40%; text-align: right;">
+        <div class="logo-container">
+          <h1>Logo</h1>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+  <table class="layout-table info-section">
+    <tr>
+      <td style="width: 50%">
+        <div class="supplier-info">
+          <h3>Supplier</h3>
+          <p><%= @batch.supplier&.name || @batch.purchase_order&.supplier_name %></p>
+        </div>
+      </td>
+      <td style="width: 50%">
+        <table class="po-info-table">
+          <tr>
+            <td class="label">PO No :</td>
+            <td class="value"><%= @batch.purchase_order&.po_number || @batch.supplier_invoice_number %></td>
+          </tr>
+          <tr>
+            <td class="label">Date :</td>
+            <td class="value"><%= (@batch.receiving_date || @batch.created_at).strftime("%b %d, %Y") %></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+  <table class="items-table">
+    <thead>
+      <tr>
+        <th style="width: 5%">Sl.</th>
+        <th style="width: 45%">Description</th>
+        <th class="right" style="width: 15%">Qty</th>
+        <th class="right" style="width: 15%">Rate</th>
+        <th class="right" style="width: 20%">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% subtotal = 0 %>
+      <% @batch.raw_material_stock_items.each_with_index do |item, idx| %>
+        <% amount = item.receiving_quantity.to_f * item.purchase_price.to_f %>
+        <% subtotal += amount %>
+        <tr>
+          <td><%= idx + 1 %></td>
+          <td><%= item.item_name %><br><small style="color: #666;"><%= item.sku_id %></small></td>
+          <td class="right"><%= item.receiving_quantity %></td>
+          <td class="right"><%= number_to_currency(item.purchase_price, unit: "$") %></td>
+          <td class="right"><%= number_to_currency(amount, unit: "$") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <table class="layout-table">
+    <tr>
+      <td style="width: 50%">
+        <div class="payment-info">
+          <h3>Payment Instructions</h3>
+          <p>Pay Cheque to</p>
+          <p>John Doe</p>
+        </div>
+      </td>
+      <td style="width: 50%">
+        <table class="totals-table">
+          <tr>
+            <td class="label">Subtotal</td>
+            <td><%= number_to_currency(subtotal, unit: "$") %></td>
+          </tr>
+          <tr>
+            <td class="label border-top">Total</td>
+            <td class="border-top" style="font-weight: bold;"><%= number_to_currency(subtotal, unit: "$") %></td>
+          </tr>
+          <tr>
+            <td class="label">Paid (<%= (@batch.receiving_date || @batch.created_at).strftime("%b %d, %Y") %>)</td>
+            <td>$0.00</td>
+          </tr>
+          <tr>
+            <td class="label">Balance Due</td>
+            <td style="font-weight: bold;"><%= number_to_currency(subtotal, unit: "$") %></td>
+          </tr>
+        </table>
+        
+        <div class="signature-line">
+          Authorized Signatory
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
